@@ -1,0 +1,22 @@
+server:
+  type: simple
+  rootPath: /api/*
+  applicationContextPath: /
+  connector:
+    type: http
+    port: 8080
+    
+logging:
+  level: INFO
+  loggers:
+    "io.dropwizard": INFO
+    "org.hibernate.SQL":
+      level: DEBUG
+      additive: false
+      appenders:
+        - type: file
+          currentLogFilename: ./log/system.log
+          archivedLogFilenamePattern: ./log/myapplication-%d.log.gz
+          archivedFileCount: 5
+  appenders:
+    - type: console

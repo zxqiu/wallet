@@ -1,0 +1,34 @@
+https://docs.google.com/document/d/1YiRK_llyQbavm-tZbs2w6hhP0HAuMftzD0QN9-7VWDU/edit?usp=sharing
+
+Scenario:
+QPS: less than 1
+
+
+Service:
+Book keeping Service:
+
+1. new book:
+			   new book
+	client -----------------> book server ----------> MySQL connector ---------> MySQL DB
+		^							|
+		|							|
+		-----------------------------
+				success/fail
+				
+2. get book:
+				request
+	client -----------------> book server <---------> MySQL connector ---------> MySQL DB
+		^							|
+		|							|
+		-----------------------------
+				book data
+				
+Storage:
+
+1. book table
+		primary key				sharding key
+	user_id + create_time	|	user_id		|	event_time	|	category	|	amount		|	note		|	picture_url	|
+
+2. category table
+		primary key				sharding key
+	user_id + create_time	|	user_id		|	name		|	note		|	icon_url	|
