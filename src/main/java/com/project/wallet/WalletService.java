@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.project.wallet.service.TestGetResource;
 
-import books.service.BooksControlService;
+import books.service.BooksService;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
@@ -38,7 +38,7 @@ public class WalletService extends Application<WalletProjectConfiguration> {
 	    //System.out.println(DynamoDBConnector.instance().listMyTables());
 	    //initPostDataBase();
 	    
-	    environment.jersey().register(new BooksControlService());
+	    environment.jersey().register(new BooksService());
 	    
 	    //logger_.warn("initiate store configuration");
 	}

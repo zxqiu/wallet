@@ -3,6 +3,7 @@ package books.service;
 import java.sql.SQLException;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
@@ -23,8 +24,8 @@ import books.service.data.BooksTable;
 import utils.TimeUtils;
 
 @Path("/books")
-public class BooksControlService {
-	private static final Logger logger_ = LoggerFactory.getLogger(BooksControlService.class);
+public class BooksService {
+	private static final Logger logger_ = LoggerFactory.getLogger(BooksService.class);
 	private static final String QUERY_PARAM  = "queryParam";
 	
 	private static final String QUERY_ARG_ERROR = "Query Argument Invalid";
@@ -43,7 +44,7 @@ public class BooksControlService {
 	 * @param PRODUCT_ID, AMOUNT, ADDRESS, DESCRIPTION
 	 * @return
 	 */
-	@GET
+	@POST
     @Timed
     @Path("/newitem")
 	@Produces(value = MediaType.APPLICATION_JSON)

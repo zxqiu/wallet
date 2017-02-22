@@ -1,12 +1,12 @@
 var SPLITER = "!";
 var QUESTION = "?";
-var QueryParam = "queryParam"
-var hostURL = "http://localhost:8080"
-var apiGetPost = "/api/books/newitem"
+var QueryParam = "queryParam";
+var hostURL = "http://localhost:8080";
+var apiGetPost = "/api/books/newitem";
 
-var postEachLine = 3;
+function insertBooks() {
+	console.log("insert new books to server start");
 
-function searchSubmit() {
 	var param = new Object();
 
 	param.user_id = "webuser";
@@ -20,12 +20,14 @@ function searchSubmit() {
 
 	var request = hostURL + apiGetPost + QUESTION + QueryParam + "=" + paramJSONString;
 	$.ajax({
-		type: "GET",
+		type: "POST",
 		url: request,
 		dataType: "json",
 	}).then(function(jsonData) {
 		if(jsonData != null) {
-			createPost(jsonData);
+			//createPost(jsonData);
+			console.log(request);
 		}
 	});
+	console.log("insert new books to server done");
 }
