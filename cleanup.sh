@@ -23,6 +23,7 @@ confirm() {
 
 clean() {
     echo "Crashing everything in your life ..."
+    killall mysqld
     sudo rm -rf /usr/local/mysql*
     sudo rm -rf /etc/init.d/mysql.server
     sudo rm -rf /etc/profile.d/mysql.sh
