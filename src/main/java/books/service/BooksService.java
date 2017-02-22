@@ -1,6 +1,11 @@
 package books.service;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -122,5 +127,85 @@ public class BooksService {
 		}
 		
 		return Response.status(200).entity(returnVal.toString()).build();
+	}
+	
+		/**
+	 * Create a new order
+	 * @param PRODUCT_ID, AMOUNT, ADDRESS, DESCRIPTION
+	 * @return
+	 */
+	@GET
+    @Timed
+    @Path("/getbooks")
+	@Produces(value = MediaType.APPLICATION_JSON)
+	public Response getAllBooks(@Context UriInfo ui) {
+		JSONObject request = null;
+		JSONObject returnVal = new JSONObject();
+		
+		String user_id = "";
+		long event_time = -1;
+		String category = "";
+		long amount = -1;
+		String note = "";
+		String picture_url = "";
+		
+		
+		/* Prepare  */
+		MultivaluedMap<String, String> queryParams = ui.getQueryParameters();
+		
+		if (queryParams == null || queryParams.isEmpty())
+		{
+			logger_.error("ERROR: cannot parse neworder request to MultivaluedMap: " + ui.getRequestUri());
+			return Response.status(500).entity(QUERY_ARG_ERROR).build();
+		}
+			
+		if (queryParams.containsKey(QUERY_PARAM)) {
+			try {
+				request = new JSONObject(queryParams.getFirst(QUERY_PARAM));
+			} catch (JSONException e) {
+				logger_.error("ERROR: cannot parse neworder request to JSON: " + ui.getRequestUri());
+				return Response.status(500).entity(JSON_PARSE_ERROR).build();
+			}
+		} else {
+			logger_.error("ERROR: no query parameter in neworder request: " + ui.getRequestUri());
+			return Response.status(500).entity(QUERY_ARG_ERROR).build();
+		}
+				
+		if (request.has(utils.NameDef.USER_ID) == false) {
+			logger_.error("ERROR: not enough parameters in neworder request: " + ui.getRequestUri());
+			return Response.status(500).entity(QUERY_ARG_ERROR).build();
+		}
+			
+		try {
+			user_id = request.getString(utils.NameDef.USER_ID);
+		} catch (JSONException e) {
+			logger_.error("ERROR: failed to get parameters from neworder request: " + ui.getRequestUri());
+			return Response.status(500).entity(QUERY_ARG_ERROR).build();
+		}
+		
+		
+		/* Process  */
+		// verify request
+		if (user_id.length() == 0) {
+			logger_.error("ERROR: invalid order request: " + ui.getRequestUri());
+			return Response.status(500).entity(QUERY_ARG_ERROR).build();
+		}
+		
+		List<BooksInfo> books = new ArrayList<BooksInfo>();
+		try {
+			books = BooksTable.instance().getAllBooksForUser(user_id);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			logger_.error("Error : failed to insert new books : " + e.getMessage());
+			return Response.status(500).entity(INTERNAL_ERROR).build();
+		}
+		
+		
+		Set<Map<String, Object>> ret = new HashSet<Map<String, Object>>();
+		for (BooksInfo book : books) {
+			ret.add(book.toMap());
+		}
+		
+		return Response.status(200).entity(ret.toString()).build();
 	}
 }

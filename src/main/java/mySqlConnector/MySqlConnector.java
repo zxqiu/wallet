@@ -24,8 +24,6 @@ import org.apache.commons.dbcp.BasicDataSourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import books.service.data.BooksInfo;
-
 public class MySqlConnector {
 	private static final Logger logger_ = LoggerFactory.getLogger(MySqlConnector.class);
 	private static Lock createLock_ = new ReentrantLock();

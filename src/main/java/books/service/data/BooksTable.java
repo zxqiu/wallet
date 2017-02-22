@@ -125,7 +125,7 @@ public class BooksTable {
 		}
 		
 		booksInfo.setNote("nooooooote");
-		BooksTable.instance().deleteBooks(booksInfo1.getId());
+		//BooksTable.instance().deleteBooks(booksInfo1.getId());
 		BooksTable.instance().updateBooks(booksInfo);
 		for (BooksInfo books : BooksTable.instance().getAllBooksForUser("me")) {
 			logger_.info(books.toMap().toString());
