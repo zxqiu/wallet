@@ -5,7 +5,7 @@ var hostURL = "http://localhost:8080";
 var apiInsertBooks = "/api/books/newitem";
 var apiGetBooks = "/api/books/getbooks";
 
-var postEachLine = 2;
+var booksItemsEachLine = 4;
 var test_user_cnt = 0;
 
 function insertBooks() {
@@ -53,17 +53,17 @@ function getBooks() {
 	}).then(function(retData) {
 		if(retData != null) {
 			console.log(retData);
-			createPost(retData);
+			createBooksItems(retData);
 		}
 	});
 	console.log("get books from server done");
 }
 
 
-function createPost(retData) {
-	var cnt = 0, parentDiv, postCol, postRow;
+function createBooksItems(retData) {
+	var cnt = 0, parentDiv, booksItemsCol, booksItemsRow;
         var jsonArray = retData;//JSON.parse(retData);
-	parentDiv = document.getElementById("postList");
+	parentDiv = document.getElementById("booksList");
 
 	while (parentDiv.firstChild) {
 		parentDiv.removeChild(parentDiv.firstChild);
@@ -74,73 +74,64 @@ function createPost(retData) {
                 var jsonString = jsonArray[i];
 		var jsonObj = JSON.parse(jsonString);
 
-		if (cnt % postEachLine == 0) {
-			postRow = document.createElement("div");
-			postRow.className = "row";
-			parentDiv.appendChild(postRow);
+		if (cnt % booksItemsEachLine == 0) {
+			booksItemsRow = document.createElement("div");
+			booksItemsRow.className = "row";
+			parentDiv.appendChild(booksItemsRow);
 		}
 
-		postCol = document.createElement("div");
-		postCol.className = "col-md-" + (12/postEachLine);
-		postRow.appendChild(postCol);
+		booksItemsCol = document.createElement("div");
+		booksItemsCol.className = "col-md-" + (12/booksItemsEachLine);
+		booksItemsRow.appendChild(booksItemsCol);
 
 		console.log("generating : " + JSON.stringify(jsonObj));
-		var post = createSinglePost(jsonObj);
+		var item = createSingleBooksItem(jsonObj);
 
-		postCol.appendChild(post);
+		booksItemsCol.appendChild(item);
 		
 		cnt++;
 	}
 	console.log(cnt);
 }
 
-function createSinglePost(postInfo) {
-	var postDiv = document.createElement("div");
-	var postA = document.createElement("a");
-	//var postImg = document.createElement("img");
-	var postSpanDetail = document.createElement("span");
-	var postSpanDetailInfo = document.createElement("span");
-	var postSpanDetailInfoEventDate = document.createElement("span");
-	var postSpanDetailInfoAmount = document.createElement("span");
-	var postSpanDetailInfoCategory = document.createElement("span");
-	var postSpanDetailInfoNote = document.createElement("span");
-	//var postSpanDetailTitle = document.createElement("span");
+function createSingleBooksItem(itemInfo) {
+	var itemDiv = document.createElement("div");
+	var itemA = document.createElement("a");
+	var itemImg = document.createElement("img");
+	var itemSpanDetail = document.createElement("span");
+	var itemSpanDetailInfo = document.createElement("span");
+	var itemSpanDetailInfoCategory = document.createElement("span");
+	var itemSpanDetailInfoNote = document.createElement("span");
+	var itemSpanDetailTitle = document.createElement("span");
 
-	postDiv.className = "vehicle-list";
-	postA.href = "#";
-	//postImg.className = "img-rounded";
-	//postImg.style.cssText = "width: 100%;";
-	postSpanDetail.className = "vehicle-list-text";
-	postSpanDetailInfo.className = "vehicle-list-text-info";
-	postSpanDetailInfoEventDate.id = "bookEventDate";
-	postSpanDetailInfoAmount.id = "bookAmount";
-	postSpanDetailInfoCategory.id = "bookCategory";
-	postSpanDetailInfoNote.id = "bookNote";
-	//postSpanDetailTitle.className = "vehicle-list-text-title";
-	//postSpanDetailTitle.id = "vehicleListTitle";
+	itemDiv.className = "books-list";
+	itemA.href = "#";
+	itemImg.className = "img-rounded books-list-img";
+	itemImg.style.cssText = "width: 100%;";
+	itemSpanDetail.className = "books-list-text";
+	itemSpanDetailInfo.className = "books-list-text-info";
+	itemSpanDetailInfoCategory.id = "bookCategory";
+	itemSpanDetailInfoNote.id = "bookNote";
+	itemSpanDetailTitle.className = "vehicle-list-text-title";
+	itemSpanDetailTitle.id = "vehicleListTitle";
 
-	postDiv.appendChild(postA);
-	//postA.appendChild(postImg);
-	postA.appendChild(postSpanDetail);
-	postSpanDetail.appendChild(postSpanDetailInfo);
-	postSpanDetailInfo.appendChild(postSpanDetailInfoEventDate);
-	postSpanDetailInfo.appendChild(postSpanDetailInfoAmount);
-	postSpanDetailInfo.appendChild(postSpanDetailInfoCategory);
-	postSpanDetailInfo.appendChild(postSpanDetailInfoNote);
-	//postSpanDetail.appendChild(postSpanDetailTitle);
+	itemDiv.appendChild(itemA);
+	itemA.appendChild(itemImg);
+	itemA.appendChild(itemSpanDetail);
+	itemSpanDetail.appendChild(itemSpanDetailInfo);
+	itemSpanDetailInfo.appendChild(itemSpanDetailInfoCategory);
+	itemSpanDetailInfo.appendChild(itemSpanDetailInfoNote);
+	itemSpanDetail.appendChild(itemSpanDetailTitle);
 
-	console.log(postInfo);
-	//postImg.src = "http://media.caranddriver.com/images/media/51/2019-lamborghini-asterion-concept-top-inline-photo-657624-s-original.jpg"; //postInfo.Image
-	//postSpanDetailTitle.innerHTML =
-			//postInfo.Year + " " +
-			//postInfo.AutoMaker + " " +
-			//postInfo.AutoModel;
-	postSpanDetailInfoEventDate.innerHTML = postInfo.event_time + "?";
-	postSpanDetailInfoAmount.innerHTML = "$" + postInfo.amount + "?";
-	postSpanDetailInfoCategory.innerHTML = "category: " + postInfo.category + "?";
-	postSpanDetailInfoNote.innerHTML = "note: " + postInfo.note + "?";
+	console.log(itemInfo);
+	itemImg.src = "http://www.koolbreeze.eclipse.co.uk/block%20lightblue.jpg"; //itemInfo.Image
+	itemSpanDetailTitle.innerHTML =
+			itemInfo.event_time + " $" +
+			itemInfo.amount;
+	itemSpanDetailInfoCategory.innerHTML = "category: " + itemInfo.category;
+	itemSpanDetailInfoNote.innerHTML = "note: " + itemInfo.note;
 
-	return postDiv;
+	return itemDiv;
 }
 
 

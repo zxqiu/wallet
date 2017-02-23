@@ -9,31 +9,30 @@
 <title>tiny wallet</title><!-- layoutit -->
 
 <link href="css/bootstrap.min.css" rel="stylesheet">
-<link href="css/style.css" rel="stylesheet">
+<link href="css/booksList.css" rel="stylesheet">
 
 </head>
 
 <body>
-	<button type="button" onclick="insertBooks()">insert</button>
-	<button type="button" onclick="getBooks()">get</button>
-
-	
-	<div id="postList">
+	<div id="test">
+		<button type="button" onclick="insertBooks()">insert</button>
+		<button type="button" onclick="getBooks()">get</button>
+	</div>
+	</br>
+	</br>
+	</br>
+	<div id="booksList">
 		<div class="row">
-			<div class="col-md-4">
-				<div class="vehicle-list">
+			<div class="col-sm-6 col-md-4">
+				<div class="books-list">
 					<a href="#">
-<!--
-						<img class="img-rounded" src="" style="width: 100%;"/>
--->
-						<span class="vehicle-list-text">
-							<span class="vehicle-list-text-info">
-								<span id="bookEventDate">test date</span>
-								<span id="bookAmount">test amount</span>
+						<img class="img-rounded books-list-img" src="http://www.koolbreeze.eclipse.co.uk/block%20lightblue.jpg"/>
+						<span class="books-list-text">
+							<span class="books-list-text-info">
 								<span id="bookCategory">test category</span>
 								<span id="bookNote">test note</span>
 							</span>
-							<!--<span class="vehicle-list-text-title" id="bookTitle"></span>-->
+							<span class="books-list-text-title" id="bookTitle">date amount</span>
 						</span>
 					</a>
 				</div>
@@ -43,7 +42,6 @@
 
 <script src="js/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
-<script src="js/scripts.js"></script>
 <script src="js/controlBooks.js"></script>
 
 </body>
