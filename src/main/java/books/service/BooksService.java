@@ -17,12 +17,14 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.amazonaws.util.json.JSONException;
 import com.amazonaws.util.json.JSONObject;
 import com.codahale.metrics.annotation.Timed;
+import com.google.gson.Gson;
 
 import books.service.data.BooksInfo;
 import books.service.data.BooksTable;
@@ -201,11 +203,16 @@ public class BooksService {
 		}
 		
 		
-		Set<Map<String, Object>> ret = new HashSet<Map<String, Object>>();
+		JSONArray jsonArray = new JSONArray();
+		Gson gson = new Gson();
 		for (BooksInfo book : books) {
-			ret.add(book.toMap());
+			try {
+				jsonArray.put(new JSONObject(gson.toJson(book)));
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
 		}
 		
-		return Response.status(200).entity(ret.toString()).build();
+		return Response.status(200).entity(jsonArray.toString()).build();
 	}
 }
