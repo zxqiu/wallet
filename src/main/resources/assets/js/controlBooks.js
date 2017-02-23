@@ -112,7 +112,7 @@ function createSingleBooksItem(itemInfo) {
 	itemSpanDetailInfo.className = "books-list-text-info";
 	itemSpanDetailInfoCategory.id = "bookCategory";
 	itemSpanDetailInfoNote.id = "bookNote";
-	itemSpanDetailTitle.className = "vehicle-list-text-title";
+	itemSpanDetailTitle.className = "books-list-text-title";
 	itemSpanDetailTitle.id = "vehicleListTitle";
 
 	itemDiv.appendChild(itemA);

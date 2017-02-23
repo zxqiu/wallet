@@ -20,6 +20,7 @@ img.books-list-img {
 }
 
 span.books-list-text {
+  background: rgba(0,0,0,0.5);
   cursor: pointer;
   position: absolute;
   top: 0;
@@ -31,14 +32,12 @@ span.books-list-text {
 
 span.books-list-text-title {
   opacity: 1;
-  z-index: 0;
 }
 
 span.books-list-text-info {
   height: 0;
   width: 100%;
   opacity: 0;
-  z-index: 0;
   -webkit-transition: opacity 500ms;
   -moz-transition: opacity 500ms;
   -o-transition: opacity 500ms;
@@ -51,22 +50,23 @@ span.books-list-text-info span {
 }
 
 span.books-list-text span {
-  background: rgba(0,0,0,0.6);
   color: white;
   text-align: center;
   vertical-align: middle;
   display: block;
 }
 
-div.books-list:hover span.books-list-text-info {
+span.books-list-text-title:hover + span.books-list-text-info {
   height: auto;
   opacity: 1;
 }
 
-div.books-list:hover span.books-list-text-info span {
+span.books-list-text-title:hover + span.books-list-text-info span {
   height: auto;
 }
 
 span.books-list-text:hover {
+  background: rgba(0,0,0,0.7);
   z-index: 1;
 }
+
