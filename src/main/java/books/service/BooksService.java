@@ -145,11 +145,6 @@ public class BooksService {
 		JSONObject returnVal = new JSONObject();
 		
 		String user_id = "";
-		long event_time = -1;
-		String category = "";
-		long amount = -1;
-		String note = "";
-		String picture_url = "";
 		
 		
 		/* Prepare  */

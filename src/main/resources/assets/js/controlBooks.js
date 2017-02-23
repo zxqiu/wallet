@@ -5,7 +5,7 @@ var hostURL = "http://localhost:8080";
 var apiInsertBooks = "/api/books/newitem";
 var apiGetBooks = "/api/books/getbooks";
 
-var booksItemsEachLine = 4;
+var booksItemsEachLine = 6;
 var test_user_cnt = 0;
 
 function insertBooks() {
@@ -118,10 +118,10 @@ function createSingleBooksItem(itemInfo) {
 	itemDiv.appendChild(itemA);
 	itemA.appendChild(itemImg);
 	itemA.appendChild(itemSpanDetail);
+	itemSpanDetail.appendChild(itemSpanDetailTitle);
 	itemSpanDetail.appendChild(itemSpanDetailInfo);
 	itemSpanDetailInfo.appendChild(itemSpanDetailInfoCategory);
 	itemSpanDetailInfo.appendChild(itemSpanDetailInfoNote);
-	itemSpanDetail.appendChild(itemSpanDetailTitle);
 
 	console.log(itemInfo);
 	itemImg.src = "http://www.koolbreeze.eclipse.co.uk/block%20lightblue.jpg"; //itemInfo.Image

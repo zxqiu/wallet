@@ -3,59 +3,70 @@ div.books-list {
   margin: 0;
   padding: 0;
   text-align: center;
-  display: inline-block;
-}
-
-img.books-list-img{
-	width: 100%;
-	height: 20px;
+  display: block;
 }
 
 div.books-list a{
-  display: inline-block;
+  display: block;
   position: relative;
   width: 100%;
   height: auto;
 }
 
+img.books-list-img {
+  width: 100%;
+  height: 20px;
+  z-index: -1;
+}
+
 span.books-list-text {
   cursor: pointer;
   position: absolute;
-  bottom: 0;
+  top: 0;
   left: 0;
   width: 100%;
   height: auto;
+  z-index: 0;
 }
 
 span.books-list-text-title {
   opacity: 1;
-  width: 100%;
-  height: 20px;
+  z-index: 0;
 }
 
 span.books-list-text-info {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
   height: 0;
+  width: 100%;
   opacity: 0;
+  z-index: 0;
   -webkit-transition: opacity 500ms;
   -moz-transition: opacity 500ms;
   -o-transition: opacity 500ms;
   transition: opacity 500ms;
 }
 
+span.books-list-text-info span {
+  height: 0;
+  width: 100%;
+}
+
 span.books-list-text span {
-  background: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.6);
   color: white;
   text-align: center;
   vertical-align: middle;
   display: block;
 }
 
-span.books-list-text:hover span.books-list-text-info {
-  height: 40px;
+div.books-list:hover span.books-list-text-info {
+  height: auto;
   opacity: 1;
 }
 
+div.books-list:hover span.books-list-text-info span {
+  height: auto;
+}
+
+span.books-list-text:hover {
+  z-index: 1;
+}

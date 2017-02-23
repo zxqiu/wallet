@@ -16,30 +16,27 @@
 <body>
 	<div class="row">
 		<div class="col-md-4">
-			<button type="button"><a href="/views/newBooksItem.html">new item</a></button>
+			<button type="button" value="go" onclick="location.href='/views/newBooksItem.html'">new item</button>
 		</div>
 		<div class="col-md-4">
 			<button type="button" onclick="getBooks()">get</button>
 		</div>
-		<div class="col-md-4">
-			<a href="index.html"></a>
-		</div>
-	</div
+	</div>
 	</br>
 	</br>
 	</br>
 	<div id="booksList">
 		<div class="row">
-			<div class="col-sm-6 col-md-4">
+			<div class="col-md-3">
 				<div class="books-list">
 					<a href="#">
 						<img class="img-rounded books-list-img" src="http://www.koolbreeze.eclipse.co.uk/block%20lightblue.jpg"/>
 						<span class="books-list-text">
+							<span class="books-list-text-title" id="bookTitle">date amount</span>
 							<span class="books-list-text-info">
 								<span id="bookCategory">test category</span>
 								<span id="bookNote">test note</span>
 							</span>
-							<span class="books-list-text-title" id="bookTitle">date amount</span>
 						</span>
 					</a>
 				</div>
