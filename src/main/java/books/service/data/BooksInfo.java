@@ -13,12 +13,12 @@ public class BooksInfo {
 	private String id;
 	private String user_id;
 	private String category;
-	private long event_time;
+	private String event_date;
 	private long amount;
 	private String note;
 	private String picture_url;
 	
-	public BooksInfo(Long create_time, String user_id, String category, Long event_time, Long amount, String note, String picture_url) {
+	public BooksInfo(Long create_time, String user_id, String category, String event_date, Long amount, String note, String picture_url) {
 		if (user_id == null ||
 				category == null ||
 				note == null ||
@@ -30,7 +30,7 @@ public class BooksInfo {
 		setId(user_id +String.valueOf(create_time));
 		setUser_id(user_id);
 		setCategory(category);
-		setEvent_time(event_time);
+		setEvent_time(event_date);
 		setAmount(amount);
 		setNote(note);
 		setPicture_url(picture_url);
@@ -40,7 +40,7 @@ public class BooksInfo {
 		setId("");
 		setUser_id("");
 		setCategory("");
-		setEvent_time((long) -1);
+		setEvent_time("");
 		setAmount((long) -1);
 		setNote("");
 		setPicture_url("");
@@ -70,12 +70,12 @@ public class BooksInfo {
 		this.category = category;
 	}
 
-	public long getEvent_time() {
-		return event_time;
+	public String getEvent_date() {
+		return event_date;
 	}
 
-	public void setEvent_time(long event_time) {
-		this.event_time = event_time;
+	public void setEvent_time(String event_date) {
+		this.event_date = event_date;
 	}
 
 	public long getAmount() {
@@ -166,7 +166,7 @@ public class BooksInfo {
 	
 	// test
 	public static void main(String[] args) throws Exception {
-		BooksInfo booksInfo = new BooksInfo((long) 1, "me", "good", (long) 2, (long) 10, "note", "");
+		BooksInfo booksInfo = new BooksInfo((long) 1, "me", "good", "1990-11-15", (long) 10, "note", "");
 		String bookString = booksInfo.toMap().toString();
 		BooksInfo orderNew = BooksInfo.stringToObject(bookString);
 		System.out.println(bookString);

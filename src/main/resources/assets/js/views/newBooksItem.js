@@ -41,7 +41,7 @@ function insertBooksItem() {
 	param.picture_url = "";
 
 	paramJSONObj = {"user_id":param.user_id,
-			"event_time":param.event_date,
+			"event_date":param.event_date,
 			"amount":param.amount,
 			"category":param.category,
 			"note":param.note,
@@ -59,7 +59,7 @@ function insertBooksItem() {
 		dataType: 'json',
 		contentType: 'application/json',
 		success: function(data, textStatus, jqXHR) {
-			alert("server: " + data.status);
+			alert("success: " + data.message);
 		},
 		error: function(jqXHR, textStatus, errorThrown) {
 			alert("error with status: " + textStatus);

@@ -8,32 +8,9 @@ var apiGetBooks = "/api/books/getbooks";
 var booksItemsEachLine = 6;
 var test_user_cnt = 0;
 
-function insertBooks() {
-	console.log("insert new books to server start");
-
-	var param = new Object();
-
-	param.user_id = "webuser";
-	param.event_time = 19900329;
-	param.category = "buy";
-	param.amount = 10 + test_user_cnt++;
-	param.note = "note";
-	param.picture_url = "";
-
-	var paramJSONString = JSON.stringify(param);
-
-	var request = hostURL + apiInsertBooks + QUESTION + QueryParam + "=" + paramJSONString;
-	$.ajax({
-		type: "POST",
-		url: request,
-		dataType: "json",
-	}).then(function(jsonData) {
-		if(jsonData != null) {
-			console.log(request);
-		}
-	});
-	console.log("insert new books to server done");
-}
+$( document ).ready(function() {
+	getBooks();
+});
 
 
 function getBooks() {
@@ -126,7 +103,7 @@ function createSingleBooksItem(itemInfo) {
 	console.log(itemInfo);
 	itemImg.src = "http://www.koolbreeze.eclipse.co.uk/block%20lightblue.jpg"; //itemInfo.Image
 	itemSpanDetailTitle.innerHTML =
-			itemInfo.event_time + " $" +
+			itemInfo.event_date + " $" +
 			itemInfo.amount;
 	itemSpanDetailInfoCategory.innerHTML = "category: " + itemInfo.category;
 	itemSpanDetailInfoNote.innerHTML = "note: " + itemInfo.note;

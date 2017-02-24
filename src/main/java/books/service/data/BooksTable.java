@@ -51,7 +51,7 @@ public class BooksTable {
 		items.put(utils.NameDef.ID, MySqlConnector.VCHAR_128 + MySqlConnector.NOT_NULL + MySqlConnector.UNIQUE);
 		items.put(utils.NameDef.USER_ID, MySqlConnector.VCHAR_64 + MySqlConnector.NOT_NULL);
 		items.put(utils.NameDef.CATEGORY, MySqlConnector.VCHAR_64 + MySqlConnector.NOT_NULL);
-		items.put(utils.NameDef.EVENT_TIME, MySqlConnector.LONG + MySqlConnector.NOT_NULL);
+		items.put(utils.NameDef.EVENT_DATE, MySqlConnector.VCHAR_16 + MySqlConnector.NOT_NULL);
 		items.put(utils.NameDef.AMOUNT, MySqlConnector.LONG + MySqlConnector.NOT_NULL);
 		items.put(utils.NameDef.NOTE, MySqlConnector.TEXT);
 		items.put(utils.NameDef.PICTURE_URL, MySqlConnector.VCHAR_255);
@@ -115,8 +115,8 @@ public class BooksTable {
 	public static void main(String[] args) throws Exception {
 		BooksTable.instance().deleteTable();
 		BooksTable.instance();
-		BooksInfo booksInfo = new BooksInfo((long) 1, "me", "good", (long) 2, (long) 10, "note", "");
-		BooksInfo booksInfo1 = new BooksInfo((long) 2, "me", "bad", (long) 2, (long) 10, "note", "");
+		BooksInfo booksInfo = new BooksInfo((long) 1, "me", "good", "1990-11-15", (long) 10, "note", "");
+		BooksInfo booksInfo1 = new BooksInfo((long) 2, "me", "bad", "1990-11-15", (long) 10, "note", "");
 		
 		BooksTable.instance().insertNewBooks(booksInfo);
 		BooksTable.instance().insertNewBooks(booksInfo1);
