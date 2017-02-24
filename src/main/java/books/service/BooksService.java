@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.validation.Valid;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -55,10 +56,12 @@ public class BooksService {
     @Timed
     @Path("/newitem")
 	@Produces(value = MediaType.APPLICATION_JSON)
-	public Response newItem(@Context UriInfo ui) {
-		JSONObject request = null;
-		JSONObject returnVal = new JSONObject();
+	public Response newItem(@Valid String postString) {
+		if (postString == null) {
+			return Response.status(500).entity(QUERY_ARG_ERROR).build();
+		}
 		
+		JSONObject request;
 		String user_id = "";
 		long event_time = -1;
 		String category = "";
@@ -66,35 +69,23 @@ public class BooksService {
 		String note = "";
 		String picture_url = "";
 		
-		
+		logger_.error("insert: " + postString);
 		/* Prepare  */
-		MultivaluedMap<String, String> queryParams = ui.getQueryParameters();
+		try {
+			request = new JSONObject(postString);
+		} catch (JSONException e1) {
+			logger_.error("ERROR: cannot parse new item request: " + postString);
+			logger_.error("ERROR: cannot parse new item request: " + e1.getMessage());
+			return Response.status(500).entity(QUERY_ARG_ERROR).build();
+		}
 		
-		if (queryParams == null || queryParams.isEmpty())
-		{
-			logger_.error("ERROR: cannot parse neworder request to MultivaluedMap: " + ui.getRequestUri());
-			return Response.status(500).entity(QUERY_ARG_ERROR).build();
-		}
-			
-		if (queryParams.containsKey(QUERY_PARAM)) {
-			try {
-				request = new JSONObject(queryParams.getFirst(QUERY_PARAM));
-			} catch (JSONException e) {
-				logger_.error("ERROR: cannot parse neworder request to JSON: " + ui.getRequestUri());
-				return Response.status(500).entity(JSON_PARSE_ERROR).build();
-			}
-		} else {
-			logger_.error("ERROR: no query parameter in neworder request: " + ui.getRequestUri());
-			return Response.status(500).entity(QUERY_ARG_ERROR).build();
-		}
-				
 		if (request.has(utils.NameDef.USER_ID) == false
 				|| request.has(utils.NameDef.AMOUNT) == false
 				|| request.has(utils.NameDef.NOTE) == false
 				|| request.has(utils.NameDef.PICTURE_URL) == false
 				|| request.has(utils.NameDef.CATEGORY) == false
 				|| request.has(utils.NameDef.EVENT_TIME) == false) {
-			logger_.error("ERROR: not enough parameters in neworder request: " + ui.getRequestUri());
+			logger_.error("ERROR: not enough parameters in new item request: " + postString);
 			return Response.status(500).entity(QUERY_ARG_ERROR).build();
 		}
 			
@@ -106,7 +97,7 @@ public class BooksService {
 			category = request.getString(utils.NameDef.CATEGORY);
 			event_time = request.getLong(utils.NameDef.EVENT_TIME);
 		} catch (JSONException e) {
-			logger_.error("ERROR: failed to get parameters from neworder request: " + ui.getRequestUri());
+			logger_.error("ERROR: failed to get parameters from new item request: " + postString);
 			return Response.status(500).entity(QUERY_ARG_ERROR).build();
 		}
 		
@@ -114,7 +105,7 @@ public class BooksService {
 		/* Process  */
 		// verify request
 		if (user_id.length() == 0 || category.length() == 0 || event_time < 0) {
-			logger_.error("ERROR: invalid order request: " + ui.getRequestUri());
+			logger_.error("ERROR: invalid new item request: " + postString);
 			return Response.status(500).entity(QUERY_ARG_ERROR).build();
 		}
 		
@@ -128,7 +119,7 @@ public class BooksService {
 			return Response.status(500).entity(INTERNAL_ERROR).build();
 		}
 		
-		return Response.status(200).entity(returnVal.toString()).build();
+		return Response.status(200).entity(SUCCESS).build();
 	}
 	
 		/**
@@ -152,7 +143,7 @@ public class BooksService {
 		
 		if (queryParams == null || queryParams.isEmpty())
 		{
-			logger_.error("ERROR: cannot parse neworder request to MultivaluedMap: " + ui.getRequestUri());
+			logger_.error("ERROR: cannot parse get books request to MultivaluedMap: " + ui.getRequestUri());
 			return Response.status(500).entity(QUERY_ARG_ERROR).build();
 		}
 			
@@ -160,23 +151,23 @@ public class BooksService {
 			try {
 				request = new JSONObject(queryParams.getFirst(QUERY_PARAM));
 			} catch (JSONException e) {
-				logger_.error("ERROR: cannot parse neworder request to JSON: " + ui.getRequestUri());
+				logger_.error("ERROR: cannot parse get books request to JSON: " + ui.getRequestUri());
 				return Response.status(500).entity(JSON_PARSE_ERROR).build();
 			}
 		} else {
-			logger_.error("ERROR: no query parameter in neworder request: " + ui.getRequestUri());
+			logger_.error("ERROR: no query parameter in get books request: " + ui.getRequestUri());
 			return Response.status(500).entity(QUERY_ARG_ERROR).build();
 		}
 				
 		if (request.has(utils.NameDef.USER_ID) == false) {
-			logger_.error("ERROR: not enough parameters in neworder request: " + ui.getRequestUri());
+			logger_.error("ERROR: not enough parameters in get books request: " + ui.getRequestUri());
 			return Response.status(500).entity(QUERY_ARG_ERROR).build();
 		}
 			
 		try {
 			user_id = request.getString(utils.NameDef.USER_ID);
 		} catch (JSONException e) {
-			logger_.error("ERROR: failed to get parameters from neworder request: " + ui.getRequestUri());
+			logger_.error("ERROR: failed to get parameters from get books request: " + ui.getRequestUri());
 			return Response.status(500).entity(QUERY_ARG_ERROR).build();
 		}
 		
@@ -184,7 +175,7 @@ public class BooksService {
 		/* Process  */
 		// verify request
 		if (user_id.length() == 0) {
-			logger_.error("ERROR: invalid order request: " + ui.getRequestUri());
+			logger_.error("ERROR: invalid get books request: " + ui.getRequestUri());
 			return Response.status(500).entity(QUERY_ARG_ERROR).build();
 		}
 		
@@ -193,7 +184,7 @@ public class BooksService {
 			books = BooksTable.instance().getAllBooksForUser(user_id);
 		} catch (SQLException e) {
 			e.printStackTrace();
-			logger_.error("Error : failed to insert new books : " + e.getMessage());
+			logger_.error("Error : failed to insert new books item : " + e.getMessage());
 			return Response.status(500).entity(INTERNAL_ERROR).build();
 		}
 		
