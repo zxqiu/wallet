@@ -70,16 +70,17 @@ function insertBooksItem() {
 
 /************************** element control functions ********************************/
 $(function() {
-    $('#booksItemEventDatePicker').datepicker( {
-        //changeMonth: true,
-        //changeYear: true,
-        //showButtonPanel: true,
-        //dateFormat: 'MM dd yy',
-        //onClose: function(dateText, inst) {
-			//var date = $("#ui-datepicker-div .ui-datepicker-date :selected").val();
-            //var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
-            //var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
-            //$(this).datepicker('setDate', new Date(year, month, date));
-        //}
-    });
+	$('.datepicker').datepicker( {
+		format: 'mm/dd/yyyy',
+		autoclose: true,
+		immediateUpdates: true,
+		assumeNearbyYear: true,
+		todayHighlight: true
+	});
+});
+
+$(document).ready(function(){
+	var date = new Date();
+	date = date.toISOString().slice(5,7) + '/' + date.toISOString().slice(8,10) + '/' + date.toISOString().slice(0,4);
+  $('#booksItemEventDate').attr("value", date);
 });

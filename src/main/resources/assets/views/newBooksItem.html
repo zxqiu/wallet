@@ -9,8 +9,7 @@
 <title>tiny wallet</title><!-- layoutit -->
 
 <link href="../css/bootstrap.min.css" rel="stylesheet">
-<link href="../css/booksList.css" rel="stylesheet">
-<link href="../css/bootstrap-datetimepicker.min.css " rel="stylesheet">
+<link href="../css/bootstrap-datepicker.min.css " rel="stylesheet">
 
 </head>
 
@@ -26,7 +25,7 @@
 					<input type="text" class="form-control" id="booksItemUserId">
 				</div>
 				<div class="form-group">
-					<div class='input-group date' id='booksItemEventDatePicker'>
+					<div class='input-group date' data-provide='datepicker'/>
 						<label for="booksItemEventDate">
 							Date
 						</label>
@@ -72,9 +71,8 @@
 
 <script src="../js/jquery.min.js"></script>
 <script src="../js/bootstrap.min.js"></script>
+<script src="../js/bootstrap-datepicker.min.js"></script>
 <script src="../js/views/newBooksItem.js"></script>
-<script src="../js/jquery-ui.min.js"></script>
-<script src="../js/bootstrap-datetimepicker.min.js"></script>
 
 </body>
 </html>
