@@ -2,23 +2,22 @@ var QUESTION = "?";
 var hostURL = "http://localhost:8080"
 var QueryParam = "queryParam="
 var apiInsertItem = "/api/books/newitem"
-var apiGetMakeModel = "/api/getMakeModel"
-
-var allMakes = "allMakes"
+var apiGetCategories = "/api/books/getcategories"
 
 $( document ).ready(function() {
 	var param = new Object();
-	param.getAllMakes = "1";
+	param.user_id = "webuser";
 	var paramJSONString = JSON.stringify(param);
 
-	var request = hostURL + apiGetMakeModel + QUESTION + QueryParam + paramJSONString;
+	var request = hostURL + apiGetCategories + QUESTION + QueryParam + paramJSONString;
         $.ajax({
                 type: "GET",
                 url: request,
                 dataType: "json",
         }).then(function(jsonData) {
                 if(jsonData != null) {
-			console.log(JSON.stringify(jsonData[allMakes]));
+			console.log(JSON.stringify(jsonData));
+			createCategoryOptions(jsonData);
                 }
         });
 
@@ -67,8 +66,27 @@ function insertBooksItem() {
 	});
 }
 
+function createCategoryOptions(retData) {
+	var jsonArray = retData;
+	var parentDiv = document.getElementById("booksItemCategory");
 
-/************************** element control functions ********************************/
+	while (parentDiv.firstChild) {
+		parentDiv.removeChild(parentDiv.firstChild);
+	}
+
+	
+	console.log("received " + jsonArray.length + " categories");
+	for (var i = 0; i < jsonArray.length; i++) {
+		var jsonObj = jsonArray[i];
+		var option = document.createElement("option");
+
+		option.textContent = jsonObj.name;
+		option.value = jsonObj.name;
+		parentDiv.appendChild(option);
+	}
+}
+
+/************************** jquery functions ********************************/
 $(function() {
 	$('.datepicker').datepicker( {
 		format: 'mm/dd/yyyy',

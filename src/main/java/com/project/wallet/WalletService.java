@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.project.wallet.service.TestGetResource;
 
 import books.service.BooksService;
+import books.service.CategoryService;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
@@ -24,7 +25,7 @@ public class WalletService extends Application<WalletProjectConfiguration> {
 
     @Override
     public void initialize(Bootstrap<WalletProjectConfiguration> bootstrap) {
-		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
+		//TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
     	//bootstrap.addBundle(new AssetsBundle("/assets/css", "/css", null, "css"));
         //bootstrap.addBundle(new AssetsBundle("/assets/js", "/js", null, "js"));
     	bootstrap.addBundle(new AssetsBundle("/assets", "/", "index.html", "html"));
@@ -39,6 +40,7 @@ public class WalletService extends Application<WalletProjectConfiguration> {
 	    //initPostDataBase();
 	    
 	    environment.jersey().register(new BooksService());
+	    environment.jersey().register(new CategoryService());
 	    
 	    //logger_.warn("initiate store configuration");
 	}

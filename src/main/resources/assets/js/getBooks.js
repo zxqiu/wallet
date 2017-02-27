@@ -48,7 +48,7 @@ function createBooksItems(retData) {
 
 	console.log("received " + jsonArray.length + " items");
 	for (var i = 0; i < jsonArray.length; i++) {
-        var jsonObj = jsonArray[i];
+		var jsonObj = jsonArray[i];
 
 		if (cnt % booksItemsEachLine == 0) {
 			booksItemsRow = document.createElement("div");
