@@ -39,7 +39,7 @@ function getBooks() {
 
 function createBooksItems(retData) {
 	var cnt = 0, parentDiv, booksItemsCol, booksItemsRow;
-        var jsonArray = retData;//JSON.parse(retData);
+	var jsonArray = retData;
 	parentDiv = document.getElementById("booksList");
 
 	while (parentDiv.firstChild) {
@@ -48,8 +48,7 @@ function createBooksItems(retData) {
 
 	console.log("received " + jsonArray.length + " items");
 	for (var i = 0; i < jsonArray.length; i++) {
-                var jsonString = jsonArray[i];
-		var jsonObj = JSON.parse(jsonString);
+        var jsonObj = jsonArray[i];
 
 		if (cnt % booksItemsEachLine == 0) {
 			booksItemsRow = document.createElement("div");

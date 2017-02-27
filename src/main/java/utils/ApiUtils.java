@@ -1,5 +1,8 @@
 package utils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -33,5 +36,26 @@ public class ApiUtils {
 		}
 		
 		return jsonObject.toString();
+	}
+	
+	public static boolean verifyAndGetParameters(Map<String, Object> paramMap, JSONObject request) {
+		for (String key : paramMap.keySet()) {
+			if (!request.has(key)) {
+				logger_.warn("Warning : request verify failed : verifying \'" + key + "\'");
+				logger_.warn("Warning : request verify failed : " + request);
+				return false;
+			}
+			try {
+				paramMap.put(key, request.get(key));
+			} catch (JSONException e) {
+				e.printStackTrace();
+				logger_.error("Error : get param from request failed : " + e.getMessage());
+				logger_.error("Error : get param from request failed : getting \'" + key + "\'");
+				logger_.error("Error : get param from request failed : " + request.toString());
+				return false;
+			}
+		}
+		
+		return true;
 	}
 }

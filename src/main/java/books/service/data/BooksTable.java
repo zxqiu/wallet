@@ -115,8 +115,8 @@ public class BooksTable {
 	public static void main(String[] args) throws Exception {
 		BooksTable.instance().deleteTable();
 		BooksTable.instance();
-		BooksInfo booksInfo = new BooksInfo((long) 1, "me", "good", "1990-11-15", (long) 10, "note", "");
-		BooksInfo booksInfo1 = new BooksInfo((long) 2, "me", "bad", "1990-11-15", (long) 10, "note", "");
+		BooksInfo booksInfo = new BooksInfo((long) 1, "webuser", "good", "1990-11-15", (long) 10, "note", "");
+		BooksInfo booksInfo1 = new BooksInfo((long) 2, "webuser", "bad", "1990-11-15", (long) 10, "note", "");
 		
 		BooksTable.instance().insertNewBooks(booksInfo);
 		BooksTable.instance().insertNewBooks(booksInfo1);

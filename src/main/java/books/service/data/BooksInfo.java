@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 public class BooksInfo {
 	private static final Logger logger_ = LoggerFactory.getLogger(BooksInfo.class);
 	
+	// This class take only long and String type.
+	// If other type is added, you must update stringToObject.
 	private String id;
 	private String user_id;
 	private String category;

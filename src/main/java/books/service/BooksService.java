@@ -2,7 +2,11 @@ package books.service;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 import javax.ws.rs.GET;
@@ -16,17 +20,18 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.amazonaws.util.json.JSONException;
-import com.amazonaws.util.json.JSONObject;
 import com.codahale.metrics.annotation.Timed;
 import com.google.gson.Gson;
 
 import books.service.data.BooksInfo;
 import books.service.data.BooksTable;
 import utils.ApiUtils;
+import utils.NameDef;
 import utils.TimeUtils;
 
 @Path("/books")
@@ -35,8 +40,8 @@ public class BooksService {
 	
 	
 	/**
-	 * Create a new order
-	 * @param PRODUCT_ID, AMOUNT, ADDRESS, DESCRIPTION
+	 * Create a new item and insert to books
+	 * @param user_id, event_date, category, amount, note, picture_url
 	 * @return
 	 */
 	@POST
@@ -49,6 +54,7 @@ public class BooksService {
 		}
 		
 		JSONObject request;
+		Map<String, Object> paramMap = new HashMap<String, Object>();
 		String user_id = "";
 		String event_date = "";
 		String category = "";
@@ -56,8 +62,7 @@ public class BooksService {
 		String note = "";
 		String picture_url = "";
 		
-		logger_.error("insert: " + postString);
-		/* Prepare  */
+		// 1. extract request
 		try {
 			request = new JSONObject(postString);
 		} catch (JSONException e) {
@@ -66,36 +71,38 @@ public class BooksService {
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.QUERY_ARG_ERROR)).build();
 		}
 		
-		if (request.has(utils.NameDef.USER_ID) == false
-				|| request.has(utils.NameDef.AMOUNT) == false
-				|| request.has(utils.NameDef.NOTE) == false
-				|| request.has(utils.NameDef.PICTURE_URL) == false
-				|| request.has(utils.NameDef.CATEGORY) == false
-				|| request.has(utils.NameDef.EVENT_DATE) == false) {
+		// 2. verify and get parameters
+		paramMap.put(NameDef.USER_ID, null);
+		paramMap.put(NameDef.AMOUNT, null);
+		paramMap.put(NameDef.NOTE, null);
+		paramMap.put(NameDef.PICTURE_URL, null);
+		paramMap.put(NameDef.CATEGORY, null);
+		paramMap.put(NameDef.EVENT_DATE, null);
+		
+		if (ApiUtils.verifyAndGetParameters(paramMap, request) == false) {
 			logger_.error("ERROR: not enough parameters in new item request: " + postString);
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.QUERY_ARG_ERROR)).build();
 		}
 			
 		try {
-			user_id = request.getString(utils.NameDef.USER_ID);
-			amount = request.getLong(utils.NameDef.AMOUNT);
-			note = request.getString(utils.NameDef.NOTE);
-			picture_url = request.getString(utils.NameDef.PICTURE_URL);
-			category = request.getString(utils.NameDef.CATEGORY);
-			event_date = request.getString(utils.NameDef.EVENT_DATE);
+			user_id = request.getString(NameDef.USER_ID);
+			amount = request.getLong(NameDef.AMOUNT);
+			note = request.getString(NameDef.NOTE);
+			picture_url = request.getString(NameDef.PICTURE_URL);
+			category = request.getString(NameDef.CATEGORY);
+			event_date = request.getString(NameDef.EVENT_DATE);
 		} catch (JSONException e) {
 			logger_.error("ERROR: failed to get parameters from new item request: " + postString);
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.QUERY_ARG_ERROR)).build();
 		}
 		
-		
-		/* Process  */
-		// verify request
+		// 3. verify parameters 
 		if (user_id.length() == 0 || category.length() == 0 || event_date.length() == 0) {
 			logger_.error("ERROR: invalid new item request: " + postString);
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.QUERY_ARG_ERROR)).build();
 		}
 		
+		// 4. transaction
 		BooksInfo books = new BooksInfo(TimeUtils.getUniqueTimeStampInMS(), user_id, category, event_date, amount, note, picture_url);
 		logger_.info("Insert new books : " + books.toMap().toString());
 		try {
@@ -109,9 +116,9 @@ public class BooksService {
 		return Response.status(200).entity(ApiUtils.buildJSONResponse(true, ApiUtils.SUCCESS)).build();
 	}
 	
-		/**
-	 * Create a new order
-	 * @param PRODUCT_ID, AMOUNT, ADDRESS, DESCRIPTION
+	/**
+	 * Get books of a user
+	 * @param user_id
 	 * @return
 	 */
 	@GET
@@ -120,11 +127,11 @@ public class BooksService {
 	@Produces(value = MediaType.APPLICATION_JSON)
 	public Response getAllBooks(@Context UriInfo ui) {
 		JSONObject request = null;
+		Map<String, Object> paramMap = new HashMap<String, Object>();
 		
 		String user_id = "";
 		
-		
-		/* Prepare  */
+		// 1. extract request
 		MultivaluedMap<String, String> queryParams = ui.getQueryParameters();
 		
 		if (queryParams == null || queryParams.isEmpty())
@@ -145,7 +152,10 @@ public class BooksService {
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.QUERY_ARG_ERROR)).build();
 		}
 				
-		if (request.has(utils.NameDef.USER_ID) == false) {
+		// 2. verify and get parameters
+		paramMap.put(NameDef.USER_ID, null);
+		
+		if (ApiUtils.verifyAndGetParameters(paramMap, request) == false) {
 			logger_.error("ERROR: not enough parameters in get books request: " + ui.getRequestUri());
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.QUERY_ARG_ERROR)).build();
 		}
@@ -157,24 +167,24 @@ public class BooksService {
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.QUERY_ARG_ERROR)).build();
 		}
 		
-		
-		/* Process  */
-		// verify request
+		// 3. verify parameters 
 		if (user_id.length() == 0) {
 			logger_.error("ERROR: invalid get books request: " + ui.getRequestUri());
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.QUERY_ARG_ERROR)).build();
 		}
 		
+		// 4. transaction
 		List<BooksInfo> books = new ArrayList<BooksInfo>();
 		try {
 			books = BooksTable.instance().getAllBooksForUser(user_id);
+			sortBooksByTime(books);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			logger_.error("Error : failed to insert new books item : " + e.getMessage());
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.INTERNAL_ERROR)).build();
 		}
 		
-		
+		// 5. generate response
 		JSONArray jsonArray = new JSONArray();
 		Gson gson = new Gson();
 		for (BooksInfo book : books) {
@@ -187,6 +197,19 @@ public class BooksService {
 			}
 		}
 		
+		logger_.info("Response user " + user_id + "'s books: " + jsonArray.toString());
 		return Response.status(200).entity(jsonArray.toString()).build();
+	}
+	
+	private static Comparator<BooksInfo> booksTimeComparator = new Comparator<BooksInfo>() {
+		public int compare(BooksInfo a, BooksInfo b) {
+			return a.getEvent_date().compareTo(b.getEvent_date());
+		}
+	};
+	
+	private List<BooksInfo> sortBooksByTime(List<BooksInfo> list) {
+		Collections.sort(list, booksTimeComparator);
+		
+		return list;
 	}
 }
