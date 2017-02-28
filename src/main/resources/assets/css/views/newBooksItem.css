@@ -1,3 +1,7 @@
-input-append .btn.dropdown-toggle {
-    float: none;
+#booksItemCategoryDiv {
+	width: 100%;
+}
+
+#booksItemCategoryList {
+	width: 100%;
 }

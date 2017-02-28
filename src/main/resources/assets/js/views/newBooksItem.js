@@ -4,7 +4,6 @@ var QueryParam = "queryParam="
 var apiInsertItem = "/api/books/newitem"
 var apiGetCategories = "/api/books/getcategories"
 
-
 function insertBooksItem() {
 	var param = new Object();
 
@@ -64,15 +63,13 @@ function createCategoryOptions(retData) {
 
 		optionA.textContent = jsonObj.name;
 		optionA.value = jsonObj.name;
-		optionA.href = "#";
 		
 		optionLi.appendChild(optionA);
 		parentDiv.appendChild(optionLi);
 	}
 }
 
-/************************** jquery functions ********************************/
-$( document ).ready(function() {
+function getCategories() {
 	var param = new Object();
 	param.user_id = "webuser";
 	var paramJSONString = JSON.stringify(param);
@@ -86,9 +83,25 @@ $( document ).ready(function() {
                 if(jsonData != null) {
 			console.log(JSON.stringify(jsonData));
 			createCategoryOptions(jsonData);
+			$('#booksItemCategoryList li a').on('click', function(){
+				$('#booksItemCategory').val($(this).text());
+				$('#booksItemCategory').text($(this).text());
+			});
                 }
         });
+}
 
+/************************** jquery functions ********************************/
+$(document).ready(function(){
+	// set date
+	var date = new Date();
+	console.log("current time : " + date);
+	date = date.toISOString().slice(5,7) + '/' + date.toISOString().slice(8,10) + '/' + date.toISOString().slice(0,4);
+	console.log("current time : " + date);
+	$('#booksItemEventDate').attr("value", date);
+
+	// load category
+	getCategories();
 });
 
 $(function() {
@@ -101,17 +114,6 @@ $(function() {
 	});
 });
 
-$(document).ready(function(){
-	var date = new Date();
-	console.log("current time : " + date);
-	date = date.toISOString().slice(5,7) + '/' + date.toISOString().slice(8,10) + '/' + date.toISOString().slice(0,4);
-	console.log("current time : " + date);
-  $('#booksItemEventDate').attr("value", date);
-});
-
-$(function() {
-	$('#demolist li a').on('click', function(){
-		$('#appendedInputButton').val($(this).text());
-		$('#appendedInputButton').text($(this).text());
-	});
+$('.date').on('changeDate', function(ev){
+	$(this).datepicker('hide');
 });

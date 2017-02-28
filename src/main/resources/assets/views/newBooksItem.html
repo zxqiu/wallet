@@ -30,8 +30,8 @@
 						Date
 					</label>
 					<div class='input-group date' data-provide='datepicker'/>
-						<input type="text" class="form-control" id="booksItemEventDate">
-						<span class="input-group-addon">
+						<input type="text" class="form-control" placeholder="mm/dd/yyyy" id="booksItemEventDate">
+						<span class="btn input-group-addon">
 							<span class="glyphicon glyphicon-calendar"></span>
 						</span>
 					</div>
@@ -48,13 +48,13 @@
 					<label for="booksItemCategory">
 						Category
 					</label>
-					<div class="input-append btn-group" id="booksItemCategory">
-						<input class="span2" id="booksItemCategoryInput" size="16" type="text">
-						<a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
-							<span class="caret"></span>
-						</a>
+					<div class="input-group" id="booksItemCategoryDiv">
+						<input class="form-control" placeholder="input or select" id="booksItemCategory" type="text">
 						<ul class="dropdown-menu" id="booksItemCategoryList">
 						</ul>
+						<span class="btn input-group-addon dropdown-toggle" data-toggle="dropdown">
+							<span class="glyphicon glyphicon-menu-hamburger"></span>
+						</span>
 					</div>
 				</div>
 				<div class="form-group">
@@ -67,22 +67,6 @@
 			</form>
 		</div>
 	</div>
-
-	<div class="input-append btn-group">
-		<input class="span2" id="appendedInputButton" type="text">
-		<a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
-			<span class="caret"></span>
-		</a>
-		<ul class="dropdown-menu" id="demolist">
-			<li><a href="#"><i class="icon-pencil"></i> Edit</a></li>
-			<li><a href="#"><i class="icon-trash"></i> Delete</a></li>
-			<li><a href="#"><i class="icon-ban-circle"></i> Ban</a></li>
-			<li class="divider"></li>
-			<li><a href="#"><i class="i"></i> Make admin</a></li>
-		</ul>
-	</div>
-
-
 	<div>
 		<button type="button" onclick="insertBooksItem()">insert</button>
 		<button type="button" value="go" onclick="location.href='/index.html'">back</button>
