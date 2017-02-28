@@ -9,7 +9,8 @@
 <title>tiny wallet</title><!-- layoutit -->
 
 <link href="../css/bootstrap.min.css" rel="stylesheet">
-<link href="../css/bootstrap-datepicker.min.css " rel="stylesheet">
+<link href="../css/bootstrap-datepicker.min.css" rel="stylesheet">
+<link href="../css/views/newBooksItem.css" rel="stylesheet">
 
 </head>
 
@@ -47,7 +48,14 @@
 					<label for="booksItemCategory">
 						Category
 					</label>
-					<select class="selectpicker form-control" id="booksItemCategory"></select>
+					<div class="input-append btn-group" id="booksItemCategory">
+						<input class="span2" id="booksItemCategoryInput" size="16" type="text">
+						<a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
+							<span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu" id="booksItemCategoryList">
+						</ul>
+					</div>
 				</div>
 				<div class="form-group">
 					 
@@ -60,6 +68,19 @@
 		</div>
 	</div>
 
+	<div class="input-append btn-group">
+		<input class="span2" id="appendedInputButton" type="text">
+		<a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
+			<span class="caret"></span>
+		</a>
+		<ul class="dropdown-menu" id="demolist">
+			<li><a href="#"><i class="icon-pencil"></i> Edit</a></li>
+			<li><a href="#"><i class="icon-trash"></i> Delete</a></li>
+			<li><a href="#"><i class="icon-ban-circle"></i> Ban</a></li>
+			<li class="divider"></li>
+			<li><a href="#"><i class="i"></i> Make admin</a></li>
+		</ul>
+	</div>
 
 
 	<div>
