@@ -64,7 +64,7 @@ public class CategoryService {
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.QUERY_ARG_ERROR)).build();
 		}
 		
-		// 2. verify and get parameters
+		// 2. verify and parse request
 		paramMap.put(NameDef.USER_ID, null);
 		paramMap.put(NameDef.NAME, null);
 		paramMap.put(NameDef.PICTURE_URL, null);
@@ -139,7 +139,7 @@ public class CategoryService {
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.QUERY_ARG_ERROR)).build();
 		}
 				
-		// 2. verify and get parameters
+		// 2. verify and parse request
 		paramMap.put(NameDef.USER_ID, null);
 		
 		if (ApiUtils.verifyAndGetParameters(paramMap, request) == false) {

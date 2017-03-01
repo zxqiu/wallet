@@ -102,7 +102,7 @@ function createSingleBooksItem(itemInfo) {
 	console.log(itemInfo);
 	itemImg.src = "http://www.koolbreeze.eclipse.co.uk/block%20lightblue.jpg"; //itemInfo.Image
 	itemSpanDetailTitle.innerHTML =
-			itemInfo.event_date + " $" +
+			formatISOToUS(itemInfo.event_date) + " $" +
 			itemInfo.amount;
 	itemSpanDetailInfoCategory.innerHTML = "category: " + itemInfo.category;
 	itemSpanDetailInfoNote.innerHTML = "note: " + itemInfo.note;
@@ -110,4 +110,6 @@ function createSingleBooksItem(itemInfo) {
 	return itemDiv;
 }
 
-
+function formatISOToUS(date) {
+	return date.slice(5,7) + '/' + date.slice(8,10) + '/' + date.slice(0,4);
+}

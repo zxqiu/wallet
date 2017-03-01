@@ -57,6 +57,14 @@ public class TimeUtils {
 	    }
 	}
 	
+	public static String formatISOToUS(String iso) {
+		return iso.substring(5, 7) + "/" + iso.substring(8, 10) + "/" + iso.substring(0, 4);
+	}
+	
+	public static String formatUSToISO(String us) {
+		return us.substring(6, 10) + "-" + us.substring(3, 5) + "-" + us.substring(0, 2); 
+	}
+	
 	// test
 	public static void main(String[] arg) throws Exception
 	{

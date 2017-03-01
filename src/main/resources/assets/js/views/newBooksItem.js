@@ -9,15 +9,20 @@ function insertBooksItem() {
 
 	param.user_id = (document.getElementById("booksItemUserId").value == "") ?
 			"webuser" : document.getElementById("booksItemUserId").value;
-	param.event_date = (document.getElementById("booksItemEventDate").value == "") ?
-			"19900329" : document.getElementById("booksItemEventDate").value;
-	param.amount = (document.getElementById("booksItemAmount").value == "") ?
-			"100" : document.getElementById("booksItemAmount").value;
+	param.event_date = document.getElementById("booksItemEventDate").value;
+	param.amount = document.getElementById("booksItemAmount").value;
 	param.category = (document.getElementById("booksItemCategory").value == "") ?
-			"all" : document.getElementById("booksItemCategory").value;
-	param.note = (document.getElementById("booksItemNote").value == "") ?
-			"note" : document.getElementById("booksItemNote").value;
+			"general" : document.getElementById("booksItemCategory").value;
+	param.note = document.getElementById("booksItemNote").value;
 	param.picture_url = "";
+
+	if (param.user_id == "" || param.event_date == "" || param.amount == "" || param.category == "") {
+		$("#booksItemUserId").parent().addClass("has-error");
+		return;
+        }
+
+	// format date
+	param.event_date = formatUSToISO(param.event_date);
 
 	paramJSONObj = {"user_id":param.user_id,
 			"event_date":param.event_date,
@@ -91,12 +96,20 @@ function getCategories() {
         });
 }
 
+function formatISOToUS(date) {
+	return date.slice(5, 7) + '/' + date.slice(8, 10) + '/' + date.slice(0, 4);
+}
+
+function formatUSToISO(date) {
+	return date.slice(6, 10) + "-" + date.slice(0, 2) + "-" + date.slice(3, 5);
+}
+
 /************************** jquery functions ********************************/
 $(document).ready(function(){
 	// set date
 	var date = new Date();
 	console.log("current time : " + date);
-	date = date.toISOString().slice(5,7) + '/' + date.toISOString().slice(8,10) + '/' + date.toISOString().slice(0,4);
+	date = formatISOToUS(date.toISOString());
 	console.log("current time : " + date);
 	$('#booksItemEventDate').attr("value", date);
 

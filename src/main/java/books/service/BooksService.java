@@ -30,6 +30,8 @@ import com.google.gson.Gson;
 
 import books.service.data.BooksInfo;
 import books.service.data.BooksTable;
+import books.service.data.CategoryInfo;
+import books.service.data.CategoryTable;
 import utils.ApiUtils;
 import utils.NameDef;
 import utils.TimeUtils;
@@ -59,6 +61,7 @@ public class BooksService {
 		String event_date = "";
 		String category = "";
 		long amount = -1;
+		String amountStr = "";
 		String note = "";
 		String picture_url = "";
 		
@@ -71,7 +74,7 @@ public class BooksService {
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.QUERY_ARG_ERROR)).build();
 		}
 		
-		// 2. verify and get parameters
+		// 2. verify and parse request
 		paramMap.put(NameDef.USER_ID, null);
 		paramMap.put(NameDef.AMOUNT, null);
 		paramMap.put(NameDef.NOTE, null);
@@ -85,24 +88,44 @@ public class BooksService {
 		}
 			
 		try {
-			user_id = request.getString(NameDef.USER_ID);
-			amount = request.getLong(NameDef.AMOUNT);
-			note = request.getString(NameDef.NOTE);
-			picture_url = request.getString(NameDef.PICTURE_URL);
-			category = request.getString(NameDef.CATEGORY);
-			event_date = request.getString(NameDef.EVENT_DATE);
+			user_id = request.getString(NameDef.USER_ID).trim();
+			amountStr = request.getString(NameDef.AMOUNT).trim();
+			note = request.getString(NameDef.NOTE).trim();
+			picture_url = request.getString(NameDef.PICTURE_URL).trim();
+			category = request.getString(NameDef.CATEGORY).trim();
+			event_date = request.getString(NameDef.EVENT_DATE).trim();
 		} catch (JSONException e) {
 			logger_.error("ERROR: failed to get parameters from new item request: " + postString);
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.QUERY_ARG_ERROR)).build();
 		}
 		
 		// 3. verify parameters 
-		if (user_id.length() == 0 || category.length() == 0 || event_date.length() == 0) {
+		if (user_id.length() == 0 || amountStr.length() == 0 || category.length() == 0 || event_date.length() == 0) {
 			logger_.error("ERROR: invalid new item request: " + postString);
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.QUERY_ARG_ERROR)).build();
 		}
+		amount = Long.valueOf(amountStr);
 		
 		// 4. transaction
+		// 4.1 insert new category
+		try {
+			boolean exist = false;
+			List<CategoryInfo> categoryList = CategoryTable.instance().getAllCategoriesForUser(user_id);
+			for (CategoryInfo cat : categoryList) {
+				if (cat.getName().equals(category)) {
+					exist = true;
+				}
+			}
+			
+			if (!exist) {
+				CategoryTable.instance().insertNewCategories(new CategoryInfo(user_id, category, ""));
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.INTERNAL_ERROR)).build();
+		}
+		
+		// 4.2 insert books
 		BooksInfo books = new BooksInfo(TimeUtils.getUniqueTimeStampInMS(), user_id, category, event_date, amount, note, picture_url);
 		logger_.info("Insert new books : " + books.toMap().toString());
 		try {
@@ -152,7 +175,7 @@ public class BooksService {
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.QUERY_ARG_ERROR)).build();
 		}
 				
-		// 2. verify and get parameters
+		// 2. verify and parse request
 		paramMap.put(NameDef.USER_ID, null);
 		
 		if (ApiUtils.verifyAndGetParameters(paramMap, request) == false) {
