@@ -9,6 +9,7 @@ public class NameDef {
 	public static final String NOTE = "note";
 	public static final String PICTURE_URL = "picture_url";
 	public static final String NAME = "name";
+	public static final String EDIT_TIME = "edit_time";
 	
 	public static final String QUERE_PARAM_MARK = "queryParam";
 }

@@ -11,15 +11,29 @@ function insertBooksItem() {
 			"webuser" : document.getElementById("booksItemUserId").value;
 	param.event_date = document.getElementById("booksItemEventDate").value;
 	param.amount = document.getElementById("booksItemAmount").value;
-	param.category = (document.getElementById("booksItemCategory").value == "") ?
-			"general" : document.getElementById("booksItemCategory").value;
+	param.category = document.getElementById("booksItemCategory").value;
 	param.note = document.getElementById("booksItemNote").value;
 	param.picture_url = "";
-
-	if (param.user_id == "" || param.event_date == "" || param.amount == "" || param.category == "") {
+	
+	if (param.user_id == "") {
 		$("#booksItemUserId").parent().addClass("has-error");
 		return;
-        }
+	}
+	
+	if (param.event_date == "") {
+		$("#booksItemEventDate").parent().parent().addClass("has-error");
+		return;
+	}
+	
+	if (param.amount == "") {
+		$("#booksItemAmount").parent().addClass("has-error");
+		return;
+	}
+	
+	if (param.category == "") {
+		$("#booksItemCategory").parent().parent().addClass("has-error");
+		return;
+	}
 
 	// format date
 	param.event_date = formatUSToISO(param.event_date);
@@ -105,12 +119,14 @@ function formatUSToISO(date) {
 }
 
 /************************** jquery functions ********************************/
+
 $(document).ready(function(){
 	// set date
 	var date = new Date();
-	console.log("current time : " + date);
-	date = formatISOToUS(date.toISOString());
-	console.log("current time : " + date);
+	var month = date.getMonth() + 1;
+	month = (month > 9) ? month : "0" + month;
+	date = month + "/" + date.getDate() + "/" + date.getFullYear();
+	//console.log("current time : " + date);
 	$('#booksItemEventDate').attr("value", date);
 
 	// load category

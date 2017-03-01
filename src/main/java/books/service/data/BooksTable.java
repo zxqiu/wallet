@@ -55,6 +55,7 @@ public class BooksTable {
 		items.put(utils.NameDef.AMOUNT, MySqlConnector.LONG + MySqlConnector.NOT_NULL);
 		items.put(utils.NameDef.NOTE, MySqlConnector.TEXT);
 		items.put(utils.NameDef.PICTURE_URL, MySqlConnector.VCHAR_255);
+		items.put(utils.NameDef.EDIT_TIME, MySqlConnector.LONG + MySqlConnector.NOT_NULL);
 		
 		try {
 			MySqlConnector.instance().createTable(BOOKS_TABLE, items, utils.NameDef.ID);

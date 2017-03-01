@@ -19,9 +19,23 @@ public class BooksInfo {
 	private long amount;
 	private String note;
 	private String picture_url;
+	private long edit_time;
 	
 	public BooksInfo(Long create_time, String user_id, String category, String event_date, Long amount, String note, String picture_url) {
-		if (user_id == null ||
+		initBooksInfo(user_id + create_time, create_time, user_id, category, event_date, amount, note, picture_url);
+	}
+	
+	public BooksInfo(String id, Long edit_time, String user_id, String category, String event_date, Long amount, String note, String picture_url) {
+		initBooksInfo(id, edit_time, user_id, category, event_date, amount, note, picture_url);
+	}
+	
+	public BooksInfo() {
+		initBooksInfo("", (long)-1, "", "", "", (long)-1, "", "");
+	}
+
+	private void initBooksInfo(String id, Long edit_time, String user_id, String category, String event_date, Long amount, String note, String picture_url) {
+		if (id == null ||
+				user_id == null ||
 				category == null ||
 				note == null ||
 				picture_url == null) {
@@ -29,25 +43,16 @@ public class BooksInfo {
 			return;
 		}
 		
-		setId(user_id +String.valueOf(create_time));
+		setId(id);
 		setUser_id(user_id);
 		setCategory(category);
 		setEvent_time(event_date);
 		setAmount(amount);
 		setNote(note);
 		setPicture_url(picture_url);
+		setEdit_time(edit_time);
 	}
 	
-	public BooksInfo() {
-		setId("");
-		setUser_id("");
-		setCategory("");
-		setEvent_time("");
-		setAmount((long) -1);
-		setNote("");
-		setPicture_url("");
-	}
-
 	public String getId() {
 		return id;
 	}
@@ -102,6 +107,14 @@ public class BooksInfo {
 
 	public void setPicture_url(String picture_url) {
 		this.picture_url = picture_url;
+	}
+
+	public long getEdit_time() {
+		return edit_time;
+	}
+
+	public void setEdit_time(long edit_time) {
+		this.edit_time = edit_time;
 	}
 	
 	

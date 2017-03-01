@@ -31,6 +31,18 @@ function getBooks() {
 		if(retData != null) {
 			console.log(retData);
 			createBooksItems(retData);
+			/*$(document).on("click", '#books-list', function(e) {
+				if ($(e.target).hasClass("target-dblclick")) {
+					console.log("double clicked");
+					$(e.target).removeClass("target-dblclick");
+				} else {
+					$(e.target).addClass("target-dblclick");
+					setTimeout(function() { $(e.target).removeClass("target-dblclick"); }, 600);
+				}
+			});*/
+			$('#books-list').on("click", function(e) {
+					console.log("clicked");
+			});
 		}
 	});
 	console.log("get books from server done");
@@ -81,7 +93,6 @@ function createSingleBooksItem(itemInfo) {
 	var itemSpanDetailTitle = document.createElement("span");
 
 	itemDiv.className = "books-list";
-	itemA.href = "#";
 	itemImg.className = "img-rounded books-list-img";
 	itemImg.style.cssText = "width: 100%;";
 	itemSpanDetail.className = "books-list-text";
@@ -113,3 +124,6 @@ function createSingleBooksItem(itemInfo) {
 function formatISOToUS(date) {
 	return date.slice(5,7) + '/' + date.slice(8,10) + '/' + date.slice(0,4);
 }
+
+/************************** jquery functions ********************************/
+

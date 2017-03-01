@@ -41,7 +41,7 @@
 					<label for="booksItemAmount">
 						Amount
 					</label>
-					<input type="text" class="form-control" placeholder="$" id="booksItemAmount">
+					<input type="number" class="form-control" placeholder="$" id="booksItemAmount">
 				</div>
 				<div class="form-group">
 					 
@@ -49,7 +49,7 @@
 						Category
 					</label>
 					<div class="input-group" id="booksItemCategoryDiv">
-						<input class="form-control" placeholder="input or select" id="booksItemCategory" type="text">
+						<input class="form-control" value="general" placeholder="input or select" id="booksItemCategory" type="text">
 						<ul class="dropdown-menu" id="booksItemCategoryList">
 						</ul>
 						<span class="btn input-group-addon dropdown-toggle" data-toggle="dropdown">
@@ -62,13 +62,13 @@
 					<label for="booksItemNote">
 						Note
 					</label>
-					<input type="text" class="form-control" id="booksItemNote">
+					<textarea type="text" class="form-control" id="booksItemNote"></textarea>
 				</div>
+				<button type="button" onclick="insertBooksItem()">submit</button>
 			</form>
 		</div>
 	</div>
 	<div>
-		<button type="button" onclick="insertBooksItem()">insert</button>
 		<button type="button" value="go" onclick="location.href='/index.html'">back</button>
 	</div>
 	</br>
