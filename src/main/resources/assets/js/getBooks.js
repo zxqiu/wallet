@@ -3,40 +3,12 @@ var books = Books.createNew();
 var booksItemsEachLine = 6;
 var test_user_cnt = 0;
 
-$( document ).ready(function() {
-	getBooks();
-});
-
-
 function getBooks() {
 	console.log("get books from server start");
 
-	var param = new Object();
+	books.setGetAllBooksItemSuccessCallback(createBooksItems);
+	books.getAllBooksItem("webuser");
 
-	param.user_id = "webuser";
-
-	var paramJSONString = JSON.stringify(param);
-
-	var request = hostURL + apiGetBooks + QUESTION + QueryParam + "=" + paramJSONString;
-	$.ajax({
-		type: "GET",
-		url: request,
-		dataType: "json",
-	}).then(function(retData) {
-		if(retData != null) {
-			console.log(retData);
-			createBooksItems(retData);
-			$('.books-list-text').on("click", function(e) {
-				if ($(e.target).hasClass("dblclicked")) {
-					console.log("double clicked");
-					$(e.target).removeClass("dblclicked");
-				} else {
-					$(e.target).addClass("dblclicked");
-					setTimeout(function() { $(e.target).removeClass("target-dblclick"); }, 1000);
-				}
-			});
-		}
-	});
 	console.log("get books from server done");
 }
 
@@ -72,6 +44,16 @@ function createBooksItems(retData) {
 		cnt++;
 	}
 	console.log(cnt);
+	
+	$('.books-list-text').on("click", function(e) {
+		if ($(e.target).hasClass("dblclicked")) {
+			console.log("double clicked");
+			$(e.target).removeClass("dblclicked");
+		} else {
+			$(e.target).addClass("dblclicked");
+			setTimeout(function() { $(e.target).removeClass("dblclicked"); }, 1000);
+		}
+	});
 }
 
 function createSingleBooksItem(itemInfo) {
@@ -119,3 +101,6 @@ function formatISOToUS(date) {
 
 /************************** jquery functions ********************************/
 
+$( document ).ready(function() {
+	getBooks();
+});

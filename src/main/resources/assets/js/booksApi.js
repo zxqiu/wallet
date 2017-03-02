@@ -9,9 +9,17 @@ var Books = {
 	createNew: function() {
 		var books = {};
 
-		books.supername = function(data) {};
-		books.getCategoriesSuccess = function(data) {};
-		//books.getCategoriesError = null;
+		books.getCategoriesSuccess;
+		books.getCategoriesError;
+		
+		books.setGetCategoriesSuccessCallback = function(callback) {
+			books.getCategoriesSuccess = callback;
+		};
+		
+		books.setGetCategoriesErrorCallback = function(callback) {
+			books.getCategoriesError = callback;
+		};
+		
 		books.getCategoriesAsync = function(user_id) {
 			var param = new Object();
 			param.user_id = user_id;
@@ -20,31 +28,36 @@ var Books = {
 			
 			var request = hostURL + apiGetCategories + QUESTION + QueryParam + paramJSONString;
 			$.ajax({
-			        type: "GET",
-			        url: request,
-			        dataType: "json",
-				//success: function(data) { books.getCategoriesSuccess(data); },
-				//error: function(data) { books.getCategoriesError(data); },
+				type: "GET",
+				url: request,
+				dataType: "json",
+				success: function(data) {
+					if (books.getCategoriesSuccess && typeof(books.getCategoriesSuccess) == "function") {
+						books.getCategoriesSuccess(data);
+					}
+				},
+				error: function(data) {
+					if (books.getCategoriesError && typeof(books.getCategoriesError) == "function") {
+						books.getCategoriesError(data);
+					}
+				},
 			}).then(function(jsonData) {
 				console.log(JSON.stringify(jsonData));
-				if (jsonData) {
-					books.getCategoriesSuccess(jsonData);
-				}
 				retData = jsonData;
 			});
 			
 			return retData;
 		};
 
-		books.postBooksItem = function() {
+		books.postBooksItem = function(jsonObj) {
 			var postURL = hostURL + apiInsertItem;
 			console.log(postURL);
-			console.log(item);
+			console.log(jsonObj);
 			
 			$.ajax({
 				type: "POST",
 				url: postURL,
-				data: item,
+				data: jsonObj,
 				dataType: 'json',
 				contentType: 'application/json',
 				success: function(data, textStatus, jqXHR) {
@@ -58,16 +71,37 @@ var Books = {
 
 		books.getAllBooksItemSuccess = null;
 		books.getAllBooksItemError = null;
+		
+		books.setGetAllBooksItemSuccessCallback = function(callback) {
+			books.getAllBooksItemSuccess = callback;
+		};
+		
+		books.setGetAllBooksItemErrorCallback = function(callback) {
+			books.getAllBooksItemError = callback;
+		};
+		
 		books.getAllBooksItem = function(user_id) {
+			var getUrl = hostURL + apiGetBooks;
 			var jsonArray = null;
-			var request = hostURL + apiGetBooks + QUESTION + QueryParam + "=" + paramJSONString;
+			var param = new Object();
+			param.user_id = user_id;
+			
 			$.ajax({
 				type: "GET",
-				url: request,
+				url: getUrl,
 				dataType: "json",
-				async: false,
-			        success: books.getAllBooksItemSuccess,
-				error: books.getAllBooksItemError,
+				data: param,
+				contentType: 'application/json',
+				success: function(data) {
+					if (books.getAllBooksItemSuccess && typeof(books.getAllBooksItemSuccess) == "function") {
+						books.getAllBooksItemSuccess(data);
+					}
+				},
+				error: function(data) {
+					if (books.getAllBooksItemError && typeof(books.getAllBooksItemError) == "function") {
+						books.getAllBooksItemError(data);
+					}
+				}
 			}).then(function(retData) {
 				console.log(retData);
 				jsonArray = retData;

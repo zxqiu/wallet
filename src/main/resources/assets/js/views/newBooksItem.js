@@ -73,19 +73,16 @@ function createCategoryOptions(data) {
 		optionLi.appendChild(optionA);
 		parentDiv.appendChild(optionLi);
 	}
+	
+	$('#booksItemCategoryList li a').on('click', function(){
+		$('#booksItemCategory').val($(this).text());
+		$('#booksItemCategory').text($(this).text());
+	});
 }
 
 function getCategoriesAndGenerate() {
-	books.getCategoriesSuccess = function(data) { createCategoryOptions(data); };
-	var jsonArray = books.getCategoriesAsync("webuser");
-	books.getCategoriesSuccess = function(data) {};
-	/*if (jsonArray != null) {
-		createCategoryOptions(jsonArray);
-		$('#booksItemCategoryList li a').on('click', function(){
-			$('#booksItemCategory').val($(this).text());
-			$('#booksItemCategory').text($(this).text());
-		});
-	}*/
+	books.setGetCategoriesSuccessCallback(createCategoryOptions);
+	books.getCategoriesAsync("webuser");
 }
 
 function formatISOToUS(date) {
