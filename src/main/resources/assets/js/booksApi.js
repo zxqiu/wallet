@@ -23,14 +23,15 @@ var Books = {
 		books.getCategoriesAsync = function(user_id) {
 			var param = new Object();
 			param.user_id = user_id;
-			var paramJSONString = JSON.stringify(param);
 			var retData = null;
 			
-			var request = hostURL + apiGetCategories + QUESTION + QueryParam + paramJSONString;
+			var request = hostURL + apiGetCategories;
 			$.ajax({
 				type: "GET",
 				url: request,
 				dataType: "json",
+				data: param,
+				contentType: 'application/json',
 				success: function(data) {
 					if (books.getCategoriesSuccess && typeof(books.getCategoriesSuccess) == "function") {
 						books.getCategoriesSuccess(data);
@@ -41,9 +42,9 @@ var Books = {
 						books.getCategoriesError(data);
 					}
 				},
-			}).then(function(jsonData) {
-				console.log(JSON.stringify(jsonData));
-				retData = jsonData;
+			}).then(function(data) {
+				console.log(data);
+				retData = data;
 			});
 			
 			return retData;
@@ -53,11 +54,12 @@ var Books = {
 			var postURL = hostURL + apiInsertItem;
 			console.log(postURL);
 			console.log(jsonObj);
-			
+			paramJSONString = JSON.stringify(jsonObj);
+
 			$.ajax({
 				type: "POST",
 				url: postURL,
-				data: jsonObj,
+				data: paramJSONString,
 				dataType: 'json',
 				contentType: 'application/json',
 				success: function(data, textStatus, jqXHR) {
@@ -81,14 +83,14 @@ var Books = {
 		};
 		
 		books.getAllBooksItem = function(user_id) {
-			var getUrl = hostURL + apiGetBooks;
-			var jsonArray = null;
 			var param = new Object();
 			param.user_id = user_id;
+			var retData = null;
 			
+			var request = hostURL + apiGetBooks;
 			$.ajax({
 				type: "GET",
-				url: getUrl,
+				url: request,
 				dataType: "json",
 				data: param,
 				contentType: 'application/json',
@@ -102,12 +104,12 @@ var Books = {
 						books.getAllBooksItemError(data);
 					}
 				}
-			}).then(function(retData) {
-				console.log(retData);
-				jsonArray = retData;
+			}).then(function(data) {
+				console.log(data);
+				retData = data;
 			});
 
-			return jsonArray;
+			return retData;
 		};
 
 		return books;

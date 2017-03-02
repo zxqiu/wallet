@@ -47,9 +47,9 @@ function insertBooksItem() {
 			"category":param.category,
 			"note":param.note,
 			"picture_url":param.picture_url};
-	paramJSONString = JSON.stringify(paramJSONObj);
+//	paramJSONString = JSON.stringify(paramJSONObj);
 
-	books.postBooksItem(paramJSONString);
+	books.postBooksItem(paramJSONObj);
 }
 
 function createCategoryOptions(data) {
