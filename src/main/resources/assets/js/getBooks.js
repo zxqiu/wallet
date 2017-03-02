@@ -1,9 +1,4 @@
-var SPLITER = "!";
-var QUESTION = "?";
-var QueryParam = "queryParam";
-var hostURL = "http://localhost:8080";
-var apiInsertBooks = "/api/books/newitem";
-var apiGetBooks = "/api/books/getbooks";
+var books = Books.createNew();
 
 var booksItemsEachLine = 6;
 var test_user_cnt = 0;
@@ -31,17 +26,14 @@ function getBooks() {
 		if(retData != null) {
 			console.log(retData);
 			createBooksItems(retData);
-			/*$(document).on("click", '#books-list', function(e) {
-				if ($(e.target).hasClass("target-dblclick")) {
+			$('.books-list-text').on("click", function(e) {
+				if ($(e.target).hasClass("dblclicked")) {
 					console.log("double clicked");
-					$(e.target).removeClass("target-dblclick");
+					$(e.target).removeClass("dblclicked");
 				} else {
-					$(e.target).addClass("target-dblclick");
-					setTimeout(function() { $(e.target).removeClass("target-dblclick"); }, 600);
+					$(e.target).addClass("dblclicked");
+					setTimeout(function() { $(e.target).removeClass("target-dblclick"); }, 1000);
 				}
-			});*/
-			$('#books-list').on("click", function(e) {
-					console.log("clicked");
 			});
 		}
 	});

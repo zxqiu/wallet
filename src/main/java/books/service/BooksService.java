@@ -1,6 +1,8 @@
 package books.service;
 
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -57,6 +59,9 @@ public class BooksService {
 		
 		JSONObject request;
 		Map<String, Object> paramMap = new HashMap<String, Object>();
+		long currentTimeMS = TimeUtils.getUniqueTimeStampInMS();
+		
+		String id = "";
 		String user_id = "";
 		String event_date = "";
 		String category = "";
@@ -75,6 +80,7 @@ public class BooksService {
 		}
 		
 		// 2. verify and parse request
+		paramMap.put(NameDef.ID, null);
 		paramMap.put(NameDef.USER_ID, null);
 		paramMap.put(NameDef.AMOUNT, null);
 		paramMap.put(NameDef.NOTE, null);
@@ -88,6 +94,7 @@ public class BooksService {
 		}
 			
 		try {
+			id = request.getString(NameDef.ID).trim();
 			user_id = request.getString(NameDef.USER_ID).trim();
 			amountStr = request.getString(NameDef.AMOUNT).trim();
 			note = request.getString(NameDef.NOTE).trim();
@@ -100,7 +107,7 @@ public class BooksService {
 		}
 		
 		// 3. verify parameters 
-		if (user_id.length() == 0 || amountStr.length() == 0 || category.length() == 0 || event_date.length() == 0) {
+		if (amountStr.length() == 0 || category.length() == 0 || event_date.length() == 0) {
 			logger_.error("ERROR: invalid new item request: " + postString);
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.QUERY_ARG_ERROR)).build();
 		}
@@ -126,7 +133,30 @@ public class BooksService {
 		}
 		
 		// 4.2 insert books
-		BooksInfo books = new BooksInfo(TimeUtils.getUniqueTimeStampInMS(), user_id, category, event_date, amount, note, picture_url);
+		// 4.2.1 update if id is received and exists. Otherwise insert new.
+		boolean isItemExists = false;
+		if (id.length() != 0) {
+			
+			try {
+				List<BooksInfo> booksList = BooksTable.instance().getAllBooksForUser(user_id);
+				for (BooksInfo item : booksList) {
+					if (item.getId().equals(id)) {
+						isItemExists = true;
+						break;
+					}
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.INTERNAL_ERROR)).build();
+			}
+		}
+		
+		if (!isItemExists) {
+			id = user_id + currentTimeMS;
+		}
+		
+		// 4.2.2 insert 
+		BooksInfo books = new BooksInfo(id, currentTimeMS, user_id, category, event_date, amount, note, picture_url);
 		logger_.info("Insert new books : " + books.toMap().toString());
 		try {
 			BooksTable.instance().insertNewBooks(books);
@@ -200,7 +230,9 @@ public class BooksService {
 		List<BooksInfo> books = new ArrayList<BooksInfo>();
 		try {
 			books = BooksTable.instance().getAllBooksForUser(user_id);
-			sortBooksByTime(books);
+			logger_.info("unsorted : " + books.toString());
+			books = sortBooksByTime(books);
+			logger_.info("sorted : " + books.toString());
 		} catch (SQLException e) {
 			e.printStackTrace();
 			logger_.error("Error : failed to insert new books item : " + e.getMessage());
@@ -226,7 +258,20 @@ public class BooksService {
 	
 	private static Comparator<BooksInfo> booksTimeComparator = new Comparator<BooksInfo>() {
 		public int compare(BooksInfo a, BooksInfo b) {
-			return a.getEvent_date().compareTo(b.getEvent_date());
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
+			try {
+				logger_.info("a : " + a.getEvent_date() +"-- b : " + b.getEvent_date());
+				if (sdf.parse(a.getEvent_date()).before(sdf.parse(b.getEvent_date()))) {
+					logger_.info("return 0");
+					return -1;
+				} else {
+					logger_.info("return 1");
+					return 1;
+				}
+			} catch (ParseException e) {
+				e.printStackTrace();
+				return 0;
+			}
 		}
 	};
 	

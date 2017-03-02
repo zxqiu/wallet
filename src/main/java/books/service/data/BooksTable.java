@@ -117,10 +117,12 @@ public class BooksTable {
 		BooksTable.instance().deleteTable();
 		BooksTable.instance();
 		BooksInfo booksInfo = new BooksInfo((long) 1, "webuser", "good", "1990-11-15", (long) 10, "note", "");
-		BooksInfo booksInfo1 = new BooksInfo((long) 2, "webuser", "bad", "1990-11-15", (long) 10, "note", "");
+		BooksInfo booksInfo1 = new BooksInfo((long) 2, "webuser", "bad", "1990-11-14", (long) 10, "note", "");
+		BooksInfo booksInfo2 = new BooksInfo((long) 3, "webuser", "bad", "1990-11-16", (long) 10, "note", "");
 		
 		BooksTable.instance().insertNewBooks(booksInfo);
 		BooksTable.instance().insertNewBooks(booksInfo1);
+		BooksTable.instance().insertNewBooks(booksInfo2);
 		for (BooksInfo books : BooksTable.instance().getAllBooksForUser("me")) {
 			logger_.info(books.toMap().toString());
 		}

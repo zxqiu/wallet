@@ -1,11 +1,13 @@
-var QUESTION = "?";
-var hostURL = "http://localhost:8080"
-var QueryParam = "queryParam="
-var apiInsertItem = "/api/books/newitem"
-var apiGetCategories = "/api/books/getcategories"
+var books = Books.createNew();
 
 function insertBooksItem() {
 	var param = new Object();
+
+	//if (id) {
+		//param.id = id; 
+	//} else {
+		param.id = "";
+        //}
 
 	param.user_id = (document.getElementById("booksItemUserId").value == "") ?
 			"webuser" : document.getElementById("booksItemUserId").value;
@@ -38,7 +40,8 @@ function insertBooksItem() {
 	// format date
 	param.event_date = formatUSToISO(param.event_date);
 
-	paramJSONObj = {"user_id":param.user_id,
+	paramJSONObj = {"id":param.id,
+			"user_id":param.user_id,
 			"event_date":param.event_date,
 			"amount":param.amount,
 			"category":param.category,
@@ -46,27 +49,11 @@ function insertBooksItem() {
 			"picture_url":param.picture_url};
 	paramJSONString = JSON.stringify(paramJSONObj);
 
-	postURL = hostURL + apiInsertItem;
-	console.log(postURL);
-	console.log(paramJSONString);
-
-	$.ajax({
-		type: "POST",
-		url: postURL,
-		data: paramJSONString,
-		dataType: 'json',
-		contentType: 'application/json',
-		success: function(data, textStatus, jqXHR) {
-			alert("success: " + data.message);
-		},
-		error: function(jqXHR, textStatus, errorThrown) {
-			alert("error with status: " + textStatus);
-		}
-	});
+	books.postBooksItem(paramJSONString);
 }
 
-function createCategoryOptions(retData) {
-	var jsonArray = retData;
+function createCategoryOptions(data) {
+	var jsonArray = data;
 	var parentDiv = document.getElementById("booksItemCategoryList");
 
 	while (parentDiv.firstChild) {
@@ -88,26 +75,17 @@ function createCategoryOptions(retData) {
 	}
 }
 
-function getCategories() {
-	var param = new Object();
-	param.user_id = "webuser";
-	var paramJSONString = JSON.stringify(param);
-
-	var request = hostURL + apiGetCategories + QUESTION + QueryParam + paramJSONString;
-        $.ajax({
-                type: "GET",
-                url: request,
-                dataType: "json",
-        }).then(function(jsonData) {
-                if(jsonData != null) {
-			console.log(JSON.stringify(jsonData));
-			createCategoryOptions(jsonData);
-			$('#booksItemCategoryList li a').on('click', function(){
-				$('#booksItemCategory').val($(this).text());
-				$('#booksItemCategory').text($(this).text());
-			});
-                }
-        });
+function getCategoriesAndGenerate() {
+	books.getCategoriesSuccess = function(data) { createCategoryOptions(data); };
+	var jsonArray = books.getCategoriesAsync("webuser");
+	books.getCategoriesSuccess = function(data) {};
+	/*if (jsonArray != null) {
+		createCategoryOptions(jsonArray);
+		$('#booksItemCategoryList li a').on('click', function(){
+			$('#booksItemCategory').val($(this).text());
+			$('#booksItemCategory').text($(this).text());
+		});
+	}*/
 }
 
 function formatISOToUS(date) {
@@ -123,14 +101,17 @@ function formatUSToISO(date) {
 $(document).ready(function(){
 	// set date
 	var date = new Date();
+	var day = date.getDate();
 	var month = date.getMonth() + 1;
+	day = (day > 9) ? day : "0" + day;
 	month = (month > 9) ? month : "0" + month;
-	date = month + "/" + date.getDate() + "/" + date.getFullYear();
+
+	date = month + "/" + day + "/" + date.getFullYear();
 	//console.log("current time : " + date);
 	$('#booksItemEventDate').attr("value", date);
 
 	// load category
-	getCategories();
+	getCategoriesAndGenerate();
 });
 
 $(function() {

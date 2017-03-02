@@ -46,7 +46,7 @@ public class BooksInfo {
 		setId(id);
 		setUser_id(user_id);
 		setCategory(category);
-		setEvent_time(event_date);
+		setEvent_date(event_date);
 		setAmount(amount);
 		setNote(note);
 		setPicture_url(picture_url);
@@ -81,7 +81,7 @@ public class BooksInfo {
 		return event_date;
 	}
 
-	public void setEvent_time(String event_date) {
+	public void setEvent_date(String event_date) {
 		this.event_date = event_date;
 	}
 
