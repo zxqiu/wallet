@@ -88,11 +88,11 @@ public class BooksTable {
 		return books;
 	}
 	
-	public void insertNewBooks(BooksInfo booksInfo) throws SQLException {
+	public void insertNewBooksItem(BooksInfo booksInfo) throws SQLException {
 		MySqlConnector.instance().insertToTable(booksInfo.toMap(), BOOKS_TABLE);
 	}
 	
-	public void updateBooks(BooksInfo booksInfo) throws SQLException {
+	public void updateBooksItem(BooksInfo booksInfo) throws SQLException {
 		Map<String, Object> values = booksInfo.toMap();
 		Map<String, Object> keys = new HashMap<String, Object>();
 		
@@ -101,16 +101,11 @@ public class BooksTable {
 		MySqlConnector.instance().updateTable(values, keys, BOOKS_TABLE);;
 	}
 	
-	public void deleteBooks(String id) {
+	public void deleteBooksItem(String id) throws SQLException {
 		Map<String, Object> keys = new HashMap<String, Object>();
 		keys.put(utils.NameDef.ID, id);
 		
-		try {
-			MySqlConnector.instance().deleteFromTable(keys, BOOKS_TABLE);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			logger_.error("Error : failed to delete books from " + BOOKS_TABLE + " : " + e.getMessage());
-		}
+		MySqlConnector.instance().deleteFromTable(keys, BOOKS_TABLE);
 	}
 	
 	public static void main(String[] args) throws Exception {
@@ -120,16 +115,16 @@ public class BooksTable {
 		BooksInfo booksInfo1 = new BooksInfo((long) 2, "webuser", "bad", "1990-11-14", (long) 10, "note", "");
 		BooksInfo booksInfo2 = new BooksInfo((long) 3, "webuser", "bad", "1990-11-16", (long) 10, "note", "");
 		
-		BooksTable.instance().insertNewBooks(booksInfo);
-		BooksTable.instance().insertNewBooks(booksInfo1);
-		BooksTable.instance().insertNewBooks(booksInfo2);
+		BooksTable.instance().insertNewBooksItem(booksInfo);
+		BooksTable.instance().insertNewBooksItem(booksInfo1);
+		BooksTable.instance().insertNewBooksItem(booksInfo2);
 		for (BooksInfo books : BooksTable.instance().getAllBooksForUser("me")) {
 			logger_.info(books.toMap().toString());
 		}
 		
 		booksInfo.setNote("nooooooote");
 		//BooksTable.instance().deleteBooks(booksInfo1.getId());
-		BooksTable.instance().updateBooks(booksInfo);
+		BooksTable.instance().updateBooksItem(booksInfo);
 		for (BooksInfo books : BooksTable.instance().getAllBooksForUser("me")) {
 			logger_.info(books.toMap().toString());
 		}

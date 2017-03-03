@@ -1,6 +1,7 @@
 var books = Books.createNew();
+var item = new Object();
 
-function postSuccess(data) {
+function goHome(data) {
 	window.location.replace("/index.html");
 }
 
@@ -12,58 +13,68 @@ function postError(textStatus) {
 }
 
 function postBooksItem() {
-	var param = new Object();
-
-	var urlParam = location.search.substr(location.search.indexOf("?")+1);
-	console.log(urlParam);
-	//if (id) {
-		//param.id = id; 
-	//} else {
-		param.id = "";
-        //}
-
-	param.user_id = (document.getElementById("booksItemUserId").value == "") ?
+	if (!item.id) {
+		item.id = "";
+	}
+	item.user_id = (document.getElementById("booksItemUserId").value == "") ?
 			"webuser" : document.getElementById("booksItemUserId").value;
-	param.event_date = document.getElementById("booksItemEventDate").value;
-	param.amount = document.getElementById("booksItemAmount").value;
-	param.category = document.getElementById("booksItemCategory").value;
-	param.note = document.getElementById("booksItemNote").value;
-	param.picture_url = "";
+	item.event_date = document.getElementById("booksItemEventDate").value;
+	item.amount = document.getElementById("booksItemAmount").value;
+	item.category = document.getElementById("booksItemCategory").value;
+	item.note = document.getElementById("booksItemNote").value;
+	item.picture_url = "";
 	
-	if (param.user_id == "") {
+	if (item.user_id == "") {
 		$("#booksItemUserId").parent().addClass("has-error");
 		return;
 	}
 	
-	if (param.event_date == "") {
+	if (item.event_date == "") {
 		$("#booksItemEventDate").parent().parent().addClass("has-error");
 		return;
 	}
 	
-	if (param.amount == "") {
+	if (item.amount == "") {
 		$("#booksItemAmount").parent().addClass("has-error");
 		return;
 	}
 	
-	if (param.category == "") {
+	if (item.category == "") {
 		$("#booksItemCategory").parent().parent().addClass("has-error");
 		return;
 	}
 
 	// format date
-	param.event_date = formatUSToISO(param.event_date);
+	item.event_date = formatUSToISO(item.event_date);
 
-	paramJSONObj = {"id":param.id,
-			"user_id":param.user_id,
-			"event_date":param.event_date,
-			"amount":param.amount,
-			"category":param.category,
-			"note":param.note,
-			"picture_url":param.picture_url};
+	paramJSONObj = {"id":item.id,
+			"user_id":item.user_id,
+			"event_date":item.event_date,
+			"amount":item.amount,
+			"category":item.category,
+			"note":item.note,
+			"picture_url":item.picture_url};
 
-	books.setPostBooksItemSuccessCallback(postSuccess);
+	books.setPostBooksItemSuccessCallback(goHome);
 	books.setPostBooksItemErrorCallback(postError);
 	books.postBooksItem(paramJSONObj);
+}
+
+function deleteError(textStatus) {
+	console.log("delete books item failed : " + textStatus);
+	$('#booksItemDelete').removeAttr("disabled");
+	var text = "try again";
+	$('#booksItemDelete').html(text.fontcolor("red"));
+}
+
+function deleteBooksItem() {
+	if (!item.id || item.id == "") {
+		return;
+	}
+	
+	books.setDeleteBooksItemSuccessCallback(goHome);
+	books.setDeleteBooksItemErrorCallback(deleteError);
+	books.deleteBooksItem(item.id);
 }
 
 function createCategoryOptions(data) {
@@ -107,6 +118,24 @@ function formatUSToISO(date) {
 	return date.slice(6, 10) + "-" + date.slice(0, 2) + "-" + date.slice(3, 5);
 }
 
+function fillForm(item) {
+	if (item.user_id) {
+		$('#booksItemUserId').attr("value", item.user_id);
+	}
+	if (item.event_date) {
+		$('#booksItemEventDate').attr("value", item.event_date);
+	}
+	if (item.amount) {
+		$('#booksItemAmount').attr("value", item.amount);
+	}
+	if (item.category) {
+		$('#booksItemCategory').attr("value", item.category);
+	}
+	if (item.note) {
+		$('#booksItemNote').attr("value", item.note);
+	}
+}
+
 /************************** jquery functions ********************************/
 
 $(document).ready(function(){
@@ -119,10 +148,24 @@ $(document).ready(function(){
 
 	date = month + "/" + day + "/" + date.getFullYear();
 	//console.log("current time : " + date);
-	$('#booksItemEventDate').attr("value", date);
 
 	// load category
 	getCategoriesAndGenerate();
+	
+	// parse parameter
+	var urlParam = location.search.substr(location.search.indexOf("?")+1).replace(/%22/g, "\"");
+	if (urlParam && urlParam != "") {
+		item = JSON.parse(urlParam);
+		$('#booksItemDelete').show();
+	}
+	
+	if (!item.event_date || item.event_date == "") {
+		item.event_date = date;
+	} else {
+		item.event_date = formatISOToUS(item.event_date);
+	}
+	
+	fillForm(item);
 });
 
 $(function() {
@@ -155,5 +198,10 @@ $(':input').on('change', function(){
 
 $('#booksItemSubmit').on('click', function(){
 	$('#booksItemSubmit').html("submitted");
+	$(this).attr("disabled", true);
+});
+
+$('#booksItemDelete').on('click', function(){
+	$('#booksItemDelete').html("submitted");
 	$(this).attr("disabled", true);
 });

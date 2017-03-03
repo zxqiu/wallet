@@ -1,6 +1,7 @@
 var QUESTION = "?";
 var hostURL = "http://localhost:8080"
 var apiInsertItem = "/api/books/newitem"
+var apiDeleteItem = "/api/books/deleteitem"
 var apiGetCategories = "/api/books/getcategories"
 var apiGetBooks = "/api/books/getbooks";
 
@@ -116,6 +117,47 @@ var Books = {
 				error: function(data) {
 					if (books.getAllBooksItemError && typeof(books.getAllBooksItemError) == "function") {
 						books.getAllBooksItemError(data);
+					}
+				}
+			}).then(function(data) {
+				console.log(data);
+				retData = data;
+			});
+
+			return retData;
+		};
+		
+		books.deleteBooksItemSuccess = null;
+		books.deleteBooksItemError = null;
+		
+		books.setDeleteBooksItemSuccessCallback = function(callback) {
+			books.deleteBooksItemSuccess = callback;
+		}
+		
+		books.setDeleteBooksItemErrorCallback = function(callback) {
+			books.deleteBooksItemError = callback;
+		}
+		
+		books.deleteBooksItem = function(id) {
+			var param = new Object();
+			param.id = id;
+			var retData = null;
+			
+			var request = hostURL + apiDeleteItem;
+			$.ajax({
+				type: "GET",
+				url: request,
+				dataType: "json",
+				data: param,
+				contentType: 'application/json',
+				success: function(data) {
+					if (books.deleteBooksItemSuccess && typeof(books.deleteBooksItemSuccess) == "function") {
+						books.deleteBooksItemSuccess(data);
+					}
+				},
+				error: function(data) {
+					if (books.deleteBooksItemError && typeof(books.deleteBooksItemError) == "function") {
+						books.deleteBooksItemError(data);
 					}
 				}
 			}).then(function(data) {

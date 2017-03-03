@@ -112,9 +112,14 @@ public class BooksService {
 		
 		// 4.2.2 insert 
 		BooksInfo books = new BooksInfo(request.id, currentTimeMS, request.user_id, request.category, request.event_date, request.amount, request.note, request.picture_url);
-		logger_.info("Insert new books : " + books.toMap().toString());
 		try {
-			BooksTable.instance().insertNewBooks(books);
+			if (isItemExists) {
+				logger_.info("Update books item : " + books.toMap().toString());
+				BooksTable.instance().updateBooksItem(books);
+			} else {
+				logger_.info("Insert new books item : " + books.toMap().toString());
+				BooksTable.instance().insertNewBooksItem(books);
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			logger_.error("Error : failed to insert new books : " + e.getMessage());
@@ -155,6 +160,38 @@ public class BooksService {
 	}
 	
 	/**
+	 * Delete books item
+	 * @param user_id
+	 * @return
+	 */
+	@GET
+    @Timed
+    @Path("/deleteitem")
+	@Produces(value = MediaType.APPLICATION_JSON)
+	public Response deleteItem(@QueryParam(NameDef.ID) String id) {
+		// 1. extract request
+		// 2. verify and parse request
+		// 3. verify parameters 
+		if (id == null || id.length() == 0) {
+			logger_.error("ERROR: invalid remove books item request for \'" + id + "\'");
+			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.QUERY_ARG_ERROR)).build();
+		}
+		
+		// 4. transaction
+		try {
+			BooksTable.instance().deleteBooksItem(id);;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			logger_.error("Error : failed to insert new books item \'" + id + "\' : " + e.getMessage());
+			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.INTERNAL_ERROR)).build();
+		}
+		
+		// 5. generate response
+		logger_.info("Books item \'" + id + "\' removed");
+		return Response.status(200).entity(ApiUtils.buildJSONResponse(true, ApiUtils.SUCCESS)).build();
+	}
+	
+	/**
 	 * Get books of a user
 	 * @param user_id
 	 * @return
@@ -176,9 +213,7 @@ public class BooksService {
 		List<BooksInfo> books = new ArrayList<BooksInfo>();
 		try {
 			books = BooksTable.instance().getAllBooksForUser(user_id);
-			logger_.info("unsorted : " + books.toString());
 			books = sortBooksByTime(books);
-			logger_.info("sorted : " + books.toString());
 		} catch (SQLException e) {
 			e.printStackTrace();
 			logger_.error("Error : failed to insert new books item for " + user_id + " : " + e.getMessage());
