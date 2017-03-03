@@ -1,8 +1,21 @@
 var books = Books.createNew();
 
-function insertBooksItem() {
+function postSuccess(data) {
+	window.location.replace("/index.html");
+}
+
+function postError(textStatus) {
+	console.log("post new books item failed : " + textStatus);
+	$('#booksItemSubmit').removeAttr("disabled");
+	var text = "try again";
+	$('#booksItemSubmit').html(text.fontcolor("red"));
+}
+
+function postBooksItem() {
 	var param = new Object();
 
+	var urlParam = location.search.substr(location.search.indexOf("?")+1);
+	console.log(urlParam);
 	//if (id) {
 		//param.id = id; 
 	//} else {
@@ -47,8 +60,9 @@ function insertBooksItem() {
 			"category":param.category,
 			"note":param.note,
 			"picture_url":param.picture_url};
-//	paramJSONString = JSON.stringify(paramJSONObj);
 
+	books.setPostBooksItemSuccessCallback(postSuccess);
+	books.setPostBooksItemErrorCallback(postError);
 	books.postBooksItem(paramJSONObj);
 }
 
@@ -75,7 +89,7 @@ function createCategoryOptions(data) {
 	}
 	
 	$('#booksItemCategoryList li a').on('click', function(){
-		$('#booksItemCategory').val($(this).text());
+		$('#booksItemCategory').val($(this).text()).change();
 		$('#booksItemCategory').text($(this).text());
 	});
 }
@@ -123,4 +137,23 @@ $(function() {
 
 $('.date').on('changeDate', function(ev){
 	$(this).datepicker('hide');
+});
+
+$(':input').on('input', function(){
+	$('#booksItemSubmit').html("submit");
+	$('#booksItemSubmit').removeAttr("disabled");
+
+	$('#booksItemForm div').removeClass("has-error");;
+});
+
+$(':input').on('change', function(){
+	$('#booksItemSubmit').html("submit");
+	$('#booksItemSubmit').removeAttr("disabled");
+
+	$('#booksItemForm div').removeClass("has-error");;
+});
+
+$('#booksItemSubmit').on('click', function(){
+	$('#booksItemSubmit').html("submitted");
+	$(this).attr("disabled", true);
 });

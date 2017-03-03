@@ -48,6 +48,10 @@ function createBooksItems(retData) {
 	$('.books-list-text').on("click", function(e) {
 		if ($(e.target).hasClass("dblclicked")) {
 			console.log("double clicked");
+
+			console.log($(this).attr("title"));
+			window.location.replace("/views/newBooksItem.html?" + $(this).attr("title"));
+
 			$(e.target).removeClass("dblclicked");
 		} else {
 			$(e.target).addClass("dblclicked");
@@ -85,6 +89,7 @@ function createSingleBooksItem(itemInfo) {
 	itemSpanDetailInfo.appendChild(itemSpanDetailInfoNote);
 
 	console.log(itemInfo);
+	itemSpanDetail.title = JSON.stringify(itemInfo);
 	itemImg.src = "http://www.koolbreeze.eclipse.co.uk/block%20lightblue.jpg"; //itemInfo.Image
 	itemSpanDetailTitle.innerHTML =
 			formatISOToUS(itemInfo.event_date) + " $" +

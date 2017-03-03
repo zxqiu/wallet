@@ -1,6 +1,5 @@
 var QUESTION = "?";
 var hostURL = "http://localhost:8080"
-var QueryParam = "queryParam="
 var apiInsertItem = "/api/books/newitem"
 var apiGetCategories = "/api/books/getcategories"
 var apiGetBooks = "/api/books/getbooks";
@@ -50,6 +49,17 @@ var Books = {
 			return retData;
 		};
 
+		books.postBooksItemSuccess = null;
+		books.postBooksItemError = null;
+
+		books.setPostBooksItemSuccessCallback = function(callback) {
+			books.postBooksItemSuccess = callback;
+		}
+
+		books.setPostBooksItemErrorCallback = function(callback) {
+			books.postBooksItemError = callback;
+		}
+
 		books.postBooksItem = function(jsonObj) {
 			var postURL = hostURL + apiInsertItem;
 			console.log(postURL);
@@ -63,10 +73,14 @@ var Books = {
 				dataType: 'json',
 				contentType: 'application/json',
 				success: function(data, textStatus, jqXHR) {
-					alert("success: " + data.message);
+					if (books.postBooksItemSuccess && typeof(books.postBooksItemSuccess) == "function") {
+						books.postBooksItemSuccess(data);
+					}
 				},
 				error: function(jqXHR, textStatus, errorThrown) {
-					alert("error with status: " + textStatus);
+					if (books.postBooksItemError && typeof(books.postBooksItemError) == "function") {
+						books.postBooksItemError(textStatus);
+					}
 				}
 			});
 		};

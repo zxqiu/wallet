@@ -17,7 +17,7 @@
 <body>
 	<div class="row">
 		<div class="col-md-4">
-			<form role="form">
+			<form role="form" id="booksItemForm">
 				<div class="form-group" id="booksItemUserIdDiv">
 					 
 					<label for="booksItemUserId">
@@ -64,7 +64,7 @@
 					</label>
 					<textarea type="text" class="form-control" id="booksItemNote"></textarea>
 				</div>
-				<button type="button" onclick="insertBooksItem()">submit</button>
+				<button type="button" id="booksItemSubmit" onclick="postBooksItem()">submit</button>
 			</form>
 		</div>
 	</div>
@@ -78,7 +78,7 @@
 <script src="../js/jquery.min.js"></script>
 <script src="../js/bootstrap.min.js"></script>
 <script src="../js/bootstrap-datepicker.min.js"></script>
-<script src="../js/booksApi.js"></script>
+<script src="../js/books.js"></script>
 <script src="../js/views/newBooksItem.js"></script>
 
 </body>
