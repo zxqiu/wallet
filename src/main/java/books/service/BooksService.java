@@ -6,9 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.validation.Valid;
 import javax.ws.rs.GET;
@@ -241,12 +239,9 @@ public class BooksService {
 		public int compare(BooksInfo a, BooksInfo b) {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
 			try {
-				logger_.info("a : " + a.getEvent_date() +"-- b : " + b.getEvent_date());
 				if (sdf.parse(a.getEvent_date()).before(sdf.parse(b.getEvent_date()))) {
-					logger_.info("return 0");
 					return -1;
 				} else {
-					logger_.info("return 1");
 					return 1;
 				}
 			} catch (ParseException e) {
