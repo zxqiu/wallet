@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import mySqlConnector.MySqlConnector;
+import utils.ApiUtils;
 import utils.NameDef;
 
 public class CategoryTable {
@@ -19,7 +20,7 @@ public class CategoryTable {
 	private static final Logger logger_ = LoggerFactory.getLogger(CategoryTable.class);
 	private static CategoryTable instance_ = null;
 	
-	public static final String CATEGORY_TABLE = "category_table";
+	public static final String TABLE_NAME = "category_table";
 
 	public static CategoryTable instance() {
 		if ( instance_ == null )
@@ -54,7 +55,7 @@ public class CategoryTable {
 		items.put(NameDef.PICTURE_URL, MySqlConnector.VCHAR_255);
 		
 		try {
-			MySqlConnector.instance().createTable(CATEGORY_TABLE, items, utils.NameDef.ID);
+			MySqlConnector.instance().createTable(TABLE_NAME, items, utils.NameDef.ID);
 		} catch (SQLException e) {
 			if (e.getErrorCode() == MySqlConnector.ER_TABLE_EXISTS_ERROR) {
 				logger_.error("books table already exists : " + e.getMessage());
@@ -66,7 +67,7 @@ public class CategoryTable {
 	}
 	
 	public void deleteTable() throws SQLException {
-		MySqlConnector.instance().deleteTable(CATEGORY_TABLE);
+		MySqlConnector.instance().deleteTable(TABLE_NAME);
 		instance_ = null;
 	}
 	
@@ -75,7 +76,7 @@ public class CategoryTable {
 		Map<String, Object> keys = new HashMap<String, Object>();
 		keys.put("user_id", user_id);
 		
-		List<Map<String, Object>> ret = MySqlConnector.instance().selectFromTable(keys, CATEGORY_TABLE);
+		List<Map<String, Object>> ret = MySqlConnector.instance().selectFromTable(keys, TABLE_NAME);
 		
 		for (Map<String, Object> map : ret) {
 			categories.add(CategoryInfo.stringToObject(map.toString()));
@@ -85,7 +86,7 @@ public class CategoryTable {
 	}
 	
 	public void insertNewCategories(CategoryInfo categoryInfo) throws SQLException {
-		MySqlConnector.instance().insertToTable(categoryInfo.toMap(), CATEGORY_TABLE);
+		MySqlConnector.instance().insertToTable(categoryInfo.toMap(), TABLE_NAME);
 	}
 	
 	public void updateCategory(CategoryInfo categoryInfo) throws SQLException {
@@ -94,7 +95,7 @@ public class CategoryTable {
 		
 		keys.put(utils.NameDef.ID, categoryInfo.getId());
 		
-		MySqlConnector.instance().updateTable(values, keys, CATEGORY_TABLE);;
+		MySqlConnector.instance().updateTable(values, keys, TABLE_NAME);;
 	}
 	
 	public void deleteCategory(String id) {
@@ -102,10 +103,10 @@ public class CategoryTable {
 		keys.put(utils.NameDef.ID, id);
 		
 		try {
-			MySqlConnector.instance().deleteFromTable(keys, CATEGORY_TABLE);
+			MySqlConnector.instance().deleteFromTable(keys, TABLE_NAME);
 		} catch (SQLException e) {
 			e.printStackTrace();
-			logger_.error("Error : failed to delete category from " + CATEGORY_TABLE + " : " + e.getMessage());
+			logger_.error("Error : failed to delete category from " + TABLE_NAME + " : " + e.getMessage());
 		}
 	}
 	
@@ -128,5 +129,6 @@ public class CategoryTable {
 			logger_.info(category.toMap().toString());
 		}
 		
+		logger_.info(String.valueOf(ApiUtils.keyValueExists(NameDef.NAME, categoryInfo.getName(), TABLE_NAME)));
 	}
 }

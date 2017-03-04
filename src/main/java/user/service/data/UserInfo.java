@@ -13,20 +13,24 @@ private static final Logger logger_ = LoggerFactory.getLogger(UserInfo.class);
 	// This class take only long and String type.
 	// If other type is added, you must update stringToObject.
 	private String id;
+	private String name;
+	private String password;
 	private String priority;
 	private long create_time;
 	private String picture_url;
 	
-	public UserInfo(String id, UserPriority priority, Long create_time, String picture_url) {
-		initUserInfo(id, priority.name(), create_time, picture_url);
+	public UserInfo(String id, String name, String password, UserPriority priority, Long create_time, String picture_url) {
+		initUserInfo(id, name, password, priority.name(), create_time, picture_url);
 	}
 	
 	public UserInfo() {
-		initUserInfo("", "", (long)-1, "");
+		initUserInfo("", "", "", "", (long)-1, "");
 	}
 
-	private void initUserInfo(String id, String priority, Long create_time, String picture_url) {
+	private void initUserInfo(String id, String name, String password, String priority, Long create_time, String picture_url) {
 		if (id == null ||
+				name == null ||
+				password == null ||
 				priority == null ||
 				create_time == null ||
 				picture_url == null) {
@@ -35,6 +39,8 @@ private static final Logger logger_ = LoggerFactory.getLogger(UserInfo.class);
 		}
 		
 		setId(id);
+		setName(name);
+		setPassword(password);
 		setPriority(priority);
 		setCreate_time(create_time);
 		setPicture_url(picture_url);
@@ -47,7 +53,6 @@ private static final Logger logger_ = LoggerFactory.getLogger(UserInfo.class);
 	public void setId(String id) {
 		this.id = id;
 	}
-
 
 	public String getPicture_url() {
 		return picture_url;
@@ -71,6 +76,22 @@ private static final Logger logger_ = LoggerFactory.getLogger(UserInfo.class);
 
 	public void setCreate_time(long create_time) {
 		this.create_time = create_time;
+	}
+	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 	
 	public Map<String,Object> toMap(){
@@ -136,12 +157,10 @@ private static final Logger logger_ = LoggerFactory.getLogger(UserInfo.class);
 	
 	// test
 	public static void main(String[] args) throws Exception {
-		UserInfo UserInfo = new UserInfo("me", UserPriority.NORMAL, (long) 10, "");
+		UserInfo UserInfo = new UserInfo("me", "name", "1234", UserPriority.NORMAL, (long) 10, "");
 		String userString = UserInfo.toMap().toString();
-		UserInfo orderNew = UserInfo.stringToObject(userString);
+		UserInfo userNew = stringToObject(userString);
 		System.out.println(userString);
-		System.out.println(orderNew.toMap());
+		System.out.println(userNew.toMap());
 	}
-
-
 }

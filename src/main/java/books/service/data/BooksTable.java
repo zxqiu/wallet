@@ -19,7 +19,7 @@ public class BooksTable {
 	private static final Logger logger_ = LoggerFactory.getLogger(BooksTable.class);
 	private static BooksTable instance_ = null;
 	
-	public static final String BOOKS_TABLE = "books_table";
+	public static final String TABLE_NAME = "books_table";
 
 	public static BooksTable instance() {
 		if ( instance_ == null )
@@ -58,7 +58,7 @@ public class BooksTable {
 		items.put(utils.NameDef.EDIT_TIME, MySqlConnector.LONG + MySqlConnector.NOT_NULL);
 		
 		try {
-			MySqlConnector.instance().createTable(BOOKS_TABLE, items, utils.NameDef.ID);
+			MySqlConnector.instance().createTable(TABLE_NAME, items, utils.NameDef.ID);
 		} catch (SQLException e) {
 			if (e.getErrorCode() == MySqlConnector.ER_TABLE_EXISTS_ERROR) {
 				logger_.error("books table already exists : " + e.getMessage());
@@ -70,7 +70,7 @@ public class BooksTable {
 	}
 	
 	public void deleteTable() throws SQLException {
-		MySqlConnector.instance().deleteTable(BOOKS_TABLE);
+		MySqlConnector.instance().deleteTable(TABLE_NAME);
 		instance_ = null;
 	}
 	
@@ -79,7 +79,7 @@ public class BooksTable {
 		Map<String, Object> keys = new HashMap<String, Object>();
 		keys.put("user_id", user_id);
 		
-		List<Map<String, Object>> ret = MySqlConnector.instance().selectFromTable(keys, BOOKS_TABLE);
+		List<Map<String, Object>> ret = MySqlConnector.instance().selectFromTable(keys, TABLE_NAME);
 		
 		for (Map<String, Object> map : ret) {
 			books.add(BooksInfo.stringToObject(map.toString()));
@@ -89,7 +89,7 @@ public class BooksTable {
 	}
 	
 	public void insertNewBooksItem(BooksInfo booksInfo) throws SQLException {
-		MySqlConnector.instance().insertToTable(booksInfo.toMap(), BOOKS_TABLE);
+		MySqlConnector.instance().insertToTable(booksInfo.toMap(), TABLE_NAME);
 	}
 	
 	public void updateBooksItem(BooksInfo booksInfo) throws SQLException {
@@ -98,14 +98,14 @@ public class BooksTable {
 		
 		keys.put(utils.NameDef.ID, booksInfo.getId());
 		
-		MySqlConnector.instance().updateTable(values, keys, BOOKS_TABLE);;
+		MySqlConnector.instance().updateTable(values, keys, TABLE_NAME);;
 	}
 	
 	public void deleteBooksItem(String id) throws SQLException {
 		Map<String, Object> keys = new HashMap<String, Object>();
 		keys.put(utils.NameDef.ID, id);
 		
-		MySqlConnector.instance().deleteFromTable(keys, BOOKS_TABLE);
+		MySqlConnector.instance().deleteFromTable(keys, TABLE_NAME);
 	}
 	
 	public static void main(String[] args) throws Exception {

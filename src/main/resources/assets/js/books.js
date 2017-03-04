@@ -1,6 +1,6 @@
 var QUESTION = "?";
 var hostURL = "http://localhost:8080"
-var apiInsertItem = "/api/books/newitem"
+var apiInsertItem = "/api/books/insertitem"
 var apiDeleteItem = "/api/books/deleteitem"
 var apiGetCategories = "/api/books/getcategories"
 var apiGetBooks = "/api/books/getbooks";

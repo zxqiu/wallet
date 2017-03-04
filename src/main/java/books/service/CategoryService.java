@@ -2,9 +2,7 @@ package books.service;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.validation.Valid;
 import javax.ws.rs.GET;
@@ -22,6 +20,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.codahale.metrics.annotation.Timed;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.MoreObjects;
 import com.google.gson.Gson;
 
 import books.service.data.CategoryInfo;
@@ -42,53 +42,21 @@ public class CategoryService {
     @Timed
     @Path("/newcategory")
 	@Produces(value = MediaType.APPLICATION_JSON)
-	public Response newCategory(@Valid String postString) {
-		if (postString == null) {
+	public Response newCategory(@Valid CategoryPostJsonObj request) {
+		if (request == null) {
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.QUERY_ARG_ERROR)).build();
 		}
-		
-		JSONObject request;
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		String user_id = "";
-		String name = "";
-		String picture_url = "";
 		
 		// 1. extract request
-		try {
-			request = new JSONObject(postString);
-		} catch (JSONException e) {
-			logger_.error("ERROR: cannot parse new categury request: " + postString);
-			logger_.error("ERROR: cannot parse new category request: " + e.getMessage());
-			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.QUERY_ARG_ERROR)).build();
-		}
-		
 		// 2. verify and parse request
-		paramMap.put(NameDef.USER_ID, null);
-		paramMap.put(NameDef.NAME, null);
-		paramMap.put(NameDef.PICTURE_URL, null);
-		
-		if (ApiUtils.verifyAndGetParameters(paramMap, request) == false) {
-			logger_.error("ERROR: not enough parameters in new category request: " + postString);
-			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.QUERY_ARG_ERROR)).build();
-		}
-			
-		try {
-			user_id = request.getString(NameDef.USER_ID);
-			name = request.getString(NameDef.NAME);
-			picture_url = request.getString(NameDef.PICTURE_URL);
-		} catch (JSONException e) {
-			logger_.error("ERROR: failed to get parameters from new category request: " + postString);
-			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.QUERY_ARG_ERROR)).build();
-		}
-		
 		// 3. verify parameters 
-		if (user_id.length() == 0 || name.length() == 0) {
-			logger_.error("ERROR: invalid new category request: " + postString);
+		if (request.user_id.length() == 0 || request.name.length() == 0) {
+			logger_.error("ERROR: invalid new category request: " + request.toString());
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.QUERY_ARG_ERROR)).build();
 		}
 		
 		// 4. transaction
-		CategoryInfo category = new CategoryInfo(user_id, name, picture_url);
+		CategoryInfo category = new CategoryInfo(request.user_id, request.name, request.picture_url);
 		logger_.info("Insert new category : " + category.toMap().toString());
 		try {
 			CategoryTable.instance().insertNewCategories(category);
@@ -99,6 +67,24 @@ public class CategoryService {
 		}
 		
 		return Response.status(200).entity(ApiUtils.buildJSONResponse(true, ApiUtils.SUCCESS)).build();
+	}
+	
+	public static class CategoryPostJsonObj {
+		@JsonProperty(NameDef.USER_ID)
+		String user_id;
+		@JsonProperty(NameDef.NAME)
+		String name;
+		@JsonProperty(NameDef.PICTURE_URL)
+		String picture_url;
+		
+		@Override
+		public String toString() {
+			return MoreObjects.toStringHelper(this)
+	                .add(NameDef.USER_ID, user_id)
+	                .add(NameDef.NAME, name)
+	                .add(NameDef.PICTURE_URL, picture_url)
+	                .toString();
+		}
 	}
 	
 	/**

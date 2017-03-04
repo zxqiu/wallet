@@ -1,12 +1,16 @@
 package utils;
 
+import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import mySqlConnector.MySqlConnector;
 
 public class ApiUtils {
 	private static final Logger logger_ = LoggerFactory.getLogger(ApiUtils.class);
@@ -22,6 +26,7 @@ public class ApiUtils {
 	
 	public static final String STATUS = "status";
 	public static final String SUCCESS = "success";
+	public static final String FAIL = "fail";
 	
 	public static String buildJSONResponse(Boolean status, String msg) {
 		JSONObject jsonObject = new JSONObject();
@@ -57,5 +62,14 @@ public class ApiUtils {
 		}
 		
 		return true;
+	}
+	
+	public static boolean keyValueExists(String key, Object value, String table) throws SQLException {
+		Map<String, Object> keys = new HashMap<String, Object>();
+		keys.put(key, value);
+		
+		List<Map<String, Object>> ret = MySqlConnector.instance().selectFromTable(keys, table);
+		
+		return !ret.isEmpty();
 	}
 }

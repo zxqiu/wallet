@@ -10,6 +10,7 @@ import books.service.CategoryService;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import user.service.UserService;
 import io.dropwizard.assets.AssetsBundle;
 
 
@@ -39,6 +40,7 @@ public class WalletService extends Application<WalletProjectConfiguration> {
 	    
 	    environment.jersey().register(new BooksService());
 	    environment.jersey().register(new CategoryService());
+	    environment.jersey().register(new UserService());
 	    
 	    //logger_.warn("initiate store configuration");
 	}
