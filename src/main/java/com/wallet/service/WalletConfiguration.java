@@ -54,8 +54,8 @@ public class WalletConfiguration extends Configuration {
     
 	/********************* custom ****************************/
     
-    private static String hostAddr = "10.0.0.132:8080";
-    private static String hostName = "10.0.0.132";
+    private static String hostAddr = "127.0.0.1:8080";
+    private static String hostName = "127.0.0.1";
     
 	public static String getHostAddr() {
 		return hostAddr;

@@ -5,11 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
+import javax.ws.rs.CookieParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -23,6 +25,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 import com.google.gson.Gson;
+import com.wallet.login.dao.SessionDAOConnector;
 
 import books.service.data.CategoryInfo;
 import books.service.data.CategoryTable;
@@ -37,13 +40,15 @@ public class CategoryService {
 	 * Create a new category and insert to books
 	 * @param user_id, name, picture_url
 	 * @return
+	 * @throws Exception 
 	 */
 	@POST
     @Timed
     @Path("/newcategory")
 	@Produces(value = MediaType.APPLICATION_JSON)
-	public Response newCategory(@Valid CategoryPostJsonObj request) {
-		if (request == null) {
+	public Response newCategory(@Valid CategoryPostJsonObj request,
+			@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
+		if (request == null || SessionDAOConnector.instance().verifySessionCookie(cookie)== false) {
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.QUERY_ARG_ERROR)).build();
 		}
 		
@@ -91,16 +96,18 @@ public class CategoryService {
 	 * Get categories of a user
 	 * @param user_id
 	 * @return
+	 * @throws Exception 
 	 */
 	@GET
     @Timed
     @Path("/getcategories")
 	@Produces(value = MediaType.APPLICATION_JSON)
-	public Response getAllBooks(@QueryParam(NameDef.USER_ID) String user_id) {
+	public Response getAllBooks(@QueryParam(NameDef.USER_ID) String user_id,
+			@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
 		// 1. extract request
 		// 2. verify and parse request
 		// 3. verify parameters 
-		if (user_id.length() == 0) {
+		if (user_id.length() == 0 || SessionDAOConnector.instance().verifySessionCookie(cookie)== false) {
 			logger_.error("ERROR: invalid get books request for \'" + user_id + "\'");
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.QUERY_ARG_ERROR)).build();
 		}

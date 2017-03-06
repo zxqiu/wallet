@@ -1,5 +1,6 @@
 package books.service;
 
+import java.net.URI;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -18,6 +19,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -48,13 +50,15 @@ public class BooksService {
 	 * Create a new item and insert to books
 	 * @param user_id, event_date, category, amount, note, picture_url
 	 * @return
+	 * @throws Exception 
 	 */
 	@POST
     @Timed
     @Path("/insertitem")
 	@Produces(value = MediaType.APPLICATION_JSON)
-	public Response insertItem(@Valid booksPostJsonObj request) {
-		if (request == null) {
+	public Response insertItem(@Valid booksPostJsonObj request,
+			@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
+		if (request == null || SessionDAOConnector.instance().verifySessionCookie(cookie)== false) {
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.QUERY_ARG_ERROR)).build();
 		}
 		
@@ -158,16 +162,19 @@ public class BooksService {
 	 * Delete books item
 	 * @param user_id
 	 * @return
+	 * @throws Exception 
 	 */
 	@GET
     @Timed
     @Path("/deleteitem")
 	@Produces(value = MediaType.APPLICATION_JSON)
-	public Response deleteItem(@QueryParam(NameDef.ID) String id) {
+	public Response deleteItem(@QueryParam(NameDef.ID) String id,
+			@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
 		// 1. extract request
 		// 2. verify and parse request
 		// 3. verify parameters 
-		if (id == null || id.length() == 0) {
+		if (id == null || id.length() == 0
+				|| SessionDAOConnector.instance().verifySessionCookie(cookie)== false) {
 			logger_.error("ERROR: invalid remove books item request for \'" + id + "\'");
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.QUERY_ARG_ERROR)).build();
 		}
@@ -197,12 +204,12 @@ public class BooksService {
     @Path("/getbooks")
 	@Produces(value = MediaType.APPLICATION_JSON)
 	public Response getAllBooks(@QueryParam(NameDef.USER_ID) String user_id,
-			@CookieParam("cookieName") Cookie cookie) throws Exception {
+			@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
 		// 1. extract request
 		// 2. verify and parse request
 		// 3. verify parameters 
 		if (user_id == null || user_id.length() == 0
-				|| SessionDAOConnector.instance().verifySessionCookie(cookie)) {
+				|| SessionDAOConnector.instance().verifySessionCookie(cookie)== false) {
 			logger_.error("ERROR: invalid get books request for \'" + user_id + "\'");
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.QUERY_ARG_ERROR)).build();
 		}
