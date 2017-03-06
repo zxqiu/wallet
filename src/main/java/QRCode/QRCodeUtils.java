@@ -15,7 +15,7 @@ import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
-import com.project.wallet.WalletService;
+import com.wallet.service.WalletService;
 
 public class QRCodeUtils {
 	private static final Logger logger_ = LoggerFactory.getLogger(WalletService.class);

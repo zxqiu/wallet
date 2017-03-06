@@ -1,4 +1,5 @@
 var books = Books.createNew();
+var user_id;
 
 var booksItemsEachLine = 6;
 var test_user_cnt = 0;
@@ -7,7 +8,7 @@ function getBooks() {
 	console.log("get books from server start");
 
 	books.setGetAllBooksItemSuccessCallback(createBooksItems);
-	books.getAllBooksItem("webuser");
+	books.getAllBooksItem(user_id);
 
 	console.log("get books from server done");
 }
@@ -107,5 +108,13 @@ function formatISOToUS(date) {
 /************************** jquery functions ********************************/
 
 $( document ).ready(function() {
+	// load session cookie
+	var session_cookie = getCookie(SESSION_COOKIE_NAME);
+	if (!session_cookie || session_cookie == "") {
+		window.location.replace("/views/login.html");
+	}
+	
+	user_id = session_cookie.substr(0, session_cookie.indexOf(":"));
+	
 	getBooks();
 });

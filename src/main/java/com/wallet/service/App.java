@@ -1,4 +1,4 @@
-package com.project.wallet;
+package com.wallet.service;
 
 /**
  * Hello world!

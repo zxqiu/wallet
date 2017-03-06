@@ -1,4 +1,4 @@
-package user.service.data;
+package com.wallet.login.core;
 
 public enum UserPriority {
 	ADMIN,

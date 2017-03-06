@@ -1,8 +1,8 @@
 var QUESTION = "?";
-var hostURL = "http://localhost:8080"
-var apiInsertItem = "/api/books/insertitem"
-var apiDeleteItem = "/api/books/deleteitem"
-var apiGetCategories = "/api/books/getcategories"
+var hostURL = window.location.protocol + "//" + window.location.host;
+var apiInsertItem = "/api/books/insertitem";
+var apiDeleteItem = "/api/books/deleteitem";
+var apiGetCategories = "/api/books/getcategories";
 var apiGetBooks = "/api/books/getbooks";
 
 var Books = {

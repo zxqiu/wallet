@@ -14,15 +14,26 @@
 </head>
 
 <body>
-	<form action="/api/session/restoresession" method="post" id="sessionCookieForm" style="display:none">
-		<input type="text" name="session_cookie" id="sessionCookieValue"/>
-	</form>
-
+	<div class="row">
+		<div class="col-md-4">
+			<form role="form" action="/api/session/login" method="post">
+				<label for="loginUserID">
+						user ID
+				</label>
+				<input type="text" name="user_id" class="form-control" id="loginUserID">
+				<label for="loginPassword">
+						password
+				</label>
+				<input type="password" name="password" class="form-control" id="loginPassword">
+				<input type="submit" value="Submit" />
+			</form>
+		</div>
+	</div>
+	
 <script src="/js/jquery.min.js"></script>
 <script src="/js/bootstrap.min.js"></script>
 <script src="/js/bootstrap-datepicker.min.js"></script>
-<script src="/js/utils.js"></script>
-<script src="/js/index.js"></script>
+<script src="/js/books.js"></script>
 
 </body>
 </html>

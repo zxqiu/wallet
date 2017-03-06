@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>tiny wallet</title><!-- layoutit -->
+
+<link href="/css/bootstrap.min.css" rel="stylesheet">
+<link href="/css/booksList.css" rel="stylesheet">
+
+</head>
+
+<body>
+	<div class="row">
+		<div class="col-md-4">
+			<button type="button" value="go" onclick="location.href='/views/newBooksItem.html'">new item</button>
+		</div>
+		<div class="col-md-4">
+			<button type="button" onclick="getBooks()">refresh</button>
+		</div>
+	</div>
+	</br>
+	</br>
+	</br>
+	<div id="booksList">
+		<div class="row">
+			<div class="col-md-3">
+				<div class="books-list">
+					<a>
+						<img class="img-rounded books-list-img" src="http://www.koolbreeze.eclipse.co.uk/block%20lightblue.jpg"/>
+						<span class="books-list-text">
+							<span class="books-list-text-title" id="bookTitle">date amount</span>
+							<span class="books-list-text-info">
+								<span id="bookCategory">test category</span>
+								<span id="bookNote">test note</span>
+							</span>
+						</span>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/books.js"></script>
+<script src="/js/utils.js"></script>
+<script src="/js/views/booksList.js"></script>
+
+</body>
+</html>

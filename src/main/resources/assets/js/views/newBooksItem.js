@@ -1,5 +1,6 @@
 var books = Books.createNew();
 var item = new Object();
+var user_id;
 
 function goHome(data) {
 	window.location.replace("/index.html");
@@ -16,8 +17,7 @@ function postBooksItem() {
 	if (!item.id) {
 		item.id = "";
 	}
-	item.user_id = (document.getElementById("booksItemUserId").value == "") ?
-			"webuser" : document.getElementById("booksItemUserId").value;
+	item.user_id = user_id;
 	item.event_date = document.getElementById("booksItemEventDate").value;
 	item.amount = document.getElementById("booksItemAmount").value;
 	item.category = document.getElementById("booksItemCategory").value;
@@ -107,7 +107,7 @@ function createCategoryOptions(data) {
 
 function getCategoriesAndGenerate() {
 	books.setGetCategoriesSuccessCallback(createCategoryOptions);
-	books.getCategoriesAsync("webuser");
+	books.getCategoriesAsync(user_id);
 }
 
 function formatISOToUS(date) {
@@ -148,6 +148,14 @@ $(document).ready(function(){
 
 	date = month + "/" + day + "/" + date.getFullYear();
 	//console.log("current time : " + date);
+
+	// load session cookie
+	var session_cookie = getCookie(SESSION_COOKIE_NAME);
+	if (!session_cookie || session_cookie == "") {
+		window.location.replace("/views/login.html");
+	}
+	
+	user_id = session_cookie.substr(0, session_cookie.indexOf(":"));
 
 	// load category
 	getCategoriesAndGenerate();
