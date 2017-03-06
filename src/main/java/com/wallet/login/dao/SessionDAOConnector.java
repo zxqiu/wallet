@@ -7,6 +7,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import javax.ws.rs.core.Cookie;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -99,6 +101,23 @@ public class SessionDAOConnector {
 		}
 		
 		return ret.get(ret.size() - 1);
+	}
+	
+	public boolean verifySessionCookie(Cookie cookie) throws Exception {
+		if (cookie == null) {
+			return false;
+		}
+		
+		String param[] = cookie.getValue().split(":");
+		if (param.length < 2 || param[0].length() == 0 || param[1].length() == 0) {
+			return false;
+		}
+		
+		if (SessionDAOConnector.instance().getByUserIDAndAccessToken(param[0], param[1]) == null) {
+			return false;
+		}
+		
+		return true;
 	}
 	
 	public void insert(Session session) throws Exception {

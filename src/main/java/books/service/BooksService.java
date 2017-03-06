@@ -9,11 +9,13 @@ import java.util.Comparator;
 import java.util.List;
 
 import javax.validation.Valid;
+import javax.ws.rs.CookieParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -27,6 +29,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 import com.google.gson.Gson;
+import com.wallet.login.dao.SessionDAOConnector;
 
 import books.service.data.BooksInfo;
 import books.service.data.BooksTable;
@@ -187,16 +190,19 @@ public class BooksService {
 	 * Get books of a user
 	 * @param user_id
 	 * @return
+	 * @throws Exception 
 	 */
 	@GET
     @Timed
     @Path("/getbooks")
 	@Produces(value = MediaType.APPLICATION_JSON)
-	public Response getAllBooks(@QueryParam(NameDef.USER_ID) String user_id) {
+	public Response getAllBooks(@QueryParam(NameDef.USER_ID) String user_id,
+			@CookieParam("cookieName") Cookie cookie) throws Exception {
 		// 1. extract request
 		// 2. verify and parse request
 		// 3. verify parameters 
-		if (user_id == null || user_id.length() == 0) {
+		if (user_id == null || user_id.length() == 0
+				|| SessionDAOConnector.instance().verifySessionCookie(cookie)) {
 			logger_.error("ERROR: invalid get books request for \'" + user_id + "\'");
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.QUERY_ARG_ERROR)).build();
 		}
