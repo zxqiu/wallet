@@ -17,6 +17,7 @@ public class ApiUtils {
 	
 	public static final String QUERY_PARAM  = "queryParam";
 	
+	public static final String SESSION_COOKIE_ERROR = "Session Cookie Invalid";
 	public static final String QUERY_ARG_ERROR = "Query Argument Invalid";
 	public static final String JSON_PARSE_ERROR = "JSON Parse error";
 	public static final String INTERNAL_ERROR = "Server internal error";

@@ -201,11 +201,13 @@ public class BooksEntryResource {
 	@Produces(value = MediaType.APPLICATION_JSON)
 	public Response getAllBooks(@QueryParam(NameDef.USER_ID) String user_id,
 			@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
+		if (SessionDAOConnector.instance().verifySessionCookie(cookie)== false) {
+			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.SESSION_COOKIE_ERROR)).build();
+		}
 		// 1. extract request
 		// 2. verify and parse request
 		// 3. verify parameters 
-		if (user_id == null || user_id.length() == 0
-				|| SessionDAOConnector.instance().verifySessionCookie(cookie)== false) {
+		if (user_id == null || user_id.length() == 0) {
 			logger_.error("ERROR: invalid get books request for \'" + user_id + "\'");
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.QUERY_ARG_ERROR)).build();
 		}

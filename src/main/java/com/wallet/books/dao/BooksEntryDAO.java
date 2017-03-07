@@ -32,10 +32,10 @@ public static final String TABLE_NAME = "books_entry";
 				+ "references `" + UserDAO.TABLE_NAME + "` (`" + NameDef.USER_ID + "`)"
 				+ ")ENGINE = InnoDB DEFAULT CHARSET = utf8"
 			)
-	void createBooksEntryTable();
+	void createTable();
 	
 	@SqlUpdate("drop table if exists " + TABLE_NAME)
-	void dropBooksEntryTable();
+	void dropTable();
 	
 	@SqlUpdate("insert into " + TABLE_NAME + " ("
 			+ NameDef.ID + ", "

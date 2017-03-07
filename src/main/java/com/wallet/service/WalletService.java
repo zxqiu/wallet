@@ -9,6 +9,7 @@ import com.wallet.books.dao.BooksEntryDAOConnector;
 import com.wallet.books.dao.CategoryDAO;
 import com.wallet.books.dao.CategoryDAOConnector;
 import com.wallet.books.resource.BooksEntryResource;
+import com.wallet.books.resource.CategoryResource;
 import com.wallet.login.dao.SessionDAO;
 import com.wallet.login.dao.SessionDAOConnector;
 import com.wallet.login.dao.UserDAO;
@@ -16,8 +17,6 @@ import com.wallet.login.dao.UserDAOConnector;
 import com.wallet.login.resource.SessionResource;
 import com.wallet.login.resource.UserResource;
 
-import books.service.BooksService;
-import books.service.CategoryService;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
@@ -56,6 +55,12 @@ public class WalletService extends Application<WalletConfiguration> {
 	    BooksEntryDAOConnector.init(booksEntryDAO);
 	    CategoryDAOConnector.init(categoryDAO);
 	    
+	   
+	    sessionDAO.dropTable();
+	    booksEntryDAO.dropTable();
+	    categoryDAO.dropTable();
+	    userDAO.dropTable();
+	    
 	    UserDAOConnector.test();
 	    SessionDAOConnector.test();
 	    BooksEntryDAOConnector.test();
@@ -65,6 +70,6 @@ public class WalletService extends Application<WalletConfiguration> {
 	    environment.jersey().register(new SessionResource());
 	    
 	    environment.jersey().register(new BooksEntryResource());
-	    environment.jersey().register(new CategoryService());
+	    environment.jersey().register(new CategoryResource());
 	}
 }

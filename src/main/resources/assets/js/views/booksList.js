@@ -8,11 +8,17 @@ function getBooks() {
 	console.log("get books from server start");
 
 	books.setGetAllBooksItemSuccessCallback(createBooksItems);
+	books.setGetAllBooksItemErrorCallback(getBooksError);
 	books.getAllBooksItem(user_id);
 
 	console.log("get books from server done");
 }
 
+function getBooksError(data) {
+	if (data.responseJSON.message == "Session Cookie Invalid") {
+		window.location.replace("/views/login.html");
+	}
+}
 
 function createBooksItems(retData) {
 	var cnt = 0, parentDiv, booksItemsCol, booksItemsRow;

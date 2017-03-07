@@ -23,10 +23,10 @@ public interface UserDAO {
 				"primary key (`" + NameDef.USER_ID + "`)" +
 				")ENGINE = InnoDB DEFAULT CHARSET = utf8"
 			)
-	void createUserTable();
+	void createTable();
 	
 	@SqlUpdate("drop table if exists " + TABLE_NAME)
-	void dropUserTable();
+	void dropTable();
 	
 	@SqlUpdate("insert into " + TABLE_NAME + " (" +
 				NameDef.USER_ID + ", " +
@@ -46,7 +46,6 @@ public interface UserDAO {
 				@Bind(NameDef.PRIORITY) String priority);
 	
 	@SqlUpdate("update " + TABLE_NAME + " set " +
-				NameDef.USER_ID + "= :" + NameDef.USER_ID + ", " +
 				NameDef.PASSWORD + "= :" + NameDef.PASSWORD + "," +
 				NameDef.NAME + "= :" + NameDef.NAME + "," +
 				NameDef.PRIORITY + "= :" + NameDef.PRIORITY +

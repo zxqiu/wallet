@@ -49,7 +49,7 @@ public class UserDAOConnector {
 	
 	private void createTable() throws Exception {
 		try {
-			userDAO.createUserTable();
+			userDAO.createTable();
 		} catch (Exception e) {
 			if (e.getMessage().contains("already exists")) {
 				logger_.info("user table already exists : " + e.getMessage());
@@ -62,7 +62,7 @@ public class UserDAOConnector {
 	}
 	
 	public void dropTable() throws Exception {
-		userDAO.dropUserTable();
+		userDAO.dropTable();
 		instance_ = null;
 	}
 	

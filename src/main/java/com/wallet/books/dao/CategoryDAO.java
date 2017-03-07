@@ -51,14 +51,10 @@ public static final String TABLE_NAME = "category";
     );
     
     @SqlUpdate("update " + TABLE_NAME + " set "
-			+ NameDef.USER_ID + "= :" + NameDef.USER_ID + ", "
-			+ NameDef.NAME + "= :" + NameDef.NAME + ","
 			+ NameDef.PICTURE_ID + "= :" + NameDef.PICTURE_ID
 			+ " where " + NameDef.ID + "=" + NameDef.ID
 		)
 	void update(@Bind(NameDef.ID) String id,
-			@Bind(NameDef.USER_ID) String user_id,
-			@Bind(NameDef.NAME) String name,
 			@Bind(NameDef.PICTURE_ID) String picture_id);
     
     @SqlQuery("select * from " + TABLE_NAME)

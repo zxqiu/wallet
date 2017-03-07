@@ -86,8 +86,8 @@ public class CategoryDAOConnector {
 		}
 	}
 	
-	public void update(Category category) throws SQLException {
-		categoryDAO.update(category.getId(), category.getUser_id(), category.getName(), category.getPicture_id());
+	public void updatePictureID(Category category) throws SQLException {
+		categoryDAO.update(category.getId(), category.getPicture_id());
 	}
 	
 	public void deleteByID(String id) {
@@ -114,7 +114,7 @@ public class CategoryDAOConnector {
 		logger_.info("2. update");
 		
 		category.setPicture_id("gooooooooooooooooood");
-		CategoryDAOConnector.instance().update(category);
+		CategoryDAOConnector.instance().updatePictureID(category);
 		List<Category> category2 = CategoryDAOConnector.instance().getByID(category.getId());
 		if (category2.isEmpty()) {
 			logger_.error("CategoryDAOConnector test failed!");

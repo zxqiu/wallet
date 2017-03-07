@@ -49,11 +49,11 @@ public class BooksEntryDAOConnector {
 	}
 	
 	private void createTable() {
-		booksEntryDAO.createBooksEntryTable();
+		booksEntryDAO.createTable();
 	}
 	
 	public void deleteTable() throws Exception {
-		booksEntryDAO.dropBooksEntryTable();;
+		booksEntryDAO.dropTable();;
 		instance_ = null;
 	}
 

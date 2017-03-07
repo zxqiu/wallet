@@ -1,6 +1,5 @@
-package books.service;
+package com.wallet.books.resource;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,16 +24,22 @@ import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 import com.google.gson.Gson;
+import com.wallet.books.core.Category;
+import com.wallet.books.dao.CategoryDAOConnector;
 import com.wallet.login.dao.SessionDAOConnector;
 
-import books.service.data.CategoryInfo;
-import books.service.data.CategoryTable;
 import utils.ApiUtils;
 import utils.NameDef;
 
 @Path("/books")
-public class CategoryService {
-	private static final Logger logger_ = LoggerFactory.getLogger(CategoryService.class);
+public class CategoryResource {
+	private static final Logger logger_ = LoggerFactory.getLogger(CategoryResource.class);
+	
+	private CategoryDAOConnector categoryDAOC = null;
+	
+	public CategoryResource() throws Exception {
+		this.categoryDAOC = CategoryDAOConnector.instance();
+	}
 	
 	/**
 	 * Create a new category and insert to books
@@ -44,9 +49,9 @@ public class CategoryService {
 	 */
 	@POST
     @Timed
-    @Path("/newcategory")
+    @Path("/insertcategory")
 	@Produces(value = MediaType.APPLICATION_JSON)
-	public Response newCategory(@Valid CategoryPostJsonObj request,
+	public Response newCategory(@Valid CategoryPostRequest request,
 			@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
 		if (request == null || SessionDAOConnector.instance().verifySessionCookie(cookie)== false) {
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.QUERY_ARG_ERROR)).build();
@@ -61,11 +66,11 @@ public class CategoryService {
 		}
 		
 		// 4. transaction
-		CategoryInfo category = new CategoryInfo(request.user_id, request.name, request.picture_url);
-		logger_.info("Insert new category : " + category.toMap().toString());
+		Category category = new Category(request.user_id, request.name, request.picture_id);
+		logger_.info("Insert new category " + category.getName() + " for user " + request.user_id);
 		try {
-			CategoryTable.instance().insertNewCategories(category);
-		} catch (SQLException e) {
+			categoryDAOC.insert(category);
+		} catch (Exception e) {
 			e.printStackTrace();
 			logger_.error("Error : failed to insert new category : " + e.getMessage());
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.INTERNAL_ERROR)).build();
@@ -74,20 +79,20 @@ public class CategoryService {
 		return Response.status(200).entity(ApiUtils.buildJSONResponse(true, ApiUtils.SUCCESS)).build();
 	}
 	
-	public static class CategoryPostJsonObj {
+	public static class CategoryPostRequest {
 		@JsonProperty(NameDef.USER_ID)
 		String user_id;
 		@JsonProperty(NameDef.NAME)
 		String name;
-		@JsonProperty(NameDef.PICTURE_URL)
-		String picture_url;
+		@JsonProperty(NameDef.PICTURE_ID)
+		String picture_id;
 		
 		@Override
 		public String toString() {
 			return MoreObjects.toStringHelper(this)
 	                .add(NameDef.USER_ID, user_id)
 	                .add(NameDef.NAME, name)
-	                .add(NameDef.PICTURE_URL, picture_url)
+	                .add(NameDef.PICTURE_URL, picture_id)
 	                .toString();
 		}
 	}
@@ -102,7 +107,7 @@ public class CategoryService {
     @Timed
     @Path("/getcategories")
 	@Produces(value = MediaType.APPLICATION_JSON)
-	public Response getAllBooks(@QueryParam(NameDef.USER_ID) String user_id,
+	public Response getCategories(@QueryParam(NameDef.USER_ID) String user_id,
 			@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
 		// 1. extract request
 		// 2. verify and parse request
@@ -113,10 +118,10 @@ public class CategoryService {
 		}
 		
 		// 4. transaction
-		List<CategoryInfo> categories = new ArrayList<CategoryInfo>();
+		List<Category> categories = new ArrayList<Category>();
 		try {
-			categories = CategoryTable.instance().getAllCategoriesForUser(user_id);
-		} catch (SQLException e) {
+			categories = categoryDAOC.getByUserID(user_id);
+		} catch (Exception e) {
 			e.printStackTrace();
 			logger_.error("Error : failed to insert new books item for " + user_id + " : " + e.getMessage());
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.INTERNAL_ERROR)).build();
@@ -125,7 +130,7 @@ public class CategoryService {
 		// 5. generate response
 		JSONArray jsonArray = new JSONArray();
 		Gson gson = new Gson();
-		for (CategoryInfo category : categories) {
+		for (Category category : categories) {
 			try {
 				jsonArray.put(new JSONObject(gson.toJson(category)));
 			} catch (JSONException e) {
