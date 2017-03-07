@@ -2,7 +2,6 @@ package com.wallet.login.resource;
 
 import java.net.URI;
 
-import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
@@ -14,8 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.codahale.metrics.annotation.Timed;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.MoreObjects;
 import com.wallet.login.core.Session;
 import com.wallet.login.dao.SessionDAOConnector;
 import com.wallet.login.dao.UserDAOConnector;

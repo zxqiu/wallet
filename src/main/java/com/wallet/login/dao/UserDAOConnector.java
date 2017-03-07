@@ -83,7 +83,7 @@ public class UserDAOConnector {
 	}
 	
 	public User getByIDAndPassword(String user_id, String password) throws Exception {
-		List<User> ret = userDAO.findByUsernameAndPassword(user_id, password);
+		List<User> ret = userDAO.findByUserIDAndPassword(user_id, password);
 		if (ret.isEmpty()) {
 			logger_.warn("User not found : " + user_id);
 			return null;
@@ -135,5 +135,7 @@ public class UserDAOConnector {
 			logger_.error("UserDAOConnector test failure");
 			throw new Exception("UserDAOConnector test failure");
 		}
+		
+		logger_.info("UserDAOConnector test passed");
 	}
 }

@@ -176,5 +176,7 @@ public class SessionDAOConnector {
 			logger_.error("SessionDAOConnector test failure");
 			throw new Exception("SessionDAOConnector test failure");
 		}
+		
+		logger_.info("SessionDAOConnector test passed");
 	}
 }

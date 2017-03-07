@@ -4,6 +4,8 @@ import org.skife.jdbi.v2.DBI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.wallet.books.dao.BooksEntryDAO;
+import com.wallet.books.dao.BooksEntryDAOConnector;
 import com.wallet.login.dao.SessionDAO;
 import com.wallet.login.dao.SessionDAOConnector;
 import com.wallet.login.dao.UserDAO;
@@ -43,11 +45,15 @@ public class WalletService extends Application<WalletConfiguration> {
 	    
 	    final UserDAO userDAO = jdbi.onDemand(UserDAO.class);
 	    final SessionDAO sessionDAO = jdbi.onDemand(SessionDAO.class);
+	    final BooksEntryDAO booksEntryDAO = jdbi.onDemand(BooksEntryDAO.class);
+	    
 	    UserDAOConnector.init(userDAO);
 	    SessionDAOConnector.init(sessionDAO);
+	    BooksEntryDAOConnector.init(booksEntryDAO);
 	    
 	    UserDAOConnector.test();
 	    SessionDAOConnector.test();
+	    BooksEntryDAOConnector.test();
 	    
 	    environment.jersey().register(new UserResource());
 	    environment.jersey().register(new SessionResource());

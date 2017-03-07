@@ -67,7 +67,7 @@ public interface UserDAO {
     			NameDef.USER_ID + " = :" + NameDef.USER_ID +
     			" and " + NameDef.PASSWORD + " = :" + NameDef.PASSWORD)
     @Mapper(UserMapper.class)
-    List<User> findByUsernameAndPassword(
+    List<User> findByUserIDAndPassword(
         @Bind(NameDef.USER_ID) String user_id,
         @Bind(NameDef.PASSWORD) String password
     );
