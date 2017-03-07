@@ -22,7 +22,7 @@ function postBooksItem() {
 	item.amount = document.getElementById("booksItemAmount").value;
 	item.category = document.getElementById("booksItemCategory").value;
 	item.note = document.getElementById("booksItemNote").value;
-	item.picture_url = "";
+	item.photo = "";
 	
 	if (item.user_id == "") {
 		$("#booksItemUserId").parent().addClass("has-error");

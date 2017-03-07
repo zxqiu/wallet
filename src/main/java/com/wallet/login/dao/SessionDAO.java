@@ -26,10 +26,10 @@ public interface SessionDAO {
 			+ "references `" + UserDAO.TABLE_NAME + "` (`" + NameDef.USER_ID + "`)"
 			+ ")ENGINE = InnoDB DEFAULT CHARSET = utf8"
 			)
-	void createSessionTable();
+	void createTable();
 	
 	@SqlUpdate("drop table if exists " + TABLE_NAME)
-	void dropSessionTable();
+	void dropTable();
 	
     @SqlUpdate("insert into " + TABLE_NAME + " ("
     		+ NameDef.ACCESS_TOKEN
@@ -52,13 +52,13 @@ public interface SessionDAO {
     
 	@SqlQuery("select * from " + TABLE_NAME + " where " + NameDef.USER_ID + " = :" + NameDef.USER_ID)
     @Mapper(SessionMapper.class)
-    List<Session> findSessionsByUserID(
+    List<Session> findByUserID(
         @Bind(NameDef.USER_ID) String user_id
     );
 	
 	@SqlQuery("select * from " + TABLE_NAME + " where " + NameDef.ACCESS_TOKEN + " = :" + NameDef.ACCESS_TOKEN)
     @Mapper(SessionMapper.class)
-    List<Session> findSessionsByAccessToken(
+    List<Session> findByAccessToken(
         @Bind(NameDef.ACCESS_TOKEN) String access_token
     );
 	
@@ -67,7 +67,7 @@ public interface SessionDAO {
 			+ " and " + NameDef.ACCESS_TOKEN + " = :" + NameDef.ACCESS_TOKEN
 			)
     @Mapper(SessionMapper.class)
-    List<Session> findSessionsByUserIDAndAccessToken(
+    List<Session> findByUserIDAndAccessToken(
         @Bind(NameDef.USER_ID) String user_id,
         @Bind(NameDef.ACCESS_TOKEN) String access_token
     );

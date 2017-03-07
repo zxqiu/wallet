@@ -58,7 +58,7 @@ public class SessionDAOConnector {
 	
 	private void createTable() throws Exception {
 		try {
-			sessionDAO.createSessionTable();
+			sessionDAO.createTable();
 		} catch (Exception e) {
 			if (e.getMessage().contains("already exists")) {
 				logger_.info("session table already exists : " + e.getMessage());
@@ -71,7 +71,7 @@ public class SessionDAOConnector {
 	}
 	
 	public void dropTable() throws Exception {
-		sessionDAO.dropSessionTable();
+		sessionDAO.dropTable();
 		instance_ = null;
 	}
 	
@@ -80,11 +80,11 @@ public class SessionDAOConnector {
 	}
 	
 	public List<Session> getByUserID(String user_id) throws Exception {
-		return sessionDAO.findSessionsByUserID(user_id);
+		return sessionDAO.findByUserID(user_id);
 	}
 	
 	public Session getByAccessToken(String access_token) throws Exception {
-		List<Session> ret = sessionDAO.findSessionsByAccessToken(access_token);
+		List<Session> ret = sessionDAO.findByAccessToken(access_token);
 		
 		if (ret.isEmpty()) {
 			return null;
@@ -94,7 +94,7 @@ public class SessionDAOConnector {
 	}
 	
 	public Session getByUserIDAndAccessToken(String user_id, String access_token) throws Exception {
-		List<Session> ret = sessionDAO.findSessionsByUserIDAndAccessToken(user_id, access_token);
+		List<Session> ret = sessionDAO.findByUserIDAndAccessToken(user_id, access_token);
 		
 		if (ret.isEmpty()) {
 			return null;

@@ -1,9 +1,9 @@
 var QUESTION = "?";
 var hostURL = window.location.protocol + "//" + window.location.host;
-var apiInsertItem = "/api/books/insertitem";
-var apiDeleteItem = "/api/books/deleteitem";
+var apiInsertItem = "/api/books/insertentry";
+var apiDeleteItem = "/api/books/deleteentry";
 var apiGetCategories = "/api/books/getcategories";
-var apiGetBooks = "/api/books/getbooks";
+var apiGetBooks = "/api/books/getentries";
 
 var Books = {
 	createNew: function() {

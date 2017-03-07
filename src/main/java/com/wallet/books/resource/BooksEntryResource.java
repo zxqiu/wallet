@@ -1,7 +1,5 @@
 package com.wallet.books.resource;
 
-import java.sql.SQLException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,6 +27,10 @@ import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 import com.google.gson.Gson;
+import com.wallet.books.core.BooksEntry;
+import com.wallet.books.core.Category;
+import com.wallet.books.dao.BooksEntryDAOConnector;
+import com.wallet.books.dao.CategoryDAOConnector;
 import com.wallet.login.dao.SessionDAOConnector;
 
 import utils.ApiUtils;
@@ -37,8 +39,15 @@ import utils.TimeUtils;
 
 @Path("/books")
 public class BooksEntryResource {
-private static final Logger logger_ = LoggerFactory.getLogger(BooksService.class);
+	private static final Logger logger_ = LoggerFactory.getLogger(BooksEntryResource.class);
 	
+	private BooksEntryDAOConnector booksEntryDAOC = null;
+	private CategoryDAOConnector categoryDAOC = null;
+	
+	public BooksEntryResource() throws Exception {
+		this.booksEntryDAOC = BooksEntryDAOConnector.instance();
+		this.categoryDAOC = CategoryDAOConnector.instance();
+	}
 	
 	/**
 	 * Create a new item and insert to books
@@ -48,9 +57,9 @@ private static final Logger logger_ = LoggerFactory.getLogger(BooksService.class
 	 */
 	@POST
     @Timed
-    @Path("/insertitem")
+    @Path("/insertentry")
 	@Produces(value = MediaType.APPLICATION_JSON)
-	public Response insertItem(@Valid booksPostJsonObj request,
+	public Response insertItem(@Valid entryPostRequest request,
 			@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
 		if (request == null || SessionDAOConnector.instance().verifySessionCookie(cookie)== false) {
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.QUERY_ARG_ERROR)).build();
@@ -70,18 +79,10 @@ private static final Logger logger_ = LoggerFactory.getLogger(BooksService.class
 		// 4. transaction
 		// 4.1 insert new category
 		try {
-			boolean exist = false;
-			List<CategoryInfo> categoryList = CategoryTable.instance().getAllCategoriesForUser(request.user_id);
-			for (CategoryInfo cat : categoryList) {
-				if (cat.getName().equals(request.category)) {
-					exist = true;
-				}
+			if (categoryDAOC.getByID(request.user_id + request.category).isEmpty()) {
+				categoryDAOC.insert(new Category(request.user_id, request.category, ""));
 			}
-			
-			if (!exist) {
-				CategoryTable.instance().insertNewCategories(new CategoryInfo(request.user_id, request.category, ""));
-			}
-		} catch (SQLException e1) {
+		} catch (Exception e1) {
 			e1.printStackTrace();
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.INTERNAL_ERROR)).build();
 		}
@@ -91,8 +92,8 @@ private static final Logger logger_ = LoggerFactory.getLogger(BooksService.class
 		boolean exist = false;
 		if (request.id.length() != 0) {
 			try {
-				exist = ApiUtils.keyValueExists(NameDef.ID, request.id, BooksTable.TABLE_NAME);
-			} catch (SQLException e) {
+				exist = !booksEntryDAOC.getByID(request.id).isEmpty();
+			} catch (Exception e) {
 				e.printStackTrace();
 				logger_.error("Error find out if item already exists : " + e.getMessage());
 				return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.INTERNAL_ERROR)).build();
@@ -104,16 +105,17 @@ private static final Logger logger_ = LoggerFactory.getLogger(BooksService.class
 		}
 		
 		// 4.2.2 insert 
-		BooksInfo books = new BooksInfo(request.id, currentTimeMS, request.user_id, request.category, request.event_date, request.amount, request.note, request.picture_url);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
+		BooksEntry booksEntry = new BooksEntry(request.id, request.user_id, request.category, sdf.parse(request.event_date), request.amount, request.note, request.photo);
 		try {
 			if (exist) {
-				logger_.info("Update books item : " + books.toMap().toString());
-				BooksTable.instance().updateBooksItem(books);
+				logger_.info("Update books item : " + booksEntry.getId());
+				booksEntryDAOC.update(booksEntry);
 			} else {
-				logger_.info("Insert new books item : " + books.toMap().toString());
-				BooksTable.instance().insertNewBooksItem(books);
+				logger_.info("Insert new books item : " + booksEntry.getId());
+				booksEntryDAOC.insert(booksEntry);
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			logger_.error("Error : failed to insert new books : " + e.getMessage());
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.INTERNAL_ERROR)).build();
@@ -122,7 +124,7 @@ private static final Logger logger_ = LoggerFactory.getLogger(BooksService.class
 		return Response.status(200).entity(ApiUtils.buildJSONResponse(true, ApiUtils.SUCCESS)).build();
 	}
 	
-	public static class booksPostJsonObj {
+	public static class entryPostRequest {
 		@JsonProperty(NameDef.ID)
 		String id;
 		@JsonProperty(NameDef.USER_ID)
@@ -135,8 +137,8 @@ private static final Logger logger_ = LoggerFactory.getLogger(BooksService.class
 		Long amount;
 		@JsonProperty(NameDef.NOTE)
 		String note;
-		@JsonProperty(NameDef.PICTURE_URL)
-		String picture_url;
+		@JsonProperty(NameDef.PHOTO)
+		String photo;
 		
 		@Override
 		public String toString() {
@@ -147,7 +149,7 @@ private static final Logger logger_ = LoggerFactory.getLogger(BooksService.class
 	                .add(NameDef.CATEGORY, category)
 	                .add(NameDef.AMOUNT, amount)
 	                .add(NameDef.NOTE, note)
-	                .add(NameDef.PICTURE_URL, picture_url)
+	                .add(NameDef.PHOTO, photo)
 	                .toString();
 		}
 	}
@@ -160,7 +162,7 @@ private static final Logger logger_ = LoggerFactory.getLogger(BooksService.class
 	 */
 	@GET
     @Timed
-    @Path("/deleteitem")
+    @Path("/deleteentry")
 	@Produces(value = MediaType.APPLICATION_JSON)
 	public Response deleteItem(@QueryParam(NameDef.ID) String id,
 			@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
@@ -169,21 +171,21 @@ private static final Logger logger_ = LoggerFactory.getLogger(BooksService.class
 		// 3. verify parameters 
 		if (id == null || id.length() == 0
 				|| SessionDAOConnector.instance().verifySessionCookie(cookie)== false) {
-			logger_.error("ERROR: invalid remove books item request for \'" + id + "\'");
+			logger_.error("ERROR: invalid delete books entry request for \'" + id + "\'");
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.QUERY_ARG_ERROR)).build();
 		}
 		
 		// 4. transaction
 		try {
-			BooksTable.instance().deleteBooksItem(id);
-		} catch (SQLException e) {
+			booksEntryDAOC.deleteByID(id);
+		} catch (Exception e) {
 			e.printStackTrace();
-			logger_.error("Error : failed to insert new books item \'" + id + "\' : " + e.getMessage());
+			logger_.error("Error : failed to delete new books entry \'" + id + "\' : " + e.getMessage());
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.INTERNAL_ERROR)).build();
 		}
 		
 		// 5. generate response
-		logger_.info("Books item \'" + id + "\' removed");
+		logger_.info("Books entry \'" + id + "\' removed");
 		return Response.status(200).entity(ApiUtils.buildJSONResponse(true, ApiUtils.SUCCESS)).build();
 	}
 	
@@ -195,7 +197,7 @@ private static final Logger logger_ = LoggerFactory.getLogger(BooksService.class
 	 */
 	@GET
     @Timed
-    @Path("/getbooks")
+    @Path("/getentries")
 	@Produces(value = MediaType.APPLICATION_JSON)
 	public Response getAllBooks(@QueryParam(NameDef.USER_ID) String user_id,
 			@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
@@ -209,11 +211,11 @@ private static final Logger logger_ = LoggerFactory.getLogger(BooksService.class
 		}
 		
 		// 4. transaction
-		List<BooksInfo> books = new ArrayList<BooksInfo>();
+		List<BooksEntry> booksEntryList = new ArrayList<BooksEntry>();
 		try {
-			books = BooksTable.instance().getAllBooksForUser(user_id);
-			books = sortBooksByTime(books);
-		} catch (SQLException e) {
+			booksEntryList = booksEntryDAOC.getByUserID(user_id);
+			booksEntryList = sortBooksByTime(booksEntryList);
+		} catch (Exception e) {
 			e.printStackTrace();
 			logger_.error("Error : failed to insert new books item for " + user_id + " : " + e.getMessage());
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.INTERNAL_ERROR)).build();
@@ -222,9 +224,9 @@ private static final Logger logger_ = LoggerFactory.getLogger(BooksService.class
 		// 5. generate response
 		JSONArray jsonArray = new JSONArray();
 		Gson gson = new Gson();
-		for (BooksInfo book : books) {
+		for (BooksEntry entry : booksEntryList) {
 			try {
-				jsonArray.put(new JSONObject(gson.toJson(book)));
+				jsonArray.put(new JSONObject(gson.toJson(entry)));
 			} catch (JSONException e) {
 				e.printStackTrace();
 				logger_.error("Error : failed to build response JSON array for " + user_id + " : " + e.getMessage());
@@ -236,24 +238,18 @@ private static final Logger logger_ = LoggerFactory.getLogger(BooksService.class
 		return Response.status(200).entity(jsonArray.toString()).build();
 	}
 	
-	private static Comparator<BooksInfo> booksTimeComparator = new Comparator<BooksInfo>() {
-		public int compare(BooksInfo a, BooksInfo b) {
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
-			try {
-				if (sdf.parse(a.getEvent_date()).before(sdf.parse(b.getEvent_date()))) {
-					return -1;
-				} else {
-					return 1;
-				}
-			} catch (ParseException e) {
-				e.printStackTrace();
-				return 0;
+	private static Comparator<BooksEntry> booksEntryTimeComparator = new Comparator<BooksEntry>() {
+		public int compare(BooksEntry a, BooksEntry b) {
+			if (a.getEvent_date().before(b.getEvent_date())) {
+				return -1;
+			} else {
+				return 1;
 			}
 		}
 	};
 	
-	private List<BooksInfo> sortBooksByTime(List<BooksInfo> list) {
-		Collections.sort(list, booksTimeComparator);
+	private List<BooksEntry> sortBooksByTime(List<BooksEntry> list) {
+		Collections.sort(list, booksEntryTimeComparator);
 		
 		return list;
 	}

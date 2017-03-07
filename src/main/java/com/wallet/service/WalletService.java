@@ -6,6 +6,9 @@ import org.slf4j.LoggerFactory;
 
 import com.wallet.books.dao.BooksEntryDAO;
 import com.wallet.books.dao.BooksEntryDAOConnector;
+import com.wallet.books.dao.CategoryDAO;
+import com.wallet.books.dao.CategoryDAOConnector;
+import com.wallet.books.resource.BooksEntryResource;
 import com.wallet.login.dao.SessionDAO;
 import com.wallet.login.dao.SessionDAOConnector;
 import com.wallet.login.dao.UserDAO;
@@ -46,19 +49,22 @@ public class WalletService extends Application<WalletConfiguration> {
 	    final UserDAO userDAO = jdbi.onDemand(UserDAO.class);
 	    final SessionDAO sessionDAO = jdbi.onDemand(SessionDAO.class);
 	    final BooksEntryDAO booksEntryDAO = jdbi.onDemand(BooksEntryDAO.class);
+	    final CategoryDAO categoryDAO = jdbi.onDemand(CategoryDAO.class);
 	    
 	    UserDAOConnector.init(userDAO);
 	    SessionDAOConnector.init(sessionDAO);
 	    BooksEntryDAOConnector.init(booksEntryDAO);
+	    CategoryDAOConnector.init(categoryDAO);
 	    
 	    UserDAOConnector.test();
 	    SessionDAOConnector.test();
 	    BooksEntryDAOConnector.test();
+	    CategoryDAOConnector.test();
 	    
 	    environment.jersey().register(new UserResource());
 	    environment.jersey().register(new SessionResource());
 	    
-	    environment.jersey().register(new BooksService());
+	    environment.jersey().register(new BooksEntryResource());
 	    environment.jersey().register(new CategoryService());
 	}
 }
