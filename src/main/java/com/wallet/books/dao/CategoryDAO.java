@@ -51,7 +51,6 @@ public static final String TABLE_NAME = "category";
     );
     
     @SqlUpdate("update " + TABLE_NAME + " set "
-			+ NameDef.ID + "= :" + NameDef.ID + ", "
 			+ NameDef.USER_ID + "= :" + NameDef.USER_ID + ", "
 			+ NameDef.NAME + "= :" + NameDef.NAME + ","
 			+ NameDef.PICTURE_ID + "= :" + NameDef.PICTURE_ID

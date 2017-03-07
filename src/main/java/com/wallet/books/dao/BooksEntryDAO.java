@@ -67,7 +67,6 @@ public static final String TABLE_NAME = "books_entry";
 				@Bind(NameDef.EDIT_TIME) Date edit_time);
 	
 	@SqlUpdate("update " + TABLE_NAME + " set "
-			+ NameDef.ID + "= :" + NameDef.ID + ", "
 			+ NameDef.USER_ID + "= :" + NameDef.USER_ID + ", "
 			+ NameDef.CATEGORY + "= :" + NameDef.CATEGORY + ","
 			+ NameDef.EVENT_DATE + "= :" + NameDef.EVENT_DATE + ","

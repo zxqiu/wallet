@@ -116,21 +116,26 @@ public class UserDAOConnector {
 	}
 	
 	public static void test() throws Exception {
-		UserDAOConnector.instance();
-		User user = new User();
-		user.setName("admin");
-		user.setPassword("admin");
-		user.setUser_id("admin");
-		user.setPriority(UserPriority.ADMIN.name());
+		User user = new User("admin", "admin", "admin", UserPriority.ADMIN.name());
+
+		logger_.info("UserDAOConnector test ...");
+		
+		logger_.info("1. insert");
 		
 		UserDAOConnector.instance().insert(user);
-		User user2 = UserDAOConnector.instance().getByID("admin");
-		logger_.info(user2.toString());
+		User user2 = UserDAOConnector.instance().getByID(user.getUser_id());
+		if (user2 == null) {
+			logger_.error("UserDAOConnector test failure");
+			throw new Exception("UserDAOConnector test failed");
+		}
+		logger_.info("inserted user id : " + user2.getUser_id());
+
+		logger_.info("2. update");
 		
 		user.setName("gooduser");
 		UserDAOConnector.instance().update(user);
 		user2 = UserDAOConnector.instance().getByID("admin");
-		logger_.info(user2.toString());
+		logger_.info("updated name" + user2.getName());
 		if (!user2.getName().equals("gooduser")) {
 			logger_.error("UserDAOConnector test failure");
 			throw new Exception("UserDAOConnector test failure");

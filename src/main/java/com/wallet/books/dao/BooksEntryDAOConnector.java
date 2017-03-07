@@ -94,25 +94,34 @@ public class BooksEntryDAOConnector {
 	}
 	
 	public static void test() throws Exception {
-		BooksEntryDAOConnector.instance().deleteTable();
-		BooksEntryDAOConnector.instance();
 		BooksEntry booksEntry = new BooksEntry("admin1", "admin", "good", new Date(), (long)10, "note", "photo");
 		
+		logger_.info("BooksEntryDAOConnector test ...");
+		
+		logger_.info("1. insert");
+		
 		BooksEntryDAOConnector.instance().insert(booksEntry);
-		for (BooksEntry books : BooksEntryDAOConnector.instance().getByUserID("me")) {
-			logger_.info(books.getId());
+		if (BooksEntryDAOConnector.instance().getByUserID("admin").isEmpty()) {
+			logger_.error("Error BooksEntryDAOConnector test failed");
+			throw new Exception("BooksEntryDAOConnector test failed");
 		}
+		
+		logger_.info("2. update");
 		
 		booksEntry.setNote("nooooooote");
 		BooksEntryDAOConnector.instance().update(booksEntry);
-		for (BooksEntry books : BooksEntryDAOConnector.instance().getByUserID("me")) {
-			logger_.info(books.getId());
+		if (BooksEntryDAOConnector.instance().getByUserID("admin").isEmpty()) {
+			logger_.error("Error BooksEntryDAOConnector test failed");
+			throw new Exception("BooksEntryDAOConnector test failed");
 		}
+		logger_.info("updated note : " + BooksEntryDAOConnector.instance().getByID(booksEntry.getId()).get(0).getNote());
+		
+		logger_.info("3. delete");
 		
 		BooksEntryDAOConnector.instance().deleteByID(booksEntry.getId());
 		if (!BooksEntryDAOConnector.instance().getByID(booksEntry.getId()).isEmpty()) {
 			logger_.error("Error BooksEntryDAOConnector test failed");
-			throw new Exception("BooksEntryDAOConnector test failure");
+			throw new Exception("BooksEntryDAOConnector test failed");
 		}
 		
 		logger_.info("BooksEntryDAOConnector test passed");

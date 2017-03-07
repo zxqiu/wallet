@@ -163,12 +163,21 @@ public class SessionDAOConnector {
 	}
 	
 	public static void test() throws Exception {
-		//SessionDAOConnector.instance().dropTable();
 		Session session = new Session("admin");
+		
+		logger_.info("SessionDAOConnector test ...");
+		
+		logger_.info("1. insert");
 		
 		SessionDAOConnector.instance().insert(session);
 		Session session2 = SessionDAOConnector.instance().getByAccessToken(session.getAccess_token());
-		logger_.info(session2.toString());
+		if (session2 == null) {
+			logger_.error("SessionDAOConnector test failure");
+			throw new Exception("SessionDAOConnector test failure");
+		}
+		logger_.info("inserted session : " + session2.getAccess_token());
+		
+		logger_.info("2. delete");
 		
 		SessionDAOConnector.instance().deleteByAccessToken(session.getAccess_token());
 		session2 = SessionDAOConnector.instance().getByAccessToken(session.getAccess_token());

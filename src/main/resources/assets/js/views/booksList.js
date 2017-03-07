@@ -93,7 +93,7 @@ function createSingleBooksItem(itemInfo) {
 	itemSpanDetail.title = JSON.stringify(itemInfo);
 	itemImg.src = "http://www.koolbreeze.eclipse.co.uk/block%20lightblue.jpg"; //itemInfo.Image
 	itemSpanDetailTitle.innerHTML =
-			formatISOToUS(itemInfo.event_date) + " $" +
+			itemInfo.event_date + " $" +
 			itemInfo.amount;
 	itemSpanDetailInfoCategory.innerHTML = "category: " + itemInfo.category;
 	itemSpanDetailInfoNote.innerHTML = "note: " + itemInfo.note;

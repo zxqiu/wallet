@@ -101,16 +101,28 @@ public class CategoryDAOConnector {
 	public static void test() throws Exception {
 		Category category = new Category("admin", "good", "");
 		
+		logger_.info("CategoryDAOConnector test ...");
+		
+		logger_.info("1. insert");
+		
 		CategoryDAOConnector.instance().insert(category);
-		for (Category iter : CategoryDAOConnector.instance().getByUserID("admin")) {
-			logger_.info(iter.getName());
+		if (CategoryDAOConnector.instance().getByUserID("admin").isEmpty()) {
+			logger_.error("CategoryDAOConnector test failed!");
+			throw new Exception("CategoryDAOConnector test failed!");
 		}
 		
-		category.setName("gooooooooooooooooood");
+		logger_.info("2. update");
+		
+		category.setPicture_id("gooooooooooooooooood");
 		CategoryDAOConnector.instance().update(category);
-		for (Category iter : CategoryDAOConnector.instance().getByUserID("webuser")) {
-			logger_.info(iter.getName());
+		List<Category> category2 = CategoryDAOConnector.instance().getByID(category.getId());
+		if (category2.isEmpty()) {
+			logger_.error("CategoryDAOConnector test failed!");
+			throw new Exception("CategoryDAOConnector test failed!");
 		}
+		logger_.info("updated picture id : " + category2.get(category2.size() - 1).getPicture_id());
+		
+		logger_.info("3. delete");
 		
 		CategoryDAOConnector.instance().deleteByID(category.getId());
 		if (!CategoryDAOConnector.instance().getByID(category.getId()).isEmpty()) {
