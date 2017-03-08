@@ -16,14 +16,14 @@
  * limitations under the License.
  */
 
-package ConcurrentHelper;
+package com.wallet.utils.tools.concurrentHelper;
 
 import java.util.concurrent.*;
 
 import org.slf4j.Logger; 
 import org.slf4j.LoggerFactory;
 
-import utils.LogUtils;
+import com.wallet.utils.misc.LogUtils;
 
 /**
  * This is a wrapper class for the <i>ScheduledThreadPoolExecutor</i>. It provides an implementation

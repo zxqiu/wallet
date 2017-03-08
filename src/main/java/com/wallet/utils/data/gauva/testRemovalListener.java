@@ -1,4 +1,4 @@
-package cache;
+package com.wallet.utils.data.gauva;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

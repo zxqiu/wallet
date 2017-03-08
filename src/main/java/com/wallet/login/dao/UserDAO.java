@@ -9,8 +9,7 @@ import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
 
 import com.wallet.login.core.User;
 import com.wallet.login.core.UserMapper;
-
-import utils.NameDef;
+import com.wallet.utils.misc.NameDef;
 
 public interface UserDAO {
 	public static final String TABLE_NAME = "user";

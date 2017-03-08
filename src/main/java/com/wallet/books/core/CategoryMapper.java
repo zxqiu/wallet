@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import org.skife.jdbi.v2.StatementContext;
 import org.skife.jdbi.v2.tweak.ResultSetMapper;
 
-import utils.NameDef;
+import com.wallet.utils.misc.NameDef;
 
 public class CategoryMapper implements ResultSetMapper<Category> {
 

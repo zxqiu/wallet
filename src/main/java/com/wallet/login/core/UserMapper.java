@@ -4,7 +4,7 @@ import org.skife.jdbi.v2.StatementContext;
 import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
 import org.skife.jdbi.v2.tweak.ResultSetMapper;
 
-import utils.NameDef;
+import com.wallet.utils.misc.NameDef;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

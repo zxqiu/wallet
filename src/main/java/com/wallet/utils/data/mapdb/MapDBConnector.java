@@ -1,4 +1,4 @@
-package MapDBConnector;
+package com.wallet.utils.data.mapdb;
 
 import java.io.File;
 import java.util.TimerTask;
@@ -13,7 +13,7 @@ import org.mapdb.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ConcurrentHelper.Scheduler;
+import com.wallet.utils.tools.concurrentHelper.Scheduler;
 
 public class MapDBConnector {
 	private static Lock createLock_ = new ReentrantLock();

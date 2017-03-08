@@ -1,4 +1,4 @@
-package utils;
+package com.wallet.utils.misc;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -10,7 +10,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import mySqlConnector.MySqlConnector;
+import com.wallet.utils.data.mysql.MySqlConnector;
 
 public class ApiUtils {
 	private static final Logger logger_ = LoggerFactory.getLogger(ApiUtils.class);

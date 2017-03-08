@@ -1,4 +1,4 @@
-package mySqlConnector;
+package com.wallet.utils.data.mysql;
 
 import java.io.InputStream;
 import java.sql.Connection;

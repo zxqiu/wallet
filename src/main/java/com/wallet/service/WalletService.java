@@ -55,7 +55,6 @@ public class WalletService extends Application<WalletConfiguration> {
 	    BooksEntryDAOConnector.init(booksEntryDAO);
 	    CategoryDAOConnector.init(categoryDAO);
 	    
-	   
 	    sessionDAO.dropTable();
 	    booksEntryDAO.dropTable();
 	    categoryDAO.dropTable();
@@ -68,7 +67,6 @@ public class WalletService extends Application<WalletConfiguration> {
 	    
 	    environment.jersey().register(new UserResource());
 	    environment.jersey().register(new SessionResource());
-	    
 	    environment.jersey().register(new BooksEntryResource());
 	    environment.jersey().register(new CategoryResource());
 	}

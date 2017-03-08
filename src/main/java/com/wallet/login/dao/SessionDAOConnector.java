@@ -13,8 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.wallet.login.core.Session;
-
-import ConcurrentHelper.Scheduler;
+import com.wallet.utils.tools.concurrentHelper.Scheduler;
 
 public class SessionDAOConnector {
 	private static Lock createLock_ = new ReentrantLock();

@@ -10,8 +10,7 @@ import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
 import com.wallet.books.core.Category;
 import com.wallet.books.core.CategoryMapper;
 import com.wallet.login.dao.UserDAO;
-
-import utils.NameDef;
+import com.wallet.utils.misc.NameDef;
 
 public interface CategoryDAO {
 public static final String TABLE_NAME = "category";

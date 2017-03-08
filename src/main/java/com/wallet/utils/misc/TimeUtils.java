@@ -1,4 +1,4 @@
-package utils;
+package com.wallet.utils.misc;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

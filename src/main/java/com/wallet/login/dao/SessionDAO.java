@@ -9,8 +9,7 @@ import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
 
 import com.wallet.login.core.Session;
 import com.wallet.login.core.SessionMapper;
-
-import utils.NameDef;
+import com.wallet.utils.misc.NameDef;
 
 
 public interface SessionDAO {

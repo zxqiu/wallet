@@ -1,4 +1,4 @@
-package utils;
+package com.wallet.utils.misc;
 
 public class SqlUtils {
 	/* MySql error codes */

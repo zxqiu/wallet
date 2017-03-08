@@ -1,4 +1,4 @@
-package utils;
+package com.wallet.utils.misc;
 
 public class XMLUtils {
 	private static final String CDATA_BEGIN = "![CDATA[";

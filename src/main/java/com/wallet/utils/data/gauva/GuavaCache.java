@@ -1,4 +1,4 @@
-package cache;
+package com.wallet.utils.data.gauva;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 

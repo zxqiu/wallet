@@ -1,7 +1,7 @@
 /**
  * Util class for all log related operations
  */
-package utils;
+package com.wallet.utils.misc;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.DateFormat;

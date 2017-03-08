@@ -32,10 +32,9 @@ import com.wallet.books.core.Category;
 import com.wallet.books.dao.BooksEntryDAOConnector;
 import com.wallet.books.dao.CategoryDAOConnector;
 import com.wallet.login.dao.SessionDAOConnector;
-
-import utils.ApiUtils;
-import utils.NameDef;
-import utils.TimeUtils;
+import com.wallet.utils.misc.ApiUtils;
+import com.wallet.utils.misc.NameDef;
+import com.wallet.utils.misc.TimeUtils;
 
 @Path("/books")
 public class BooksEntryResource {

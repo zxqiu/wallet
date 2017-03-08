@@ -1,4 +1,4 @@
-package utils;
+package com.wallet.utils.misc;
 
 public class NameDef {
 	public static final String ID = "id";

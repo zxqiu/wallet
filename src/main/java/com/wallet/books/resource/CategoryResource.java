@@ -27,9 +27,8 @@ import com.google.gson.Gson;
 import com.wallet.books.core.Category;
 import com.wallet.books.dao.CategoryDAOConnector;
 import com.wallet.login.dao.SessionDAOConnector;
-
-import utils.ApiUtils;
-import utils.NameDef;
+import com.wallet.utils.misc.ApiUtils;
+import com.wallet.utils.misc.NameDef;
 
 @Path("/books")
 public class CategoryResource {

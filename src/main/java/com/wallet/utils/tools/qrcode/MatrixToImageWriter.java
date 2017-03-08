@@ -1,4 +1,4 @@
-package QRCode;
+package com.wallet.utils.tools.qrcode;
 
 import java.awt.image.BufferedImage;  
 import java.io.File;  

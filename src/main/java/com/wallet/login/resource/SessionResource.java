@@ -17,10 +17,10 @@ import com.wallet.login.core.Session;
 import com.wallet.login.dao.SessionDAOConnector;
 import com.wallet.login.dao.UserDAOConnector;
 import com.wallet.service.WalletConfiguration;
+import com.wallet.utils.misc.ApiUtils;
+import com.wallet.utils.misc.NameDef;
 
 import ch.qos.logback.core.status.Status;
-import utils.ApiUtils;
-import utils.NameDef;
 
 @Path("/session")
 @Produces(MediaType.APPLICATION_JSON)

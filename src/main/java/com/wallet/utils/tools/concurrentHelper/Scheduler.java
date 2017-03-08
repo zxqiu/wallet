@@ -1,4 +1,4 @@
-package ConcurrentHelper;
+package com.wallet.utils.tools.concurrentHelper;
 
 import java.util.Timer;
 import java.util.TimerTask;

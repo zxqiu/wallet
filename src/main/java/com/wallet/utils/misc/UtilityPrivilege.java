@@ -1,4 +1,4 @@
-package utils;
+package com.wallet.utils.misc;
 
 public class UtilityPrivilege {
 	public enum Privilege {        
