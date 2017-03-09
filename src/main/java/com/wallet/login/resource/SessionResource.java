@@ -23,7 +23,6 @@ import com.wallet.utils.misc.NameDef;
 import ch.qos.logback.core.status.Status;
 
 @Path("/session")
-@Produces(MediaType.APPLICATION_JSON)
 public class SessionResource {
 	private static final Logger logger_ = LoggerFactory.getLogger(SessionResource.class);
 
@@ -39,6 +38,7 @@ public class SessionResource {
     @POST
     @Path("/login")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.APPLICATION_JSON)
     public Object login(
         @FormParam(NameDef.USER_ID) String user_id,
         @FormParam(NameDef.PASSWORD) String password) throws Exception {
@@ -65,6 +65,7 @@ public class SessionResource {
     @Timed
     @Path("/restoresession")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.APPLICATION_JSON)
     public Object restoreSession(
         @FormParam(NameDef.SESSION_COOKIE) String session_cookie) throws Exception {
     	URI uri = UriBuilder.fromUri("/views/login.html").build();
@@ -89,4 +90,13 @@ public class SessionResource {
         uri = UriBuilder.fromUri("/views/booksList.html").build();
         return Response.seeOther(uri).build();
     }
+
+    @GET
+    @Timed
+    @Path("/rocker")
+    @Produces(MediaType.TEXT_HTML)
+    public Response index() {
+        return Response.serverError().entity(views.index.template()).build();
+    }
+
 }

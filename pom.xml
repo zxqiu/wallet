@@ -9,10 +9,57 @@
 
   <name>wallet</name>
   <url>http://maven.apache.org</url>
-  
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
+
+
+	<parent>
+		<groupId>com.fizzed</groupId>
+		<artifactId>fizzed-maven-parent</artifactId>
+		<version>1.15</version>
+	</parent>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<rocker.version>0.10.5</rocker.version>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.fizzed</groupId>
+				<artifactId>rocker-maven-plugin</artifactId>
+				<version>${rocker.version}</version>
+				<executions>
+					<execution>
+						<id>generate-rocker-templates</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<!--<extendsClass>com.fizzed.ninja.rocker.NinjaRockerTemplate</extendsClass>-->
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+		<resources>
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*</include>
+				</includes>
+				<excludes>
+					<exclude>**/*.java</exclude>
+					<exclude>**/*.rocker.html</exclude>
+				</excludes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>**/*</include>
+				</includes>
+			</resource>
+		</resources>
+	</build>
 
   <dependencies>
     <dependency>
@@ -117,6 +164,26 @@
 		<artifactId>mysql-connector-java</artifactId>
 		<version>6.0.5</version>
 	</dependency>
+
+	<dependency>
+		<groupId>com.fizzed</groupId>
+		<artifactId>rocker-runtime</artifactId>
+		<version>${rocker.version}</version>
+	</dependency>
+
+	<dependency>
+		<groupId>com.fizzed</groupId>
+		<artifactId>rocker-compiler</artifactId>
+		<version>${rocker.version}</version>
+		<scope>provided</scope>
+	</dependency>
+	<!-- https://mvnrepository.com/artifact/com.fizzed/rocker-maven-plugin -->
+	<dependency>
+		<groupId>com.fizzed</groupId>
+		<artifactId>rocker-maven-plugin</artifactId>
+		<version>0.16.0</version>
+	</dependency>
+
   </dependencies>
   
   <repositories>
