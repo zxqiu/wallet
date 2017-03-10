@@ -96,7 +96,7 @@ public class SessionResource {
     @Path("/")
     @Produces(MediaType.TEXT_HTML)
     public Response index() {
-        return Response.serverError().entity(views.index.template("world")).build();
+        return Response.serverError().entity(views.index.template("world", "you")).build();
     }
 
 }

@@ -1,5 +1,6 @@
 package com.wallet.service;
 
+import com.fizzed.rocker.runtime.RockerRuntime;
 import org.skife.jdbi.v2.DBI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,5 +72,6 @@ public class WalletService extends Application<WalletConfiguration> {
 	    environment.jersey().register(new CategoryResource());
 
 		environment.jersey().register(new RockerMessageBodyWriter());
+		RockerRuntime.getInstance().setReloading(true);
 	}
 }

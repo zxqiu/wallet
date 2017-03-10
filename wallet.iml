@@ -207,12 +207,11 @@
     <orderEntry type="library" name="Maven: io.dropwizard:dropwizard-jdbi:1.1.0-rc1" level="project" />
     <orderEntry type="library" name="Maven: io.dropwizard.metrics:metrics-jdbi:3.1.2" level="project" />
     <orderEntry type="library" name="Maven: mysql:mysql-connector-java:6.0.5" level="project" />
-    <orderEntry type="library" name="Maven: com.fizzed:rocker-runtime:0.10.5" level="project" />
+    <orderEntry type="library" name="Maven: com.fizzed:rocker-runtime:0.16.0" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.7" level="project" />
+    <orderEntry type="library" name="Maven: com.fizzed:rocker-compiler:0.16.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.3.2" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: com.fizzed:rocker-compiler:0.10.5" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.antlr:antlr4-runtime:4.5" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.abego.treelayout:org.abego.treelayout.core:1.0.1" level="project" />
+    <orderEntry type="library" name="Maven: org.antlr:antlr4-runtime:4.5.3" level="project" />
     <orderEntry type="library" name="Maven: com.fizzed:rocker-maven-plugin:0.16.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.maven:maven-plugin-api:3.1.0" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.sisu:org.eclipse.sisu.plexus:0.0.0.M2a" level="project" />
