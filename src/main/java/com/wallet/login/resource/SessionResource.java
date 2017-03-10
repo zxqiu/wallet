@@ -22,7 +22,7 @@ import com.wallet.utils.misc.NameDef;
 
 import ch.qos.logback.core.status.Status;
 
-@Path("/session")
+@Path("/")
 public class SessionResource {
 	private static final Logger logger_ = LoggerFactory.getLogger(SessionResource.class);
 
@@ -93,10 +93,10 @@ public class SessionResource {
 
     @GET
     @Timed
-    @Path("/rocker")
+    @Path("/")
     @Produces(MediaType.TEXT_HTML)
     public Response index() {
-        return Response.serverError().entity(views.index.template()).build();
+        return Response.serverError().entity(views.index.template("world")).build();
     }
 
 }

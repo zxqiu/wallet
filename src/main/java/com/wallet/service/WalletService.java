@@ -35,9 +35,9 @@ public class WalletService extends Application<WalletConfiguration> {
     @Override
     public void initialize(Bootstrap<WalletConfiguration> bootstrap) {
 		//TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
-    	//bootstrap.addBundle(new AssetsBundle("/assets/css", "/css", null, "css"));
-        //bootstrap.addBundle(new AssetsBundle("/assets/js", "/js", null, "js"));
-    	bootstrap.addBundle(new AssetsBundle("/assets", "/", "index.html", "html"));
+    	bootstrap.addBundle(new AssetsBundle("/assets/css", "/css", null, "css"));
+        bootstrap.addBundle(new AssetsBundle("/assets/js", "/js", null, "js"));
+    	bootstrap.addBundle(new AssetsBundle("/assets", "/app", "index.html", "html"));
     }
 
 	@Override
