@@ -1,5 +1,6 @@
 package com.wallet.books.resource;
 
+import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,6 +18,7 @@ import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.wallet.login.resource.SessionResource;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -70,8 +72,17 @@ public class BooksEntryResource {
 	@Timed
 	@Path("entry")
 	@Produces(value = MediaType.TEXT_HTML)
-	public Response booksEntryView() {
-		return Response.ok().entity(views.booksEntry.template()).build();
+	public Response booksEntryView(@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
+		if (cookie == null) {
+			Response.seeOther(URI.create(SessionResource.PATH_LOGIN)).build();
+		}
+
+		String param[] = cookie.getValue().split(":");
+		if (param.length < 2 || param[0].length() == 0 || param[1].length() == 0) {
+			Response.seeOther(URI.create(SessionResource.PATH_LOGIN)).build();
+		}
+
+		return Response.ok().entity(views.booksEntry.template(categoryDAOC.getByUserID(param[0]))).build();
 	}
 
 	/**

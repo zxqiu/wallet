@@ -1,55 +1,11 @@
-var QUESTION = "?";
 var hostURL = window.location.protocol + "//" + window.location.host;
 var apiInsertEntry = "/books/insertentry";
-var apiInsertEntryView = "/books/entry";
 var apiDeleteItem = "/books/deleteentry";
-var apiGetCategories = "/books/getcategories";
 var apiGetBooks = "/books/getentries";
 
 var Books = {
 	createNew: function() {
 		var books = {};
-
-		books.getCategoriesSuccess;
-		books.getCategoriesError;
-		
-		books.setGetCategoriesSuccessCallback = function(callback) {
-			books.getCategoriesSuccess = callback;
-		};
-		
-		books.setGetCategoriesErrorCallback = function(callback) {
-			books.getCategoriesError = callback;
-		};
-		
-		books.getCategoriesAsync = function(user_id) {
-			var param = new Object();
-			param.user_id = user_id;
-			var retData = null;
-			
-			var request = hostURL + apiGetCategories;
-			$.ajax({
-				type: "GET",
-				url: request,
-				dataType: "json",
-				data: param,
-				contentType: 'application/json',
-				success: function(data) {
-					if (books.getCategoriesSuccess && typeof(books.getCategoriesSuccess) == "function") {
-						books.getCategoriesSuccess(data);
-					}
-				},
-				error: function(data) {
-					if (books.getCategoriesError && typeof(books.getCategoriesError) == "function") {
-						books.getCategoriesError(data);
-					}
-				},
-			}).then(function(data) {
-				console.log(data);
-				retData = data;
-			});
-			
-			return retData;
-		};
 
 		books.postBooksEntrySuccess = null;
 		books.postBooksEntryError = null;

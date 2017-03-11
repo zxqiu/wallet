@@ -77,39 +77,6 @@ function deleteBooksEntry() {
 	books.deleteBooksEntry(item.id);
 }
 
-function createCategoryOptions(data) {
-	var jsonArray = data;
-	var parentDiv = document.getElementById("booksEntryCategoryList");
-
-	while (parentDiv.firstChild) {
-		parentDiv.removeChild(parentDiv.firstChild);
-	}
-
-	
-	console.log("received " + jsonArray.length + " categories");
-	for (var i = 0; i < jsonArray.length; i++) {
-		var jsonObj = jsonArray[i];
-		var optionLi = document.createElement("li");
-		var optionA = document.createElement("a");
-
-		optionA.textContent = jsonObj.name;
-		optionA.value = jsonObj.name;
-		
-		optionLi.appendChild(optionA);
-		parentDiv.appendChild(optionLi);
-	}
-	
-	$('#booksEntryCategoryList li a').on('click', function(){
-		$('#booksEntryCategory').val($(this).text()).change();
-		$('#booksEntryCategory').text($(this).text());
-	});
-}
-
-function getCategoriesAndGenerate() {
-	books.setGetCategoriesSuccessCallback(createCategoryOptions);
-	books.getCategoriesAsync(user_id);
-}
-
 function formatISOToUS(date) {
 	return date.slice(5, 7) + '/' + date.slice(8, 10) + '/' + date.slice(0, 4);
 }
@@ -158,8 +125,11 @@ $(document).ready(function(){
 	user_id = session_cookie.substr(0, session_cookie.indexOf(":"));
 
 	// load category
-	getCategoriesAndGenerate();
-	
+    $('#booksEntryCategoryList li a').on('click', function(){
+        $('#booksEntryCategory').val($(this).text()).change();
+        $('#booksEntryCategory').text($(this).text());
+    });
+
 	// parse parameter
 	var urlParam = location.search.substr(location.search.indexOf("?")+1).replace(/%22/g, "\"");
 	if (urlParam && urlParam != "") {
