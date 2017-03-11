@@ -3,10 +3,6 @@ var user_id;
 
 var booksEntrysEachLine = 6;
 
-function insertBooksEntry() {
-	books.insertBooksEntryView();
-}
-
 function getBooks() {
 	console.log("get books from server start");
 

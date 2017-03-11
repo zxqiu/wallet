@@ -169,12 +169,6 @@ var Books = {
 			return retData;
 		};
 
-		books.insertBooksEntryView = function () {
-			jQuery.get(apiInsertEntryView, function (data) {
-				document.write(data);
-			});
-		};
-
 		return books;
 	}
 };
