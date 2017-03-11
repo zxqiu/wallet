@@ -7,8 +7,8 @@ import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
 
+import com.wallet.books.resource.BooksEntryResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +16,6 @@ import com.codahale.metrics.annotation.Timed;
 import com.wallet.login.core.Session;
 import com.wallet.login.dao.SessionDAOConnector;
 import com.wallet.login.dao.UserDAOConnector;
-import com.wallet.service.WalletConfiguration;
 import com.wallet.utils.misc.ApiUtils;
 import com.wallet.utils.misc.NameDef;
 
@@ -35,10 +34,11 @@ public class SessionResource {
         this.sessionDAOC = SessionDAOConnector.instance();
     }
 
+    public static final String PATH_LOGIN = "login";
     @POST
     @Path("/login")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_HTML)
     public Object login(
         @FormParam(NameDef.USER_ID) String user_id,
         @FormParam(NameDef.PASSWORD) String password) throws Exception {
@@ -52,51 +52,49 @@ public class SessionResource {
         Session session = new Session(user_id);
         sessionDAOC.insert(session);
 
-        //return session;
-        URI uri = UriBuilder.fromUri("/views/booksList.html").build();
         Cookie cookie = new Cookie("walletSessionCookie",
-        		session.getUser_id() + ":" + session.getAccess_token(),
-        		"/", WalletConfiguration.getHostName());
+        		session.getUser_id() + ":" + session.getAccess_token());
         NewCookie cookies = new NewCookie(cookie);
-        return Response.seeOther(uri).cookie(cookies).build();
-    }
-    
-    @POST
-    @Timed
-    @Path("/restoresession")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Object restoreSession(
-        @FormParam(NameDef.SESSION_COOKIE) String session_cookie) throws Exception {
-    	URI uri = UriBuilder.fromUri("/views/login.html").build();
-        
-    	if (session_cookie == null || session_cookie.length() == 0) {
-    		return Response.seeOther(uri).build();
-    	}
-    	
-    	String param[] = session_cookie.split(":");
-    	if (param.length < 2) {
-    		logger_.error("Error processing form data : " + session_cookie);
-    		return Response.seeOther(uri).build();
-    	}
-    	
-    	String user_id = param[0];
-    	String access_token = param[1];
-    	
-    	if (sessionDAOC.getByUserIDAndAccessToken(user_id, access_token) == null) {
-    		return Response.seeOther(uri).build();
-    	}
-    	
-        uri = UriBuilder.fromUri("/views/booksList.html").build();
-        return Response.seeOther(uri).build();
+
+        return Response
+                .seeOther(URI.create(BooksEntryResource.PATH_BOOKS))
+                .cookie(cookies)
+                .build();
     }
 
+    public static final String PATH_LOGOUT = "logout";
+    @GET
+    @Timed
+    @Path("/logout")
+    @Produces(MediaType.TEXT_HTML)
+    public Object logout(@CookieParam("walletSessionCookie") Cookie cookie) {
+        String param[] = cookie.getValue().split(":");
+        if (param.length < 2 || param[0].length() == 0 || param[1].length() == 0) {
+            return false;
+        }
+
+        try {
+            sessionDAOC.deleteByAccessToken(param[1]);
+        } catch (Exception e) {
+            logger_.info("Logout unexpected session : " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return Response.ok().entity(views.login.template()).build();
+    }
+
+    public static final String PATH_RESTORE_SESSION = "/";
     @GET
     @Timed
     @Path("/")
     @Produces(MediaType.TEXT_HTML)
-    public Response index() {
-        return Response.serverError().entity(views.index.template("world", "you")).build();
+    public Object restoreSession(@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
+    	if (!sessionDAOC.verifySessionCookie(cookie)) {
+    		return Response.ok().entity(views.login.template()).build();
+    	}
+    	
+        return Response
+                .seeOther(URI.create(BooksEntryResource.PATH_BOOKS))
+                .build();
     }
-
 }

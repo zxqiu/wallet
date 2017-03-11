@@ -47,10 +47,36 @@ public class BooksEntryResource {
 		this.booksEntryDAOC = BooksEntryDAOConnector.instance();
 		this.categoryDAOC = CategoryDAOConnector.instance();
 	}
-	
+
+	public static final String PATH_BOOKS = "/books";
+
 	/**
-	 * Create a new item and insert to books
-	 * @param user_id, event_date, category, amount, note, picture_url
+	 * @return booksEntryList view. This is the main view of path /books
+	 */
+	@GET
+	@Timed
+	@Path("/")
+	@Produces(value = MediaType.TEXT_HTML)
+	public Response booksEntryListView() {
+		return Response.ok().entity(views.booksEntryList.template()).build();
+	}
+
+	public static final String PATH_INSERT_ENTRY_VIEW = "/books/entry";
+
+	/**
+	 * @return booksEntry view. This is for showing and edit entry details.
+	 */
+	@GET
+	@Timed
+	@Path("entry")
+	@Produces(value = MediaType.TEXT_HTML)
+	public Response booksEntryView() {
+		return Response.ok().entity(views.booksEntry.template()).build();
+	}
+
+	/**
+	 * Create a insert new or update existing books entry.
+	 * @param request
 	 * @return
 	 * @throws Exception 
 	 */
@@ -91,6 +117,7 @@ public class BooksEntryResource {
 		boolean exist = false;
 		if (request.id.length() != 0) {
 			try {
+				exist = !booksEntryDAOC.getByID(request.id).isEmpty();
 				exist = !booksEntryDAOC.getByID(request.id).isEmpty();
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -155,7 +182,7 @@ public class BooksEntryResource {
 	
 	/**
 	 * Delete books item
-	 * @param user_id
+	 * @param id
 	 * @return
 	 * @throws Exception 
 	 */

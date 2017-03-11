@@ -3,44 +3,44 @@ var item = new Object();
 var user_id;
 
 function goHome(data) {
-	window.location.replace("/index.html");
+	window.location.replace("/books");
 }
 
 function postError(textStatus) {
 	console.log("post new books item failed : " + textStatus);
-	$('#booksItemSubmit').removeAttr("disabled");
+	$('#booksEntrySubmit').removeAttr("disabled");
 	var text = "try again";
-	$('#booksItemSubmit').html(text.fontcolor("red"));
+	$('#booksEntrySubmit').html(text.fontcolor("red"));
 }
 
-function postBooksItem() {
+function postBooksEntry() {
 	if (!item.id) {
 		item.id = "";
 	}
 	item.user_id = user_id;
-	item.event_date = document.getElementById("booksItemEventDate").value;
-	item.amount = document.getElementById("booksItemAmount").value;
-	item.category = document.getElementById("booksItemCategory").value;
-	item.note = document.getElementById("booksItemNote").value;
+	item.event_date = document.getElementById("booksEntryEventDate").value;
+	item.amount = document.getElementById("booksEntryAmount").value;
+	item.category = document.getElementById("booksEntryCategory").value;
+	item.note = document.getElementById("booksEntryNote").value;
 	item.photo = "";
 	
 	if (item.user_id == "") {
-		$("#booksItemUserId").parent().addClass("has-error");
+		$("#booksEntryUserId").parent().addClass("has-error");
 		return;
 	}
 	
 	if (item.event_date == "") {
-		$("#booksItemEventDate").parent().parent().addClass("has-error");
+		$("#booksEntryEventDate").parent().parent().addClass("has-error");
 		return;
 	}
 	
 	if (item.amount == "") {
-		$("#booksItemAmount").parent().addClass("has-error");
+		$("#booksEntryAmount").parent().addClass("has-error");
 		return;
 	}
 	
 	if (item.category == "") {
-		$("#booksItemCategory").parent().parent().addClass("has-error");
+		$("#booksEntryCategory").parent().parent().addClass("has-error");
 		return;
 	}
 
@@ -55,31 +55,31 @@ function postBooksItem() {
 			"note":item.note,
 			"picture_url":item.picture_url};
 
-	books.setPostBooksItemSuccessCallback(goHome);
-	books.setPostBooksItemErrorCallback(postError);
-	books.postBooksItem(paramJSONObj);
+	books.setPostBooksEntrySuccessCallback(goHome);
+	books.setPostBooksEntryErrorCallback(postError);
+	books.postBooksEntry(paramJSONObj);
 }
 
 function deleteError(textStatus) {
 	console.log("delete books item failed : " + textStatus);
-	$('#booksItemDelete').removeAttr("disabled");
+	$('#booksEntryDelete').removeAttr("disabled");
 	var text = "try again";
-	$('#booksItemDelete').html(text.fontcolor("red"));
+	$('#booksEntryDelete').html(text.fontcolor("red"));
 }
 
-function deleteBooksItem() {
+function deleteBooksEntry() {
 	if (!item.id || item.id == "") {
 		return;
 	}
 	
-	books.setDeleteBooksItemSuccessCallback(goHome);
-	books.setDeleteBooksItemErrorCallback(deleteError);
-	books.deleteBooksItem(item.id);
+	books.setDeleteBooksEntrySuccessCallback(goHome);
+	books.setDeleteBooksEntryErrorCallback(deleteError);
+	books.deleteBooksEntry(item.id);
 }
 
 function createCategoryOptions(data) {
 	var jsonArray = data;
-	var parentDiv = document.getElementById("booksItemCategoryList");
+	var parentDiv = document.getElementById("booksEntryCategoryList");
 
 	while (parentDiv.firstChild) {
 		parentDiv.removeChild(parentDiv.firstChild);
@@ -99,9 +99,9 @@ function createCategoryOptions(data) {
 		parentDiv.appendChild(optionLi);
 	}
 	
-	$('#booksItemCategoryList li a').on('click', function(){
-		$('#booksItemCategory').val($(this).text()).change();
-		$('#booksItemCategory').text($(this).text());
+	$('#booksEntryCategoryList li a').on('click', function(){
+		$('#booksEntryCategory').val($(this).text()).change();
+		$('#booksEntryCategory').text($(this).text());
 	});
 }
 
@@ -120,19 +120,19 @@ function formatUSToISO(date) {
 
 function fillForm(item) {
 	if (item.user_id) {
-		$('#booksItemUserId').attr("value", item.user_id);
+		$('#booksEntryUserId').attr("value", item.user_id);
 	}
 	if (item.event_date) {
-		$('#booksItemEventDate').attr("value", item.event_date);
+		$('#booksEntryEventDate').attr("value", item.event_date);
 	}
 	if (item.amount) {
-		$('#booksItemAmount').attr("value", item.amount);
+		$('#booksEntryAmount').attr("value", item.amount);
 	}
 	if (item.category) {
-		$('#booksItemCategory').attr("value", item.category);
+		$('#booksEntryCategory').attr("value", item.category);
 	}
 	if (item.note) {
-		$('#booksItemNote').attr("value", item.note);
+		$('#booksEntryNote').attr("value", item.note);
 	}
 }
 
@@ -164,7 +164,7 @@ $(document).ready(function(){
 	var urlParam = location.search.substr(location.search.indexOf("?")+1).replace(/%22/g, "\"");
 	if (urlParam && urlParam != "") {
 		item = JSON.parse(urlParam);
-		$('#booksItemDelete').show();
+		$('#booksEntryDelete').show();
 	}
 	
 	if (!item.event_date || item.event_date == "") {
@@ -191,25 +191,25 @@ $('.date').on('changeDate', function(ev){
 });
 
 $(':input').on('input', function(){
-	$('#booksItemSubmit').html("submit");
-	$('#booksItemSubmit').removeAttr("disabled");
+	$('#booksEntrySubmit').html("submit");
+	$('#booksEntrySubmit').removeAttr("disabled");
 
-	$('#booksItemForm div').removeClass("has-error");;
+	$('#booksEntryForm div').removeClass("has-error");;
 });
 
 $(':input').on('change', function(){
-	$('#booksItemSubmit').html("submit");
-	$('#booksItemSubmit').removeAttr("disabled");
+	$('#booksEntrySubmit').html("submit");
+	$('#booksEntrySubmit').removeAttr("disabled");
 
-	$('#booksItemForm div').removeClass("has-error");;
+	$('#booksEntryForm div').removeClass("has-error");;
 });
 
-$('#booksItemSubmit').on('click', function(){
-	$('#booksItemSubmit').html("submitted");
+$('#booksEntrySubmit').on('click', function(){
+	$('#booksEntrySubmit').html("submitted");
 	$(this).attr("disabled", true);
 });
 
-$('#booksItemDelete').on('click', function(){
-	$('#booksItemDelete').html("submitted");
+$('#booksEntryDelete').on('click', function(){
+	$('#booksEntryDelete').html("submitted");
 	$(this).attr("disabled", true);
 });

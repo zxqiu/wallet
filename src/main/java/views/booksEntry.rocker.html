@@ -1,0 +1,79 @@
+<html lang="en">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>tiny wallet</title><!-- layoutit -->
+
+<link href="/css/bootstrap.min.css" rel="stylesheet">
+<link href="/css/bootstrap-datepicker.min.css" rel="stylesheet">
+<link href="/css/views/booksEntry.css" rel="stylesheet">
+
+</head>
+
+<body>
+	<div class="row">
+		<div class="col-md-4">
+			<form role="form" id="booksEntryForm">
+				<div class="form-group">
+					<label for="booksEntryEventDate">
+						Date
+					</label>
+					<div class='input-group date' data-provide='datepicker'/>
+						<input type="text" class="form-control" placeholder="mm/dd/yyyy" id="booksEntryEventDate">
+						<span class="btn input-group-addon">
+							<span class="glyphicon glyphicon-calendar"></span>
+						</span>
+					</div>
+				</div>
+				<div class="form-group">
+					 
+					<label for="booksEntryAmount">
+						Amount
+					</label>
+					<input type="number" class="form-control" placeholder="$" id="booksEntryAmount">
+				</div>
+				<div class="form-group">
+					 
+					<label for="booksEntryCategory">
+						Category
+					</label>
+					<div class="input-group" id="booksEntryCategoryDiv">
+						<input class="form-control" value="general" placeholder="input or select" id="booksEntryCategory" type="text">
+						<ul class="dropdown-menu" id="booksEntryCategoryList">
+						</ul>
+						<span class="btn input-group-addon dropdown-toggle" data-toggle="dropdown">
+							<span class="glyphicon glyphicon-menu-hamburger"></span>
+						</span>
+					</div>
+				</div>
+				<div class="form-group">
+					 
+					<label for="booksEntryNote">
+						Note
+					</label>
+					<textarea type="text" class="form-control" id="booksEntryNote"></textarea>
+				</div>
+				<button type="button" id="booksEntrySubmit" onclick="postBooksEntry()">submit</button>
+			</form>
+		</div>
+	</div>
+	<div>
+		<button type="button" value="back" onclick="location.href='/index.html'">back</button>
+		<button type="button" value="delete" id="booksEntryDelete" style="display:none" onclick="deleteBooksEntry()">delete</button>
+	</div>
+	</br>
+	</br>
+	</br>
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/bootstrap-datepicker.min.js"></script>
+<script src="/js/books.js"></script>
+<script src="/js/utils.js"></script>
+<script src="/js/views/booksEntry.js"></script>
+
+</body>
+</html>

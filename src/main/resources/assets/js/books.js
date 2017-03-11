@@ -1,9 +1,10 @@
 var QUESTION = "?";
 var hostURL = window.location.protocol + "//" + window.location.host;
-var apiInsertItem = "/api/books/insertentry";
-var apiDeleteItem = "/api/books/deleteentry";
-var apiGetCategories = "/api/books/getcategories";
-var apiGetBooks = "/api/books/getentries";
+var apiInsertEntry = "/books/insertentry";
+var apiInsertEntryView = "/books/entry";
+var apiDeleteItem = "/books/deleteentry";
+var apiGetCategories = "/books/getcategories";
+var apiGetBooks = "/books/getentries";
 
 var Books = {
 	createNew: function() {
@@ -50,19 +51,19 @@ var Books = {
 			return retData;
 		};
 
-		books.postBooksItemSuccess = null;
-		books.postBooksItemError = null;
+		books.postBooksEntrySuccess = null;
+		books.postBooksEntryError = null;
 
-		books.setPostBooksItemSuccessCallback = function(callback) {
-			books.postBooksItemSuccess = callback;
+		books.setPostBooksEntrySuccessCallback = function(callback) {
+			books.postBooksEntrySuccess = callback;
 		}
 
-		books.setPostBooksItemErrorCallback = function(callback) {
-			books.postBooksItemError = callback;
+		books.setPostBooksEntryErrorCallback = function(callback) {
+			books.postBooksEntryError = callback;
 		}
 
-		books.postBooksItem = function(jsonObj) {
-			var postURL = hostURL + apiInsertItem;
+		books.postBooksEntry = function(jsonObj) {
+			var postURL = hostURL + apiInsertEntry;
 			console.log(postURL);
 			console.log(jsonObj);
 			paramJSONString = JSON.stringify(jsonObj);
@@ -74,30 +75,30 @@ var Books = {
 				dataType: 'json',
 				contentType: 'application/json',
 				success: function(data, textStatus, jqXHR) {
-					if (books.postBooksItemSuccess && typeof(books.postBooksItemSuccess) == "function") {
-						books.postBooksItemSuccess(data);
+					if (books.postBooksEntrySuccess && typeof(books.postBooksEntrySuccess) == "function") {
+						books.postBooksEntrySuccess(data);
 					}
 				},
 				error: function(jqXHR, textStatus, errorThrown) {
-					if (books.postBooksItemError && typeof(books.postBooksItemError) == "function") {
-						books.postBooksItemError(textStatus);
+					if (books.postBooksEntryError && typeof(books.postBooksEntryError) == "function") {
+						books.postBooksEntryError(textStatus);
 					}
 				}
 			});
 		};
 
-		books.getAllBooksItemSuccess = null;
-		books.getAllBooksItemError = null;
+		books.getAllBooksEntrySuccess = null;
+		books.getAllBooksEntryError = null;
 		
-		books.setGetAllBooksItemSuccessCallback = function(callback) {
-			books.getAllBooksItemSuccess = callback;
+		books.setGetAllBooksEntrySuccessCallback = function(callback) {
+			books.getAllBooksEntrySuccess = callback;
 		};
 		
-		books.setGetAllBooksItemErrorCallback = function(callback) {
-			books.getAllBooksItemError = callback;
+		books.setGetAllBooksEntryErrorCallback = function(callback) {
+			books.getAllBooksEntryError = callback;
 		};
 		
-		books.getAllBooksItem = function(user_id) {
+		books.getAllBooksEntry = function(user_id) {
 			var param = new Object();
 			param.user_id = user_id;
 			var retData = null;
@@ -110,13 +111,13 @@ var Books = {
 				data: param,
 				contentType: 'application/json',
 				success: function(data) {
-					if (books.getAllBooksItemSuccess && typeof(books.getAllBooksItemSuccess) == "function") {
-						books.getAllBooksItemSuccess(data);
+					if (books.getAllBooksEntrySuccess && typeof(books.getAllBooksEntrySuccess) == "function") {
+						books.getAllBooksEntrySuccess(data);
 					}
 				},
 				error: function(data) {
-					if (books.getAllBooksItemError && typeof(books.getAllBooksItemError) == "function") {
-						books.getAllBooksItemError(data);
+					if (books.getAllBooksEntryError && typeof(books.getAllBooksEntryError) == "function") {
+						books.getAllBooksEntryError(data);
 					}
 				}
 			}).then(function(data) {
@@ -127,18 +128,18 @@ var Books = {
 			return retData;
 		};
 		
-		books.deleteBooksItemSuccess = null;
-		books.deleteBooksItemError = null;
+		books.deleteBooksEntrySuccess = null;
+		books.deleteBooksEntryError = null;
 		
-		books.setDeleteBooksItemSuccessCallback = function(callback) {
-			books.deleteBooksItemSuccess = callback;
+		books.setDeleteBooksEntrySuccessCallback = function(callback) {
+			books.deleteBooksEntrySuccess = callback;
 		}
 		
-		books.setDeleteBooksItemErrorCallback = function(callback) {
-			books.deleteBooksItemError = callback;
+		books.setDeleteBooksEntryErrorCallback = function(callback) {
+			books.deleteBooksEntryError = callback;
 		}
 		
-		books.deleteBooksItem = function(id) {
+		books.deleteBooksEntry = function(id) {
 			var param = new Object();
 			param.id = id;
 			var retData = null;
@@ -151,13 +152,13 @@ var Books = {
 				data: param,
 				contentType: 'application/json',
 				success: function(data) {
-					if (books.deleteBooksItemSuccess && typeof(books.deleteBooksItemSuccess) == "function") {
-						books.deleteBooksItemSuccess(data);
+					if (books.deleteBooksEntrySuccess && typeof(books.deleteBooksEntrySuccess) == "function") {
+						books.deleteBooksEntrySuccess(data);
 					}
 				},
 				error: function(data) {
-					if (books.deleteBooksItemError && typeof(books.deleteBooksItemError) == "function") {
-						books.deleteBooksItemError(data);
+					if (books.deleteBooksEntryError && typeof(books.deleteBooksEntryError) == "function") {
+						books.deleteBooksEntryError(data);
 					}
 				}
 			}).then(function(data) {
@@ -166,6 +167,12 @@ var Books = {
 			});
 
 			return retData;
+		};
+
+		books.insertBooksEntryView = function () {
+			jQuery.get(apiInsertEntryView, function (data) {
+				document.write(data);
+			});
 		};
 
 		return books;

@@ -1,15 +1,18 @@
 var books = Books.createNew();
 var user_id;
 
-var booksItemsEachLine = 6;
-var test_user_cnt = 0;
+var booksEntrysEachLine = 6;
+
+function insertBooksEntry() {
+	books.insertBooksEntryView();
+}
 
 function getBooks() {
 	console.log("get books from server start");
 
-	books.setGetAllBooksItemSuccessCallback(createBooksItems);
-	books.setGetAllBooksItemErrorCallback(getBooksError);
-	books.getAllBooksItem(user_id);
+	books.setGetAllBooksEntrySuccessCallback(createBooksEntrys);
+	books.setGetAllBooksEntryErrorCallback(getBooksError);
+	books.getAllBooksEntry(user_id);
 
 	console.log("get books from server done");
 }
@@ -20,8 +23,8 @@ function getBooksError(data) {
 	}
 }
 
-function createBooksItems(retData) {
-	var cnt = 0, parentDiv, booksItemsCol, booksItemsRow;
+function createBooksEntrys(retData) {
+	var cnt = 0, parentDiv, booksEntrysCol, booksEntrysRow;
 	var jsonArray = retData;
 	parentDiv = document.getElementById("booksList");
 
@@ -33,20 +36,20 @@ function createBooksItems(retData) {
 	for (var i = 0; i < jsonArray.length; i++) {
 		var jsonObj = jsonArray[i];
 
-		if (cnt % booksItemsEachLine == 0) {
-			booksItemsRow = document.createElement("div");
-			booksItemsRow.className = "row";
-			parentDiv.appendChild(booksItemsRow);
+		if (cnt % booksEntrysEachLine == 0) {
+			booksEntrysRow = document.createElement("div");
+			booksEntrysRow.className = "row";
+			parentDiv.appendChild(booksEntrysRow);
 		}
 
-		booksItemsCol = document.createElement("div");
-		booksItemsCol.className = "col-md-" + (12/booksItemsEachLine);
-		booksItemsRow.appendChild(booksItemsCol);
+		booksEntrysCol = document.createElement("div");
+		booksEntrysCol.className = "col-md-" + (12/booksEntrysEachLine);
+		booksEntrysRow.appendChild(booksEntrysCol);
 
 		console.log("generating : " + JSON.stringify(jsonObj));
-		var item = createSingleBooksItem(jsonObj);
+		var item = createSingleBooksEntry(jsonObj);
 
-		booksItemsCol.appendChild(item);
+		booksEntrysCol.appendChild(item);
 		
 		cnt++;
 	}
@@ -57,7 +60,7 @@ function createBooksItems(retData) {
 			console.log("double clicked");
 
 			console.log($(this).attr("title"));
-			window.location.replace("/views/newBooksItem.html?" + $(this).attr("title"));
+			window.location.replace("/views/booksEntry.rocker.html?" + $(this).attr("title"));
 
 			$(e.target).removeClass("dblclicked");
 		} else {
@@ -67,7 +70,7 @@ function createBooksItems(retData) {
 	});
 }
 
-function createSingleBooksItem(itemInfo) {
+function createSingleBooksEntry(itemInfo) {
 	var itemDiv = document.createElement("div");
 	var itemA = document.createElement("a");
 	var itemImg = document.createElement("img");

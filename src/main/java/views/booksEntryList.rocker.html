@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -9,17 +8,20 @@
 <title>tiny wallet</title><!-- layoutit -->
 
 <link href="/css/bootstrap.min.css" rel="stylesheet">
-<link href="/css/booksList.css" rel="stylesheet">
+<link href="/css/views/booksEntryList.css" rel="stylesheet">
 
 </head>
 
 <body>
 	<div class="row">
 		<div class="col-md-4">
-			<button type="button" value="go" onclick="location.href='/views/newBooksItem.html'">new item</button>
+			<button type="button" value="go" onclick="window.location.href='/books/entry'">new item</button>
 		</div>
 		<div class="col-md-4">
 			<button type="button" onclick="getBooks()">refresh</button>
+		</div>
+		<div class="col-md-4">
+			<button type="button" onclick="window.location.href='/logout'">logout</button>
 		</div>
 	</div>
 	</br>
@@ -48,7 +50,7 @@
 <script src="/js/bootstrap.min.js"></script>
 <script src="/js/books.js"></script>
 <script src="/js/utils.js"></script>
-<script src="/js/views/booksList.js"></script>
+<script src="/js/views/booksEntryList.js"></script>
 
 </body>
 </html>
