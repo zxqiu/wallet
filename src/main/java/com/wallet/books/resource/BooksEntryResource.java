@@ -54,7 +54,7 @@ public class BooksEntryResource {
 	public Response booksEntryListView(@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
 		String user_id = ApiUtils.getUserIDFromCookie(cookie);
 		if (SessionDAOConnector.instance().verifySessionCookie(cookie)== false || user_id == null) {
-			Response.seeOther(URI.create(SessionResource.PATH_LOGIN)).build();
+			return Response.seeOther(URI.create(SessionResource.PATH_RESTORE_SESSION)).build();
 		}
 
 		return Response.ok().entity(views.booksEntryList.template(sortBooksByTime(booksEntryDAOC.getByUserID(user_id)), booksEntrysEachLine)).build();
@@ -72,7 +72,7 @@ public class BooksEntryResource {
 								   @CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
 	    String user_id = ApiUtils.getUserIDFromCookie(cookie);
 		if (SessionDAOConnector.instance().verifySessionCookie(cookie)== false || user_id == null) {
-			Response.seeOther(URI.create(SessionResource.PATH_LOGIN)).build();
+			return Response.seeOther(URI.create(SessionResource.PATH_RESTORE_SESSION)).build();
 		}
 
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
@@ -107,12 +107,12 @@ public class BooksEntryResource {
 							   @FormParam(NameDef.NOTE) String note,
 							   @FormParam(NameDef.PHOTO) String photo,
 							   @CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
-		if (SessionDAOConnector.instance().verifySessionCookie(cookie)== false) {
-			return Response.seeOther(URI.create(SessionResource.PATH_LOGIN)).build();
+		String user_id = ApiUtils.getUserIDFromCookie(cookie);
+		if (SessionDAOConnector.instance().verifySessionCookie(cookie)== false || user_id == null) {
+			return Response.seeOther(URI.create(SessionResource.PATH_RESTORE_SESSION)).build();
 		}
 		
 		long currentTimeMS = TimeUtils.getUniqueTimeStampInMS();
-		String user_id = ApiUtils.getUserIDFromCookie(cookie);
 
 		// 1. extract request
 		// 2. verify and parse request
@@ -183,11 +183,14 @@ public class BooksEntryResource {
 	@Produces(MediaType.TEXT_HTML)
 	public Response deleteItem(@FormParam(NameDef.ID) String id,
 			@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
+		String user_id = ApiUtils.getUserIDFromCookie(cookie);
+		if (SessionDAOConnector.instance().verifySessionCookie(cookie)== false || user_id == null) {
+			return Response.seeOther(URI.create(SessionResource.PATH_RESTORE_SESSION)).build();
+		}
 		// 1. extract request
 		// 2. verify and parse request
 		// 3. verify parameters 
-		if (id == null || id.length() == 0
-				|| SessionDAOConnector.instance().verifySessionCookie(cookie)== false) {
+		if (id == null || id.length() == 0) {
 			logger_.error("ERROR: invalid delete books entry request for \'" + id + "\'");
 			return Response.serverError().build();
 		}
@@ -203,9 +206,7 @@ public class BooksEntryResource {
 		
 		// 5. generate response
 		logger_.info("Books entry \'" + id + "\' removed");
-		return Response
-				.seeOther(URI.create(PATH_BOOKS))
-				.build();
+		return Response.seeOther(URI.create(PATH_BOOKS)).build();
 	}
 	
 	private static Comparator<BooksEntry> booksEntryTimeComparator = new Comparator<BooksEntry>() {
