@@ -2,18 +2,10 @@ package com.wallet.books.resource;
 
 import java.net.URI;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 import javax.validation.Valid;
-import javax.ws.rs.CookieParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -41,6 +33,7 @@ import com.wallet.utils.misc.TimeUtils;
 @Path("/books")
 public class BooksEntryResource {
 	private static final Logger logger_ = LoggerFactory.getLogger(BooksEntryResource.class);
+	private static final int booksEntrysEachLine = 6;
 	
 	private BooksEntryDAOConnector booksEntryDAOC = null;
 	private CategoryDAOConnector categoryDAOC = null;
@@ -51,7 +44,6 @@ public class BooksEntryResource {
 	}
 
 	public static final String PATH_BOOKS = "/books";
-
 	/**
 	 * @return booksEntryList view. This is the main view of path /books
 	 */
@@ -59,91 +51,108 @@ public class BooksEntryResource {
 	@Timed
 	@Path("/")
 	@Produces(value = MediaType.TEXT_HTML)
-	public Response booksEntryListView() {
-		return Response.ok().entity(views.booksEntryList.template()).build();
+	public Response booksEntryListView(@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
+		String user_id = ApiUtils.getUserIDFromCookie(cookie);
+		if (SessionDAOConnector.instance().verifySessionCookie(cookie)== false || user_id == null) {
+			Response.seeOther(URI.create(SessionResource.PATH_LOGIN)).build();
+		}
+
+		return Response.ok().entity(views.booksEntryList.template(sortBooksByTime(booksEntryDAOC.getByUserID(user_id)), booksEntrysEachLine)).build();
 	}
 
 	public static final String PATH_INSERT_ENTRY_VIEW = "/books/entry";
-
 	/**
 	 * @return booksEntry view. This is for showing and edit entry details.
 	 */
 	@GET
 	@Timed
-	@Path("entry")
+	@Path("/entry/{id}")
 	@Produces(value = MediaType.TEXT_HTML)
-	public Response booksEntryView(@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
-		if (cookie == null) {
+	public Response booksEntryView(@PathParam(NameDef.ID) String id,
+								   @CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
+	    String user_id = ApiUtils.getUserIDFromCookie(cookie);
+		if (SessionDAOConnector.instance().verifySessionCookie(cookie)== false || user_id == null) {
 			Response.seeOther(URI.create(SessionResource.PATH_LOGIN)).build();
 		}
 
-		String param[] = cookie.getValue().split(":");
-		if (param.length < 2 || param[0].length() == 0 || param[1].length() == 0) {
-			Response.seeOther(URI.create(SessionResource.PATH_LOGIN)).build();
+		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+		String date = sdf.format(new Date());
+		BooksEntry booksEntry = null;
+		if (!id.equals("0")) {
+			List<BooksEntry> booksEntryList = booksEntryDAOC.getByID(id);
+			if (!booksEntryList.isEmpty()) {
+				booksEntry = booksEntryList.get(booksEntryList.size() - 1);
+				date = sdf.format(booksEntry.getEvent_date());
+			}
 		}
 
-		return Response.ok().entity(views.booksEntry.template(categoryDAOC.getByUserID(param[0]))).build();
+		return Response.ok().entity(views.booksEntry.template(id, booksEntry, categoryDAOC.getByUserID(user_id), date)).build();
 	}
 
 	/**
 	 * Create a insert new or update existing books entry.
-	 * @param request
+	 * @param id, event_date, amount, category, note, photo, cookie
 	 * @return
 	 * @throws Exception 
 	 */
 	@POST
     @Timed
     @Path("/insertentry")
-	@Produces(value = MediaType.APPLICATION_JSON)
-	public Response insertItem(@Valid entryPostRequest request,
-			@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
-		if (request == null || SessionDAOConnector.instance().verifySessionCookie(cookie)== false) {
-			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.QUERY_ARG_ERROR)).build();
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.TEXT_HTML)
+	public Response insertItem(@FormParam(NameDef.ID) String id,
+							   @FormParam(NameDef.EVENT_DATE) String event_date,
+							   @FormParam(NameDef.AMOUNT) long amount,
+							   @FormParam(NameDef.CATEGORY) String category,
+							   @FormParam(NameDef.NOTE) String note,
+							   @FormParam(NameDef.PHOTO) String photo,
+							   @CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
+		if (SessionDAOConnector.instance().verifySessionCookie(cookie)== false) {
+			return Response.seeOther(URI.create(SessionResource.PATH_LOGIN)).build();
 		}
 		
 		long currentTimeMS = TimeUtils.getUniqueTimeStampInMS();
-		logger_.info(request.toString());
-		
+		String user_id = ApiUtils.getUserIDFromCookie(cookie);
+
 		// 1. extract request
 		// 2. verify and parse request
 		// 3. verify parameters 
-		if (request.amount == null || request.category.length() == 0 || request.event_date.length() == 0) {
-			logger_.error("ERROR: invalid new item request: " + request.toString());
-			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.QUERY_ARG_ERROR)).build();
+		if (category.length() == 0 || event_date.length() == 0) {
+			logger_.error("ERROR: invalid new item request: " + id);
+			return Response.serverError().build();
 		}
 		
 		// 4. transaction
 		// 4.1 insert new category
 		try {
-			if (categoryDAOC.getByID(request.user_id + request.category).isEmpty()) {
-				categoryDAOC.insert(new Category(request.user_id, request.category, ""));
+			if (categoryDAOC.getByID(user_id + category).isEmpty()) {
+				categoryDAOC.insert(new Category(user_id, category, ""));
 			}
 		} catch (Exception e1) {
 			e1.printStackTrace();
-			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.INTERNAL_ERROR)).build();
+			return Response.serverError().build();
 		}
 		
 		// 4.2 insert books
 		// 4.2.1 update if id is received and exists. Otherwise insert new.
 		boolean exist = false;
-		if (request.id.length() != 0) {
+		if (id.length() != 0) {
 			try {
-				exist = !booksEntryDAOC.getByID(request.id).isEmpty();
-				exist = !booksEntryDAOC.getByID(request.id).isEmpty();
+				exist = !booksEntryDAOC.getByID(id).isEmpty();
 			} catch (Exception e) {
 				e.printStackTrace();
 				logger_.error("Error find out if item already exists : " + e.getMessage());
-				return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.INTERNAL_ERROR)).build();
+				return Response.serverError().build();
 			}
 		}
 		
 		if (!exist) {
-			request.id = request.user_id + currentTimeMS;
+			id = user_id + currentTimeMS;
 		}
 		
 		// 4.2.2 insert 
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
-		BooksEntry booksEntry = new BooksEntry(request.id, request.user_id, request.category, sdf.parse(request.event_date), request.amount, request.note, request.photo);
+		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+		BooksEntry booksEntry = new BooksEntry(id, user_id, category, sdf.parse(event_date), amount, note, photo);
 		try {
 			if (exist) {
 				logger_.info("Update books item : " + booksEntry.getId());
@@ -155,40 +164,10 @@ public class BooksEntryResource {
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger_.error("Error : failed to insert new books : " + e.getMessage());
-			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.INTERNAL_ERROR)).build();
+			return Response.serverError().build();
 		}
-		
-		return Response.status(200).entity(ApiUtils.buildJSONResponse(true, ApiUtils.SUCCESS)).build();
-	}
-	
-	public static class entryPostRequest {
-		@JsonProperty(NameDef.ID)
-		String id;
-		@JsonProperty(NameDef.USER_ID)
-		String user_id;
-		@JsonProperty(NameDef.EVENT_DATE)
-		String event_date;
-		@JsonProperty(NameDef.CATEGORY)
-		String category;
-		@JsonProperty(NameDef.AMOUNT)
-		Long amount;
-		@JsonProperty(NameDef.NOTE)
-		String note;
-		@JsonProperty(NameDef.PHOTO)
-		String photo;
-		
-		@Override
-		public String toString() {
-			return MoreObjects.toStringHelper(this)
-	                .add(NameDef.ID, id)
-	                .add(NameDef.USER_ID, user_id)
-	                .add(NameDef.EVENT_DATE, event_date)
-	                .add(NameDef.CATEGORY, category)
-	                .add(NameDef.AMOUNT, amount)
-	                .add(NameDef.NOTE, note)
-	                .add(NameDef.PHOTO, photo)
-	                .toString();
-		}
+
+		return Response.seeOther(URI.create(PATH_BOOKS)).build();
 	}
 	
 	/**
@@ -197,11 +176,12 @@ public class BooksEntryResource {
 	 * @return
 	 * @throws Exception 
 	 */
-	@GET
+	@POST
     @Timed
     @Path("/deleteentry")
-	@Produces(value = MediaType.APPLICATION_JSON)
-	public Response deleteItem(@QueryParam(NameDef.ID) String id,
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.TEXT_HTML)
+	public Response deleteItem(@FormParam(NameDef.ID) String id,
 			@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
 		// 1. extract request
 		// 2. verify and parse request
@@ -209,7 +189,7 @@ public class BooksEntryResource {
 		if (id == null || id.length() == 0
 				|| SessionDAOConnector.instance().verifySessionCookie(cookie)== false) {
 			logger_.error("ERROR: invalid delete books entry request for \'" + id + "\'");
-			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.QUERY_ARG_ERROR)).build();
+			return Response.serverError().build();
 		}
 		
 		// 4. transaction
@@ -218,63 +198,14 @@ public class BooksEntryResource {
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger_.error("Error : failed to delete new books entry \'" + id + "\' : " + e.getMessage());
-			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.INTERNAL_ERROR)).build();
+			return Response.serverError().build();
 		}
 		
 		// 5. generate response
 		logger_.info("Books entry \'" + id + "\' removed");
-		return Response.status(200).entity(ApiUtils.buildJSONResponse(true, ApiUtils.SUCCESS)).build();
-	}
-	
-	/**
-	 * Get books of a user
-	 * @param user_id
-	 * @return
-	 * @throws Exception 
-	 */
-	@GET
-    @Timed
-    @Path("/getentries")
-	@Produces(value = MediaType.APPLICATION_JSON)
-	public Response getAllBooks(@QueryParam(NameDef.USER_ID) String user_id,
-			@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
-		if (SessionDAOConnector.instance().verifySessionCookie(cookie)== false) {
-			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.SESSION_COOKIE_ERROR)).build();
-		}
-		// 1. extract request
-		// 2. verify and parse request
-		// 3. verify parameters 
-		if (user_id == null || user_id.length() == 0) {
-			logger_.error("ERROR: invalid get books request for \'" + user_id + "\'");
-			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.QUERY_ARG_ERROR)).build();
-		}
-		
-		// 4. transaction
-		List<BooksEntry> booksEntryList = new ArrayList<BooksEntry>();
-		try {
-			booksEntryList = booksEntryDAOC.getByUserID(user_id);
-			booksEntryList = sortBooksByTime(booksEntryList);
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger_.error("Error : failed to insert new books item for " + user_id + " : " + e.getMessage());
-			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.INTERNAL_ERROR)).build();
-		}
-		
-		// 5. generate response
-		JSONArray jsonArray = new JSONArray();
-		Gson gson = new Gson();
-		for (BooksEntry entry : booksEntryList) {
-			try {
-				jsonArray.put(new JSONObject(gson.toJson(entry)));
-			} catch (JSONException e) {
-				e.printStackTrace();
-				logger_.error("Error : failed to build response JSON array for " + user_id + " : " + e.getMessage());
-				return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.INTERNAL_ERROR)).build();
-			}
-		}
-		
-		logger_.info("Response user " + user_id + "'s books: " + jsonArray.toString());
-		return Response.status(200).entity(jsonArray.toString()).build();
+		return Response
+				.seeOther(URI.create(PATH_BOOKS))
+				.build();
 	}
 	
 	private static Comparator<BooksEntry> booksEntryTimeComparator = new Comparator<BooksEntry>() {
@@ -288,6 +219,10 @@ public class BooksEntryResource {
 	};
 	
 	private List<BooksEntry> sortBooksByTime(List<BooksEntry> list) {
+		if (list == null) {
+			return null;
+		}
+
 		Collections.sort(list, booksEntryTimeComparator);
 		
 		return list;

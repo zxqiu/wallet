@@ -48,7 +48,7 @@ public interface UserDAO {
 				NameDef.PASSWORD + "= :" + NameDef.PASSWORD + "," +
 				NameDef.NAME + "= :" + NameDef.NAME + "," +
 				NameDef.PRIORITY + "= :" + NameDef.PRIORITY +
-				" where " + NameDef.USER_ID + "=" + NameDef.USER_ID
+				" where " + NameDef.USER_ID + "= :" + NameDef.USER_ID
 			)
 	void update(@Bind(NameDef.USER_ID) String user_id,
 				@Bind(NameDef.PASSWORD) String password,

@@ -51,7 +51,7 @@ public static final String TABLE_NAME = "category";
     
     @SqlUpdate("update " + TABLE_NAME + " set "
 			+ NameDef.PICTURE_ID + "= :" + NameDef.PICTURE_ID
-			+ " where " + NameDef.ID + "=" + NameDef.ID
+			+ " where " + NameDef.ID + "= :" + NameDef.ID
 		)
 	void update(@Bind(NameDef.ID) String id,
 			@Bind(NameDef.PICTURE_ID) String picture_id);

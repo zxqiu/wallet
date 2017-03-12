@@ -1,3 +1,8 @@
+@import com.wallet.books.core.BooksEntry;
+@import java.util.List;
+
+@args (List<BooksEntry> booksEntryList, int booksEntrysEachLine)
+
 <html lang="en">
 
 <head>
@@ -15,40 +20,40 @@
 <body>
 	<div class="row">
 		<div class="col-md-4">
-			<button type="button" value="go" onclick="window.location.href='/books/entry'">new item</button>
-		</div>
-		<div class="col-md-4">
-			<button type="button" onclick="getBooks()">refresh</button>
+			<button type="button" value="go" onclick="window.location.href='/books/entry/0'">new item</button>
 		</div>
 		<div class="col-md-4">
 			<button type="button" onclick="window.location.href='/logout'">logout</button>
 		</div>
 	</div>
 	</br>
-	</br>
-	</br>
 	<div id="booksList">
-		<!--<div class="row">
-			<div class="col-md-3">
-				<div class="books-list">
-					<a>
-						<img class="img-rounded books-list-img" src="http://www.koolbreeze.eclipse.co.uk/block%20lightblue.jpg"/>
-						<span class="books-list-text">
-							<span class="books-list-text-title" id="bookTitle">date amount</span>
-							<span class="books-list-text-info">
-								<span id="bookCategory">test category</span>
-								<span id="bookNote">test note</span>
-							</span>
-						</span>
-					</a>
+		@for (int i = 0; booksEntryList != null && i < booksEntryList.size(); i++) {
+    		@if (i % booksEntrysEachLine == 0) {
+				<div class="row">
+			}
+					<div class="col-md-@(12 / booksEntrysEachLine)">
+						<div class="books-list">
+							<a>
+								<img class="img-rounded books-list-img" src="http://www.koolbreeze.eclipse.co.uk/block%20lightblue.jpg"/>
+								<span class="books-list-text" title="@booksEntryList.get(i).getId()">
+									<span class="books-list-text-title" id="bookTitle">@booksEntryList.get(i).getEvent_date() $@booksEntryList.get(i).getAmount()</span>
+									<span class="books-list-text-info">
+										<span id="bookCategory">category: @booksEntryList.get(i).getCategory()</span>
+										<span id="bookNote">note: @booksEntryList.get(i).getNote()</span>
+									</span>
+								</span>
+							</a>
+						</div>
+					</div>
+			@if ((i + 1) % booksEntrysEachLine == 0 || i == booksEntryList.size() - 1) {
 				</div>
-			</div>
-		</div>-->
+			}
+		}
 	</div>
 
 <script src="/js/jquery.min.js"></script>
 <script src="/js/bootstrap.min.js"></script>
-<script src="/js/books.js"></script>
 <script src="/js/utils.js"></script>
 <script src="/js/views/booksEntryList.js"></script>
 

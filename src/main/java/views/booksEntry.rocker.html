@@ -1,7 +1,7 @@
 @import com.wallet.books.core.Category;
 @import java.util.List;
 
-@args (List<Category> CategoryList)
+@args (String id, com.wallet.books.core.BooksEntry booksEntry, List<Category> CategoryList, String date)
 
 <html lang="en">
 
@@ -21,13 +21,18 @@
 <body>
 	<div class="row">
 		<div class="col-md-4">
-			<form role="form" id="booksEntryForm">
+			<form role="form" title="@id" action="/books/insertentry" method="post" id="booksEntryForm">
+				<input type="text" id="booksEntryID" name="id"
+					@if(booksEntry != null) {
+						value="@?booksEntry.getId()"
+					}
+					style="display: none">
 				<div class="form-group">
 					<label for="booksEntryEventDate">
 						Date
 					</label>
-					<div class='input-group date' data-provide='datepicker'/>
-						<input type="text" class="form-control" placeholder="mm/dd/yyyy" id="booksEntryEventDate">
+					<div class='input-group date' data-provide='datepicker'>
+						<input type="text" class="form-control" placeholder="mm/dd/yyyy" id="booksEntryEventDate" name="event_date" value="@date" required="true">
 						<span class="btn input-group-addon">
 							<span class="glyphicon glyphicon-calendar"></span>
 						</span>
@@ -38,7 +43,16 @@
 					<label for="booksEntryAmount">
 						Amount
 					</label>
-					<input type="number" class="form-control" placeholder="$" id="booksEntryAmount">
+					<div class='input-group'>
+						<input type="number" class="form-control" placeholder="$" id="booksEntryAmount" name="amount"
+							@if (booksEntry != null) {
+								value="@?booksEntry.getAmount()"
+							}
+						 required="true">
+						<span class="btn input-group-addon">
+							<span class="glyphicon glyphicon-italic"></span>
+						</span>
+					</div>
 				</div>
 				<div class="form-group">
 					 
@@ -46,7 +60,7 @@
 						Category
 					</label>
 					<div class="input-group" id="booksEntryCategoryDiv">
-						<input class="form-control" value="general" placeholder="input or select" id="booksEntryCategory" type="text">
+						<input class="form-control" value="general" placeholder="input or select" id="booksEntryCategory" name="category" type="text" required="true">
 						<ul class="dropdown-menu" id="booksEntryCategoryList">
 							@for (Category category : CategoryList) {
 								<li><a>@category.getName()</a></li>
@@ -62,15 +76,39 @@
 					<label for="booksEntryNote">
 						Note
 					</label>
-					<textarea type="text" class="form-control" id="booksEntryNote"></textarea>
+					<textarea type="text" class="form-control" id="booksEntryNote" name="note"
+						@if (booksEntry != null) {
+							value="@?booksEntry.getNote()"
+						}
+					></textarea>
 				</div>
-				<button type="button" id="booksEntrySubmit" onclick="postBooksEntry()">submit</button>
+				<div class="form-group" style="display: none;">
+
+					<label for="booksEntryPhoto">
+						Photo
+					</label>
+					<textarea type="text" class="form-control" id="booksEntryPhoto" name="photo"
+						@if (booksEntry != null) {
+							value="@?booksEntry.getPhoto()"
+						}
+					></textarea>
+				</div>
+				<button type="submit" id="booksEntrySubmit">submit</button>
 			</form>
 		</div>
 	</div>
 	<div>
-		<button type="button" value="back" onclick="location.href='/index.html'">back</button>
-		<button type="button" value="delete" id="booksEntryDelete" style="display:none" onclick="deleteBooksEntry()">delete</button>
+		<button type="button" value="back" onclick="location.href='/books'">back</button>
+		@if (booksEntry != null && booksEntry.getId() != null && booksEntry.getId().length() > 1) {
+			<form role="form" title="@id" action="/books/deleteentry" method="post">
+				<input type="text" name="id"
+					   @if(booksEntry != null) {
+					   value="@?booksEntry.getId()"
+					   }
+					   style="display: none">
+				<button type="submit" action="/books/deleteentry" method="post">delete</button>
+			</form>
+        }
 	</div>
 	</br>
 	</br>
@@ -79,7 +117,6 @@
 <script src="/js/jquery.min.js"></script>
 <script src="/js/bootstrap.min.js"></script>
 <script src="/js/bootstrap-datepicker.min.js"></script>
-<script src="/js/books.js"></script>
 <script src="/js/utils.js"></script>
 <script src="/js/views/booksEntry.js"></script>
 

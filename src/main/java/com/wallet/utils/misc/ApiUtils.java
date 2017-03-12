@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 
 import com.wallet.utils.data.mysql.MySqlConnector;
 
+import javax.ws.rs.core.Cookie;
+
 public class ApiUtils {
 	private static final Logger logger_ = LoggerFactory.getLogger(ApiUtils.class);
 	
@@ -72,5 +74,31 @@ public class ApiUtils {
 		List<Map<String, Object>> ret = MySqlConnector.instance().selectFromTable(keys, table);
 		
 		return !ret.isEmpty();
+	}
+
+	public static String getUserIDFromCookie(Cookie cookie) {
+		if (cookie == null) {
+			return null;
+		}
+
+		String param[] = cookie.getValue().split(":");
+		if (param.length < 2 || param[0].length() == 0 || param[1].length() == 0) {
+		    return null;
+		}
+
+		return param[0];
+	}
+
+	public static String getSessionKeyFromCookie(Cookie cookie) {
+		if (cookie == null) {
+			return null;
+		}
+
+		String param[] = cookie.getValue().split(":");
+		if (param.length < 2 || param[0].length() == 0 || param[1].length() == 0) {
+			return null;
+		}
+
+		return param[1];
 	}
 }

@@ -94,14 +94,14 @@ public class BooksEntryDAOConnector {
 	}
 	
 	public static void test() throws Exception {
-		BooksEntry booksEntry = new BooksEntry("admin1", "admin", "good", new Date(), (long)10, "note", "photo");
+		BooksEntry booksEntry = new BooksEntry("admin232323", "admin", "asdfasf", new Date(), (long)10, "note", "photo");
 		
 		logger_.info("BooksEntryDAOConnector test ...");
 		
 		logger_.info("1. insert");
 		
 		BooksEntryDAOConnector.instance().insert(booksEntry);
-		if (BooksEntryDAOConnector.instance().getByUserID("admin").isEmpty()) {
+		if (BooksEntryDAOConnector.instance().getByID(booksEntry.getId()).isEmpty()) {
 			logger_.error("Error BooksEntryDAOConnector test failed");
 			throw new Exception("BooksEntryDAOConnector test failed");
 		}
@@ -110,7 +110,7 @@ public class BooksEntryDAOConnector {
 		
 		booksEntry.setNote("nooooooote");
 		BooksEntryDAOConnector.instance().update(booksEntry);
-		if (BooksEntryDAOConnector.instance().getByUserID("admin").isEmpty()) {
+		if (BooksEntryDAOConnector.instance().getByID(booksEntry.getId()).isEmpty()) {
 			logger_.error("Error BooksEntryDAOConnector test failed");
 			throw new Exception("BooksEntryDAOConnector test failed");
 		}

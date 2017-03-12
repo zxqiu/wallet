@@ -73,7 +73,7 @@ public static final String TABLE_NAME = "books_entry";
 			+ NameDef.NOTE + "= :" + NameDef.NOTE + ","
 			+ NameDef.PHOTO + "= :" + NameDef.PHOTO + ","
 			+ NameDef.EDIT_TIME + "= :" + NameDef.EDIT_TIME
-			+ " where " + NameDef.ID + "=" + NameDef.ID
+			+ " where " + NameDef.ID + "= :" + NameDef.ID
 		)
 	void update(@Bind(NameDef.ID) String id,
 			@Bind(NameDef.USER_ID) String user_id,
