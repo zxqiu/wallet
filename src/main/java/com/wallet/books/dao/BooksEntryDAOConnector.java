@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,7 +69,7 @@ public class BooksEntryDAOConnector {
 	public void insert(BooksEntry booksEntry) throws Exception {
 		try {
 			booksEntryDAO.insert(booksEntry.getId(), booksEntry.getUser_id(), booksEntry.getCategory(), booksEntry.getEvent_date()
-				, booksEntry.getAmount(), booksEntry.getNote(), booksEntry.getPhoto(), booksEntry.getEdit_time());
+				, booksEntry.getAmount(), booksEntry.getNote(), booksEntry.getPhoto(), booksEntry.getAttributes(), booksEntry.getEdit_time());
 		} catch (Exception e) {
 			if (e.getMessage().contains("Duplicate entry")) {
 				logger_.info("Books entry already exists : " + booksEntry.getId());
@@ -82,7 +83,7 @@ public class BooksEntryDAOConnector {
 	
 	public void update(BooksEntry booksEntry) throws Exception {
 		booksEntryDAO.update(booksEntry.getId(), booksEntry.getUser_id(), booksEntry.getCategory(), booksEntry.getEvent_date()
-				, booksEntry.getAmount(), booksEntry.getNote(), booksEntry.getPhoto(), booksEntry.getEdit_time());
+				, booksEntry.getAmount(), booksEntry.getNote(), booksEntry.getPhoto(), booksEntry.getAttributes(), booksEntry.getEdit_time());
 	}
 	
 	public void deleteByID(String id) throws Exception {
@@ -94,7 +95,9 @@ public class BooksEntryDAOConnector {
 	}
 	
 	public static void test() throws Exception {
-		BooksEntry booksEntry = new BooksEntry("admin232323", "admin", "asdfasf", new Date(), (long)10, "note", "photo");
+		JSONObject attr = new JSONObject();
+		attr.put("color", "ab2567");
+		BooksEntry booksEntry = new BooksEntry("admin232323", "admin", "asdfasf", new Date(), (long)10, "note", "photo", attr.toString());
 		
 		logger_.info("BooksEntryDAOConnector test ...");
 		

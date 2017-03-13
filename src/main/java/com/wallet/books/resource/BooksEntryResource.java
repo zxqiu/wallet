@@ -4,7 +4,6 @@ import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
@@ -13,23 +12,18 @@ import javax.ws.rs.core.Response;
 import com.wallet.login.core.User;
 import com.wallet.login.dao.UserDAOConnector;
 import com.wallet.login.resource.SessionResource;
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.codahale.metrics.annotation.Timed;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.MoreObjects;
-import com.google.gson.Gson;
 import com.wallet.books.core.BooksEntry;
 import com.wallet.books.core.Category;
 import com.wallet.books.dao.BooksEntryDAOConnector;
 import com.wallet.books.dao.CategoryDAOConnector;
 import com.wallet.login.dao.SessionDAOConnector;
 import com.wallet.utils.misc.ApiUtils;
-import com.wallet.utils.misc.NameDef;
+import com.wallet.utils.misc.Dict;
 import com.wallet.utils.misc.TimeUtils;
 
 @Path("/books")
@@ -62,8 +56,15 @@ public class BooksEntryResource {
 		}
 
 		User user = userDAOC.getByID(user_id);
+		List<BooksEntry> booksEntryList = sortBooksByTime(booksEntryDAOC.getByUserID(user_id));
+		HashMap<String, String> colorMap = new HashMap<>();
 
-		return Response.ok().entity(views.booksEntryList.template(sortBooksByTime(booksEntryDAOC.getByUserID(user_id)), booksEntrysEachLine, user)).build();
+		for (BooksEntry entry : booksEntryList) {
+			JSONObject attr = new JSONObject(entry.getAttributes());
+			colorMap.put(entry.getId(), attr.getString(Dict.COLOR));
+		}
+
+		return Response.ok().entity(views.booksEntryList.template(booksEntryList, colorMap, booksEntrysEachLine, user)).build();
 	}
 
 	public static final String PATH_INSERT_ENTRY_VIEW = "/books/entry";
@@ -74,7 +75,7 @@ public class BooksEntryResource {
 	@Timed
 	@Path("/entry/{id}")
 	@Produces(value = MediaType.TEXT_HTML)
-	public Response booksEntryView(@PathParam(NameDef.ID) String id,
+	public Response booksEntryView(@PathParam(Dict.ID) String id,
 								   @CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
 	    String user_id = ApiUtils.getUserIDFromCookie(cookie);
 		if (SessionDAOConnector.instance().verifySessionCookie(cookie)== false || user_id == null) {
@@ -84,15 +85,23 @@ public class BooksEntryResource {
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 		String date = sdf.format(new Date());
 		BooksEntry booksEntry = null;
+		String color = "ab2567";
 		if (!id.equals("0")) {
 			List<BooksEntry> booksEntryList = booksEntryDAOC.getByID(id);
 			if (!booksEntryList.isEmpty()) {
 				booksEntry = booksEntryList.get(booksEntryList.size() - 1);
 				date = sdf.format(booksEntry.getEvent_date());
+				JSONObject attr = new JSONObject(booksEntry.getAttributes());
+				color = attr.getString(Dict.COLOR);
 			}
 		}
 
-		return Response.ok().entity(views.booksEntry.template(booksEntry, categoryDAOC.getByUserID(user_id), date)).build();
+		return Response.ok()
+				.entity(views.booksEntry.template(booksEntry
+						, color
+						, categoryDAOC.getByUserID(user_id)
+						, date))
+				.build();
 	}
 
 	/**
@@ -106,13 +115,14 @@ public class BooksEntryResource {
     @Path("/insertentry")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.TEXT_HTML)
-	public Response insertEntry(@FormParam(NameDef.ID) String id,
-							   @FormParam(NameDef.EVENT_DATE) String event_date,
-							   @FormParam(NameDef.AMOUNT) long amount,
-							   @FormParam(NameDef.CATEGORY) String category,
-							   @FormParam(NameDef.NOTE) String note,
-							   @FormParam(NameDef.PHOTO) String photo,
-							   @CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
+	public Response insertEntry(@FormParam(Dict.ID) String id,
+								@FormParam(Dict.EVENT_DATE) String event_date,
+								@FormParam(Dict.AMOUNT) long amount,
+								@FormParam(Dict.CATEGORY) String category,
+								@FormParam(Dict.NOTE) String note,
+								@FormParam(Dict.PHOTO) String photo,
+								@FormParam(Dict.COLOR) String color,
+								@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
 		String user_id = ApiUtils.getUserIDFromCookie(cookie);
 		if (SessionDAOConnector.instance().verifySessionCookie(cookie)== false || user_id == null) {
 			return Response.seeOther(URI.create(SessionResource.PATH_RESTORE_SESSION)).build();
@@ -158,7 +168,9 @@ public class BooksEntryResource {
 		
 		// 4.2.2 insert 
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-		BooksEntry booksEntry = new BooksEntry(id, user_id, category, sdf.parse(event_date), amount, note, photo);
+		JSONObject attr = new JSONObject();
+		attr.put("color", color);
+		BooksEntry booksEntry = new BooksEntry(id, user_id, category, sdf.parse(event_date), amount, note, photo, attr.toString());
 		try {
 			if (exist) {
 				logger_.info("Update books item : " + booksEntry.getId());
@@ -187,7 +199,7 @@ public class BooksEntryResource {
     @Path("/deleteentry")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.TEXT_HTML)
-	public Response deleteEntry(@FormParam(NameDef.ID) String id,
+	public Response deleteEntry(@FormParam(Dict.ID) String id,
 			@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
 		String user_id = ApiUtils.getUserIDFromCookie(cookie);
 		if (SessionDAOConnector.instance().verifySessionCookie(cookie)== false || user_id == null) {

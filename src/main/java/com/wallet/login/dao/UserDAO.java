@@ -9,18 +9,18 @@ import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
 
 import com.wallet.login.core.User;
 import com.wallet.login.core.UserMapper;
-import com.wallet.utils.misc.NameDef;
+import com.wallet.utils.misc.Dict;
 
 public interface UserDAO {
 	public static final String TABLE_NAME = "user";
 	
 	@SqlUpdate("create table if not exists " + TABLE_NAME + " ("
-			+ "`" + NameDef.USER_ID + "` varchar(64) not null unique,"
-			+ "`" + NameDef.EMAIL + "` varchar(64) not null unique,"
-			+ "`" + NameDef.PASSWORD + "` varchar(64) not null,"
-			+ "`" + NameDef.NAME + "` varchar(16) not null,"
-			+ "`" + NameDef.PRIORITY + "` varchar(16) not null,"
-			+ "primary key (`" + NameDef.USER_ID + "`)"
+			+ "`" + Dict.USER_ID + "` varchar(64) not null unique,"
+			+ "`" + Dict.EMAIL + "` varchar(64) not null unique,"
+			+ "`" + Dict.PASSWORD + "` varchar(64) not null,"
+			+ "`" + Dict.NAME + "` varchar(16) not null,"
+			+ "`" + Dict.PRIORITY + "` varchar(16) not null,"
+			+ "primary key (`" + Dict.USER_ID + "`)"
 			+ ")ENGINE = InnoDB DEFAULT CHARSET = utf8"
 		)
 	void createTable();
@@ -29,68 +29,68 @@ public interface UserDAO {
 	void dropTable();
 	
 	@SqlUpdate("insert into " + TABLE_NAME + " ("
-			+ NameDef.USER_ID + ", "
-			+ NameDef.EMAIL + ", "
-			+ NameDef.PASSWORD + ","
-			+ NameDef.NAME + ","
-			+ NameDef.PRIORITY
+			+ Dict.USER_ID + ", "
+			+ Dict.EMAIL + ", "
+			+ Dict.PASSWORD + ","
+			+ Dict.NAME + ","
+			+ Dict.PRIORITY
 			+ ") values ("
-			+ ":" + NameDef.USER_ID
-			+ ", :" + NameDef.EMAIL
-			+ ", :" + NameDef.PASSWORD
-			+ ", :" + NameDef.NAME
-			+ ", :" + NameDef.PRIORITY
+			+ ":" + Dict.USER_ID
+			+ ", :" + Dict.EMAIL
+			+ ", :" + Dict.PASSWORD
+			+ ", :" + Dict.NAME
+			+ ", :" + Dict.PRIORITY
 			+ ")"
 		)
-	void insert(@Bind(NameDef.USER_ID) String user_id,
-				@Bind(NameDef.EMAIL) String email,
-				@Bind(NameDef.PASSWORD) String password,
-				@Bind(NameDef.NAME) String name,
-				@Bind(NameDef.PRIORITY) String priority);
+	void insert(@Bind(Dict.USER_ID) String user_id,
+				@Bind(Dict.EMAIL) String email,
+				@Bind(Dict.PASSWORD) String password,
+				@Bind(Dict.NAME) String name,
+				@Bind(Dict.PRIORITY) String priority);
 	
 	@SqlUpdate("update " + TABLE_NAME + " set "
-			+ NameDef.EMAIL + "= :" + NameDef.EMAIL + ","
-			+ NameDef.PASSWORD + "= :" + NameDef.PASSWORD + ","
-			+ NameDef.NAME + "= :" + NameDef.NAME + ","
-			+ NameDef.PRIORITY + "= :" + NameDef.PRIORITY
-			+ " where " + NameDef.USER_ID + "= :" + NameDef.USER_ID
+			+ Dict.EMAIL + "= :" + Dict.EMAIL + ","
+			+ Dict.PASSWORD + "= :" + Dict.PASSWORD + ","
+			+ Dict.NAME + "= :" + Dict.NAME + ","
+			+ Dict.PRIORITY + "= :" + Dict.PRIORITY
+			+ " where " + Dict.USER_ID + "= :" + Dict.USER_ID
 		)
-	void update(@Bind(NameDef.USER_ID) String user_id,
-				@Bind(NameDef.EMAIL) String email,
-				@Bind(NameDef.PASSWORD) String password,
-				@Bind(NameDef.NAME) String name,
-				@Bind(NameDef.PRIORITY) String priority);
+	void update(@Bind(Dict.USER_ID) String user_id,
+				@Bind(Dict.EMAIL) String email,
+				@Bind(Dict.PASSWORD) String password,
+				@Bind(Dict.NAME) String name,
+				@Bind(Dict.PRIORITY) String priority);
 	
-	@SqlQuery("select * from " + TABLE_NAME + " where " + NameDef.USER_ID + " = :" + NameDef.USER_ID)
+	@SqlQuery("select * from " + TABLE_NAME + " where " + Dict.USER_ID + " = :" + Dict.USER_ID)
     @Mapper(UserMapper.class)
     List<User> findByID(
-        @Bind(NameDef.USER_ID) String user_id
+        @Bind(Dict.USER_ID) String user_id
     );
 	
     @SqlQuery("select * from " + TABLE_NAME + " where " +
-    			NameDef.USER_ID + " = :" + NameDef.USER_ID +
-    			" and " + NameDef.PASSWORD + " = :" + NameDef.PASSWORD)
+    			Dict.USER_ID + " = :" + Dict.USER_ID +
+    			" and " + Dict.PASSWORD + " = :" + Dict.PASSWORD)
     @Mapper(UserMapper.class)
     List<User> findByUserIDAndPassword(
-        @Bind(NameDef.USER_ID) String user_id,
-        @Bind(NameDef.PASSWORD) String password
+        @Bind(Dict.USER_ID) String user_id,
+        @Bind(Dict.PASSWORD) String password
     );
 
 	@SqlQuery("select * from " + TABLE_NAME + " where " +
-			NameDef.EMAIL + " = :" + NameDef.EMAIL +
-			" and " + NameDef.PASSWORD + " = :" + NameDef.PASSWORD)
+			Dict.EMAIL + " = :" + Dict.EMAIL +
+			" and " + Dict.PASSWORD + " = :" + Dict.PASSWORD)
 	@Mapper(UserMapper.class)
 	List<User> findByEmailAndPassword(
-			@Bind(NameDef.EMAIL) String email,
-			@Bind(NameDef.PASSWORD) String password
+			@Bind(Dict.EMAIL) String email,
+			@Bind(Dict.PASSWORD) String password
 	);
 
     @SqlQuery("select * from " + TABLE_NAME)
     @Mapper(UserMapper.class)
     List<User> findAll();
     
-	@SqlUpdate("delete from " + TABLE_NAME + " where " + NameDef.USER_ID + " = :" + NameDef.USER_ID)
+	@SqlUpdate("delete from " + TABLE_NAME + " where " + Dict.USER_ID + " = :" + Dict.USER_ID)
     void deleteByID(
-        @Bind(NameDef.USER_ID) String user_id
+        @Bind(Dict.USER_ID) String user_id
     );
 }

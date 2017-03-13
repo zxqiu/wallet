@@ -18,7 +18,7 @@ import com.wallet.login.core.Session;
 import com.wallet.login.dao.SessionDAOConnector;
 import com.wallet.login.dao.UserDAOConnector;
 import com.wallet.utils.misc.ApiUtils;
-import com.wallet.utils.misc.NameDef;
+import com.wallet.utils.misc.Dict;
 
 import ch.qos.logback.core.status.Status;
 
@@ -41,8 +41,8 @@ public class SessionResource {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.TEXT_HTML)
     public Object login(
-        @FormParam(NameDef.ID) String id,
-        @FormParam(NameDef.PASSWORD) String password) throws Exception {
+        @FormParam(Dict.ID) String id,
+        @FormParam(Dict.PASSWORD) String password) throws Exception {
 
         String user_id = "";
         if (userDAOC.getByIDAndPassword(id, password) != null) {

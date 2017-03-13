@@ -11,102 +11,108 @@ import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
 import com.wallet.books.core.BooksEntry;
 import com.wallet.books.core.BooksEntryMapper;
 import com.wallet.login.dao.UserDAO;
-import com.wallet.utils.misc.NameDef;
+import com.wallet.utils.misc.Dict;
 
 public interface BooksEntryDAO {
 public static final String TABLE_NAME = "books_entry";
 	
 	@SqlUpdate("create table if not exists " + TABLE_NAME + " ("
-				+ "`" + NameDef.ID + "` varchar(64) not null unique,"
-				+ "`" + NameDef.USER_ID + "` varchar(64) not null,"
-				+ "`" + NameDef.CATEGORY + "` varchar(32) not null,"
-				+ "`" + NameDef.EVENT_DATE + "` datetime not null,"
-				+ "`" + NameDef.AMOUNT + "` bigint (64) not null,"
-				+ "`" + NameDef.NOTE + "` text,"
-				+ "`" + NameDef.PHOTO + "` varchar(64),"
-				+ "`" + NameDef.EDIT_TIME + "` datetime not null,"
-				+ "primary key (`" + NameDef.ID + "`),"
-				+ "key `fk_books_entry_user` (`" + NameDef.USER_ID + "`),"
-				+ "constraint `fk_books_entry_user` foreign key (`" + NameDef.USER_ID + "`) "
-				+ "references `" + UserDAO.TABLE_NAME + "` (`" + NameDef.USER_ID + "`)"
-				+ ")ENGINE = InnoDB DEFAULT CHARSET = utf8"
-			)
+			+ "`" + Dict.ID + "` varchar(64) not null unique,"
+			+ "`" + Dict.USER_ID + "` varchar(64) not null,"
+			+ "`" + Dict.CATEGORY + "` varchar(32) not null,"
+			+ "`" + Dict.EVENT_DATE + "` datetime not null,"
+			+ "`" + Dict.AMOUNT + "` bigint (64) not null,"
+			+ "`" + Dict.NOTE + "` text,"
+			+ "`" + Dict.PHOTO + "` varchar(64),"
+			+ "`" + Dict.ATTRIBUTES + "` varchar(256) not null,"
+			+ "`" + Dict.EDIT_TIME + "` datetime not null,"
+			+ "primary key (`" + Dict.ID + "`),"
+			+ "key `fk_books_entry_user` (`" + Dict.USER_ID + "`),"
+			+ "constraint `fk_books_entry_user` foreign key (`" + Dict.USER_ID + "`) "
+			+ "references `" + UserDAO.TABLE_NAME + "` (`" + Dict.USER_ID + "`)"
+			+ ")ENGINE = InnoDB DEFAULT CHARSET = utf8"
+		)
 	void createTable();
 	
 	@SqlUpdate("drop table if exists " + TABLE_NAME)
 	void dropTable();
 	
 	@SqlUpdate("insert into " + TABLE_NAME + " ("
-			+ NameDef.ID + ", "
-			+ NameDef.USER_ID + ", "
-			+ NameDef.CATEGORY + ", "
-			+ NameDef.EVENT_DATE + ", "
-			+ NameDef.AMOUNT + ", "
-			+ NameDef.NOTE + ", "
-			+ NameDef.PHOTO + ", "
-			+ NameDef.EDIT_TIME
+			+ Dict.ID + ", "
+			+ Dict.USER_ID + ", "
+			+ Dict.CATEGORY + ", "
+			+ Dict.EVENT_DATE + ", "
+			+ Dict.AMOUNT + ", "
+			+ Dict.NOTE + ", "
+			+ Dict.PHOTO + ", "
+			+ Dict.ATTRIBUTES + ", "
+			+ Dict.EDIT_TIME
 			+ ") values ("
-			+ ":" + NameDef.ID
-			+ ", :" + NameDef.USER_ID
-			+ ", :" + NameDef.CATEGORY
-			+ ", :" + NameDef.EVENT_DATE
-			+ ", :" + NameDef.AMOUNT
-			+ ", :" + NameDef.NOTE
-			+ ", :" + NameDef.PHOTO
-			+ ", :" + NameDef.EDIT_TIME
+			+ ":" + Dict.ID
+			+ ", :" + Dict.USER_ID
+			+ ", :" + Dict.CATEGORY
+			+ ", :" + Dict.EVENT_DATE
+			+ ", :" + Dict.AMOUNT
+			+ ", :" + Dict.NOTE
+			+ ", :" + Dict.PHOTO
+			+ ", :" + Dict.ATTRIBUTES
+			+ ", :" + Dict.EDIT_TIME
 			+ ")"
 		)
-	void insert(@Bind(NameDef.ID) String id,
-				@Bind(NameDef.USER_ID) String user_id,
-				@Bind(NameDef.CATEGORY) String category,
-				@Bind(NameDef.EVENT_DATE) Date event_date,
-				@Bind(NameDef.AMOUNT) long amount,
-				@Bind(NameDef.NOTE) String note,
-				@Bind(NameDef.PHOTO) String photo,
-				@Bind(NameDef.EDIT_TIME) Date edit_time);
+	void insert(@Bind(Dict.ID) String id,
+				@Bind(Dict.USER_ID) String user_id,
+				@Bind(Dict.CATEGORY) String category,
+				@Bind(Dict.EVENT_DATE) Date event_date,
+				@Bind(Dict.AMOUNT) long amount,
+				@Bind(Dict.NOTE) String note,
+				@Bind(Dict.PHOTO) String photo,
+				@Bind(Dict.ATTRIBUTES) String attrbutes,
+				@Bind(Dict.EDIT_TIME) Date edit_time);
 	
 	@SqlUpdate("update " + TABLE_NAME + " set "
-			+ NameDef.USER_ID + "= :" + NameDef.USER_ID + ", "
-			+ NameDef.CATEGORY + "= :" + NameDef.CATEGORY + ","
-			+ NameDef.EVENT_DATE + "= :" + NameDef.EVENT_DATE + ","
-			+ NameDef.AMOUNT + "= :" + NameDef.AMOUNT + ","
-			+ NameDef.NOTE + "= :" + NameDef.NOTE + ","
-			+ NameDef.PHOTO + "= :" + NameDef.PHOTO + ","
-			+ NameDef.EDIT_TIME + "= :" + NameDef.EDIT_TIME
-			+ " where " + NameDef.ID + "= :" + NameDef.ID
+			+ Dict.USER_ID + "= :" + Dict.USER_ID + ", "
+			+ Dict.CATEGORY + "= :" + Dict.CATEGORY + ","
+			+ Dict.EVENT_DATE + "= :" + Dict.EVENT_DATE + ","
+			+ Dict.AMOUNT + "= :" + Dict.AMOUNT + ","
+			+ Dict.NOTE + "= :" + Dict.NOTE + ","
+			+ Dict.PHOTO + "= :" + Dict.PHOTO + ","
+			+ Dict.ATTRIBUTES + "= :" + Dict.ATTRIBUTES + ","
+			+ Dict.EDIT_TIME + "= :" + Dict.EDIT_TIME
+			+ " where " + Dict.ID + "= :" + Dict.ID
 		)
-	void update(@Bind(NameDef.ID) String id,
-			@Bind(NameDef.USER_ID) String user_id,
-			@Bind(NameDef.CATEGORY) String category,
-			@Bind(NameDef.EVENT_DATE) Date event_date,
-			@Bind(NameDef.AMOUNT) long amount,
-			@Bind(NameDef.NOTE) String note,
-			@Bind(NameDef.PHOTO) String photo,
-			@Bind(NameDef.EDIT_TIME) Date edit_time);
+	void update(@Bind(Dict.ID) String id,
+				@Bind(Dict.USER_ID) String user_id,
+				@Bind(Dict.CATEGORY) String category,
+				@Bind(Dict.EVENT_DATE) Date event_date,
+				@Bind(Dict.AMOUNT) long amount,
+				@Bind(Dict.NOTE) String note,
+				@Bind(Dict.PHOTO) String photo,
+				@Bind(Dict.ATTRIBUTES) String attrbutes,
+				@Bind(Dict.EDIT_TIME) Date edit_time);
 	
-	@SqlQuery("select * from " + TABLE_NAME + " where " + NameDef.ID + " = :" + NameDef.ID)
+	@SqlQuery("select * from " + TABLE_NAME + " where " + Dict.ID + " = :" + Dict.ID)
     @Mapper(BooksEntryMapper.class)
     List<BooksEntry> findByID(
-        @Bind(NameDef.ID) String id
+        @Bind(Dict.ID) String id
     );
 	
-	@SqlQuery("select * from " + TABLE_NAME + " where " + NameDef.USER_ID + " = :" + NameDef.USER_ID)
+	@SqlQuery("select * from " + TABLE_NAME + " where " + Dict.USER_ID + " = :" + Dict.USER_ID)
     @Mapper(BooksEntryMapper.class)
     List<BooksEntry> findByUserID(
-        @Bind(NameDef.USER_ID) String user_id
+        @Bind(Dict.USER_ID) String user_id
     );
     
     @SqlQuery("select * from " + TABLE_NAME)
     @Mapper(BooksEntryMapper.class)
     List<BooksEntry> findAll();
     
-	@SqlUpdate("delete from " + TABLE_NAME + " where " + NameDef.ID + " = :" + NameDef.ID)
+	@SqlUpdate("delete from " + TABLE_NAME + " where " + Dict.ID + " = :" + Dict.ID)
     void deleteByID(
-        @Bind(NameDef.ID) String id
+        @Bind(Dict.ID) String id
     );
 	
-	@SqlUpdate("delete from " + TABLE_NAME + " where " + NameDef.USER_ID + " = :" + NameDef.USER_ID)
+	@SqlUpdate("delete from " + TABLE_NAME + " where " + Dict.USER_ID + " = :" + Dict.USER_ID)
     void deleteByUserID(
-        @Bind(NameDef.USER_ID) String user_id
+        @Bind(Dict.USER_ID) String user_id
     );
 }

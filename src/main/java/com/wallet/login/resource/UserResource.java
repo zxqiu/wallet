@@ -12,7 +12,7 @@ import com.wallet.login.core.UserPriority;
 import com.wallet.login.dao.SessionDAOConnector;
 import com.wallet.login.dao.UserDAOConnector;
 import com.wallet.utils.misc.ApiUtils;
-import com.wallet.utils.misc.NameDef;
+import com.wallet.utils.misc.Dict;
 
 @Path("/users")
 public class UserResource {
@@ -52,10 +52,10 @@ public class UserResource {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.TEXT_HTML)
     public Response insertUser(
-            @FormParam(NameDef.USER_ID) String user_id,
-            @FormParam(NameDef.EMAIL) String email,
-            @FormParam(NameDef.NAME) String name,
-            @FormParam(NameDef.PASSWORD) String password,
+            @FormParam(Dict.USER_ID) String user_id,
+            @FormParam(Dict.EMAIL) String email,
+            @FormParam(Dict.NAME) String name,
+            @FormParam(Dict.PASSWORD) String password,
             @CookieParam("walletSessionCookie") Cookie cookie
         ) throws Exception {
 

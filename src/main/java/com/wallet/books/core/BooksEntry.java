@@ -25,14 +25,17 @@ public class BooksEntry {
 	
 	@JsonProperty
 	private String photo;
-	
+
+	@JsonProperty
+	private String attributes;
+
 	@JsonProperty
 	private Date edit_time;
 	
 	public BooksEntry() {
 	}
 	
-	public BooksEntry(String id, String user_id, String category, Date event_date, long amount, String note, String photo) {
+	public BooksEntry(String id, String user_id, String category, Date event_date, long amount, String note, String photo, String attributes) {
 		this.setId(id);
 		this.setUser_id(user_id);
 		this.setCategory(category);
@@ -40,6 +43,7 @@ public class BooksEntry {
 		this.setAmount(amount);
 		this.setNote(note);
 		this.setPhoto(photo);
+		this.setAttributes(attributes);
 		this.setEdit_time(new Date());
 	}
 
@@ -105,5 +109,13 @@ public class BooksEntry {
 
 	public void setEvent_date(Date event_date) {
 		this.event_date = event_date;
+	}
+
+	public String getAttributes() {
+		return attributes;
+	}
+
+	public void setAttributes(String attributes) {
+		this.attributes = attributes;
 	}
 }

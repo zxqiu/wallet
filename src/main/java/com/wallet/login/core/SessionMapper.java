@@ -6,16 +6,16 @@ import java.sql.SQLException;
 import org.skife.jdbi.v2.StatementContext;
 import org.skife.jdbi.v2.tweak.ResultSetMapper;
 
-import com.wallet.utils.misc.NameDef;
+import com.wallet.utils.misc.Dict;
 
 public class SessionMapper implements ResultSetMapper<Session> {
 
     public Session map(int i, ResultSet resultSet, StatementContext statementContext) throws SQLException {
     	Session session = new Session();
 
-        session.setAccess_token(resultSet.getString(NameDef.ACCESS_TOKEN));
-        session.setUser_id(resultSet.getString(NameDef.USER_ID));
-        session.setCreate_date(resultSet.getDate(NameDef.CREATE_DATE));
+        session.setAccess_token(resultSet.getString(Dict.ACCESS_TOKEN));
+        session.setUser_id(resultSet.getString(Dict.USER_ID));
+        session.setCreate_date(resultSet.getDate(Dict.CREATE_DATE));
 
         return session;
     }

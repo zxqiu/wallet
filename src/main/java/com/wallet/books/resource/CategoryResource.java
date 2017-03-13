@@ -28,7 +28,7 @@ import com.wallet.books.core.Category;
 import com.wallet.books.dao.CategoryDAOConnector;
 import com.wallet.login.dao.SessionDAOConnector;
 import com.wallet.utils.misc.ApiUtils;
-import com.wallet.utils.misc.NameDef;
+import com.wallet.utils.misc.Dict;
 
 @Path("/books")
 public class CategoryResource {
@@ -79,19 +79,19 @@ public class CategoryResource {
 	}
 	
 	public static class CategoryPostRequest {
-		@JsonProperty(NameDef.USER_ID)
+		@JsonProperty(Dict.USER_ID)
 		String user_id;
-		@JsonProperty(NameDef.NAME)
+		@JsonProperty(Dict.NAME)
 		String name;
-		@JsonProperty(NameDef.PICTURE_ID)
+		@JsonProperty(Dict.PICTURE_ID)
 		String picture_id;
 		
 		@Override
 		public String toString() {
 			return MoreObjects.toStringHelper(this)
-	                .add(NameDef.USER_ID, user_id)
-	                .add(NameDef.NAME, name)
-	                .add(NameDef.PICTURE_URL, picture_id)
+	                .add(Dict.USER_ID, user_id)
+	                .add(Dict.NAME, name)
+	                .add(Dict.PICTURE_URL, picture_id)
 	                .toString();
 		}
 	}
@@ -106,7 +106,7 @@ public class CategoryResource {
     @Timed
     @Path("/getcategories")
 	@Produces(value = MediaType.APPLICATION_JSON)
-	public Response getCategories(@QueryParam(NameDef.USER_ID) String user_id,
+	public Response getCategories(@QueryParam(Dict.USER_ID) String user_id,
 			@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
 		// 1. extract request
 		// 2. verify and parse request

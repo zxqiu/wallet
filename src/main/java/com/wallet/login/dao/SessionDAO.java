@@ -9,20 +9,20 @@ import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
 
 import com.wallet.login.core.Session;
 import com.wallet.login.core.SessionMapper;
-import com.wallet.utils.misc.NameDef;
+import com.wallet.utils.misc.Dict;
 
 
 public interface SessionDAO {
 	public static final String TABLE_NAME = "session";
 	
 	@SqlUpdate("create table if not exists " + TABLE_NAME + " ("
-			+ "`" + NameDef.ACCESS_TOKEN + "` varchar(23) not null unique,"
-			+ "`" + NameDef.USER_ID + "` varchar(64) not null,"
-			+ "`" + NameDef.CREATE_DATE + "` datetime not null,"
-			+ "primary key (`" + NameDef.ACCESS_TOKEN + "`),"
-			+ "key `fk_session_user` (`" + NameDef.USER_ID + "`),"
-			+ "constraint `fk_session_user` foreign key (`" + NameDef.USER_ID + "`) "
-			+ "references `" + UserDAO.TABLE_NAME + "` (`" + NameDef.USER_ID + "`)"
+			+ "`" + Dict.ACCESS_TOKEN + "` varchar(23) not null unique,"
+			+ "`" + Dict.USER_ID + "` varchar(64) not null,"
+			+ "`" + Dict.CREATE_DATE + "` datetime not null,"
+			+ "primary key (`" + Dict.ACCESS_TOKEN + "`),"
+			+ "key `fk_session_user` (`" + Dict.USER_ID + "`),"
+			+ "constraint `fk_session_user` foreign key (`" + Dict.USER_ID + "`) "
+			+ "references `" + UserDAO.TABLE_NAME + "` (`" + Dict.USER_ID + "`)"
 			+ ")ENGINE = InnoDB DEFAULT CHARSET = utf8"
 			)
 	void createTable();
@@ -31,53 +31,53 @@ public interface SessionDAO {
 	void dropTable();
 	
     @SqlUpdate("insert into " + TABLE_NAME + " ("
-    		+ NameDef.ACCESS_TOKEN
-    		+ ", " + NameDef.USER_ID 
-    		+ ", " + NameDef.CREATE_DATE
+    		+ Dict.ACCESS_TOKEN
+    		+ ", " + Dict.USER_ID
+    		+ ", " + Dict.CREATE_DATE
     		+ ") values ("
-    		+ ":" + NameDef.ACCESS_TOKEN + ", "
-    		+ ":" + NameDef.USER_ID + ", "
-    		+ ":" + NameDef.CREATE_DATE + ")"
+    		+ ":" + Dict.ACCESS_TOKEN + ", "
+    		+ ":" + Dict.USER_ID + ", "
+    		+ ":" + Dict.CREATE_DATE + ")"
     		)
     void insert(
-        @Bind(NameDef.ACCESS_TOKEN) String access_token 
-        ,@Bind(NameDef.USER_ID) String user_id
-        ,@Bind(NameDef.CREATE_DATE) java.util.Date create_date 
+        @Bind(Dict.ACCESS_TOKEN) String access_token
+        ,@Bind(Dict.USER_ID) String user_id
+        ,@Bind(Dict.CREATE_DATE) java.util.Date create_date
     );
     
     @SqlQuery("select * from " + TABLE_NAME)
     @Mapper(SessionMapper.class)
     List<Session> findAll();
     
-	@SqlQuery("select * from " + TABLE_NAME + " where " + NameDef.USER_ID + " = :" + NameDef.USER_ID)
+	@SqlQuery("select * from " + TABLE_NAME + " where " + Dict.USER_ID + " = :" + Dict.USER_ID)
     @Mapper(SessionMapper.class)
     List<Session> findByUserID(
-        @Bind(NameDef.USER_ID) String user_id
+        @Bind(Dict.USER_ID) String user_id
     );
 	
-	@SqlQuery("select * from " + TABLE_NAME + " where " + NameDef.ACCESS_TOKEN + " = :" + NameDef.ACCESS_TOKEN)
+	@SqlQuery("select * from " + TABLE_NAME + " where " + Dict.ACCESS_TOKEN + " = :" + Dict.ACCESS_TOKEN)
     @Mapper(SessionMapper.class)
     List<Session> findByAccessToken(
-        @Bind(NameDef.ACCESS_TOKEN) String access_token
+        @Bind(Dict.ACCESS_TOKEN) String access_token
     );
 	
 	@SqlQuery("select * from " + TABLE_NAME + " where "
-			+ NameDef.USER_ID + " = :" + NameDef.USER_ID
-			+ " and " + NameDef.ACCESS_TOKEN + " = :" + NameDef.ACCESS_TOKEN
+			+ Dict.USER_ID + " = :" + Dict.USER_ID
+			+ " and " + Dict.ACCESS_TOKEN + " = :" + Dict.ACCESS_TOKEN
 			)
     @Mapper(SessionMapper.class)
     List<Session> findByUserIDAndAccessToken(
-        @Bind(NameDef.USER_ID) String user_id,
-        @Bind(NameDef.ACCESS_TOKEN) String access_token
+        @Bind(Dict.USER_ID) String user_id,
+        @Bind(Dict.ACCESS_TOKEN) String access_token
     );
 	
-	@SqlUpdate("delete from " + TABLE_NAME + " where " + NameDef.USER_ID + " = :" + NameDef.USER_ID)
+	@SqlUpdate("delete from " + TABLE_NAME + " where " + Dict.USER_ID + " = :" + Dict.USER_ID)
     void deleteByUserID(
-        @Bind(NameDef.USER_ID) String user_id
+        @Bind(Dict.USER_ID) String user_id
     );
 	
-	@SqlUpdate("delete from " + TABLE_NAME + " where " + NameDef.ACCESS_TOKEN + " = :" + NameDef.ACCESS_TOKEN)
+	@SqlUpdate("delete from " + TABLE_NAME + " where " + Dict.ACCESS_TOKEN + " = :" + Dict.ACCESS_TOKEN)
     void deleteByAccessToken(
-        @Bind(NameDef.ACCESS_TOKEN) String access_token
+        @Bind(Dict.ACCESS_TOKEN) String access_token
     );
 }
