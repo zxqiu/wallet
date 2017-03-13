@@ -10,6 +10,8 @@ import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.wallet.login.core.User;
+import com.wallet.login.dao.UserDAOConnector;
 import com.wallet.login.resource.SessionResource;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,10 +39,12 @@ public class BooksEntryResource {
 	
 	private BooksEntryDAOConnector booksEntryDAOC = null;
 	private CategoryDAOConnector categoryDAOC = null;
+	private UserDAOConnector userDAOC = null;
 	
 	public BooksEntryResource() throws Exception {
 		this.booksEntryDAOC = BooksEntryDAOConnector.instance();
 		this.categoryDAOC = CategoryDAOConnector.instance();
+		this.userDAOC = UserDAOConnector.instance();
 	}
 
 	public static final String PATH_BOOKS = "/books";
@@ -57,7 +61,9 @@ public class BooksEntryResource {
 			return Response.seeOther(URI.create(SessionResource.PATH_RESTORE_SESSION)).build();
 		}
 
-		return Response.ok().entity(views.booksEntryList.template(sortBooksByTime(booksEntryDAOC.getByUserID(user_id)), booksEntrysEachLine)).build();
+		User user = userDAOC.getByID(user_id);
+
+		return Response.ok().entity(views.booksEntryList.template(sortBooksByTime(booksEntryDAOC.getByUserID(user_id)), booksEntrysEachLine, user)).build();
 	}
 
 	public static final String PATH_INSERT_ENTRY_VIEW = "/books/entry";

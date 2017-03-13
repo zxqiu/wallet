@@ -1,7 +1,8 @@
 @import com.wallet.books.core.BooksEntry;
+@import com.wallet.login.core.User;
 @import java.util.List;
 
-@args (List<BooksEntry> booksEntryList, int booksEntrysEachLine)
+@args (List<BooksEntry> booksEntryList, int booksEntrysEachLine, User user)
 
 <html lang="en">
 
@@ -18,12 +19,18 @@
 </head>
 
 <body>
+	@if (user != null) {
+	<div>Hello, @user.getName()?:"visitor"</div>
+	}
 	<div class="row">
 		<div class="col-md-4">
 			<button type="button" value="go" onclick="window.location.href='/books/entry/0'">new item</button>
 		</div>
 		<div class="col-md-4">
 			<button type="button" onclick="window.location.href='/logout'">logout</button>
+		</div>
+		<div class="col-md-4">
+			<button type="button" onclick="window.location.href='/users/insertuserview'">edit user</button>
 		</div>
 	</div>
 	</br>

@@ -20,7 +20,10 @@
 <body>
 	<div class="row">
 		<div class="col-md-4">
-			<form role="form" action="/user/insertuser" method="post" id="userForm">
+			@if(user != null) {
+			<div>Updating user @user.getEmail()</div>
+            }
+			<form role="form" action="/users/insertuser" method="post" id="userForm">
 				<input type="text" id="userID" name="user_id"
 					@if(user != null) {
 						value="@?user.getUser_id()"
@@ -61,7 +64,7 @@
 				<div class="form-group">
 
 					<label for="userPassword">
-						Nickname
+						Password
 					</label>
 					<div class='input-group'>
 						<input type="password" class="form-control" id="userPassword" name="password"
