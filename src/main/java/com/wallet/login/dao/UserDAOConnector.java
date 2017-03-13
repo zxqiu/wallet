@@ -85,16 +85,26 @@ public class UserDAOConnector {
 	public User getByIDAndPassword(String user_id, String password) throws Exception {
 		List<User> ret = userDAO.findByUserIDAndPassword(user_id, password);
 		if (ret.isEmpty()) {
-			logger_.warn("User not found : " + user_id);
+			logger_.warn("User not found by user id and password : " + user_id);
 			return null;
 		}
 		
 		return ret.get(ret.size() - 1);
 	}
-	
+
+	public User getEmailAndPassword(String email, String password) throws Exception {
+		List<User> ret = userDAO.findByEmailAndPassword(email, password);
+		if (ret.isEmpty()) {
+			logger_.warn("User not found by email and password : " + email);
+			return null;
+		}
+
+		return ret.get(ret.size() - 1);
+	}
+
 	public void insert(User user) throws Exception {
 		try {
-			userDAO.insert(user.getUser_id(), user.getPassword(), user.getName(), user.getPriority());
+			userDAO.insert(user.getUser_id(), user.getEmail(), user.getPassword(), user.getName(), user.getPriority());
 		} catch (Exception e) {
 			if (e.getMessage().contains("Duplicate entry")) {
 				logger_.info("User already exists : " + user.getUser_id());
@@ -107,7 +117,7 @@ public class UserDAOConnector {
 	}
 	
 	public void update(User user) throws Exception {
-		userDAO.update(user.getUser_id(), user.getPassword(), user.getName(), user.getPriority());
+		userDAO.update(user.getUser_id(), user.getEmail(), user.getPassword(), user.getName(), user.getPriority());
 	}
 	
 	// TODO : delete user's data from other tables asynchronously
@@ -116,7 +126,7 @@ public class UserDAOConnector {
 	}
 	
 	public static void test() throws Exception {
-		User user = new User("admin", "admin", "admin", UserPriority.ADMIN.name());
+		User user = new User("admin", "admin@gmail.com", "admin", "admin", UserPriority.ADMIN.name());
 
 		logger_.info("UserDAOConnector test ...");
 		
@@ -133,6 +143,7 @@ public class UserDAOConnector {
 		logger_.info("2. update");
 		
 		user.setName("gooduser");
+		user.setEmail("a@b.com");
 		UserDAOConnector.instance().update(user);
 		user2 = UserDAOConnector.instance().getByID("admin");
 		logger_.info("updated name" + user2.getName());

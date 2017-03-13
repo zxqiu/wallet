@@ -1,0 +1,90 @@
+@import com.wallet.login.core.User;
+@import java.util.List;
+
+@args (User user)
+
+<html lang="en">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>tiny wallet</title><!-- layoutit -->
+
+<link href="/css/bootstrap.min.css" rel="stylesheet">
+<link href="/css/bootstrap-datepicker.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+	<div class="row">
+		<div class="col-md-4">
+			<form role="form" action="/user/insertuser" method="post" id="userForm">
+				<input type="text" id="userID" name="user_id"
+					@if(user != null) {
+						value="@?user.getUser_id()"
+					}
+					style="display: none">
+				<div class="form-group">
+					 
+					<label for="userEmail">
+						Email
+					</label>
+					<div class='input-group'>
+						<input type="text" class="form-control" placeholder="aaa@@bbb.ccc" id="userEmail" name="email"
+							@if (user != null) {
+								value="@?user.getEmail()"
+							}
+						 required="true">
+						<span class="btn input-group-addon">
+							<span class="glyphicon glyphicon-italic"></span>
+						</span>
+					</div>
+				</div>
+				<div class="form-group">
+
+					<label for="userName">
+						Nickname
+					</label>
+					<div class='input-group'>
+						<input type="text" class="form-control" id="userName" name="name"
+							@if (user != null) {
+								value="@?user.getName()"
+							}
+							required="true">
+						<span class="btn input-group-addon">
+							<span class="glyphicon glyphicon-italic"></span>
+						</span>
+					</div>
+				</div>
+				<div class="form-group">
+
+					<label for="userPassword">
+						Nickname
+					</label>
+					<div class='input-group'>
+						<input type="password" class="form-control" id="userPassword" name="password"
+							@if (user != null) {
+								value="@?user.getPassword()"
+							}
+							required="true">
+						<span class="btn input-group-addon">
+							<span class="glyphicon glyphicon-italic"></span>
+						</span>
+					</div>
+				</div>
+				<button type="submit" id="userSubmit">submit</button>
+			</form>
+		</div>
+	</div>
+	<div>
+		<button type="button" value="back" onclick="location.href='/'">back</button>
+	</div>
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/bootstrap-datepicker.min.js"></script>
+
+</body>
+</html>

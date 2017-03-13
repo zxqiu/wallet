@@ -1,7 +1,7 @@
 @import com.wallet.books.core.Category;
 @import java.util.List;
 
-@args (String id, com.wallet.books.core.BooksEntry booksEntry, List<Category> CategoryList, String date)
+@args (com.wallet.books.core.BooksEntry booksEntry, List<Category> CategoryList, String date)
 
 <html lang="en">
 
@@ -21,7 +21,7 @@
 <body>
 	<div class="row">
 		<div class="col-md-4">
-			<form role="form" title="@id" action="/books/insertentry" method="post" id="booksEntryForm">
+			<form role="form" action="/books/insertentry" method="post" id="booksEntryForm">
 				<input type="text" id="booksEntryID" name="id"
 					@if(booksEntry != null) {
 						value="@?booksEntry.getId()"
@@ -95,20 +95,20 @@
 				</div>
 				<button type="submit" id="booksEntrySubmit">submit</button>
 			</form>
+			@if (booksEntry != null && booksEntry.getId() != null && booksEntry.getId().length() > 1) {
+				<form role="form" action="/books/deleteentry" method="post">
+					<input type="text" name="id"
+						   @if(booksEntry != null) {
+						   value="@?booksEntry.getId()"
+						   }
+						   style="display: none">
+					<button type="submit" action="/books/deleteentry" method="post">delete</button>
+				</form>
+			}
 		</div>
 	</div>
 	<div>
 		<button type="button" value="back" onclick="location.href='/books'">back</button>
-		@if (booksEntry != null && booksEntry.getId() != null && booksEntry.getId().length() > 1) {
-			<form role="form" title="@id" action="/books/deleteentry" method="post">
-				<input type="text" name="id"
-					   @if(booksEntry != null) {
-					   value="@?booksEntry.getId()"
-					   }
-					   style="display: none">
-				<button type="submit" action="/books/deleteentry" method="post">delete</button>
-			</form>
-        }
 	</div>
 
 <script src="/js/jquery.min.js"></script>

@@ -9,6 +9,7 @@ import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 
 import com.wallet.books.resource.BooksEntryResource;
+import com.wallet.login.core.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,13 +41,20 @@ public class SessionResource {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.TEXT_HTML)
     public Object login(
-        @FormParam(NameDef.USER_ID) String user_id,
+        @FormParam(NameDef.ID) String id,
         @FormParam(NameDef.PASSWORD) String password) throws Exception {
 
-        if (userDAOC.getByIDAndPassword(user_id, password) == null) {
-        	return Response.status(Status.ERROR)
-        			.entity(ApiUtils.buildJSONResponse(false, "user id or password error"))
-        			.build();
+        String user_id = "";
+        if (userDAOC.getByIDAndPassword(id, password) != null) {
+            user_id = id;
+        } else {
+            User user = userDAOC.getEmailAndPassword(id, password);
+            if (user == null) {
+                return Response.status(Status.ERROR)
+                        .entity(ApiUtils.buildJSONResponse(false, "user id or password error"))
+                        .build();
+            }
+            user_id = user.getUser_id();
         }
 
         Session session = new Session(user_id);

@@ -1,11 +1,15 @@
 package com.wallet.login.core;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.wallet.utils.misc.TimeUtils;
 
 public class User {
 
     @JsonProperty
     private String user_id;
+
+    @JsonProperty
+    private String email;
 
     @JsonProperty
     private String password;
@@ -15,6 +19,15 @@ public class User {
 
     @JsonProperty
     private String priority;
+
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     public String getPassword() {
         return password;
@@ -50,9 +63,18 @@ public class User {
 	
 	public User() {
 	}
-	
-	public User(String user_id, String password, String name, String priority) {
+
+    public User(String email, String password, String name, String priority) {
+        this.setUser_id(email + TimeUtils.getUniqueTimeStampInMS());
+        this.setEmail(email);
+        this.setPassword(password);
+        this.setName(name);
+        this.setPriority(priority);
+    }
+
+	public User(String user_id, String email, String password, String name, String priority) {
 		this.setUser_id(user_id);
+		this.setEmail(email);
 		this.setPassword(password);
 		this.setName(name);
 		this.setPriority(priority);

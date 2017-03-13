@@ -86,7 +86,7 @@ public class BooksEntryResource {
 			}
 		}
 
-		return Response.ok().entity(views.booksEntry.template(id, booksEntry, categoryDAOC.getByUserID(user_id), date)).build();
+		return Response.ok().entity(views.booksEntry.template(booksEntry, categoryDAOC.getByUserID(user_id), date)).build();
 	}
 
 	/**
@@ -100,7 +100,7 @@ public class BooksEntryResource {
     @Path("/insertentry")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.TEXT_HTML)
-	public Response insertItem(@FormParam(NameDef.ID) String id,
+	public Response insertEntry(@FormParam(NameDef.ID) String id,
 							   @FormParam(NameDef.EVENT_DATE) String event_date,
 							   @FormParam(NameDef.AMOUNT) long amount,
 							   @FormParam(NameDef.CATEGORY) String category,
@@ -181,7 +181,7 @@ public class BooksEntryResource {
     @Path("/deleteentry")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.TEXT_HTML)
-	public Response deleteItem(@FormParam(NameDef.ID) String id,
+	public Response deleteEntry(@FormParam(NameDef.ID) String id,
 			@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
 		String user_id = ApiUtils.getUserIDFromCookie(cookie);
 		if (SessionDAOConnector.instance().verifySessionCookie(cookie)== false || user_id == null) {
