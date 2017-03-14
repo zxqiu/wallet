@@ -1,0 +1,53 @@
+@import com.wallet.books.core.Category;
+@import java.util.List;
+
+@args (List<Category> categoryList)
+
+<html lang="en">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>tiny wallet</title><!-- layoutit -->
+
+<link href="/css/bootstrap.min.css" rel="stylesheet">
+<link href="/css/bootstrap-datepicker.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+	<div class="row">
+		<div class="col-md-4">
+			@if (categoryList != null) {
+				@for (Category category : categoryList) {
+					<form role="form" action="/books/insertcategory" method="post" id="categoryForm">
+						<input type="hidden" id="categoryID" name="id" value="@?category.getId()">
+						<div class="form-group">
+							<div class='input-group'>
+								<input type="" class="form-control" id="categoryName" name="name" value="@?category.getName()" required="true" readonly>
+								<span class="btn input-group-addon">
+									<span class="glyphicon glyphicon-italic"></span>
+								</span>
+							</div>
+							<input name="picture_id" type="hidden" id="categoryColor@?category.getId()" value="@category.getPicture_id()?:"ab2567"">
+							<button class="form-control jscolor {valueElement: 'categoryColor@?category.getId()'}">Color</button>
+							<button type="submit" id="categorySubmit">submit</button>
+						</div>
+					</form>
+				}
+			}
+		</div>
+	</div>
+	<div>
+		<button type="button" value="back" onclick="location.href='/'">back</button>
+	</div>
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/bootstrap-datepicker.min.js"></script>
+<script src="/js/jscolor.min.js"></script>
+
+</body>
+</html>

@@ -1,19 +1,17 @@
 package com.wallet.books.resource;
 
+import java.net.URI;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
-import javax.ws.rs.CookieParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.wallet.login.resource.SessionResource;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,61 +37,76 @@ public class CategoryResource {
 	public CategoryResource() throws Exception {
 		this.categoryDAOC = CategoryDAOConnector.instance();
 	}
-	
+
+	@GET
+	@Timed
+	@Path("/allcategories")
+	@Produces(value = MediaType.APPLICATION_JSON)
+	public List<Category> getAll() throws SQLException {
+		return categoryDAOC.getByUserID("admin");
+	}
+
+
+	@GET
+	@Timed
+	@Path("/categories")
+	@Produces(MediaType.TEXT_HTML)
+    public Response categoryListView(@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
+		String user_id = ApiUtils.getUserIDFromCookie(cookie);
+		if (user_id == null || SessionDAOConnector.instance().verifySessionCookie(cookie)== false) {
+			return Response.seeOther(URI.create(SessionResource.PATH_LOGIN)).build();
+		}
+
+		return Response.ok().entity(views.categoryList.template(categoryDAOC.getByUserID(user_id))).build();
+	}
+
 	/**
 	 * Create a new category and insert to books
-	 * @param user_id, name, picture_url
+	 * @param name, picture_url
 	 * @return
 	 * @throws Exception 
 	 */
 	@POST
     @Timed
     @Path("/insertcategory")
-	@Produces(value = MediaType.APPLICATION_JSON)
-	public Response newCategory(@Valid CategoryPostRequest request,
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.TEXT_HTML)
+	public Response insertCategory(
+			@FormParam(Dict.ID) String id,
+			@FormParam(Dict.NAME) String name,
+			@FormParam(Dict.PICTURE_ID) String picture_id,
 			@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
-		if (request == null || SessionDAOConnector.instance().verifySessionCookie(cookie)== false) {
-			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.QUERY_ARG_ERROR)).build();
+
+		String user_id = ApiUtils.getUserIDFromCookie(cookie);
+		if (user_id == null || SessionDAOConnector.instance().verifySessionCookie(cookie)== false) {
+			return Response.seeOther(URI.create(SessionResource.PATH_LOGIN)).build();
 		}
 		
 		// 1. extract request
 		// 2. verify and parse request
 		// 3. verify parameters 
-		if (request.user_id.length() == 0 || request.name.length() == 0) {
-			logger_.error("ERROR: invalid new category request: " + request.toString());
-			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.QUERY_ARG_ERROR)).build();
+		if (name.length() == 0 || picture_id.length() == 0) {
+			return Response.serverError().build();
 		}
 		
 		// 4. transaction
-		Category category = new Category(request.user_id, request.name, request.picture_id);
-		logger_.info("Insert new category " + category.getName() + " for user " + request.user_id);
+		Category category = new Category(user_id, name, picture_id);
 		try {
-			categoryDAOC.insert(category);
+		    if (id != null && id.length() > 1) {
+		    	category.setId(id);
+				logger_.info("Update category " + category.getName() + " for user " + user_id);
+		    	categoryDAOC.updatePictureID(category);
+			} else {
+				logger_.info("Insert category " + category.getName() + " for user " + user_id);
+				categoryDAOC.insert(category);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			logger_.error("Error : failed to insert new category : " + e.getMessage());
+			logger_.error("Error : failed to insert or update category : " + e.getMessage());
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.INTERNAL_ERROR)).build();
 		}
-		
-		return Response.status(200).entity(ApiUtils.buildJSONResponse(true, ApiUtils.SUCCESS)).build();
-	}
-	
-	public static class CategoryPostRequest {
-		@JsonProperty(Dict.USER_ID)
-		String user_id;
-		@JsonProperty(Dict.NAME)
-		String name;
-		@JsonProperty(Dict.PICTURE_ID)
-		String picture_id;
-		
-		@Override
-		public String toString() {
-			return MoreObjects.toStringHelper(this)
-	                .add(Dict.USER_ID, user_id)
-	                .add(Dict.NAME, name)
-	                .add(Dict.PICTURE_URL, picture_id)
-	                .toString();
-		}
+
+		return Response.seeOther(URI.create(BooksEntryResource.PATH_BOOKS)).build();
 	}
 	
 	/**
