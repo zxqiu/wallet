@@ -24,7 +24,6 @@ public static final String TABLE_NAME = "books_entry";
 			+ "`" + Dict.AMOUNT + "` bigint (64) not null,"
 			+ "`" + Dict.NOTE + "` text,"
 			+ "`" + Dict.PHOTO + "` varchar(64),"
-			+ "`" + Dict.ATTRIBUTES + "` varchar(256) not null,"
 			+ "`" + Dict.EDIT_TIME + "` datetime not null,"
 			+ "primary key (`" + Dict.ID + "`),"
 			+ "key `fk_books_entry_user` (`" + Dict.USER_ID + "`),"
@@ -45,7 +44,6 @@ public static final String TABLE_NAME = "books_entry";
 			+ Dict.AMOUNT + ", "
 			+ Dict.NOTE + ", "
 			+ Dict.PHOTO + ", "
-			+ Dict.ATTRIBUTES + ", "
 			+ Dict.EDIT_TIME
 			+ ") values ("
 			+ ":" + Dict.ID
@@ -55,7 +53,6 @@ public static final String TABLE_NAME = "books_entry";
 			+ ", :" + Dict.AMOUNT
 			+ ", :" + Dict.NOTE
 			+ ", :" + Dict.PHOTO
-			+ ", :" + Dict.ATTRIBUTES
 			+ ", :" + Dict.EDIT_TIME
 			+ ")"
 		)
@@ -66,7 +63,6 @@ public static final String TABLE_NAME = "books_entry";
 				@Bind(Dict.AMOUNT) long amount,
 				@Bind(Dict.NOTE) String note,
 				@Bind(Dict.PHOTO) String photo,
-				@Bind(Dict.ATTRIBUTES) String attrbutes,
 				@Bind(Dict.EDIT_TIME) Date edit_time);
 	
 	@SqlUpdate("update " + TABLE_NAME + " set "
@@ -76,7 +72,6 @@ public static final String TABLE_NAME = "books_entry";
 			+ Dict.AMOUNT + "= :" + Dict.AMOUNT + ","
 			+ Dict.NOTE + "= :" + Dict.NOTE + ","
 			+ Dict.PHOTO + "= :" + Dict.PHOTO + ","
-			+ Dict.ATTRIBUTES + "= :" + Dict.ATTRIBUTES + ","
 			+ Dict.EDIT_TIME + "= :" + Dict.EDIT_TIME
 			+ " where " + Dict.ID + "= :" + Dict.ID
 		)
@@ -87,7 +82,6 @@ public static final String TABLE_NAME = "books_entry";
 				@Bind(Dict.AMOUNT) long amount,
 				@Bind(Dict.NOTE) String note,
 				@Bind(Dict.PHOTO) String photo,
-				@Bind(Dict.ATTRIBUTES) String attrbutes,
 				@Bind(Dict.EDIT_TIME) Date edit_time);
 	
 	@SqlQuery("select * from " + TABLE_NAME + " where " + Dict.ID + " = :" + Dict.ID)

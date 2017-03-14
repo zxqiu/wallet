@@ -9,7 +9,6 @@ public class Dict {
 	public static final String EVENT_DATE = "event_date";
 	public static final String AMOUNT = "amount";
 	public static final String NOTE = "note";
-	public static final String PICTURE_URL = "picture_url";
 	public static final String PICTURE_ID = "picture_id";
 	public static final String NAME = "name";
 	public static final String EDIT_TIME = "edit_time";
@@ -17,6 +16,4 @@ public class Dict {
 	public static final String PASSWORD = "password";
 	public static final String ACCESS_TOKEN = "access_token";
 	public static final String PHOTO = "photo";
-	public static final String ATTRIBUTES = "attributes";
-	public static final String COLOR = "color";
 }

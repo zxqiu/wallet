@@ -57,11 +57,11 @@ public class BooksEntryResource {
 
 		User user = userDAOC.getByID(user_id);
 		List<BooksEntry> booksEntryList = sortBooksByTime(booksEntryDAOC.getByUserID(user_id));
+		List<Category> categoryList = categoryDAOC.getByUserID(user_id);
 		HashMap<String, String> colorMap = new HashMap<>();
 
-		for (BooksEntry entry : booksEntryList) {
-			JSONObject attr = new JSONObject(entry.getAttributes());
-			colorMap.put(entry.getId(), attr.getString(Dict.COLOR));
+		for (Category category : categoryList) {
+			colorMap.put(category.getName(), category.getPicture_id());
 		}
 
 		return Response.ok().entity(views.booksEntryList.template(booksEntryList, colorMap, booksEntrysEachLine, user)).build();
@@ -85,20 +85,16 @@ public class BooksEntryResource {
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 		String date = sdf.format(new Date());
 		BooksEntry booksEntry = null;
-		String color = "ab2567";
 		if (!id.equals("0")) {
 			List<BooksEntry> booksEntryList = booksEntryDAOC.getByID(id);
 			if (!booksEntryList.isEmpty()) {
 				booksEntry = booksEntryList.get(booksEntryList.size() - 1);
 				date = sdf.format(booksEntry.getEvent_date());
-				JSONObject attr = new JSONObject(booksEntry.getAttributes());
-				color = attr.getString(Dict.COLOR);
 			}
 		}
 
 		return Response.ok()
 				.entity(views.booksEntry.template(booksEntry
-						, color
 						, categoryDAOC.getByUserID(user_id)
 						, date))
 				.build();
@@ -121,7 +117,6 @@ public class BooksEntryResource {
 								@FormParam(Dict.CATEGORY) String category,
 								@FormParam(Dict.NOTE) String note,
 								@FormParam(Dict.PHOTO) String photo,
-								@FormParam(Dict.COLOR) String color,
 								@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
 		String user_id = ApiUtils.getUserIDFromCookie(cookie);
 		if (SessionDAOConnector.instance().verifySessionCookie(cookie)== false || user_id == null) {
@@ -168,9 +163,7 @@ public class BooksEntryResource {
 		
 		// 4.2.2 insert 
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-		JSONObject attr = new JSONObject();
-		attr.put("color", color);
-		BooksEntry booksEntry = new BooksEntry(id, user_id, category, sdf.parse(event_date), amount, note, photo, attr.toString());
+		BooksEntry booksEntry = new BooksEntry(id, user_id, category, sdf.parse(event_date), amount, note, photo);
 		try {
 			if (exist) {
 				logger_.info("Update books item : " + booksEntry.getId());

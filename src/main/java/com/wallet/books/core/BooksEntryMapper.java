@@ -20,7 +20,6 @@ public class BooksEntryMapper implements ResultSetMapper<BooksEntry> {
 		entry.setAmount(resultSet.getLong(Dict.AMOUNT));
 		entry.setNote(resultSet.getString(Dict.NOTE));
 		entry.setPhoto(resultSet.getString(Dict.PHOTO));
-		entry.setAttributes(resultSet.getString(Dict.ATTRIBUTES));
 		entry.setEdit_time(resultSet.getDate(Dict.EDIT_TIME));
 		
 		return entry;

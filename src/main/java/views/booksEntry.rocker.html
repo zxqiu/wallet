@@ -1,7 +1,7 @@
 @import com.wallet.books.core.Category;
 @import java.util.List;
 
-@args (com.wallet.books.core.BooksEntry booksEntry, String color, List<Category> CategoryList, String date)
+@args (com.wallet.books.core.BooksEntry booksEntry, List<Category> CategoryList, String date)
 
 <html lang="en">
 
@@ -63,7 +63,9 @@
 						<input class="form-control" value="general" placeholder="input or select" id="booksEntryCategory" name="category" type="text" required="true">
 						<ul class="dropdown-menu" id="booksEntryCategoryList">
 							@for (Category category : CategoryList) {
-								<li><a>@category.getName()</a></li>
+								<li style="background: #@?category.getPicture_id()">
+									<a style="color: white">@category.getName()</a>
+								</li>
 							}
 						</ul>
 						<span class="btn input-group-addon dropdown-toggle" data-toggle="dropdown">
@@ -92,14 +94,6 @@
 							value="@?booksEntry.getPhoto()"
 						}
 					></textarea>
-				</div>
-				<div class="form-group">
-
-					<label for="booksEntryColor">
-						Color
-					</label>
-					<input name="color" type="hidden" id="booksEntryColor" value="@color?:"ab2567"">
-					<button class="form-control jscolor {valueElement: 'booksEntryColor'}">Color</button>
 				</div>
 				<button type="submit" id="booksEntrySubmit">submit</button>
 			</form>

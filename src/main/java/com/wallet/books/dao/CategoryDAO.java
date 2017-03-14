@@ -13,7 +13,7 @@ import com.wallet.login.dao.UserDAO;
 import com.wallet.utils.misc.Dict;
 
 public interface CategoryDAO {
-public static final String TABLE_NAME = "category";
+	public static final String TABLE_NAME = "category";
 	
 	@SqlUpdate("create table if not exists " + TABLE_NAME + " ("
 			+ "`" + Dict.ID + "` varchar(64) not null unique,"

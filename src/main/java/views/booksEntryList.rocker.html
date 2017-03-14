@@ -51,7 +51,7 @@
 								<span class="books-list-text" title="@booksEntryList.get(i).getId()">
 									<span class="books-list-text-title" id="bookTitle"
 										@if (booksEntryList !=null && colorMap !=null) {
-											style="background: #@?colorMap.get(booksEntryList.get(i).getId())"
+											style="background: #@?colorMap.get(booksEntryList.get(i).getCategory())"
 										} else {
 											style="background: #002a80"
 										}

@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
@@ -19,8 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.codahale.metrics.annotation.Timed;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.MoreObjects;
 import com.google.gson.Gson;
 import com.wallet.books.core.Category;
 import com.wallet.books.dao.CategoryDAOConnector;
@@ -54,7 +51,7 @@ public class CategoryResource {
     public Response categoryListView(@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
 		String user_id = ApiUtils.getUserIDFromCookie(cookie);
 		if (user_id == null || SessionDAOConnector.instance().verifySessionCookie(cookie)== false) {
-			return Response.seeOther(URI.create(SessionResource.PATH_LOGIN)).build();
+			return Response.seeOther(URI.create(SessionResource.PATH_RESTORE_SESSION)).build();
 		}
 
 		return Response.ok().entity(views.categoryList.template(categoryDAOC.getByUserID(user_id))).build();
@@ -79,7 +76,7 @@ public class CategoryResource {
 
 		String user_id = ApiUtils.getUserIDFromCookie(cookie);
 		if (user_id == null || SessionDAOConnector.instance().verifySessionCookie(cookie)== false) {
-			return Response.seeOther(URI.create(SessionResource.PATH_LOGIN)).build();
+			return Response.seeOther(URI.create(SessionResource.PATH_RESTORE_SESSION)).build();
 		}
 		
 		// 1. extract request
