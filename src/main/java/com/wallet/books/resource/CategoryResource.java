@@ -126,9 +126,14 @@ public class CategoryResource {
 			JSONObject jsonObject = categories.getJSONObject(i);
 
 			if (!jsonObject.has(Dict.ID)
+                    || !jsonObject.has(Dict.ACTION)
 					|| !jsonObject.has(Dict.NAME)
 					|| !jsonObject.has(Dict.PICTURE_ID)) {
-				Response.serverError().build();
+			    continue;
+			}
+
+			if (jsonObject.getString(Dict.NAME).length() == 0) {
+				continue;
 			}
 
 			Category category = new Category(user_id
@@ -136,12 +141,17 @@ public class CategoryResource {
 					, jsonObject.getString(Dict.PICTURE_ID));
 
 			String id = jsonObject.getString(Dict.ID);
-			if (id.length() > 1) {
-				logger_.info("Updating category : " + jsonObject.toString());
-				categoryDAOC.updatePictureID(category);
-			} else {
-				logger_.info("Insert new category : " + jsonObject.toString());
-				categoryDAOC.insert(category);
+			if (jsonObject.getString(Dict.ACTION).equals(Dict.EDIT)) {
+				if (id.length() > 1) {
+					logger_.info("Updating category : " + jsonObject.toString());
+					categoryDAOC.updatePictureID(category);
+				} else {
+					logger_.info("Insert new category : " + jsonObject.toString());
+					categoryDAOC.insert(category);
+				}
+			} else if (jsonObject.getString(Dict.ACTION).equals(Dict.DELETE)) {
+				logger_.info("Delete category : " + jsonObject.toString());
+				categoryDAOC.deleteByID(id);
 			}
 		}
 

@@ -23,12 +23,18 @@
 			@if (categoryList != null) {
 				@for (Category category : categoryList) {
 					<form role="form" id="categoryForm">
-						<input type="hidden" class="categoryID" id="categoryID" name="id" value="@?category.getId()">
+						<input type="hidden" class="categoryID" name="id" value="@?category.getId()">
 						<div class="form-group">
-							<input type="hidden" class="categoryAction" id="categoryAction" name="action" value="update">
+							<input type="hidden" class="categoryAction" name="action" value="edit">
 							<input type="hidden" class="categoryColor" name="picture_id" id="categoryColor@?category.getId()">
 							<div class="input-group">
-								<input type="button" class="categoryName form-control btn jscolor {valueElement:'categoryColor@?category.getId()',value:'@?category.getPicture_id()'}" id="categoryName@?category.getId()" name="name" value="@?category.getName()" required="true" readonly>
+								<input type="button"
+									   class="categoryName form-control btn jscolor {valueElement:'categoryColor@?category.getId()',value:'@?category.getPicture_id()'}"
+									   id="categoryName@?category.getId()"
+									   name="name"
+									   value="@?category.getName()"
+									   title="@?category.getName()"
+									   required="true" readonly>
 								<span class="input-group-addon btn categoryDelete">X</span>
 							</div>
 						</div>

@@ -12,14 +12,15 @@ function submitList () {
 
     forms.each(function(i) {
         var idElem = forms[i].getElementsByClassName("categoryID");
+        var action = forms[i].getElementsByClassName("categoryAction");
         var nameElem = forms[i].getElementsByClassName("categoryName");
         var colorElem = forms[i].getElementsByClassName("categoryColor");
 
         categories[i] = new Object();
         categories[i].id = idElem[0].value;
+        categories[i].action = action[0].value;
         categories[i].name = nameElem[0].value;
         categories[i].picture_id = colorElem[0].value;
-
     });
 
     books.setPostCategoryListSuccessCallback(submitSuccess);
@@ -35,7 +36,6 @@ function newCategory() {
     form.setAttribute("id", "categoryForm");
 
     var id = document.createElement("input");
-    id.setAttribute("id", "categoryID");
     id.setAttribute("type", "hidden");
     id.setAttribute("value", "");
     id.setAttribute("class", "categoryID");
@@ -43,6 +43,12 @@ function newCategory() {
 
     var div = document.createElement("div");
     div.setAttribute("class", "form-group");
+
+    var action = document.createElement("input");
+    action.setAttribute("class", "categoryAction");
+    action.setAttribute("name", "action");
+    action.setAttribute("type", "hidden");
+    action.setAttribute("value", "edit");
 
     var color = document.createElement("input");
     color.setAttribute("id", "newCategoryColor" + newCnt);
@@ -57,6 +63,8 @@ function newCategory() {
     name.setAttribute("id", "newCategoryName" + newCnt);
     name.setAttribute("name", "name");
     name.setAttribute("type", "text");
+    name.setAttribute("value", "new");
+    name.setAttribute("title", "new");
     name.setAttribute("class", "categoryName"
         + " form-control"
         + " btn"
@@ -68,6 +76,7 @@ function newCategory() {
 
     inputGroup.appendChild(name);
     inputGroup.appendChild(deleteS);
+    div.appendChild(action);
     div.appendChild(color);
     div.appendChild(inputGroup);
     form.appendChild(id);
@@ -76,26 +85,33 @@ function newCategory() {
 
     newCnt++;
 
+    deleteCategoryBtn();
     jscolor.installByClassName("jscolor");
 }
 
 
-//function deleteCategory() {
+function deleteCategoryBtn() {
     $(".categoryDelete").click(function (e) {
         var btn = $(e.target);
+        var parent = btn.parent();
+        var grandparent = parent.parent();
+        var name = parent.find("input");
+        var action = grandparent.find(".categoryAction");
+
         if (btn.hasClass("delete")) {
-
+            btn.removeClass("delete");
+            name.val(name.attr("title"));
+            action.val("edit");
         } else {
-            var parent = btn.parent();
-            var name = parent.find("input");
+            btn.addClass("delete")
             name.val("mark deleted");
-
-            var grandparent = parent.parent();
-            var action = grandparent.find(".categoryAction");
             action.val("delete");
         }
     });
-//}
+}
 
 /************************** jquery functions ********************************/
 
+$(document).ready(function () {
+    deleteCategoryBtn();
+});

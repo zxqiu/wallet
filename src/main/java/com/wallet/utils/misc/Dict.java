@@ -16,4 +16,7 @@ public class Dict {
 	public static final String PASSWORD = "password";
 	public static final String ACCESS_TOKEN = "access_token";
 	public static final String PHOTO = "photo";
+	public static final String ACTION = "action";
+	public static final String EDIT = "edit";
+	public static final String DELETE = "delete";
 }
