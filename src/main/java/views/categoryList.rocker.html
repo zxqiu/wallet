@@ -18,6 +18,10 @@
 </head>
 
 <body>
+	<div>
+		<button id="categoryNew" onclick="newCategory()">new</button>
+		<button id="categorySubmit" onclick="submitList()">submit</button>
+	</div>
 	<div class="row">
 		<div class="col-md-4" id="categoryList">
 			@if (categoryList != null) {
@@ -42,8 +46,6 @@
 				}
 			}
 		</div>
-		<button id="categoryNew" onclick="newCategory()">new</button>
-		<button id="categorySubmit" onclick="submitList()">submit</button>
 	</div>
 	<div>
 		<button type="button" value="back" onclick="location.href='/'">back</button>
