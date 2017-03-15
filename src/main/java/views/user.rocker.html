@@ -72,13 +72,23 @@
 						Password
 					</label>
 					<div class='input-group'>
-						<input type="password" class="form-control" id="userPassword" name="password"
-							@if (user != null) {
-								value="@?user.getPassword()"
+						<input type="password"
+							@if (user == null) {
+								class="form-control" required="true"
+							} else {
+								class="form-control disabled" disabled="true"
 							}
-							required="true">
-						<span class="btn input-group-addon">
-							<span class="glyphicon glyphicon-italic"></span>
+							   id="userPassword" name="password" autocomplete="off">
+						<span class="btn input-group-addon" id="userPasswordEdit"
+							@if (user != null) {
+								onclick="passwordEdit()"
+							}
+						>
+							@if (user != null) {
+								Edit
+							} else {
+								<span class="glyphicon glyphicon-italic"></span>
+							}
 						</span>
 					</div>
 				</div>

@@ -29,6 +29,7 @@ span.books-list-text-title {
 }
 
 span.books-list-text-info {
+  color: white;
   height: 0;
   width: 100%;
   opacity: 0;
@@ -44,7 +45,6 @@ span.books-list-text-info span {
 }
 
 span.books-list-text span {
-  color: white;
   text-align: center;
   vertical-align: middle;
   display: block;

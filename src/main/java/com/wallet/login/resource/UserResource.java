@@ -1,5 +1,6 @@
 package com.wallet.login.resource;
 
+import java.net.URI;
 import java.util.List;
 
 import javax.ws.rs.*;
@@ -13,9 +14,12 @@ import com.wallet.login.dao.SessionDAOConnector;
 import com.wallet.login.dao.UserDAOConnector;
 import com.wallet.utils.misc.ApiUtils;
 import com.wallet.utils.misc.Dict;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Path("/users")
 public class UserResource {
+    private static final Logger logger_ = LoggerFactory.getLogger(UserResource.class);
 
     private UserDAOConnector userDAOC;
     private SessionDAOConnector sessionDAOC;
@@ -64,15 +68,19 @@ public class UserResource {
             User user = userDAOC.getByID(user_id);
             user.setEmail(email);
             user.setName(name);
-            user.setPassword(password);
+            if (password != null && password.length() > 0) {
+                user.setPassword(password);
+            }
 
+            logger_.info("Update user : " + user_id);
             userDAOC.update(user);
 
         } else {
             User user = new User(email, password, name, UserPriority.NORMAL.name());
+            logger_.info("Insert user : " + user_id);
             userDAOC.insert(user);
         }
 
-        return Response.ok().entity((views.login.template())).build();
+        return Response.seeOther(URI.create(SessionResource.PATH_RESTORE_SESSION)).build();
     }
 }
