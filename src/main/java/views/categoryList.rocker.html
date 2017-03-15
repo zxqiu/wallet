@@ -6,14 +6,15 @@
 <html lang="en">
 
 <head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>tiny wallet</title><!-- layoutit -->
+	<title>tiny wallet</title><!-- layoutit -->
 
-<link href="/css/bootstrap.min.css" rel="stylesheet">
-<link href="/css/bootstrap-datepicker.min.css" rel="stylesheet">
+	<link href="/css/bootstrap.min.css" rel="stylesheet">
+	<link href="/css/bootstrap-datepicker.min.css" rel="stylesheet">
+	<link href="/css/style.css" rel="stylesheet">
 
 </head>
 
@@ -22,13 +23,13 @@
 		<div class="col-md-4" id="categoryList">
 			<div class="btn-group btn-group-justified" role="group" aria-label="...">
 				<div class="btn-group" role="group">
-					<button type="button" class="btn btn-default" onclick="newCategory()">new</button>
+					<button type="button" class="regular-button btn btn-default" onclick="newCategory()">new</button>
 				</div>
 				<div class="btn-group" role="group">
-					<button type="button" class="btn btn-default" onclick="submitList()">submit</button>
+					<button type="button" class="regular-button btn btn-default" onclick="submitList()">submit</button>
 				</div>
 				<div class="btn-group" role="group">
-					<button type="button" class="btn btn-default" onclick="location.href='/'">cancel</button>
+					<button type="button" class="regular-button btn btn-default" onclick="location.href='/'">cancel</button>
 				</div>
 			</div>
 			@if (categoryList != null) {

@@ -68,7 +68,7 @@ function newCategory() {
     name.setAttribute("class", "categoryName"
         + " form-control"
         + " btn"
-        + " jscolor {valueElement:'newCategoryColor" + newCnt + "',value:'000000'}");
+        + " jscolor {valueElement:'newCategoryColor" + newCnt + "',value:''}");
 
     var deleteS = document.createElement("span");
     deleteS.setAttribute("class", "input-group-addon btn categoryDelete");
