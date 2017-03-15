@@ -20,23 +20,27 @@ $('.date').on('changeDate', function(ev){
 
 var form = document.getElementById("booksEntryForm");
 form.noValidate = true;
-form.addEventListener('submit', function(event) {
+$("#booksEntrySubmit").on("click", function() {
     $('#booksEntrySubmit').html("submitted");
     $("#booksEntrySubmit").attr("disabled", true);
 
-    if (!event.target.checkValidity()) {
-        event.preventDefault();
-        $("input").each(function () {
-            console.log($(this).attr("name") + ":" + $(this).val());
-            if ($(this).prop("required") == true && $(this).val() == "") {
-                $(this).parent().parent().addClass("has-error");
+    for (var i = 0; i < form.length; i++) {
+        if (!form[i].checkValidity()) {
+            $("input").each(function () {
+                console.log($(this).attr("name") + ":" + $(this).val());
+                if ($(this).prop("required") == true && $(this).val() == "") {
+                    $(this).parent().parent().addClass("has-error");
 
-                $('#booksEntrySubmit').html("submit");
-                $('#booksEntrySubmit').removeAttr("disabled");
-            }
-        });
+                    $('#booksEntrySubmit').html("submit");
+                    $('#booksEntrySubmit').removeAttr("disabled");
+                }
+            });
+            return;
+        }
     }
-}, false);
+
+    form.submit();
+});
 
 $("input").on('input', function() {
 	$('#booksEntryForm div').removeClass("has-error");;

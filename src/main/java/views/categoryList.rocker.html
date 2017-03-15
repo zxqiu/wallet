@@ -18,9 +18,16 @@
 </head>
 
 <body>
-	<div>
-		<button id="categoryNew" onclick="newCategory()">new</button>
-		<button id="categorySubmit" onclick="submitList()">submit</button>
+	<div class="btn-group btn-group-justified" role="group" aria-label="...">
+		<div class="btn-group" role="group">
+			<button type="button" class="btn btn-default" onclick="newCategory()">new</button>
+		</div>
+		<div class="btn-group" role="group">
+			<button type="button" class="btn btn-default" onclick="submitList()">submit</button>
+		</div>
+		<div class="btn-group" role="group">
+			<button type="button" class="btn btn-default" onclick="location.href='/'">cancel</button>
+		</div>
 	</div>
 	<div class="row">
 		<div class="col-md-4" id="categoryList">
@@ -46,9 +53,6 @@
 				}
 			}
 		</div>
-	</div>
-	<div>
-		<button type="button" value="back" onclick="location.href='/'">back</button>
 	</div>
 
 <script src="/js/jquery.min.js"></script>

@@ -15,7 +15,7 @@
 <body>
 <div class="row">
     <div class="col-md-4">
-        <form role="form" action="/login" method="post">
+        <form role="form" action="/login" method="post" id="loginForm">
             <label for="loginUserID">
                 user ID
             </label>
@@ -24,15 +24,22 @@
                 password
             </label>
             <input type="password" name="password" class="form-control" id="loginPassword">
-            <button type="submit" value="Submit">login</button>
         </form>
-        <button value="Register" onclick="window.location.href='/users/insertuserview'">Register</button>
+    </div>
+    <div class="btn-group btn-group-justified" role="group" aria-label="...">
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-default" id="loginSubmit">submit</button>
+        </div>
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-default" onclick="window.location.href='/users/insertuserview'">register</button>
+        </div>
     </div>
 </div>
 
 <script src="/js/jquery.min.js"></script>
 <script src="/js/bootstrap.min.js"></script>
 <script src="/js/bootstrap-datepicker.min.js"></script>
+<script src="/js/views/login.js"></script>
 
 </body>
 </html>

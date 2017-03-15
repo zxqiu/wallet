@@ -20,26 +20,31 @@
 </head>
 
 <body>
-	@if (user != null) {
-	<div>Hello, @user.getName()?:"visitor"</div>
-	}
-	<div class="row">
-		<div class="col-md-2">
-			<button type="button" value="go" onclick="window.location.href='/books/entry/0'">new item</button>
+	<div class="btn-group btn-group-justified" role="group" aria-label="...">
+		<div class="btn-group" role="group">
+			<button type="button" class="btn btn-default" onclick="window.location.href='/books/entry/0'">new</button>
 		</div>
-		<div class="col-md-2">
-			<button type="button" onclick="window.location.href='/logout'">logout</button>
+		<div class="btn-group" role="group">
+			<button type="button" class="btn btn-default" onclick="window.location.href='/books/categories'">categories</button>
 		</div>
-		<div class="col-md-2">
-			<button type="button" onclick="window.location.href='/books/categories'">categories</button>
-		</div>
-		<div class="col-md-2">
-			<button type="button" onclick="window.location.href='/users/insertuserview'">edit user</button>
+
+		<div class="btn-group" role="group">
+			<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				@if (user != null) {
+					@user.getName()?:"visitor"
+                }
+				<span class="caret"></span>
+			</button>
+			<ul class="dropdown-menu">
+				<li><a href="/users/insertuserview">edit user</a></li>
+				<li><a href="/logout">logout</a></li>
+			</ul>
 		</div>
 	</div>
     @if (booksEntryList == null || booksEntryList.size() == 0) {
 	<div>nothing found</div>
 	}
+
 	<div id="booksList">
 		@for (int i = 0; booksEntryList != null && i < booksEntryList.size(); i++) {
     		@if (i % booksEntrysEachLine == 0) {
