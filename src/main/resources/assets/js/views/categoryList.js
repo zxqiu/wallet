@@ -63,8 +63,8 @@ function newCategory() {
     name.setAttribute("id", "newCategoryName" + newCnt);
     name.setAttribute("name", "name");
     name.setAttribute("type", "text");
-    name.setAttribute("value", "new");
-    name.setAttribute("title", "new");
+    name.setAttribute("value", "");
+    name.setAttribute("title", "");
     name.setAttribute("class", "categoryName"
         + " form-control"
         + " btn"
