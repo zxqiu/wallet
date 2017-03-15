@@ -104,7 +104,7 @@ function deleteCategoryBtn() {
             action.val("edit");
         } else {
             btn.addClass("delete")
-            name.val("mark deleted");
+            name.val("mark delete");
             action.val("delete");
         }
     });

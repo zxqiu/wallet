@@ -1,7 +1,7 @@
 @import com.wallet.books.core.Category;
 @import java.util.List;
 
-@args (com.wallet.books.core.BooksEntry booksEntry, List<Category> CategoryList, String date)
+@args (com.wallet.books.core.BooksEntry booksEntry, List<Category> categoryList, String date)
 
 <html lang="en">
 
@@ -60,9 +60,13 @@
 						Category
 					</label>
 					<div class="input-group" id="booksEntryCategoryDiv">
-						<input class="form-control" value="general" placeholder="input or select" id="booksEntryCategory" name="category" type="text" required="true">
+						<input class="form-control"
+							@if (booksEntry != null && categoryList != null && categoryList.contains(booksEntry.getCategory())) {
+								value="@?booksEntry.getCategory()"
+							}
+								placeholder="input or select" id="booksEntryCategory" name="category" type="text" required="true">
 						<ul class="dropdown-menu" id="booksEntryCategoryList">
-							@for (Category category : CategoryList) {
+							@for (Category category : categoryList) {
 								<li style="background: #@?category.getPicture_id()">
 									<a style="color: white">@category.getName()</a>
 								</li>
