@@ -61,10 +61,14 @@
 					</label>
 					<div class="input-group" id="booksEntryCategoryDiv">
 						<input class="form-control"
-							@if (booksEntry != null && categoryList != null && categoryList.contains(booksEntry.getCategory())) {
-								value="@?booksEntry.getCategory()"
+							@if (booksEntry != null && categoryList != null) {
+								@for (Category category : categoryList) {
+									@if (category.getName().equals(booksEntry.getCategory())) {
+										value="@?booksEntry.getCategory()"
+									}
+                            	}
 							}
-								placeholder="input or select" id="booksEntryCategory" name="category" type="text" required="true">
+							placeholder="input or select" id="booksEntryCategory" name="category" type="text" required="true">
 						<ul class="dropdown-menu" id="booksEntryCategoryList">
 							@for (Category category : categoryList) {
 								<li style="background: #@?category.getPicture_id()">
