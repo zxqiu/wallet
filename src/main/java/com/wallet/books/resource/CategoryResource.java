@@ -30,9 +30,11 @@ public class CategoryResource {
 	private static final Logger logger_ = LoggerFactory.getLogger(CategoryResource.class);
 	
 	private CategoryDAOConnector categoryDAOC = null;
+	private SessionDAOConnector sessionDAOC = null;
 	
 	public CategoryResource() throws Exception {
 		this.categoryDAOC = CategoryDAOConnector.instance();
+		this.sessionDAOC = SessionDAOConnector.instance();
 	}
 
 	@GET
@@ -50,7 +52,7 @@ public class CategoryResource {
 	@Produces(MediaType.TEXT_HTML)
     public Response categoryListView(@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
 		String user_id = ApiUtils.getUserIDFromCookie(cookie);
-		if (user_id == null || SessionDAOConnector.instance().verifySessionCookie(cookie)== false) {
+		if (user_id == null || sessionDAOC.verifySessionCookie(cookie)== false) {
 			return Response.seeOther(URI.create(SessionResource.PATH_RESTORE_SESSION)).build();
 		}
 
@@ -75,7 +77,7 @@ public class CategoryResource {
 			@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
 
 		String user_id = ApiUtils.getUserIDFromCookie(cookie);
-		if (user_id == null || SessionDAOConnector.instance().verifySessionCookie(cookie)== false) {
+		if (user_id == null || sessionDAOC.verifySessionCookie(cookie)== false) {
 			return Response.seeOther(URI.create(SessionResource.PATH_RESTORE_SESSION)).build();
 		}
 		
@@ -90,7 +92,6 @@ public class CategoryResource {
 		Category category = new Category(user_id, name, picture_id);
 		try {
 		    if (id != null && id.length() > 1) {
-		    	category.setId(id);
 				logger_.info("Update category " + category.getName() + " for user " + user_id);
 		    	categoryDAOC.updatePictureID(category);
 			} else {
@@ -105,7 +106,48 @@ public class CategoryResource {
 
 		return Response.seeOther(URI.create(BooksEntryResource.PATH_BOOKS)).build();
 	}
-	
+
+	@POST
+	@Timed
+	@Path("/insertcategorylist")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+    public Response insertCategoryList(
+    		String request
+			, @CookieParam("walletSessionCookie") Cookie cookie
+	) throws Exception {
+		String user_id = ApiUtils.getUserIDFromCookie(cookie);
+		if (user_id == null || sessionDAOC.verifySessionCookie(cookie) == false) {
+			Response.seeOther(URI.create(SessionResource.PATH_RESTORE_SESSION)).build();
+		}
+
+		JSONArray categories = new JSONArray(request);
+		for (int i = 0; i < categories.length(); i++) {
+			JSONObject jsonObject = categories.getJSONObject(i);
+
+			if (!jsonObject.has(Dict.ID)
+					|| !jsonObject.has(Dict.NAME)
+					|| !jsonObject.has(Dict.PICTURE_ID)) {
+				Response.serverError().build();
+			}
+
+			Category category = new Category(user_id
+					, jsonObject.getString(Dict.NAME)
+					, jsonObject.getString(Dict.PICTURE_ID));
+
+			String id = jsonObject.getString(Dict.ID);
+			if (id.length() > 1) {
+				logger_.info("Updating category : " + jsonObject.toString());
+				categoryDAOC.updatePictureID(category);
+			} else {
+				logger_.info("Insert new category : " + jsonObject.toString());
+				categoryDAOC.insert(category);
+			}
+		}
+
+		return Response.status(200).entity(ApiUtils.buildJSONResponse(true, BooksEntryResource.PATH_BOOKS)).build();
+	}
+
 	/**
 	 * Get categories of a user
 	 * @param user_id
@@ -121,7 +163,7 @@ public class CategoryResource {
 		// 1. extract request
 		// 2. verify and parse request
 		// 3. verify parameters 
-		if (user_id.length() == 0 || SessionDAOConnector.instance().verifySessionCookie(cookie)== false) {
+		if (user_id.length() == 0 || sessionDAOC.verifySessionCookie(cookie)== false) {
 			logger_.error("ERROR: invalid get books request for \'" + user_id + "\'");
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.QUERY_ARG_ERROR)).build();
 		}
