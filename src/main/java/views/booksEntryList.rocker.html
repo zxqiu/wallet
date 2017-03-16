@@ -42,6 +42,32 @@
 			</ul>
 		</div>
 	</div>
+	<div class="btn-group btn-group-justified" role="group" aria-label="...">
+		<div class="btn-group" role="group">
+			<button type="button" class="regular-button btn btn-default" onclick="">-</button>
+		</div>
+		<div class="btn-group" role="group">
+			<button type="button" class="regular-button btn btn-default dropdown-toggle" id="monthShow" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			</button>
+			<ul class="dropdown-menu" id="monthSelector">
+				<li><a>January</a></li>
+				<li><a>February</a></li>
+				<li><a>March</a></li>
+				<li><a>April</a></li>
+				<li><a>May</a></li>
+				<li><a>June</a></li>
+				<li><a>July</a></li>
+				<li><a>August</a></li>
+				<li><a>September</a></li>
+				<li><a>October</a></li>
+				<li><a>November</a></li>
+				<li><a>December</a></li>
+			</ul>
+		</div>
+		<div class="btn-group" role="group">
+			<button type="button" class="regular-button btn btn-default" onclick="">+</button>
+		</div>
+	</div>
     @if (booksEntryList == null || booksEntryList.size() == 0) {
 	<div>nothing found</div>
 	}

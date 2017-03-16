@@ -2,8 +2,8 @@ function getBrightness(rgb) {
     return 0.2126 * parseInt(rgb[0])
         + 0.7152 * parseInt(rgb[1])
         + 0.0722 * parseInt(rgb[2]); // per ITU-R BT.709
-
 }
+
 /************************** jquery functions ********************************/
 $(document).ready(function () {
     var titles = $(".books-list-text-title");
@@ -21,6 +21,14 @@ $(document).ready(function () {
             titles[i].style.color = "white";
         }
     }
+
+
+    var monthNames = ["January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
+    var today = new Date();
+    $('#monthShow').val(monthNames[today.getMonth()]);
+    $('#monthShow').text(monthNames[today.getMonth()]);
 });
 
 
@@ -32,4 +40,9 @@ $('.books-list-text').on("click", function(e) {
         $(e.target).addClass("dblclicked");
         setTimeout(function() { $(e.target).removeClass("dblclicked"); }, 1000);
     }
+});
+
+$('#monthSelector li a').on('click', function(){
+    $('#monthShow').val($(this).text());
+    $('#monthShow').text($(this).text());
 });
