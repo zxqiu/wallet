@@ -14,10 +14,9 @@ $(document).ready(function () {
         );
         var rgb = rgb.split(", ");
         var bright = getBrightness(rgb);
-        console.log(bright);
 
         if (bright > 135) {
-            titles[i].style.color = "black";
+            titles[i].style.color = "#4A4A4A";
         } else {
             titles[i].style.color = "white";
         }
@@ -27,11 +26,7 @@ $(document).ready(function () {
 
 $('.books-list-text').on("click", function(e) {
     if ($(e.target).hasClass("dblclicked")) {
-        console.log("double clicked");
-
-        console.log($(this).attr("title"));
         window.location.replace("/books/entry/" + $(this).attr("title"));
-
         $(e.target).removeClass("dblclicked");
     } else {
         $(e.target).addClass("dblclicked");
