@@ -63,10 +63,6 @@
 				<li><a></a></li>
 				<li><a></a></li>
 				<li><a></a></li>
-				<li><a></a></li>
-				<li><a></a></li>
-				<li><a></a></li>
-				<li><a></a></li>
 			</ul>
 		</div>
 		<div class="btn-group" role="group">
@@ -102,32 +98,26 @@
 
 	<div id="booksList">
 		@for (int i = 0; booksEntryList != null && i < booksEntryList.size(); i++) {
-    		@if (i % booksEntrysEachLine == 0) {
-				<div class="row">
-			}
-					<div class="col-md-@(12 / booksEntrysEachLine)">
-						<div class="books-list">
-							<a>
-								<span class="books-list-text" title="@booksEntryList.get(i).getId()">
-									<span class="books-list-text-title" id="bookTitle"
-										@if (booksEntryList !=null && colorMap !=null) {
-											style="background: #@?colorMap.get(booksEntryList.get(i).getCategory())"
-										}
-									>
-										@booksEntryList.get(i).getEvent_date() $@booksEntryList.get(i).getAmount() @?booksEntryList.get(i).getNote()
-									</span>
-									<span class="books-list-text-info">
-										<span id="bookCategory">category: @booksEntryList.get(i).getCategory()</span>
-										<span id="bookNote">note: @booksEntryList.get(i).getNote()</span>
-									</span>
-								</span>
-								</br>
-							</a>
-						</div>
-					</div>
-			@if ((i + 1) % booksEntrysEachLine == 0 || i == booksEntryList.size() - 1) {
+			<div class="col-md-@(12 / booksEntrysEachLine)">
+				<div class="books-list">
+					<a>
+						<span class="books-list-text" title="@booksEntryList.get(i).getId()">
+							<span class="books-list-text-title" id="bookTitle"
+								@if (booksEntryList !=null && colorMap !=null) {
+									style="background: #@?colorMap.get(booksEntryList.get(i).getCategory())"
+								}
+							>
+								@booksEntryList.get(i).getEvent_date() $@booksEntryList.get(i).getAmount() @?booksEntryList.get(i).getNote()
+							</span>
+							<span class="books-list-text-info">
+								<span id="bookCategory">category: @booksEntryList.get(i).getCategory()</span>
+								<span id="bookNote">note: @booksEntryList.get(i).getNote()</span>
+							</span>
+						</span>
+						</br>
+					</a>
 				</div>
-			}
+			</div>
 		}
 	</div>
 
