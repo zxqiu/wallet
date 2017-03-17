@@ -4,7 +4,7 @@ server:
   applicationContextPath: /
   connector:
     type: http
-    port: 80
+    port: 8080
     
 logging:
   level: INFO
