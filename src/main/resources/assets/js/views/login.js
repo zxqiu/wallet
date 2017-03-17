@@ -1,10 +1,20 @@
 /**
  * Created by neo on 3/15/17.
  */
+function loginSuccess() {
+    console.log('Welcome!  Fetching your information.... ');
+    FB.api('/me', function(response) {
+        console.log('Successful login for: ' + response.name);
+        document.getElementById('status').innerHTML =
+                    'Thanks for logging in, ' + response.name + '!';
+        console.log(response);
+    });
+}
 
 function checkLoginState() {
     FB.getLoginStatus(function(response) {
         console.log(response);
+        loginSuccess();
     });
 }
 
@@ -18,6 +28,7 @@ $(document).ready(function() {
         $('#loginbutton,#feedbutton').removeAttr('disabled');
         FB.getLoginStatus(function(response) {
             console.log(response);
+            loginSuccess();
         });
     });
 });
