@@ -14,7 +14,7 @@ public class Session {
 
     public Session(String user_id) {
     this.setUser_id(user_id);
-        this.setAccess_token(UUID.randomUUID().toString().substring(0, 23));
+        this.setAccess_token(UUID.randomUUID().toString() + UUID.randomUUID().toString());
         this.setCreate_date(new Date());
     }
 

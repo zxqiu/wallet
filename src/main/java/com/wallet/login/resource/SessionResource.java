@@ -96,13 +96,14 @@ public class SessionResource {
     @Timed
     @Path("/")
     @Produces(MediaType.TEXT_HTML)
-    public Object restoreSession(@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
-    	if (!sessionDAOC.verifySessionCookie(cookie)) {
-    		return Response.ok().entity(views.login.template()).build();
+    public Object restoreSession(
+            @CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
+    	if (sessionDAOC.verifySessionCookie(cookie)) {
+            return Response
+                    .seeOther(URI.create(BooksEntryResource.PATH_BOOKS))
+                    .build();
     	}
-    	
-        return Response
-                .seeOther(URI.create(BooksEntryResource.PATH_BOOKS))
-                .build();
+
+
     }
 }

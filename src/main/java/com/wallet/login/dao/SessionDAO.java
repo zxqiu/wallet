@@ -16,7 +16,7 @@ public interface SessionDAO {
 	public static final String TABLE_NAME = "session";
 	
 	@SqlUpdate("create table if not exists " + TABLE_NAME + " ("
-			+ "`" + Dict.ACCESS_TOKEN + "` varchar(23) not null unique,"
+			+ "`" + Dict.ACCESS_TOKEN + "` varchar(256) not null unique,"
 			+ "`" + Dict.USER_ID + "` varchar(64) not null,"
 			+ "`" + Dict.CREATE_DATE + "` datetime not null,"
 			+ "primary key (`" + Dict.ACCESS_TOKEN + "`),"
