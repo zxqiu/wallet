@@ -92,7 +92,7 @@ public class UserDAOConnector {
 		return ret.get(ret.size() - 1);
 	}
 
-	public User getEmailAndPassword(String email, String password) throws Exception {
+	public User getByEmailAndPassword(String email, String password) throws Exception {
 		List<User> ret = userDAO.findByEmailAndPassword(email, password);
 		if (ret.isEmpty()) {
 			logger_.warn("User not found by email and password : " + email);

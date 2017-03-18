@@ -1,6 +1,7 @@
 package com.wallet.login.resource;
 
 import java.net.URI;
+import java.util.Date;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Cookie;
@@ -48,7 +49,7 @@ public class SessionResource {
         if (userDAOC.getByIDAndPassword(id, password) != null) {
             user_id = id;
         } else {
-            User user = userDAOC.getEmailAndPassword(id, password);
+            User user = userDAOC.getByEmailAndPassword(id, password);
             if (user == null) {
                 return Response.status(Status.ERROR)
                         .entity(ApiUtils.buildJSONResponse(false, "user id or password error"))
@@ -62,6 +63,38 @@ public class SessionResource {
 
         Cookie cookie = new Cookie("walletSessionCookie",
         		session.getUser_id() + ":" + session.getAccess_token());
+        NewCookie cookies = new NewCookie(cookie);
+
+        return Response
+                .seeOther(URI.create(BooksEntryResource.PATH_BOOKS))
+                .cookie(cookies)
+                .build();
+    }
+
+    @POST
+    @Path("/fblogin")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.TEXT_HTML)
+    public Object fbLogin(
+            @FormParam(Dict.USER_ID) String user_id,
+            @FormParam(Dict.ACCESS_TOKEN) String access_token,
+            @FormParam(Dict.NAME) String name,
+            @FormParam(Dict.EMAIL) String email) throws Exception {
+
+        if (sessionDAOC.getByUserIDAndAccessToken(Dict.FACEBOOK_PREFIX + user_id,
+                        Dict.FACEBOOK_PREFIX + access_token)
+                != null) {
+            return Response
+                    .seeOther(URI.create(BooksEntryResource.PATH_BOOKS))
+                    .build();
+        }
+
+        Session session = new Session(Dict.FACEBOOK_PREFIX + user_id);
+        session.setAccess_token(Dict.FACEBOOK_PREFIX + access_token);
+        sessionDAOC.insert(session);
+
+        Cookie cookie = new Cookie("walletSessionCookie",
+                session.getUser_id() + ":" + session.getAccess_token());
         NewCookie cookies = new NewCookie(cookie);
 
         return Response
@@ -104,6 +137,6 @@ public class SessionResource {
                     .build();
     	}
 
-
+        return Response.ok().entity(views.login.template()).build();
     }
 }
