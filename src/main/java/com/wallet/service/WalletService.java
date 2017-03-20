@@ -72,6 +72,6 @@ public class WalletService extends Application<WalletConfiguration> {
 	    environment.jersey().register(new CategoryResource());
 
 		environment.jersey().register(new RockerMessageBodyWriter());
-		RockerRuntime.getInstance().setReloading(true);
+		//RockerRuntime.getInstance().setReloading(true);
 	}
 }

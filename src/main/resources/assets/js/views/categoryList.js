@@ -1,7 +1,7 @@
 /**
  * Created by zxqiu on 3/14/17.
  */
-var books = Books.createNew();
+var api = APIs.createNew();
 
 function submitSuccess(data) {
     window.location.href = data.message;
@@ -23,8 +23,8 @@ function submitList () {
         categories[i].picture_id = colorElem[0].value;
     });
 
-    books.setPostCategoryListSuccessCallback(submitSuccess);
-    books.postCategoryList(categories);
+    api.setPostCategoryListSuccessCallback(submitSuccess);
+    api.postCategoryList(categories);
 };
 
 var newCnt = 0;

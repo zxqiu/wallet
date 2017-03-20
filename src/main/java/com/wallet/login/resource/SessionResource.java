@@ -2,15 +2,19 @@ package com.wallet.login.resource;
 
 import java.net.URI;
 import java.util.Date;
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.Cookie;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.NewCookie;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.core.*;
 
 import com.wallet.books.resource.BooksEntryResource;
 import com.wallet.login.core.User;
+import com.wallet.login.core.UserPriority;
+import com.wallet.utils.misc.TimeUtils;
+import jdk.nashorn.internal.runtime.ECMAException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +49,13 @@ public class SessionResource {
         @FormParam(Dict.ID) String id,
         @FormParam(Dict.PASSWORD) String password) throws Exception {
 
-        String user_id = "";
+        if (id.startsWith(Dict.FACEBOOK_PREFIX) || password.startsWith(Dict.FACEBOOK_PREFIX)) {
+            return Response.status(Status.ERROR)
+                    .entity(ApiUtils.buildJSONResponse(false, "user id or password error"))
+                    .build();
+        }
+
+        String user_id;
         if (userDAOC.getByIDAndPassword(id, password) != null) {
             user_id = id;
         } else {
@@ -65,6 +75,7 @@ public class SessionResource {
         		session.getUser_id() + ":" + session.getAccess_token());
         NewCookie cookies = new NewCookie(cookie);
 
+        logger_.info("User " + user_id + " login with session + " + session.getAccess_token());
         return Response
                 .seeOther(URI.create(BooksEntryResource.PATH_BOOKS))
                 .cookie(cookies)
@@ -73,32 +84,51 @@ public class SessionResource {
 
     @POST
     @Path("/fblogin")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.TEXT_HTML)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Object fbLogin(
-            @FormParam(Dict.USER_ID) String user_id,
-            @FormParam(Dict.ACCESS_TOKEN) String access_token,
-            @FormParam(Dict.NAME) String name,
-            @FormParam(Dict.EMAIL) String email) throws Exception {
+            String request
+            ) throws Exception {
+        JSONObject fbUser = new JSONObject(request);
+        String user_id = Dict.FACEBOOK_PREFIX + fbUser.getString(Dict.USER_ID);
+        String access_token = Dict.FACEBOOK_PREFIX + fbUser.getString(Dict.ACCESS_TOKEN);
+        String email = Dict.FACEBOOK_PREFIX + fbUser.getString(Dict.EMAIL);
+        String name = fbUser.getString(Dict.NAME);
 
-        if (sessionDAOC.getByUserIDAndAccessToken(Dict.FACEBOOK_PREFIX + user_id,
-                        Dict.FACEBOOK_PREFIX + access_token)
+        if (sessionDAOC.getByUserIDAndAccessToken(user_id,
+                        access_token)
                 != null) {
             return Response
                     .seeOther(URI.create(BooksEntryResource.PATH_BOOKS))
                     .build();
         }
 
-        Session session = new Session(Dict.FACEBOOK_PREFIX + user_id);
-        session.setAccess_token(Dict.FACEBOOK_PREFIX + access_token);
+        if (userDAOC.getByID(user_id) == null) {
+            User user = new User(user_id, email, Dict.FACEBOOK_PREFIX + System.currentTimeMillis(), name, UserPriority.NORMAL.name());
+            try {
+                userDAOC.insert(user);
+                logger_.info("Insert new user " + user_id + ", " + name);
+            } catch (Exception e) {
+                logger_.error("Error failed to create new user for FaceBook user " + user_id + ", " + name);
+                e.printStackTrace();
+                return Response.status(Status.ERROR)
+                        .entity(ApiUtils.buildJSONResponse(false, "failed to create new user for " + name))
+                        .build();
+            }
+        }
+
+        Session session = new Session(user_id);
+        session.setAccess_token(access_token);
         sessionDAOC.insert(session);
 
         Cookie cookie = new Cookie("walletSessionCookie",
                 session.getUser_id() + ":" + session.getAccess_token());
         NewCookie cookies = new NewCookie(cookie);
 
+        logger_.info("User " + user_id + " login with session + " + session.getAccess_token());
         return Response
-                .seeOther(URI.create(BooksEntryResource.PATH_BOOKS))
+                .ok()
+                .entity(ApiUtils.buildJSONResponse(true, "FaceBook login success"))
                 .cookie(cookies)
                 .build();
     }
@@ -109,16 +139,18 @@ public class SessionResource {
     @Path("/logout")
     @Produces(MediaType.TEXT_HTML)
     public Object logout(@CookieParam("walletSessionCookie") Cookie cookie) {
-        String param[] = cookie.getValue().split(":");
-        if (param.length < 2 || param[0].length() == 0 || param[1].length() == 0) {
-            return false;
-        }
+        String access_token = ApiUtils.getSessionKeyFromCookie(cookie);
+        if (access_token != null) {
+            try {
+                sessionDAOC.deleteByAccessToken(access_token);
+                logger_.info("Logout session " + access_token);
+            } catch (Exception e) {
+                logger_.info("Logout unexpected session : " + e.getMessage());
+                e.printStackTrace();
+            }
 
-        try {
-            sessionDAOC.deleteByAccessToken(param[1]);
-        } catch (Exception e) {
-            logger_.info("Logout unexpected session : " + e.getMessage());
-            e.printStackTrace();
+            NewCookie cookies = new NewCookie(cookie, null, 0, false);
+            return Response.ok().entity(views.login.template()).cookie(cookies).build();
         }
 
         return Response.ok().entity(views.login.template()).build();
@@ -132,11 +164,20 @@ public class SessionResource {
     public Object restoreSession(
             @CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
     	if (sessionDAOC.verifySessionCookie(cookie)) {
+    	    logger_.info("Session restored " + cookie.getValue());
             return Response
                     .seeOther(URI.create(BooksEntryResource.PATH_BOOKS))
                     .build();
     	}
 
         return Response.ok().entity(views.login.template()).build();
+    }
+
+
+    @GET
+    @Timed
+    @Path("/allsessions")
+    public List<Session> restoreSession() throws Exception {
+        return sessionDAOC.getAll();
     }
 }

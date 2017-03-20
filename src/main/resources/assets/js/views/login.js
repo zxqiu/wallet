@@ -1,19 +1,35 @@
 /**
- * Created by neo on 3/15/17.
+ * Created by zxqiu on 3/15/17.
  */
-function loginSuccess() {
-    console.log('Welcome!  Fetching your information.... ');
-    FB.api('/me', {fields: 'id,name,email'}, function(response) {
-        console.log('Successful login for: ' + response.name);
-        console.log('Successful login for: ' + response.email);
-        console.log(response);
+
+var api = new APIs.createNew();
+
+function fbLoginSuccessCallback(data) {
+    window.location.href = "/";
+}
+function fbLoginSuccess(response) {
+    if (response.status != "connected" || !response.authResponse) {
+        return;
+    }
+
+    var fbUser = new Object();
+    fbUser.access_token = response.authResponse.accessToken;
+
+    FB.api('/me', {fields: 'id,name,email'}, function(data) {
+        if (data.id && data.name && data.email) {
+            fbUser.user_id = data.id;
+            fbUser.name = data.name;
+            fbUser.email = data.email;
+
+            api.setPostFBLoginSuccessCallback(fbLoginSuccessCallback);
+            api.postFBLogin(fbUser);
+        }
     });
 }
 
-function checkLoginState() {
+function checkFBLoginState() {
     FB.getLoginStatus(function(response) {
-        console.log(response);
-        loginSuccess();
+        fbLoginSuccess(response);
     });
 }
 
@@ -26,8 +42,7 @@ $(document).ready(function() {
         });
         $('#loginbutton,#feedbutton').removeAttr('disabled');
         FB.getLoginStatus(function(response) {
-            console.log(response);
-            loginSuccess();
+            fbLoginSuccess(response);
         });
     });
 });
@@ -39,7 +54,6 @@ $("#loginSubmit").on("click", function() {
     for (var i = 0; i < form.length; i++) {
         if (!form[i].checkValidity()) {
             $("input").each(function () {
-                console.log($(this).attr("name") + ":" + $(this).val());
                 if ($(this).prop("required") == true && $(this).val() == "") {
                     $(this).parent().parent().addClass("has-error");
                 }
