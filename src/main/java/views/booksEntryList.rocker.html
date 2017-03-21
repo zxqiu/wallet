@@ -134,7 +134,7 @@
 									style="background: #@?colorMap.get(booksEntryList.get(i).getCategory())"
 								}
 							>
-								@booksEntryList.get(i).getEvent_date() $@booksEntryList.get(i).getAmount() @?booksEntryList.get(i).getNote()
+								@booksEntryList.get(i).getEvent_date() $@(((double)booksEntryList.get(i).getAmount())/100) @?booksEntryList.get(i).getNote()
 							</span>
 							<span class="books-list-text-info">
 								<span id="bookCategory">category: @booksEntryList.get(i).getCategory()</span>

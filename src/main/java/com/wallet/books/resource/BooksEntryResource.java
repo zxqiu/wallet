@@ -113,7 +113,7 @@ public class BooksEntryResource {
 	@Produces(MediaType.TEXT_HTML)
 	public Response insertEntry(@FormParam(Dict.ID) String id,
 								@FormParam(Dict.EVENT_DATE) String event_date,
-								@FormParam(Dict.AMOUNT) long amount,
+								@FormParam(Dict.AMOUNT) double amount_double,
 								@FormParam(Dict.CATEGORY) String category,
 								@FormParam(Dict.NOTE) String note,
 								@FormParam(Dict.PHOTO) String photo,
@@ -124,6 +124,7 @@ public class BooksEntryResource {
 		}
 		
 		long currentTimeMS = TimeUtils.getUniqueTimeStampInMS();
+		long amount = (long)(amount_double * 100);
 
 		// 1. extract request
 		// 2. verify and parse request

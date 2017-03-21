@@ -24,6 +24,9 @@ $("#booksEntrySubmit").on("click", function() {
     $('#booksEntrySubmit').html("submitted");
     $("#booksEntrySubmit").attr("disabled", true);
 
+    var amount = parseFloat($('#booksEntryAmount').val());
+    $('#booksEntryAmount').val(amount.toFixed(2));
+
     for (var i = 0; i < form.length; i++) {
         if (!form[i].checkValidity()) {
             $("input").each(function () {

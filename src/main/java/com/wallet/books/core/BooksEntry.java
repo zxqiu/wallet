@@ -18,7 +18,7 @@ public class BooksEntry {
 	private Date event_date;
 	
 	@JsonProperty
-	private long amount;
+	private long amount; // in cents
 	
 	@JsonProperty
 	private String note;
