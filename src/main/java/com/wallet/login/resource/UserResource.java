@@ -66,6 +66,9 @@ public class UserResource {
         if (user_id != null && user_id.length() > 1 &&
                 sessionDAOC.verifySessionCookie(cookie)) {
             User user = userDAOC.getByID(user_id);
+            if (user == null) {
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
             user.setEmail(email);
             user.setName(name);
             if (password != null && password.length() > 0) {
@@ -75,7 +78,8 @@ public class UserResource {
             logger_.info("Update user : " + user_id);
             userDAOC.update(user);
 
-        } else {
+        } else if ((user_id == null || user_id.length() == 0)
+                && userDAOC.getByEmail(email) == null) {
             User user = new User(email, password, name, UserPriority.NORMAL.name());
             logger_.info("Insert user : " + user_id);
             userDAOC.insert(user);

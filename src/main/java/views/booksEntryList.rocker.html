@@ -62,10 +62,10 @@
 						<span class="caret"></span>
 					</button>
 					<ul class="dropdown-menu">
-						<li><a href="/users/insertuserview">edit user</a></li>
                         @if (user != null && user.getUser_id().startsWith(Dict.FACEBOOK_PREFIX)) {
 							<li><a onclick="logout()">logout</a></li>
 						} else {
+							<li><a href="/users/insertuserview">edit user</a></li>
 							<li><a href="/logout">logout</a></li>
 						}
 					</ul>

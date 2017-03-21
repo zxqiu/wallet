@@ -85,6 +85,13 @@ public interface UserDAO {
 			@Bind(Dict.PASSWORD) String password
 	);
 
+	@SqlQuery("select * from " + TABLE_NAME + " where " +
+			Dict.EMAIL + " = :" + Dict.EMAIL)
+	@Mapper(UserMapper.class)
+	List<User> findByEmail(
+			@Bind(Dict.EMAIL) String email
+	);
+
     @SqlQuery("select * from " + TABLE_NAME)
     @Mapper(UserMapper.class)
     List<User> findAll();
