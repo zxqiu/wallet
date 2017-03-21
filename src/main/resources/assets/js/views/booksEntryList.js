@@ -6,6 +6,8 @@ function getBrightness(rgb) {
 
 function showByMonth() {
     var entries = document.getElementById("booksList").children;
+    var curYear = parseInt($("#yearShow").val());
+    var curMonth = parseInt($("#monthShow").val());
 
     for (var i = 0; i < entries.length; i++) {
         var entry = entries[i];
@@ -17,9 +19,6 @@ function showByMonth() {
 
         var entryYear = parseInt(d[0]);
         var entryMonth = parseInt(d[1]);
-
-        var curYear = parseInt($("#yearShow").val());
-        var curMonth = parseInt($("#monthShow").val());
 
         if (entryYear == curYear && entryMonth == curMonth) {
             $(entry).show();
@@ -94,6 +93,7 @@ $('#monthSelector li a').on('click', function(){
             $('#monthShow').val(i + 1);
             $('#monthShow').text($(this).text());
             showByMonth();
+            break;
         }
     }
 });
@@ -124,11 +124,13 @@ $('#yearShow').on('click', function() {
 
 $("#yearMinus").on("click", function () {
     var showYear = parseInt($("#yearShow").val());
-    $("#yearShow").val(showYear - 1);
-    $("#yearShow").text(showYear - 1);
-    $("#yearShow").addClass("yearChanged");
-    showByMonth();
-})
+    if (showYear > 0) {
+        $("#yearShow").val(showYear - 1);
+        $("#yearShow").text(showYear - 1);
+        $("#yearShow").addClass("yearChanged");
+        showByMonth();
+    }
+});
 
 $("#yearPlus").on("click", function () {
     var showYear = parseInt($("#yearShow").val());
@@ -136,18 +138,22 @@ $("#yearPlus").on("click", function () {
     $("#yearShow").text(showYear + 1);
     $("#yearShow").addClass("yearChanged");
     showByMonth();
-})
+});
 
 $("#monthMinus").on("click", function () {
     var showMonth = parseInt($("#monthShow").val());
-    $("#monthShow").val(showMonth - 1);
-    $("#monthShow").text(monthNames[showMonth - 1]);
-    showByMonth();
-})
+    if (showMonth > 1) {
+        $("#monthShow").val(showMonth - 1);
+        $("#monthShow").text(monthNames[showMonth - 2]);
+        showByMonth();
+    }
+});
 
 $("#monthPlus").on("click", function () {
     var showMonth = parseInt($("#monthShow").val());
-    $("#monthShow").val(showMonth + 1);
-    $("#monthShow").text(monthNames[showMonth + 1]);
-    showByMonth();
-})
+    if (showMonth < 12) {
+        $("#monthShow").val(showMonth + 1);
+        $("#monthShow").text(monthNames[showMonth]);
+        showByMonth();
+    }
+});
