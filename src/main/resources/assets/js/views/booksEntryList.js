@@ -32,13 +32,14 @@ function showByMonth() {
 function logout() {
     FB.getLoginStatus(function(response) {
         if (response.status == "connected") {
-            FB.logout(function (response) {
+            FB.logout(function (data) {
                 console.log("facebook logout success");
-                console.log(response);
+                window.location.href = "/logout";
             });
+        } else {
+            window.location.href = "/logout";
         }
     });
-    window.location.href = "/logout";
 }
 
 /************************** jquery functions ********************************/
