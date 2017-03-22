@@ -1,40 +1,67 @@
-function getBrightness(rgb) {
-    return 0.2126 * parseInt(rgb[0])
-        + 0.7152 * parseInt(rgb[1])
-        + 0.0722 * parseInt(rgb[2]); // per ITU-R BT.709
-}
-
 function entryFilter() {
     var entries = document.getElementById("booksList").children;
     var curYear = parseInt($("#yearShow").val());
     var curMonth = parseInt($("#monthShow").val());
     var curCategory = $("#categoryShow").text().trim();
 
+    var categorySum = new Object();
+    categorySum["All"] = 0.0;
+
     for (var i = 0; i < entries.length; i++) {
+        var entryYear;
+        var entryMonth;
+        var entryCategory;
+        var entryAmount;
+
         var entry = entries[i];
         var title = $(entry).find("#bookTitle")[0];
-        title = $(title).text();
+        title = $(title).text().split(" ");
 
-        var d = title.split(" ")[0];
+        var d = title[0];
         d = d.split("-");
 
-        var entryYear = parseInt(d[0]);
-        var entryMonth = parseInt(d[1]);
+        entryYear = parseInt(d[0]);
+        entryMonth = parseInt(d[1]);
 
-        var entryCateogry = $(entry).find("#bookCategory")[0];
-        entryCateogry = $(entryCateogry).text();
-        entryCateogry = entryCateogry.split(":");
-        if (entryCateogry.length < 2) {
+        entryCategory = $(entry).find("#bookCategory")[0];
+        entryCategory = $(entryCategory).text();
+        entryCategory = entryCategory.split(":");
+        if (entryCategory.length < 2) {
             return;
         }
-        entryCateogry = entryCateogry[1].trim();
+        entryCategory = entryCategory[1].trim();
 
-        if (entryYear == curYear && entryMonth == curMonth
-            && (curCategory == "All" || entryCateogry == curCategory)) {
-            $(entry).show();
+        entryAmount = parseFloat(title[1].substr(1, title[1].length - 1));
+
+        if (entryYear == curYear && entryMonth == curMonth) {
+            if (curCategory == "All" || entryCategory == curCategory) {
+                $(entry).show();
+            } else {
+                $(entry).hide();
+            }
+
+            if (!(categorySum.hasOwnProperty(entryCategory))) {
+                categorySum[entryCategory] = 0.0;
+            }
+            categorySum["All"] += entryAmount;
+            categorySum[entryCategory] += entryAmount;
         } else {
             $(entry).hide();
         }
+    }
+
+    showCategorySum(categorySum);
+}
+
+function showCategorySum(categorySum) {
+    var list = $("#categorySelector").find("a");
+    for (var i = 0; i < list.length; i++) {
+        if ($(list[i]).hasClass("dropdown-control")) {
+            continue;
+        }
+
+        var categoryName = $(list[i]).text().split(":")[0];
+        list[i].innerHTML = categoryName + ":&emsp;$" + categorySum[categoryName].toFixed(2);
     }
 }
 

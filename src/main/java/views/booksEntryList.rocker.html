@@ -5,7 +5,7 @@
 @import java.util.List;
 @import java.util.HashMap;
 
-@args (List<BooksEntry> booksEntryList, List<Category> categoryList, HashMap<String, String> colorMap, HashMap<String, Double> amountSumMap, int booksEntrysEachLine, User user)
+@args (List<BooksEntry> booksEntryList, List<Category> categoryList, HashMap<String, String> colorMap, int booksEntrysEachLine, User user)
 
 <html lang="en">
 
@@ -56,23 +56,15 @@
                         All
 					</button>
 					<ul class="dropdown-menu" id="categorySelector">
-						<li  class="dropdown-header">Select Category</li>
-						@if (amountSumMap != null && amountSumMap.containsKey("All")) {
-							<li><a>All:&emsp;$@amountSumMap.get("All").doubleValue()</a></li>
-						} else {
-							<li><a>All:&emsp;$Unknown</a></li>
-						}
+						<li class="dropdown-header">Select Category</li>
+						<li><a>All:&emsp;$Unknown</a></li>
 						@if (categoryList != null) {
                         	@for (Category category : categoryList) {
-                        		@if (amountSumMap.containsKey(category.getName())) {
-									<li><a>@?category.getName():&emsp;$@amountSumMap.get(category.getName()).doubleValue()</a></li>
-								} else {
-									<li><a>@?category.getName():&emsp;$Unknown</a></li>
-								}
+								<li><a>@?category.getName():&emsp;$Unknown</a></li>
 							}
 						}
 						<li class="divider"></li>
-						<li><a href="/books/categories">Edit Categories</a></li>
+						<li><a href="/books/categories" class="dropdown-control">Edit Categories</a></li>
 					</ul>
 				</div>
 
@@ -172,6 +164,7 @@
 
 	<script src="/js/jquery.min.js"></script>
 	<script src="/js/bootstrap.min.js"></script>
+	<script src="/js/general.js"></script>
 	<script src="/js/views/booksEntryList.js"></script>
 
 </body>

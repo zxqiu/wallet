@@ -62,13 +62,6 @@
 						<span class="btn input-group-addon dropdown-toggle" data-toggle="dropdown">
 							<span class="glyphicon glyphicon-menu-hamburger"></span>
 						</span>
-						<ul class="dropdown-menu" id="booksEntryCategoryList">
-							@for (Category category : categoryList) {
-							<li style="background: #@?category.getPicture_id()">
-								<a style="color: white">@category.getName()</a>
-							</li>
-							}
-						</ul>
 						<input class="form-control"
 							@if (booksEntry != null && categoryList != null) {
 								@for (Category category : categoryList) {
@@ -78,6 +71,13 @@
                             	}
 							}
 							placeholder="input or select" id="booksEntryCategory" name="category" type="text" required="true">
+						<ul class="dropdown-menu" id="booksEntryCategoryList">
+							@for (Category category : categoryList) {
+							<li style="background: #@?category.getPicture_id()">
+								<a class="categorySelector">@category.getName()</a>
+							</li>
+							}
+						</ul>
 					</div>
 				</div>
 				<div class="form-group">
@@ -133,11 +133,12 @@
 	</div>
 
 
-<script src="/js/jquery.min.js"></script>
-<script src="/js/bootstrap.min.js"></script>
-<script src="/js/bootstrap-datepicker.min.js"></script>
-<script src="/js/jscolor.min.js"></script>
-<script src="/js/views/booksEntry.js"></script>
+	<script src="/js/jquery.min.js"></script>
+	<script src="/js/bootstrap.min.js"></script>
+	<script src="/js/bootstrap-datepicker.min.js"></script>
+	<script src="/js/jscolor.min.js"></script>
+	<script src="/js/general.js"></script>
+	<script src="/js/views/booksEntry.js"></script>
 
 </body>
 </html>
