@@ -73,8 +73,8 @@
 							placeholder="input or select" id="booksEntryCategory" name="category" type="text" required="true">
 						<ul class="dropdown-menu" id="booksEntryCategoryList">
 							@for (Category category : categoryList) {
-							<li style="background: #@?category.getPicture_id()">
-								<a class="categorySelector">@category.getName()</a>
+							<li class="category-selector" style="background: #@?category.getPicture_id();">
+								<a>@category.getName()</a>
 							</li>
 							}
 						</ul>

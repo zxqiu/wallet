@@ -61,7 +61,11 @@ function showCategorySum(categorySum) {
         }
 
         var categoryName = $(list[i]).text().split(":")[0];
-        list[i].innerHTML = categoryName + ":&emsp;$" + categorySum[categoryName].toFixed(2);
+        if (categorySum.hasOwnProperty(categoryName)) {
+            list[i].innerHTML = categoryName + ":&emsp;$" + categorySum[categoryName].toFixed(2);
+        } else {
+            list[i].innerHTML = categoryName + ":&emsp;$0.00";
+        }
     }
 }
 
@@ -86,11 +90,7 @@ var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
 $(document).ready(function () {
     var titles = $(".books-list-text-title");
     for (var i = 0; i < titles.length; i++) {
-        var rgb = titles[i].style.backgroundColor.slice(
-            titles[i].style.backgroundColor.indexOf('(') + 1
-            , titles[i].style.backgroundColor.indexOf(')')
-        );
-        var rgb = rgb.split(", ");
+        var rgb = getBackgroundColorRGB(titles[i]);
         var bright = getBrightness(rgb);
 
         if (bright > 135) {

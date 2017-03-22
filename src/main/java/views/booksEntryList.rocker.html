@@ -60,7 +60,9 @@
 						<li><a>All:&emsp;$Unknown</a></li>
 						@if (categoryList != null) {
                         	@for (Category category : categoryList) {
-								<li><a>@?category.getName():&emsp;$Unknown</a></li>
+								<li class="category-selector" style="background: #@?category.getPicture_id();">
+									<a>@?category.getName():&emsp;$Unknown</a>
+								</li>
 							}
 						}
 						<li class="divider"></li>
