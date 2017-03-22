@@ -144,7 +144,7 @@
 			<div class="col-md-@(12 / booksEntrysEachLine)">
 				<div class="books-list">
 					<a>
-						<span class="books-list-text" title="@booksEntryList.get(i).getId()">
+						<span class="books-list-text" title="@booksEntryList.get(i).getId()" tabindex="@i">
 							<span class="books-list-text-title" id="bookTitle"
 								@if (booksEntryList !=null && colorMap !=null) {
 									style="background: #@?colorMap.get(booksEntryList.get(i).getCategory())"

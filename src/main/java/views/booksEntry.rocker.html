@@ -87,9 +87,10 @@
 					</label>
 					<textarea type="text" class="form-control" id="booksEntryNote" name="note"
 						@if (booksEntry != null) {
-							value="@?booksEntry.getNote()"
+							>@?booksEntry.getNote().trim()</textarea>
+						} else {
+							></textarea>
 						}
-					></textarea>
 				</div>
 				<div class="form-group" style="display: none;">
 

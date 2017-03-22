@@ -120,7 +120,7 @@ $('.books-list-text').on("click", function(e) {
         $(e.target).removeClass("dblclicked");
     } else {
         $(e.target).addClass("dblclicked");
-        setTimeout(function() { $(e.target).removeClass("dblclicked"); }, 2000);
+        setTimeout(function() { $(e.target).removeClass("dblclicked"); }, 1500);
     }
 });
 
