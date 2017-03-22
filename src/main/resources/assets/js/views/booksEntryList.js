@@ -4,10 +4,11 @@ function getBrightness(rgb) {
         + 0.0722 * parseInt(rgb[2]); // per ITU-R BT.709
 }
 
-function showByMonth() {
+function entryFilter() {
     var entries = document.getElementById("booksList").children;
     var curYear = parseInt($("#yearShow").val());
     var curMonth = parseInt($("#monthShow").val());
+    var curCategory = $("#categoryShow").text().trim();
 
     for (var i = 0; i < entries.length; i++) {
         var entry = entries[i];
@@ -20,7 +21,16 @@ function showByMonth() {
         var entryYear = parseInt(d[0]);
         var entryMonth = parseInt(d[1]);
 
-        if (entryYear == curYear && entryMonth == curMonth) {
+        var entryCateogry = $(entry).find("#bookCategory")[0];
+        entryCateogry = $(entryCateogry).text();
+        entryCateogry = entryCateogry.split(":");
+        if (entryCateogry.length < 2) {
+            return;
+        }
+        entryCateogry = entryCateogry[1].trim();
+
+        if (entryYear == curYear && entryMonth == curMonth
+            && (curCategory == "All" || entryCateogry == curCategory)) {
             $(entry).show();
         } else {
             $(entry).hide();
@@ -73,7 +83,7 @@ $(document).ready(function () {
     $('#monthShow').val(today.getMonth() + 1);
     $('#monthShow').text(monthNames[today.getMonth()]);
 
-    showByMonth();
+    entryFilter();
 });
 
 
@@ -83,7 +93,7 @@ $('.books-list-text').on("click", function(e) {
         $(e.target).removeClass("dblclicked");
     } else {
         $(e.target).addClass("dblclicked");
-        setTimeout(function() { $(e.target).removeClass("dblclicked"); }, 1000);
+        setTimeout(function() { $(e.target).removeClass("dblclicked"); }, 2000);
     }
 });
 
@@ -92,21 +102,21 @@ $('#monthSelector li a').on('click', function(){
         if ($(this).text() == monthNames[i] && $('#monthShow').val() != i + 1) {
             $('#monthShow').val(i + 1);
             $('#monthShow').text($(this).text());
-            showByMonth();
+            entryFilter();
             break;
         }
     }
 });
 
 $('#yearSelector li a').on('click', function() {
-    var showYear = parseInt($(this).val());
+    var showYear = parseInt($("#yearShow").val());
     var newYear = parseInt($(this).text());
 
     if (showYear != newYear) {
         $("#yearShow").val(newYear);
         $("#yearShow").text(newYear);
         $("#yearShow").addClass("yearChanged");
-        showByMonth();
+        entryFilter();
     }
 });
 
@@ -128,7 +138,7 @@ $("#yearMinus").on("click", function () {
         $("#yearShow").val(showYear - 1);
         $("#yearShow").text(showYear - 1);
         $("#yearShow").addClass("yearChanged");
-        showByMonth();
+        entryFilter();
     }
 });
 
@@ -137,7 +147,7 @@ $("#yearPlus").on("click", function () {
     $("#yearShow").val(showYear + 1);
     $("#yearShow").text(showYear + 1);
     $("#yearShow").addClass("yearChanged");
-    showByMonth();
+    entryFilter();
 });
 
 $("#monthMinus").on("click", function () {
@@ -145,7 +155,7 @@ $("#monthMinus").on("click", function () {
     if (showMonth > 1) {
         $("#monthShow").val(showMonth - 1);
         $("#monthShow").text(monthNames[showMonth - 2]);
-        showByMonth();
+        entryFilter();
     }
 });
 
@@ -154,6 +164,16 @@ $("#monthPlus").on("click", function () {
     if (showMonth < 12) {
         $("#monthShow").val(showMonth + 1);
         $("#monthShow").text(monthNames[showMonth]);
-        showByMonth();
+        entryFilter();
+    }
+});
+
+$("#categorySelector li a").on("click", function () {
+    var showCategory = $("#categoryShow").text();
+    var newCategory = $(this).text().split(":")[0].trim();
+
+    if (showCategory != newCategory) {
+        $("#categoryShow").text(newCategory);
+        entryFilter();
     }
 });

@@ -1,10 +1,11 @@
 @import com.wallet.books.core.BooksEntry;
+@import com.wallet.books.core.Category;
 @import com.wallet.login.core.User;
 @import com.wallet.utils.misc.Dict;
 @import java.util.List;
 @import java.util.HashMap;
 
-@args (List<BooksEntry> booksEntryList, HashMap<String, String> colorMap, int booksEntrysEachLine, User user)
+@args (List<BooksEntry> booksEntryList, List<Category> categoryList, HashMap<String, String> colorMap, HashMap<String, Double> amountSumMap, int booksEntrysEachLine, User user)
 
 <html lang="en">
 
@@ -51,7 +52,28 @@
 					<button type="button" class="regular-button btn btn-default" onclick="window.location.href='/books/entry/0'">new</button>
 				</div>
 				<div class="btn-group" role="group">
-					<button type="button" class="regular-button btn btn-default" onclick="window.location.href='/books/categories'">categories</button>
+					<button type="button" id="categoryShow" class="regular-button btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        All
+					</button>
+					<ul class="dropdown-menu" id="categorySelector">
+						<li  class="dropdown-header">Select Category</li>
+						@if (amountSumMap != null && amountSumMap.containsKey("All")) {
+							<li><a>All:&emsp;$@amountSumMap.get("All").doubleValue()</a></li>
+						} else {
+							<li><a>All:&emsp;$Unknown</a></li>
+						}
+						@if (categoryList != null) {
+                        	@for (Category category : categoryList) {
+                        		@if (amountSumMap.containsKey(category.getName())) {
+									<li><a>@?category.getName():&emsp;$@amountSumMap.get(category.getName()).doubleValue()</a></li>
+								} else {
+									<li><a>@?category.getName():&emsp;$Unknown</a></li>
+								}
+							}
+						}
+						<li class="divider"></li>
+						<li><a href="/books/categories">Edit Categories</a></li>
+					</ul>
 				</div>
 
 				<div class="btn-group" role="group">

@@ -59,12 +59,24 @@ public class BooksEntryResource {
 		List<BooksEntry> booksEntryList = sortBooksByTime(booksEntryDAOC.getByUserID(user_id));
 		List<Category> categoryList = categoryDAOC.getByUserID(user_id);
 		HashMap<String, String> colorMap = new HashMap<>();
+		HashMap<String, Double> amountSumMap = new HashMap<>();
+		int sumAll = 0;
 
 		for (Category category : categoryList) {
 			colorMap.put(category.getName(), category.getPicture_id());
 		}
 
-		return Response.ok().entity(views.booksEntryList.template(booksEntryList, colorMap, booksEntrysEachLine, user)).build();
+		for (BooksEntry entry : booksEntryList) {
+			if (!amountSumMap.containsKey(entry.getCategory())) {
+				amountSumMap.put(entry.getCategory(), 0.0);
+			}
+			amountSumMap.put(entry.getCategory(),
+					(amountSumMap.get(entry.getCategory()).doubleValue() + ((double)entry.getAmount()) / 100));
+			sumAll += entry.getAmount();
+		}
+		amountSumMap.put("All", ((double)sumAll) / 100);
+
+		return Response.ok().entity(views.booksEntryList.template(booksEntryList, categoryList, colorMap, amountSumMap, booksEntrysEachLine, user)).build();
 	}
 
 	public static final String PATH_INSERT_ENTRY_VIEW = "/books/entry";
