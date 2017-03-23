@@ -112,6 +112,7 @@ public class BooksEntryResource {
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.TEXT_HTML)
 	public Response insertEntry(@FormParam(Dict.ID) String id,
+								@FormParam(Dict.BOOKS_ID) String books_id,
 								@FormParam(Dict.EVENT_DATE) String event_date,
 								@FormParam(Dict.AMOUNT) double amount_double,
 								@FormParam(Dict.CATEGORY) String category,
@@ -129,7 +130,7 @@ public class BooksEntryResource {
 		// 1. extract request
 		// 2. verify and parse request
 		// 3. verify parameters 
-		if (category.length() == 0 || event_date.length() == 0) {
+		if (category.length() == 0 || event_date.length() == 0 || books_id.length() == 0) {
 			logger_.error("ERROR: invalid new item request: " + id);
 			return Response.serverError().build();
 		}
@@ -164,7 +165,7 @@ public class BooksEntryResource {
 		
 		// 4.2.2 insert 
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-		BooksEntry booksEntry = new BooksEntry(id, user_id, category, sdf.parse(event_date), amount, note, photo);
+		BooksEntry booksEntry = new BooksEntry(id, user_id, user_id, books_id, category, sdf.parse(event_date), amount, note, photo, "");
 		try {
 			if (exist) {
 				logger_.info("Update books item : " + booksEntry.getId());

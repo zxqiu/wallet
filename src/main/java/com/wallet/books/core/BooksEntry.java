@@ -10,7 +10,13 @@ public class BooksEntry {
 	
 	@JsonProperty
 	private String user_id;
-	
+
+	@JsonProperty
+	private String create_user_id;
+
+	@JsonProperty
+	private String books_id;
+
 	@JsonProperty
 	private String category;
 	
@@ -27,20 +33,26 @@ public class BooksEntry {
 	private String photo;
 
 	@JsonProperty
+	private String data;
+
+	@JsonProperty
 	private Date edit_time;
 	
 	public BooksEntry() {
 	}
 	
-	public BooksEntry(String id, String user_id, String category, Date event_date, long amount, String note, String photo) {
+	public BooksEntry(String id, String user_id, String create_user_id, String books_id, String category, Date event_date, long amount, String note, String photo, String data) {
 		this.setId(id);
 		this.setUser_id(user_id);
+		this.setCreate_user_id(create_user_id);
+		this.setBooks_id(books_id);
 		this.setCategory(category);
 		this.setEvent_date(event_date);
 		this.setAmount(amount);
 		this.setNote(note);
 		this.setPhoto(photo);
 		this.setEdit_time(new Date());
+		this.setData(data);
 	}
 
 	public String getId() {
@@ -105,5 +117,29 @@ public class BooksEntry {
 
 	public void setEvent_date(Date event_date) {
 		this.event_date = event_date;
+	}
+
+	public String getCreate_user_id() {
+		return create_user_id;
+	}
+
+	public void setCreate_user_id(String create_user_id) {
+		this.create_user_id = create_user_id;
+	}
+
+	public String getBooks_id() {
+		return books_id;
+	}
+
+	public void setBooks_id(String books_id) {
+		this.books_id = books_id;
+	}
+
+	public String getData() {
+		return data;
+	}
+
+	public void setData(String data) {
+		this.data = data;
 	}
 }

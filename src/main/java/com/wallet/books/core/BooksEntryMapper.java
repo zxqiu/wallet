@@ -15,11 +15,14 @@ public class BooksEntryMapper implements ResultSetMapper<BooksEntry> {
 		
 		entry.setId(resultSet.getString(Dict.ID));
 		entry.setUser_id(resultSet.getString(Dict.USER_ID));
+		entry.setCreate_user_id(resultSet.getString(Dict.CREATE_USER_ID));
+		entry.setBooks_id(resultSet.getString(Dict.BOOKS_ID));
 		entry.setCategory(resultSet.getString(Dict.CATEGORY));
 		entry.setEvent_date(resultSet.getDate(Dict.EVENT_DATE));
 		entry.setAmount(resultSet.getLong(Dict.AMOUNT));
 		entry.setNote(resultSet.getString(Dict.NOTE));
 		entry.setPhoto(resultSet.getString(Dict.PHOTO));
+		entry.setData(resultSet.getString(Dict.DATA));
 		entry.setEdit_time(resultSet.getDate(Dict.EDIT_TIME));
 		
 		return entry;

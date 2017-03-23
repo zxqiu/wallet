@@ -68,8 +68,10 @@ public class BooksEntryDAOConnector {
 	
 	public void insert(BooksEntry booksEntry) throws Exception {
 		try {
-			booksEntryDAO.insert(booksEntry.getId(), booksEntry.getUser_id(), booksEntry.getCategory(), booksEntry.getEvent_date()
-				, booksEntry.getAmount(), booksEntry.getNote(), booksEntry.getPhoto(), booksEntry.getEdit_time());
+			booksEntryDAO.insert(booksEntry.getId(), booksEntry.getUser_id(), booksEntry.getCreate_user_id()
+					, booksEntry.getBooks_id(), booksEntry.getCategory(), booksEntry.getEvent_date()
+					, booksEntry.getAmount(), booksEntry.getNote(), booksEntry.getPhoto(), booksEntry.getData()
+					, booksEntry.getEdit_time());
 		} catch (Exception e) {
 			if (e.getMessage().contains("Duplicate entry")) {
 				logger_.info("Books entry already exists : " + booksEntry.getId());
@@ -82,8 +84,9 @@ public class BooksEntryDAOConnector {
 	}
 	
 	public void update(BooksEntry booksEntry) throws Exception {
-		booksEntryDAO.update(booksEntry.getId(), booksEntry.getUser_id(), booksEntry.getCategory(), booksEntry.getEvent_date()
-				, booksEntry.getAmount(), booksEntry.getNote(), booksEntry.getPhoto(), booksEntry.getEdit_time());
+		booksEntryDAO.update(booksEntry.getId(), booksEntry.getUser_id(), booksEntry.getBooks_id()
+				, booksEntry.getCategory(), booksEntry.getEvent_date(), booksEntry.getAmount(), booksEntry.getNote()
+				, booksEntry.getPhoto(), booksEntry.getData(), booksEntry.getEdit_time());
 	}
 	
 	public void deleteByID(String id) throws Exception {
@@ -95,7 +98,8 @@ public class BooksEntryDAOConnector {
 	}
 	
 	public static void test() throws Exception {
-		BooksEntry booksEntry = new BooksEntry("admin232323", "admin", "asdfasf", new Date(), (long)10, "note", "photo");
+		BooksEntry booksEntry = new BooksEntry("admin232323", "admin", "admin", "adminbooks","asdfasf", new Date()
+				, (long)10, "note", "photo", "test data");
 		
 		logger_.info("BooksEntryDAOConnector test ...");
 		
