@@ -1,8 +1,9 @@
 /************************** jquery functions ********************************/
 $(document).ready(function () {
     // this is to init category text field
-    if ($("#booksEntryCategory").val().length == 0) {
-        $('#categorySelector').val($('#categorySelector').val()).change();
+    var selector = $(".category-option");
+    if ($("#booksEntryCategory").val().length == 0 && selector.length > 0) {
+        $('#categorySelector').val($(selector[0]).val()).change();
     } else {
         $('#categorySelector').val($("#booksEntryCategory").val()).change();
     }
@@ -11,6 +12,17 @@ $(document).ready(function () {
 $('#categorySelector').on('change', function(){
     $('#booksEntryCategory').val($(this).val()).change();
     $('#booksEntryCategory').text($(this).val());
+
+    var selector = $(".category-option");
+    if (selector.length > 0) {
+        for (var i = 0; i < selector.length; i++) {
+            if ($(selector[i]).val() == $(this).val()) {
+                $(this).css("background", selector[i].style.background);
+                setCategoryOptionFontColor();
+                break;
+            }
+        }
+    }
 });
 
 $(function() {

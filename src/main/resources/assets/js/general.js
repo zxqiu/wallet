@@ -3,12 +3,18 @@
  */
 
 function getBrightness(rgb) {
+    if (!rgb) {
+        return;
+    }
     return 0.2126 * parseInt(rgb[0])
         + 0.7152 * parseInt(rgb[1])
         + 0.0722 * parseInt(rgb[2]); // per ITU-R BT.709
 }
 
 function getBackgroundColorRGB(node) {
+    if (!node) {
+        return;
+    }
     var rgb = node.style.backgroundColor.slice(
         node.style.backgroundColor.indexOf('(') + 1
         , node.style.backgroundColor.indexOf(')')
@@ -18,8 +24,20 @@ function getBackgroundColorRGB(node) {
     return rgb;
 }
 
+function adjustFontColor(brightness, node) {
+    if (!node) {
+        return;
+    }
+    if (brightness > 135) {
+        node.style.color = "#4A4A4A";
+    } else {
+        node.style.color = "white";
+    }
+}
+
 function setCategoryListFontColor() {
     var selector = $(".category-list");
+
     for (var i = 0; i < selector.length; i++) {
         var a = $(selector[i]).find("a");
         var rgb = getBackgroundColorRGB(selector[i]);
@@ -28,12 +46,7 @@ function setCategoryListFontColor() {
         }
 
         var bright = getBrightness(rgb);
-
-        if (bright > 135) {
-            a[0].style.color = "#4A4A4A";
-        } else {
-            a[0].style.color = "white";
-        }
+        adjustFontColor(bright, a[0]);
     }
 }
 
@@ -43,12 +56,14 @@ function setCategoryOptionFontColor() {
         var rgb = getBackgroundColorRGB(selector[i]);
         var bright = getBrightness(rgb);
 
-        if (bright > 135) {
-            selector[i].style.color = "#4A4A4A";
-        } else {
-            selector[i].style.color = "white";
-        }
+        adjustFontColor(bright, selector[i]);
     }
+
+    var parent = selector.parent()[0];
+    var rgb = getBackgroundColorRGB(parent);
+    var bright = getBrightness(rgb);
+
+    adjustFontColor(bright, parent);
 }
 /************************** jquery functions ********************************/
 $(document).ready(function () {
