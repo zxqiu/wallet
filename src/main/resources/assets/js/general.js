@@ -18,8 +18,8 @@ function getBackgroundColorRGB(node) {
     return rgb;
 }
 
-function setCategorySelectorFontColor() {
-    var selector = $(".category-selector");
+function setCategoryListFontColor() {
+    var selector = $(".category-list");
     for (var i = 0; i < selector.length; i++) {
         var a = $(selector[i]).find("a");
         var rgb = getBackgroundColorRGB(selector[i]);
@@ -37,7 +37,21 @@ function setCategorySelectorFontColor() {
     }
 }
 
+function setCategoryOptionFontColor() {
+    var selector = $(".category-option");
+    for (var i = 0; i < selector.length; i++) {
+        var rgb = getBackgroundColorRGB(selector[i]);
+        var bright = getBrightness(rgb);
+
+        if (bright > 135) {
+            selector[i].style.color = "#4A4A4A";
+        } else {
+            selector[i].style.color = "white";
+        }
+    }
+}
 /************************** jquery functions ********************************/
 $(document).ready(function () {
-    setCategorySelectorFontColor();
+    setCategoryListFontColor();
+    setCategoryOptionFontColor();
 });

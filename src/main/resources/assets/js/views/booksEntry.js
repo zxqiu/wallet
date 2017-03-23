@@ -1,7 +1,16 @@
 /************************** jquery functions ********************************/
-$('#booksEntryCategoryList li a').on('click', function(){
-    $('#booksEntryCategory').val($(this).text()).change();
-    $('#booksEntryCategory').text($(this).text());
+$(document).ready(function () {
+    // this is to init category text field
+    if ($("#booksEntryCategory").val().length == 0) {
+        $('#categorySelector').val($('#categorySelector').val()).change();
+    } else {
+        $('#categorySelector').val($("#booksEntryCategory").val()).change();
+    }
+});
+
+$('#categorySelector').on('change', function(){
+    $('#booksEntryCategory').val($(this).val()).change();
+    $('#booksEntryCategory').text($(this).val());
 });
 
 $(function() {
@@ -21,8 +30,9 @@ $('.date').on('changeDate', function(ev){
 var form = document.getElementById("booksEntryForm");
 form.noValidate = true;
 $("#booksEntrySubmit").on("click", function() {
-    $('#booksEntrySubmit').html("submitted");
+    $("#booksEntrySubmit").html("submitted");
     $("#booksEntrySubmit").attr("disabled", true);
+    $("#categorySelector").attr("disabled", true);
 
     var amount = parseFloat($('#booksEntryAmount').val());
     $('#booksEntryAmount').val(amount.toFixed(2));
@@ -38,11 +48,13 @@ $("#booksEntrySubmit").on("click", function() {
                     $('#booksEntrySubmit').removeAttr("disabled");
                 }
             });
+            $("#categorySelector").attr("disabled", false);
             return;
         }
     }
 
     form.submit();
+    $("#categorySelector").attr("disabled", false);
 });
 
 $("input").on('input', function() {

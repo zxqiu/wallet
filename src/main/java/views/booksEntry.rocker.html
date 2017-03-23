@@ -16,6 +16,7 @@
 	<link href="/css/bootstrap-datepicker.min.css" rel="stylesheet">
 	<link href="/css/style.css" rel="stylesheet">
 	<link href="/css/views/booksEntry.css" rel="stylesheet">
+</head>
 
 </head>
 
@@ -71,13 +72,13 @@
                             	}
 							}
 							placeholder="input or select" id="booksEntryCategory" name="category" type="text" required="true">
-						<ul class="dropdown-menu" id="booksEntryCategoryList">
+						<select class="form-control" id="categorySelector">
 							@for (Category category : categoryList) {
-							<li class="category-selector" style="background: #@?category.getPicture_id();">
-								<a>@category.getName()</a>
-							</li>
+							<option class="category-option" style="background: #@?category.getPicture_id();" value="@?category.getName()">
+								@?category.getName()
+							</option>
 							}
-						</ul>
+						</select>
 					</div>
 				</div>
 				<div class="form-group">
