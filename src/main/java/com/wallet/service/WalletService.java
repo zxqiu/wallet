@@ -2,6 +2,7 @@ package com.wallet.service;
 
 import com.fizzed.rocker.runtime.RockerRuntime;
 import com.wallet.books.dao.*;
+import com.wallet.books.resource.BooksResource;
 import org.skife.jdbi.v2.DBI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,6 +70,7 @@ public class WalletService extends Application<WalletConfiguration> {
 	    
 	    environment.jersey().register(new UserResource());
 	    environment.jersey().register(new SessionResource());
+		environment.jersey().register(new BooksResource());
 	    environment.jersey().register(new BooksEntryResource());
 	    environment.jersey().register(new CategoryResource());
 
