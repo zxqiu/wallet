@@ -20,6 +20,7 @@ public interface UserDAO {
 			+ "`" + Dict.PASSWORD + "` varchar(64) not null,"
 			+ "`" + Dict.NAME + "` varchar(16) not null,"
 			+ "`" + Dict.PRIORITY + "` varchar(16) not null,"
+			+ "`" + Dict.DATA + "` text,"
 			+ "primary key (`" + Dict.USER_ID + "`)"
 			+ ")ENGINE = InnoDB DEFAULT CHARSET = utf8"
 		)
@@ -29,37 +30,44 @@ public interface UserDAO {
 	void dropTable();
 	
 	@SqlUpdate("insert into " + TABLE_NAME + " ("
-			+ Dict.USER_ID + ", "
-			+ Dict.EMAIL + ", "
-			+ Dict.PASSWORD + ","
-			+ Dict.NAME + ","
-			+ Dict.PRIORITY
+			+ Dict.USER_ID
+			+ ", " + Dict.EMAIL
+			+ ", " + Dict.PASSWORD
+			+ ", " + Dict.NAME
+			+ ", " + Dict.PRIORITY
+			+ ", " + Dict.DATA
 			+ ") values ("
 			+ ":" + Dict.USER_ID
 			+ ", :" + Dict.EMAIL
 			+ ", :" + Dict.PASSWORD
 			+ ", :" + Dict.NAME
 			+ ", :" + Dict.PRIORITY
+			+ ", :" + Dict.DATA
 			+ ")"
 		)
-	void insert(@Bind(Dict.USER_ID) String user_id,
-				@Bind(Dict.EMAIL) String email,
-				@Bind(Dict.PASSWORD) String password,
-				@Bind(Dict.NAME) String name,
-				@Bind(Dict.PRIORITY) String priority);
+	void insert(@Bind(Dict.USER_ID) String user_id
+			, @Bind(Dict.EMAIL) String email
+			, @Bind(Dict.PASSWORD) String password
+			, @Bind(Dict.NAME) String name
+			, @Bind(Dict.PRIORITY) String priority
+			, @Bind(Dict.DATA) String data
+	);
 	
 	@SqlUpdate("update " + TABLE_NAME + " set "
-			+ Dict.EMAIL + "= :" + Dict.EMAIL + ","
-			+ Dict.PASSWORD + "= :" + Dict.PASSWORD + ","
-			+ Dict.NAME + "= :" + Dict.NAME + ","
-			+ Dict.PRIORITY + "= :" + Dict.PRIORITY
+			+ Dict.EMAIL + "= :" + Dict.EMAIL
+			+ ", " + Dict.PASSWORD + "= :" + Dict.PASSWORD
+			+ ", " + Dict.NAME + "= :" + Dict.NAME
+			+ ", " + Dict.PRIORITY + "= :" + Dict.PRIORITY
+			+ ", " + Dict.DATA + "= :" + Dict.DATA
 			+ " where " + Dict.USER_ID + "= :" + Dict.USER_ID
 		)
-	void update(@Bind(Dict.USER_ID) String user_id,
-				@Bind(Dict.EMAIL) String email,
-				@Bind(Dict.PASSWORD) String password,
-				@Bind(Dict.NAME) String name,
-				@Bind(Dict.PRIORITY) String priority);
+	void update(@Bind(Dict.USER_ID) String user_id
+			, @Bind(Dict.EMAIL) String email
+			, @Bind(Dict.PASSWORD) String password
+			, @Bind(Dict.NAME) String name
+			, @Bind(Dict.PRIORITY) String priority
+			, @Bind(Dict.DATA) String data
+	);
 	
 	@SqlQuery("select * from " + TABLE_NAME + " where " + Dict.USER_ID + " = :" + Dict.USER_ID)
     @Mapper(UserMapper.class)
@@ -72,8 +80,8 @@ public interface UserDAO {
     			" and " + Dict.PASSWORD + " = :" + Dict.PASSWORD)
     @Mapper(UserMapper.class)
     List<User> findByUserIDAndPassword(
-        @Bind(Dict.USER_ID) String user_id,
-        @Bind(Dict.PASSWORD) String password
+        @Bind(Dict.USER_ID) String user_id
+        , @Bind(Dict.PASSWORD) String password
     );
 
 	@SqlQuery("select * from " + TABLE_NAME + " where " +
@@ -81,8 +89,8 @@ public interface UserDAO {
 			" and " + Dict.PASSWORD + " = :" + Dict.PASSWORD)
 	@Mapper(UserMapper.class)
 	List<User> findByEmailAndPassword(
-			@Bind(Dict.EMAIL) String email,
-			@Bind(Dict.PASSWORD) String password
+			@Bind(Dict.EMAIL) String email
+			, @Bind(Dict.PASSWORD) String password
 	);
 
 	@SqlQuery("select * from " + TABLE_NAME + " where " +

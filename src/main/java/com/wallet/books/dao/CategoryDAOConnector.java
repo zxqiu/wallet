@@ -74,7 +74,7 @@ public class CategoryDAOConnector {
 	
 	public void insert(Category category) throws Exception {
 		try {
-			categoryDAO.insert(category.getId(), category.getUser_id(), category.getName(), category.getPicture_id());
+			categoryDAO.insert(category.getId(), category.getUser_id(), category.getName(), category.getPicture_id(), category.getData());
 		} catch (Exception e) {
 			if (e.getMessage().contains("Duplicate entry")) {
 				logger_.info("Category " + category.getName() + " already exists for user : " + category.getUser_id());
@@ -87,7 +87,7 @@ public class CategoryDAOConnector {
 	}
 	
 	public void updatePictureID(Category category) throws SQLException {
-		categoryDAO.update(category.getId(), category.getPicture_id());
+		categoryDAO.update(category.getId(), category.getPicture_id(), category.getData());
 	}
 	
 	public void deleteByID(String id) {
@@ -99,7 +99,7 @@ public class CategoryDAOConnector {
 	}
 	
 	public static void test() throws Exception {
-		Category category = new Category("admin", "good", "");
+		Category category = new Category("admin", "good", "", "");
 		
 		logger_.info("CategoryDAOConnector test ...");
 		

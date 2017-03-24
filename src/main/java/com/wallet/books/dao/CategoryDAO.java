@@ -20,6 +20,7 @@ public interface CategoryDAO {
 			+ "`" + Dict.USER_ID + "` varchar(64) not null,"
 			+ "`" + Dict.NAME + "` varchar(64) not null,"
 			+ "`" + Dict.PICTURE_ID + "` varchar(64),"
+			+ "`" + Dict.DATA + "` text,"
 			+ "primary key (`" + Dict.ID + "`),"
 			+ "key `fk_category_user` (`" + Dict.USER_ID + "`),"
 			+ "constraint `fk_category_user` foreign key (`" + Dict.USER_ID + "`) "
@@ -36,25 +37,32 @@ public interface CategoryDAO {
     		+ ", " + Dict.USER_ID
     		+ ", " + Dict.NAME
     		+ ", " + Dict.PICTURE_ID
+			+ ", " + Dict.DATA
     		+ ") values ("
     		+ ":" + Dict.ID
     		+ ",:" + Dict.USER_ID
     		+ ",:" + Dict.NAME
-    		+ ",:" + Dict.PICTURE_ID + ")"
+    		+ ",:" + Dict.PICTURE_ID
+			+ ",:" + Dict.DATA
+			+ ")"
     		)
     void insert(
-        @Bind(Dict.ID) String id
-        ,@Bind(Dict.USER_ID) String user_id
-        ,@Bind(Dict.NAME) String name
-        ,@Bind(Dict.PICTURE_ID) String picture_id
+        	@Bind(Dict.ID) String id
+        	, @Bind(Dict.USER_ID) String user_id
+        	, @Bind(Dict.NAME) String name
+        	, @Bind(Dict.PICTURE_ID) String picture_id
+			, @Bind(Dict.DATA) String data
     );
     
     @SqlUpdate("update " + TABLE_NAME + " set "
 			+ Dict.PICTURE_ID + "= :" + Dict.PICTURE_ID
+			+ ", " + Dict.DATA + "= :" + Dict.DATA
 			+ " where " + Dict.ID + "= :" + Dict.ID
 		)
 	void update(@Bind(Dict.ID) String id,
-			@Bind(Dict.PICTURE_ID) String picture_id);
+			@Bind(Dict.PICTURE_ID) String picture_id
+			, @Bind(Dict.DATA) String data
+	);
     
     @SqlQuery("select * from " + TABLE_NAME)
     @Mapper(CategoryMapper.class)

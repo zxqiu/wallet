@@ -7,7 +7,7 @@ public class Session {
 
     private String user_id;
     private String access_token;
-    private Date create_date;
+    private Date create_time;
     
     public Session() {
     }
@@ -15,7 +15,7 @@ public class Session {
     public Session(String user_id) {
     this.setUser_id(user_id);
         this.setAccess_token(UUID.randomUUID().toString() + UUID.randomUUID().toString());
-        this.setCreate_date(new Date());
+        this.setCreate_time(new Date());
     }
 
 	public String getAccess_token() {
@@ -26,12 +26,12 @@ public class Session {
 		this.access_token = access_token;
 	}
 
-	public Date getCreate_date() {
-		return create_date;
+	public Date getCreate_time() {
+		return create_time;
 	}
 
-	public void setCreate_date(Date create_date) {
-		this.create_date = create_date;
+	public void setCreate_time(Date create_time) {
+		this.create_time = create_time;
 	}
 
 	public String getUser_id() {

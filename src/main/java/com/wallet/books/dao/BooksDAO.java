@@ -24,8 +24,8 @@ public interface BooksDAO {
 			+ "`" + Dict.PICTURE_ID + "` varchar(64),"
 			+ "`" + Dict.DATA + "` text,"
 			+ "primary key (`" + Dict.ID + "`),"
-			+ "key `fk_category_user` (`" + Dict.USER_ID + "`),"
-			+ "constraint `fk_category_user` foreign key (`" + Dict.USER_ID + "`) "
+			+ "key `fk_books_user` (`" + Dict.USER_ID + "`),"
+			+ "constraint `fk_books_user` foreign key (`" + Dict.USER_ID + "`) "
 			+ "references `" + UserDAO.TABLE_NAME + "` (`" + Dict.USER_ID + "`)"
 			+ ")ENGINE = InnoDB DEFAULT CHARSET = utf8"
 			)
@@ -64,9 +64,9 @@ public interface BooksDAO {
     
     @SqlUpdate("update " + TABLE_NAME + " set "
 			+ Dict.NAME + "= :" + Dict.NAME
-			+ Dict.EDIT_TIME + "= :" + Dict.EDIT_TIME
-			+ Dict.PICTURE_ID + "= :" + Dict.PICTURE_ID
-			+ Dict.DATA + "= :" + Dict.DATA
+			+ ", " + Dict.EDIT_TIME + "= :" + Dict.EDIT_TIME
+			+ ", " + Dict.PICTURE_ID + "= :" + Dict.PICTURE_ID
+			+ ", " + Dict.DATA + "= :" + Dict.DATA
 			+ " where " + Dict.ID + "= :" + Dict.ID
 		)
 	void update(@Bind(Dict.ID) String id

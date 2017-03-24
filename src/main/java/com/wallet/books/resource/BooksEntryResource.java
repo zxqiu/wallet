@@ -139,7 +139,7 @@ public class BooksEntryResource {
 		// 4.1 insert new category
 		try {
 			if (categoryDAOC.getByID(user_id + category).isEmpty()) {
-				categoryDAOC.insert(new Category(user_id, category, ""));
+				categoryDAOC.insert(new Category(user_id, category, "", ""));
 			}
 		} catch (Exception e1) {
 			e1.printStackTrace();

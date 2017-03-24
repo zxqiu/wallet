@@ -121,7 +121,7 @@ public class SessionDAOConnector {
 	
 	public void insert(Session session) throws Exception {
 		try {
-			sessionDAO.insert(session.getAccess_token(), session.getUser_id(), session.getCreate_date());
+			sessionDAO.insert(session.getAccess_token(), session.getUser_id(), session.getCreate_time());
 		} catch (Exception e) {
 			if (e.getMessage().contains("Duplicate entry")) {
 				logger_.info("Session " + session.getAccess_token() + " already exists for user : " + session.getUser_id());
@@ -148,7 +148,7 @@ public class SessionDAOConnector {
 				Date today = new Date();
 				List<Session> sessions = SessionDAOConnector.instance().getAll();
 				for (Session session : sessions) {
-					long diff = today.getTime() - session.getCreate_date().getTime();
+					long diff = today.getTime() - session.getCreate_time().getTime();
 					if (TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS) >= EXPIRED_INTERVAL) {
 						logger_.info("Deleting expired session " + session.getAccess_token() + " for user " + session.getUser_id());
 						SessionDAOConnector.instance().deleteByAccessToken(session.getAccess_token());

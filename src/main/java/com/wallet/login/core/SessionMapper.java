@@ -15,7 +15,7 @@ public class SessionMapper implements ResultSetMapper<Session> {
 
         session.setAccess_token(resultSet.getString(Dict.ACCESS_TOKEN));
         session.setUser_id(resultSet.getString(Dict.USER_ID));
-        session.setCreate_date(resultSet.getDate(Dict.CREATE_DATE));
+        session.setCreate_time(resultSet.getDate(Dict.CREATE_TIME));
 
         return session;
     }

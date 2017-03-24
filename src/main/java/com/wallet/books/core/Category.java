@@ -14,15 +14,19 @@ public class Category {
 	
 	@JsonProperty
 	private String picture_id;
-	
+
+	@JsonProperty
+	private String data;
+
 	public Category() {
 	}
 	
-	public Category(String user_id, String name, String picture_id) {
+	public Category(String user_id, String name, String picture_id, String data) {
 		this.setId(user_id + name);
 		this.setUser_id(user_id);
 		this.setName(name);
 		this.setPicture_id(picture_id);
+		this.setData(data);
 	}
 
 	public String getUser_id() {
@@ -55,5 +59,13 @@ public class Category {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public String getData() {
+		return data;
+	}
+
+	public void setData(String data) {
+		this.data = data;
 	}
 }

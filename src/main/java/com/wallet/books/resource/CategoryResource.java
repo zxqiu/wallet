@@ -89,7 +89,7 @@ public class CategoryResource {
 		}
 		
 		// 4. transaction
-		Category category = new Category(user_id, name, picture_id);
+		Category category = new Category(user_id, name, picture_id, "");
 		try {
 		    if (id != null && id.length() > 1) {
 				logger_.info("Update category " + category.getName() + " for user " + user_id);
@@ -138,7 +138,9 @@ public class CategoryResource {
 
 			Category category = new Category(user_id
 					, jsonObject.getString(Dict.NAME)
-					, jsonObject.getString(Dict.PICTURE_ID));
+					, jsonObject.getString(Dict.PICTURE_ID)
+					, ""
+			);
 
 			String id = jsonObject.getString(Dict.ID);
 			if (jsonObject.getString(Dict.ACTION).equals(Dict.EDIT)) {

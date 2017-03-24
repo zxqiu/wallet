@@ -18,7 +18,7 @@ public interface SessionDAO {
 	@SqlUpdate("create table if not exists " + TABLE_NAME + " ("
 			+ "`" + Dict.ACCESS_TOKEN + "` varchar(256) not null unique,"
 			+ "`" + Dict.USER_ID + "` varchar(64) not null,"
-			+ "`" + Dict.CREATE_DATE + "` datetime not null,"
+			+ "`" + Dict.CREATE_TIME + "` datetime not null,"
 			+ "primary key (`" + Dict.ACCESS_TOKEN + "`),"
 			+ "key `fk_session_user` (`" + Dict.USER_ID + "`),"
 			+ "constraint `fk_session_user` foreign key (`" + Dict.USER_ID + "`) "
@@ -33,16 +33,16 @@ public interface SessionDAO {
     @SqlUpdate("insert into " + TABLE_NAME + " ("
     		+ Dict.ACCESS_TOKEN
     		+ ", " + Dict.USER_ID
-    		+ ", " + Dict.CREATE_DATE
+    		+ ", " + Dict.CREATE_TIME
     		+ ") values ("
     		+ ":" + Dict.ACCESS_TOKEN + ", "
     		+ ":" + Dict.USER_ID + ", "
-    		+ ":" + Dict.CREATE_DATE + ")"
+    		+ ":" + Dict.CREATE_TIME + ")"
     		)
     void insert(
         @Bind(Dict.ACCESS_TOKEN) String access_token
         ,@Bind(Dict.USER_ID) String user_id
-        ,@Bind(Dict.CREATE_DATE) java.util.Date create_date
+        ,@Bind(Dict.CREATE_TIME) java.util.Date create_time
     );
     
     @SqlQuery("select * from " + TABLE_NAME)

@@ -116,7 +116,7 @@ public class UserDAOConnector {
 
 	public void insert(User user) throws Exception {
 		try {
-			userDAO.insert(user.getUser_id(), user.getEmail(), user.getPassword(), user.getName(), user.getPriority());
+			userDAO.insert(user.getUser_id(), user.getEmail(), user.getPassword(), user.getName(), user.getPriority(), user.getData());
 		} catch (Exception e) {
 			if (e.getMessage().contains("Duplicate entry")) {
 				logger_.info("User already exists : " + user.getUser_id());
@@ -129,7 +129,7 @@ public class UserDAOConnector {
 	}
 	
 	public void update(User user) throws Exception {
-		userDAO.update(user.getUser_id(), user.getEmail(), user.getPassword(), user.getName(), user.getPriority());
+		userDAO.update(user.getUser_id(), user.getEmail(), user.getPassword(), user.getName(), user.getPriority(), user.getData());
 	}
 	
 	// TODO : delete user's data from other tables asynchronously
@@ -138,7 +138,7 @@ public class UserDAOConnector {
 	}
 	
 	public static void test() throws Exception {
-		User user = new User("admin", "admin@gmail.com", "admin", "admin", UserPriority.ADMIN.name());
+		User user = new User("admin", "admin@gmail.com", "admin", "admin", UserPriority.ADMIN.name(), "");
 
 		logger_.info("UserDAOConnector test ...");
 		

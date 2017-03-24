@@ -1,14 +1,11 @@
 package com.wallet.service;
 
 import com.fizzed.rocker.runtime.RockerRuntime;
+import com.wallet.books.dao.*;
 import org.skife.jdbi.v2.DBI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.wallet.books.dao.BooksEntryDAO;
-import com.wallet.books.dao.BooksEntryDAOConnector;
-import com.wallet.books.dao.CategoryDAO;
-import com.wallet.books.dao.CategoryDAOConnector;
 import com.wallet.books.resource.BooksEntryResource;
 import com.wallet.books.resource.CategoryResource;
 import com.wallet.login.dao.SessionDAO;
@@ -48,21 +45,25 @@ public class WalletService extends Application<WalletConfiguration> {
 	    
 	    final UserDAO userDAO = jdbi.onDemand(UserDAO.class);
 	    final SessionDAO sessionDAO = jdbi.onDemand(SessionDAO.class);
+	    final BooksDAO booksDAO = jdbi.onDemand(BooksDAO.class);
 	    final BooksEntryDAO booksEntryDAO = jdbi.onDemand(BooksEntryDAO.class);
 	    final CategoryDAO categoryDAO = jdbi.onDemand(CategoryDAO.class);
 	    
 	    UserDAOConnector.init(userDAO);
 	    SessionDAOConnector.init(sessionDAO);
+	    BooksDAOConnector.init(booksDAO);
 	    BooksEntryDAOConnector.init(booksEntryDAO);
 	    CategoryDAOConnector.init(categoryDAO);
 	    
 	    sessionDAO.dropTable();
+	    booksDAO.dropTable();
 	    booksEntryDAO.dropTable();
 	    categoryDAO.dropTable();
 	    userDAO.dropTable();
 	    
 	    UserDAOConnector.test();
 	    SessionDAOConnector.test();
+		BooksDAOConnector.test();
 	    BooksEntryDAOConnector.test();
 	    CategoryDAOConnector.test();
 	    

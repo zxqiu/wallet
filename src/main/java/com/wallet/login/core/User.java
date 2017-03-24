@@ -20,6 +20,29 @@ public class User {
     @JsonProperty
     private String priority;
 
+    @JsonProperty
+    private String data;
+
+    public User() {
+	}
+
+    public User(String email, String password, String name, String priority, String data) {
+        this.setUser_id(email + TimeUtils.getUniqueTimeStampInMS());
+        this.setEmail(email);
+        this.setPassword(password);
+        this.setName(name);
+        this.setPriority(priority);
+        this.setData(data);
+    }
+
+	public User(String user_id, String email, String password, String name, String priority, String data) {
+		this.setUser_id(user_id);
+		this.setEmail(email);
+		this.setPassword(password);
+		this.setName(name);
+		this.setPriority(priority);
+		this.setData(data);
+	}
 
     public String getEmail() {
         return email;
@@ -60,23 +83,12 @@ public class User {
 	public void setUser_id(String user_id) {
 		this.user_id = user_id;
 	}
-	
-	public User() {
-	}
 
-    public User(String email, String password, String name, String priority) {
-        this.setUser_id(email + TimeUtils.getUniqueTimeStampInMS());
-        this.setEmail(email);
-        this.setPassword(password);
-        this.setName(name);
-        this.setPriority(priority);
+    public String getData() {
+        return data;
     }
 
-	public User(String user_id, String email, String password, String name, String priority) {
-		this.setUser_id(user_id);
-		this.setEmail(email);
-		this.setPassword(password);
-		this.setName(name);
-		this.setPriority(priority);
-	}
+    public void setData(String data) {
+        this.data = data;
+    }
 }
