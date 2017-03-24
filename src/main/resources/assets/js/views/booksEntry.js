@@ -4,8 +4,6 @@ $(document).ready(function () {
     var selector = $(".category-option");
     if ($("#booksEntryCategory").val().length == 0 && selector.length > 0) {
         $('#categorySelector').val($(selector[0]).val()).change();
-    } else {
-        $('#categorySelector').val($("#booksEntryCategory").val()).change();
     }
 });
 

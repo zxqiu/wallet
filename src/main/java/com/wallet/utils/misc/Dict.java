@@ -5,6 +5,7 @@ public class Dict {
 	public static final String USER_ID = "user_id";
 	public static final String CREATE_USER_ID = "create_user_id";
 	public static final String BOOKS_ID = "books_id";
+	public static final String BOOKS_Name = "books_name";
 	public static final String EMAIL = "email";
 	public static final String CATEGORY = "category";
 	public static final String CREATE_TIME = "create_time";
@@ -22,6 +23,7 @@ public class Dict {
 	public static final String ACTION = "action";
 	public static final String EDIT = "edit";
 	public static final String DELETE = "delete";
+	public static final String DEFAULT = "default";
 
 	public static final String FACEBOOK_PREFIX = "fb-";
 }

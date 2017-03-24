@@ -6,6 +6,7 @@ var hostURL = window.location.protocol + "//" + window.location.host;
 var apiInsertEntry = "/books/insertentry";
 var apiDeleteItem = "/books/deleteentry";
 var apiGetBooks = "/books/getentries";
+var apiInsertBooksList = "/books/insertbookslist";
 var apiInsertCategoryList = "/books/insertcategorylist";
 var apiFaceBooksLogin = "/fblogin";
 
@@ -138,7 +139,7 @@ var APIs = {
             api_.postCategoryListSuccess = callback;
         }
 
-        api_.setPostCatregoryListErrorCallback = function(callback) {
+        api_.setPostCategoryListErrorCallback = function(callback) {
             api_.postCategoryListError = callback;
         }
 
@@ -167,6 +168,41 @@ var APIs = {
             });
         };
 
+        api_.postBooksListSuccess = null;
+        api_.postBooksListError = null;
+
+        api_.setPostBooksListSuccessCallback = function(callback) {
+            api_.postBooksListSuccess = callback;
+        }
+
+        api_.setPostBooksListErrorCallback = function(callback) {
+            api_.postBooksListError = callback;
+        }
+
+        api_.postBooksList = function(jsonObj) {
+            var postURL = hostURL + apiInsertBooksList;
+            console.log(postURL);
+            console.log(jsonObj);
+            JSONString = JSON.stringify(jsonObj);
+
+            $.ajax({
+                type: "POST",
+                url: postURL,
+                data: JSONString,
+                dataType: 'json',
+                contentType: 'application/json',
+                success: function(data, textStatus, jqXHR) {
+                    if (api_.postBooksListSuccess && typeof(api_.postBooksListSuccess) == "function") {
+                        api_.postBooksListSuccess(data);
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    if (api_.postBooksListError && typeof(api_.postBooksListError) == "function") {
+                        api_.postBooksListError(textStatus);
+                    }
+                }
+            });
+        };
 
         api_.postFBLoginSuccess = null;
         api_.postFBLoginError = null;

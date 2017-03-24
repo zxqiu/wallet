@@ -1,3 +1,4 @@
+@import com.wallet.books.core.Books;
 @import com.wallet.books.core.BooksEntry;
 @import com.wallet.books.core.Category;
 @import com.wallet.login.core.User;
@@ -5,7 +6,7 @@
 @import java.util.List;
 @import java.util.HashMap;
 
-@args (List<BooksEntry> booksEntryList, List<Category> categoryList, HashMap<String, String> colorMap, int booksEntrysEachLine, User user)
+@args (List<BooksEntry> booksEntryList, HashMap<String, Books> booksMap, List<Category> categoryList, HashMap<String, String> colorMap, int booksEntrysEachLine, User user)
 
 <html lang="en">
 
@@ -54,8 +55,8 @@
 						<span class="caret"></span>
 					</button>
 					<ul class="dropdown-menu">
-						<li><a href="/books/entry/0">new entry</a></li>
-						<li><a href="/books/bookslist">new books</a></li>
+						<li class="dropdown-header">Select Action</li>
+						<li><a href="/books/entry/0">New Entry</a></li>
 					</ul>
 				</div>
 				<div class="btn-group" role="group">
@@ -73,7 +74,18 @@
 							}
 						}
 						<li class="divider"></li>
+						<li class="dropdown-header">Select Books</li>
+						<li><a>All:&emsp;$Unknown</a></li>
+						@if (booksMap != null) {
+							@for (Books books : booksMap.values()) {
+								<li class="category-list" style="background: #@?books.getPicture_id();">
+									<a>@?books.getName():&emsp;$Unknown</a>
+								</li>
+							}
+						}
+						<li class="divider"></li>
 						<li><a href="/books/categories" class="dropdown-control">Edit Categories</a></li>
+						<li><a href="/books/bookslist" class="dropdown-control">Edit Books</a></li>
 					</ul>
 				</div>
 
@@ -161,7 +173,11 @@
 							</span>
 							<span class="books-list-text-info">
 								<span id="bookCategory">category: @booksEntryList.get(i).getCategory()</span>
-								<span id="bookNote">note: @booksEntryList.get(i).getNote()</span>
+								@if (booksMap != null  && booksMap.containsKey(booksEntryList.get(i).getBooks_id())) {
+									<span id="bookNote">books: @?booksMap.get(booksEntryList.get(i).getBooks_id()).getName()</span>
+                                } else {
+									<span id="bookNote">books: unknown</span>
+								}
 							</span>
 						</span>
 						</br>

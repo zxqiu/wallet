@@ -1,7 +1,8 @@
+@import com.wallet.books.core.Books;
 @import com.wallet.books.core.Category;
 @import java.util.List;
 
-@args (com.wallet.books.core.BooksEntry booksEntry, List<Category> categoryList, String date)
+@args (com.wallet.books.core.BooksEntry booksEntry, List<Books> booksList, List<Category> categoryList, String date)
 
 <html lang="en">
 
@@ -56,16 +57,27 @@
 				</div>
 				<div class="form-group">
 
-					<label for="booksEntryBooksID">
+					<label for="booksSelector">
 						Books ID
 					</label>
 					<div class='input-group'>
-						<span class="input-group-addon">$</span>
-						<input type="text" class="form-control" placeholder="books id" id="booksEntryBooksID" name="books_id"
-							   @if (booksEntry != null) {
-							   value="@?booksEntry.getBooks_id()"
-							   }
-							   required="true">
+						<span class="input-group-addon">B</span>
+						<select class="form-control" id="booksSelector" name="books_name">
+							<option class="books-option" value="default">
+								default
+							</option>
+							@if (booksList != null) {
+								@for (Books books : booksList) {
+								<option class="books-option" style="background: #@?books.getPicture_id();" value="@?books.getName()"
+									@if (booksEntry != null && books.getId().equals(booksEntry.getBooks_id())) {
+										selected
+									}
+								>
+									@?books.getName()
+								</option>
+								}
+							}
+						</select>
 					</div>
 				</div>
 				<div class="form-group">
@@ -87,10 +99,16 @@
 							}
 							placeholder="input or select" id="booksEntryCategory" name="category" type="text" required="true">
 						<select class="form-control" id="categorySelector">
-							@for (Category category : categoryList) {
-							<option class="category-option" style="background: #@?category.getPicture_id();" value="@?category.getName()">
-								@?category.getName()
-							</option>
+                            @if (categoryList != null) {
+								@for (Category category : categoryList) {
+								<option class="category-option" style="background: #@?category.getPicture_id();" value="@?category.getName()"
+									@if (booksEntry != null && category.getName().equals(booksEntry.getCategory())) {
+										selected
+									}
+								>
+									@?category.getName()
+								</option>
+								}
 							}
 						</select>
 					</div>
