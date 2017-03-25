@@ -88,30 +88,30 @@
 						<li><a href="/books/categories" class="dropdown-control">Edit Categories</a></li>
 						<li><a href="/books/bookslist" class="dropdown-control">Edit Books</a></li>
 					</ul>-->
-					<select class="selectpicker" id="entryFilterSelector" data-width="100%" data-size="false" data-style="btn-info">
+					<select class="selectpicker" id="entryFilterSelector" multiple data-width="100%" data-size="false" data-style="btn-info">
 						<optgroup label="Select Category">
-							<option data-subtext="$unknown">All</option>
+							<option class="option-category" data-subtext="$unknown" selected>All</option>
 							@if (categoryList != null) {
 								@for (Category category : categoryList) {
-									<option class="category-list" style="background: #@?category.getPicture_id();" data-subtext="$unknown">
+									<option class="option-category" style="background: #@?category.getPicture_id();" data-subtext="$unknown">
 										@?category.getName()
 									</option>
 								}
 							}
 						</optgroup>
 						<optgroup label="Select Books">
-						<option data-subtext="$unknown">All</option>
+						<option class="option-books" data-subtext="$unknown" selected>All</option>
 						@if (booksMap != null) {
 							@for (Books books : booksMap.values()) {
-								<option class="books-list" style="background: #@?books.getPicture_id();" data-subtext="$unknown">
+								<option class="option-books" style="background: #@?books.getPicture_id();" data-subtext="$unknown">
 									@?books.getName()
 								</option>
 							}
 						}
                         </optgroup>
 						<option data-divider="true"></option>
-						<option><a href="/books/categories" class="dropdown-control">Edit Categories</a></option>
-						<option><a href="/books/bookslist" class="dropdown-control">Edit Books</a></option>
+						<option class="option-control" value="/books/categories">Edit Categories</option>
+						<option class="option-control" value="/books/bookslist">Edit Books</option>
 					</select>
 				</div>
 
@@ -200,9 +200,9 @@
 							<span class="books-list-text-info">
 								<span id="bookCategory">category: @booksEntryList.get(i).getCategory()</span>
 								@if (booksMap != null  && booksMap.containsKey(booksEntryList.get(i).getBooks_id())) {
-									<span id="bookNote">books: @?booksMap.get(booksEntryList.get(i).getBooks_id()).getName()</span>
+									<span id="bookName">books: @?booksMap.get(booksEntryList.get(i).getBooks_id()).getName()</span>
                                 } else {
-									<span id="bookNote">books: unknown</span>
+									<span id="bookName">books: default</span>
 								}
 							</span>
 						</span>

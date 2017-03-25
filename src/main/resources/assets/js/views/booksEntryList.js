@@ -2,15 +2,27 @@ function entryFilter() {
     var entries = document.getElementById("booksList").children;
     var curYear = parseInt($("#yearShow").val());
     var curMonth = parseInt($("#monthShow").val());
-    var curCategory = $("#categoryShow").text().trim();
+    var selected = $("#entryFilterSelector").find("option:selected");
+    var curCategory = new Array();
+    var curBooksName = new Array();
+    for (var i = 0; i < selected.length; i++) {
+        if ($(selected[i]).hasClass("option-category")) {
+            curCategory.push($(selected[i]).text().trim());
+        } else if ($(selected[i]).hasClass("option-books")) {
+            curBooksName.push($(selected[i]).text().trim());
+        }
+    }
 
     var categorySum = new Object();
+    var booksSum = new Object();
     categorySum["All"] = 0.0;
+    booksSum["All"] = 0.0;
 
     for (var i = 0; i < entries.length; i++) {
         var entryYear;
         var entryMonth;
         var entryCategory;
+        var entryBooksName;
         var entryAmount;
 
         var entry = entries[i];
@@ -31,10 +43,19 @@ function entryFilter() {
         }
         entryCategory = entryCategory[1].trim();
 
+        entryBooksName = $(entry).find("#bookName")[0];
+        entryBooksName = $(entryBooksName).text();
+        entryBooksName = entryBooksName.split(":");
+        if (entryBooksName.length < 2) {
+            return;
+        }
+        entryBooksName = entryBooksName[1].trim();
+
         entryAmount = parseFloat(title[1].substr(1, title[1].length - 1));
 
         if (entryYear == curYear && entryMonth == curMonth) {
-            if (curCategory == "All" || entryCategory == curCategory) {
+            if ((curCategory.indexOf("All") != -1 || curCategory.indexOf(entryCategory) != -1)
+                && (curBooksName.indexOf("All") != -1 || curBooksName.indexOf(entryBooksName) != -1)) {
                 $(entry).show();
             } else {
                 $(entry).hide();
@@ -45,26 +66,37 @@ function entryFilter() {
             }
             categorySum["All"] += entryAmount;
             categorySum[entryCategory] += entryAmount;
+
+            if (!(booksSum.hasOwnProperty(entryBooksName))) {
+                booksSum[entryBooksName] = 0.0;
+            }
+            booksSum["All"] += entryAmount;
+            booksSum[entryBooksName] += entryAmount;
         } else {
             $(entry).hide();
         }
     }
 
-    showCategorySum(categorySum);
+    showSum(categorySum, booksSum);
 }
 
-function showCategorySum(categorySum) {
-    var list = $("#categorySelector").find("a");
+function showSum(categorySum, booksSum) {
+    var list = $("#entryFilterSelector").find("option");
+    console.log(categorySum);
+    console.log(booksSum);
     for (var i = 0; i < list.length; i++) {
-        if ($(list[i]).hasClass("dropdown-control")) {
+        if ($(list[i]).hasClass("option-control")) {
             continue;
         }
 
-        var categoryName = $(list[i]).text().split(":")[0];
-        if (categorySum.hasOwnProperty(categoryName)) {
-            list[i].innerHTML = categoryName + ":&emsp;$" + categorySum[categoryName].toFixed(2);
+        var name = $(list[i]).text().trim();
+        console.log(name);
+        if ($(list[i]).hasClass("option-category") && categorySum.hasOwnProperty(name)) {
+            $(list[i]).attr("data-subtext", "$" + categorySum[name].toFixed(2));
+        } else if ($(list[i]).hasClass("option-books") && booksSum.hasOwnProperty(name)) {
+            $(list[i]).attr("data-subtext", "$" + booksSum[name].toFixed(2));
         } else {
-            list[i].innerHTML = categoryName + ":&emsp;$0.00";
+            $(list[i]).attr("data-subtext", "$0.00");
         }
     }
 }
@@ -195,12 +227,10 @@ $("#monthPlus").on("click", function () {
     }
 });
 
-$(".category-list a").on("click", function () {
-    var showCategory = $("#categoryShow").text();
-    var newCategory = $(this).text().split(":")[0].trim();
-
-    if (showCategory != newCategory) {
-        $("#categoryShow").text(newCategory);
-        entryFilter();
+$("#entryFilterSelector").on("changed.bs.select", function (e, clickedIndex, newValue, oldValue) {
+    var curSelect = $(this).find('option').eq(clickedIndex);
+    if (curSelect.hasClass("option-control")) {
+        window.location.href = $(curSelect).val();
     }
-});
+    entryFilter();
+})
