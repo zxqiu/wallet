@@ -195,7 +195,7 @@ $("#monthPlus").on("click", function () {
     }
 });
 
-$("#categorySelector li a").on("click", function () {
+$(".category-list a").on("click", function () {
     var showCategory = $("#categoryShow").text();
     var newCategory = $(this).text().split(":")[0].trim();
 

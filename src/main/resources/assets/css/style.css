@@ -1,5 +1,5 @@
 .regular-button {
-    background-color: #d6e9c6;
+    background-color: #d6e9c6 !important;
 }
 
 .critical-button {
@@ -8,4 +8,8 @@
 
 body {
     background-color: #e3e3e3;
+}
+
+.bootstrap-select.btn-group .btn .filter-option {
+    text-align: center;
 }

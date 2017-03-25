@@ -18,6 +18,7 @@
 	<title>tiny wallet</title><!-- layoutit -->
 
 	<link href="/css/bootstrap.min.css" rel="stylesheet">
+	<link href="/css/bootstrap-select.min.css" rel="stylesheet">
 	<link href="/css/style.css" rel="stylesheet">
 	<link href="/css/views/booksEntryList.css" rel="stylesheet">
 
@@ -59,11 +60,11 @@
 						<li><a href="/books/entry/0">New Entry</a></li>
 					</ul>
 				</div>
-				<div class="btn-group" role="group">
-					<button type="button" id="categoryShow" class="regular-button btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				<div class="btn-group regular-button" role="group">
+					<!--<button type="button" id="categoryShow" class="regular-button btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         All
 					</button>
-					<ul class="dropdown-menu" id="categorySelector">
+					<ul class="dropdown-menu" id="entryFilterSelector">
 						<li class="dropdown-header">Select Category</li>
 						<li><a>All:&emsp;$Unknown</a></li>
 						@if (categoryList != null) {
@@ -78,7 +79,7 @@
 						<li><a>All:&emsp;$Unknown</a></li>
 						@if (booksMap != null) {
 							@for (Books books : booksMap.values()) {
-								<li class="category-list" style="background: #@?books.getPicture_id();">
+								<li class="books-list" style="background: #@?books.getPicture_id();">
 									<a>@?books.getName():&emsp;$Unknown</a>
 								</li>
 							}
@@ -86,7 +87,32 @@
 						<li class="divider"></li>
 						<li><a href="/books/categories" class="dropdown-control">Edit Categories</a></li>
 						<li><a href="/books/bookslist" class="dropdown-control">Edit Books</a></li>
-					</ul>
+					</ul>-->
+					<select class="selectpicker" id="entryFilterSelector" data-width="100%" data-size="false">
+						<optgroup label="Select Category">
+							<option data-subtext="$unknown">All</option>
+							@if (categoryList != null) {
+								@for (Category category : categoryList) {
+									<option class="category-list" style="background: #@?category.getPicture_id();" data-subtext="$unknown">
+										@?category.getName()
+									</option>
+								}
+							}
+						</optgroup>
+						<optgroup label="Select Books">
+						<option data-subtext="$unknown">All</option>
+						@if (booksMap != null) {
+							@for (Books books : booksMap.values()) {
+								<option class="books-list" style="background: #@?books.getPicture_id();" data-subtext="$unknown">
+									@?books.getName()
+								</option>
+							}
+						}
+                        </optgroup>
+						<option data-divider="true"></option>
+						<option><a href="/books/categories" class="dropdown-control">Edit Categories</a></option>
+						<option><a href="/books/bookslist" class="dropdown-control">Edit Books</a></option>
+					</select>
 				</div>
 
 				<div class="btn-group" role="group">
@@ -189,6 +215,7 @@
 
 	<script src="/js/jquery.min.js"></script>
 	<script src="/js/bootstrap.min.js"></script>
+	<script src="/js/bootstrap-select.min.js"></script>
 	<script src="/js/general.js"></script>
 	<script src="/js/views/booksEntryList.js"></script>
 
