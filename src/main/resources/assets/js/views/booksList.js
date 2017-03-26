@@ -55,9 +55,15 @@ function newBooks() {
     color.setAttribute("name", "picture_id");
     color.setAttribute("class", "booksColor");
     color.setAttribute("type", "hidden");
+    color.setAttribute("value", "#FFFFFF");
 
     var inputGroup = document.createElement("div");
     inputGroup.setAttribute("class", "input-group");
+
+    var colorBtn = document.createElement("span");
+    colorBtn.setAttribute("class", "input-group-addon btn categoryColorBtn");
+    colorBtn.setAttribute("id", "newCategoryColorBtn" + newCnt);
+    colorBtn.innerHTML = "Color";
 
     var name = document.createElement("input");
     name.setAttribute("id", "newBooksName" + newCnt);
@@ -74,6 +80,7 @@ function newBooks() {
     deleteS.setAttribute("class", "input-group-addon btn booksDelete");
     deleteS.innerHTML = "X";
 
+    inputGroup.appendChild(colorBtn);
     inputGroup.appendChild(name);
     inputGroup.appendChild(deleteS);
     div.appendChild(action);
@@ -85,12 +92,12 @@ function newBooks() {
 
     newCnt++;
 
-    deleteBooksBtn();
-    jscolor.installByClassName("jscolor");
+    initDeleteBooksBtn();
+    initBooksColorBtn();
 }
 
 
-function deleteBooksBtn() {
+function initDeleteBooksBtn() {
     $(".booksDelete").click(function (e) {
         var btn = $(e.target);
         var parent = btn.parent();
@@ -110,8 +117,47 @@ function deleteBooksBtn() {
     });
 }
 
+function initBooksColorBtn() {
+    $(".booksColorBtn").each(function () {
+        var picker = this;
+        var parent = $(picker).parent();
+        var booksColor = $($(parent).parent()[0]).find(".booksColor")[0];
+        var booksName = $(parent).find(".booksName")[0];
+
+        var booksColorValue = booksColor.value;
+        var booksColorValueTiny = tinycolor(booksColorValue);
+        var booksColorValueCielch = $.fn.ColorPickerSliders.rgb2lch(booksColorValueTiny.toRgb());
+        if (booksColorValueCielch.l < 60) {
+            $(booksName).css("color", "white");
+        } else {
+            $(booksName).css("color", "black");
+        }
+
+        $(this).ColorPickerSliders({
+            previewontriggerelement: false,
+            placement: 'bottom',
+            color: booksColorValue,
+            swatches: ["#D50000","#304FFE","#00B8D4","#00C853","#FFD600","#FF6D00","#FF1744","#3D5AFE","#00E5FF","#00E676","#FFEA00","#FF9100","#FF5252","#536DFE","#18FFFF","#69F0AE","#FFFF00","#FFAB40"],
+            customswatches: false,
+            order: {},
+            onchange: function (container, color) {
+
+                $(booksName).css("background-color", color.tiny.toRgbString());
+                $(booksColor).val(color.tiny.toHexString());
+
+                if (color.cielch.l < 60) {
+                    $(booksName).css("color", "white");
+                } else {
+                    $(booksName).css("color", "black");
+                }
+            }
+        });
+    });
+}
+
 /************************** jquery functions ********************************/
 
 $(document).ready(function () {
-    deleteBooksBtn();
+    initDeleteBooksBtn();
+    initBooksColorBtn();
 });

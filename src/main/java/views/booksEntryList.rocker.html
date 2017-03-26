@@ -61,7 +61,7 @@
 							<option class="option-category" data-subtext="$unknown" selected>All</option>
 							@if (categoryList != null) {
 								@for (Category category : categoryList) {
-									<option class="option-category" style="background: #@?category.getPicture_id();" data-subtext="$unknown">
+									<option class="option-category" style="background: @?category.getPicture_id();" data-subtext="$unknown">
 										@?category.getName()
 									</option>
 								}
@@ -71,7 +71,7 @@
 						<option class="option-books" data-subtext="$unknown" selected>All</option>
 						@if (booksMap != null) {
 							@for (Books books : booksMap.values()) {
-								<option class="option-books" style="background: #@?books.getPicture_id();" data-subtext="$unknown">
+								<option class="option-books" style="background: @?books.getPicture_id();" data-subtext="$unknown">
 									@?books.getName()
 								</option>
 							}
@@ -160,7 +160,7 @@
 						<span class="books-list-text" title="@booksEntryList.get(i).getId()" tabindex="@i">
 							<span class="books-list-text-title" id="bookTitle"
 								@if (booksEntryList !=null && colorMap !=null) {
-									style="background: #@?colorMap.get(booksEntryList.get(i).getCategory())"
+									style="background: @?colorMap.get(booksEntryList.get(i).getCategory())"
 								}
 							>
 								@if (booksEntryList.get(i).getNote().length() < 10) {

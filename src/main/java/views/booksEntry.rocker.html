@@ -68,7 +68,7 @@
 							</option>
 							@if (booksList != null) {
 								@for (Books books : booksList) {
-								<option class="books-option" style="background: #@?books.getPicture_id();" value="@?books.getName()"
+								<option class="books-option" style="background: @?books.getPicture_id();" value="@?books.getName()"
 									@if (booksEntry != null && books.getId().equals(booksEntry.getBooks_id())) {
 										selected
 									}
@@ -102,7 +102,7 @@
 						<select class="form-control" id="categorySelector">
                             @if (categoryList != null) {
 								@for (Category category : categoryList) {
-								<option class="category-option" style="background: #@?category.getPicture_id();" value="@?category.getName()"
+								<option class="category-option" style="background: @?category.getPicture_id();" value="@?category.getName()"
 									@if (booksEntry != null && category.getName().equals(booksEntry.getCategory())) {
 										selected
 									}

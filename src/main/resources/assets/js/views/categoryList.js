@@ -55,9 +55,15 @@ function newCategory() {
     color.setAttribute("name", "picture_id");
     color.setAttribute("class", "categoryColor");
     color.setAttribute("type", "hidden");
+    color.setAttribute("value", "#FFFFFF");
 
     var inputGroup = document.createElement("div");
     inputGroup.setAttribute("class", "input-group");
+
+    var colorBtn = document.createElement("span");
+    colorBtn.setAttribute("class", "input-group-addon btn categoryColorBtn");
+    colorBtn.setAttribute("id", "newCategoryColorBtn" + newCnt);
+    colorBtn.innerHTML = "Color";
 
     var name = document.createElement("input");
     name.setAttribute("id", "newCategoryName" + newCnt);
@@ -66,14 +72,13 @@ function newCategory() {
     name.setAttribute("value", "");
     name.setAttribute("title", "");
     name.setAttribute("class", "categoryName"
-        + " form-control"
-        + " btn"
-        + " jscolor {valueElement:'newCategoryColor" + newCnt + "',value:''}");
+        + " form-control");
 
     var deleteS = document.createElement("span");
     deleteS.setAttribute("class", "input-group-addon btn categoryDelete");
     deleteS.innerHTML = "X";
 
+    inputGroup.appendChild(colorBtn);
     inputGroup.appendChild(name);
     inputGroup.appendChild(deleteS);
     div.appendChild(action);
@@ -85,12 +90,12 @@ function newCategory() {
 
     newCnt++;
 
-    deleteCategoryBtn();
-    jscolor.installByClassName("jscolor");
+    initDeleteCategoryBtn();
+    initCategoryColorBtn();
 }
 
 
-function deleteCategoryBtn() {
+function initDeleteCategoryBtn() {
     $(".categoryDelete").click(function (e) {
         var btn = $(e.target);
         var parent = btn.parent();
@@ -110,8 +115,47 @@ function deleteCategoryBtn() {
     });
 }
 
+function initCategoryColorBtn() {
+    $(".categoryColorBtn").each(function () {
+        var picker = this;
+        var parent = $(picker).parent();
+        var categoryColor = $($(parent).parent()[0]).find(".categoryColor")[0];
+        var categoryName = $(parent).find(".categoryName")[0];
+
+        var categoryColorValue = categoryColor.value;
+        var categoryColorValueTiny = tinycolor(categoryColorValue);
+        var categoryColorValueCielch = $.fn.ColorPickerSliders.rgb2lch(categoryColorValueTiny.toRgb());
+        if (categoryColorValueCielch.l < 60) {
+            $(categoryName).css("color", "white");
+        } else {
+            $(categoryName).css("color", "black");
+        }
+
+        $(this).ColorPickerSliders({
+            previewontriggerelement: false,
+            placement: 'bottom',
+            color: categoryColorValue,
+            swatches: ["#D50000","#304FFE","#00B8D4","#00C853","#FFD600","#FF6D00","#FF1744","#3D5AFE","#00E5FF","#00E676","#FFEA00","#FF9100","#FF5252","#536DFE","#18FFFF","#69F0AE","#FFFF00","#FFAB40"],
+            customswatches: false,
+            order: {},
+            onchange: function (container, color) {
+
+                $(categoryName).css("background-color", color.tiny.toRgbString());
+                $(categoryColor).val(color.tiny.toHexString());
+
+                if (color.cielch.l < 60) {
+                    $(categoryName).css("color", "white");
+                } else {
+                    $(categoryName).css("color", "black");
+                }
+            }
+        });
+    });
+}
+
 /************************** jquery functions ********************************/
 
 $(document).ready(function () {
-    deleteCategoryBtn();
+    initDeleteCategoryBtn();
+    initCategoryColorBtn();
 });

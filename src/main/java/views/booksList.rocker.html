@@ -14,6 +14,7 @@
 
 	<link href="/css/bootstrap.min.css" rel="stylesheet">
 	<link href="/css/bootstrap-datepicker.min.css" rel="stylesheet">
+	<link href="/css/bootstrap.colorpickersliders.css" rel="stylesheet">
 	<link href="/css/style.css" rel="stylesheet">
 
 </head>
@@ -38,14 +39,16 @@
 						<input type="hidden" class="booksID" name="id" value="@?books.getId()">
 						<div class="form-group">
 							<input type="hidden" class="booksAction" name="action" value="edit">
-							<input type="hidden" class="booksColor" name="picture_id" id="booksColor@?books.getId()">
+							<input type="hidden" class="booksColor" name="picture_id" id="booksColor@?books.getId()" value="@?books.getPicture_id()">
 							<div class="input-group">
+								<span class="input-group-addon btn booksColorBtn" id="bookdColorBtn@?books.getId()">Color</span>
 								<input type="button"
-									   class="booksName form-control btn jscolor {valueElement:'booksColor@?books.getId()',value:'@?books.getPicture_id()'}"
+									   class="booksName form-control btn"
 									   id="booksName@?books.getId()"
 									   name="name"
 									   value="@?books.getName()"
 									   title="@?books.getName()"
+									   style="background-color: @?books.getPicture_id(); text-align: center;"
 									   required="true" readonly>
 								<span class="input-group-addon btn booksDelete">X</span>
 							</div>
@@ -56,12 +59,13 @@
 		</div>
 	</div>
 
-<script src="/js/jquery.min.js"></script>
-<script src="/js/bootstrap.min.js"></script>
-<script src="/js/bootstrap-datepicker.min.js"></script>
-<script src="/js/jscolor.min.js"></script>
-<script src="/js/APIs.js"></script>
-<script src="/js/views/booksList.js"></script>
+	<script src="/js/jquery.min.js"></script>
+	<script src="/js/bootstrap.min.js"></script>
+	<script src="/js/bootstrap-datepicker.min.js"></script>
+	<script src="/js/tinycolor.js"></script>
+	<script src="/js/bootstrap.colorpickersliders.js"></script>
+	<script src="/js/APIs.js"></script>
+	<script src="/js/views/booksList.js"></script>
 
 </body>
 </html>
