@@ -31,7 +31,7 @@ import com.wallet.utils.misc.TimeUtils;
 @Path("/books")
 public class BooksEntryResource {
 	private static final Logger logger_ = LoggerFactory.getLogger(BooksEntryResource.class);
-	private static final int booksEntrysEachLine = 6;
+	private static final int booksEntrysEachLine = 4;
 
 	private BooksDAOConnector booksDAOC = null;
 	private BooksEntryDAOConnector booksEntryDAOC = null;
@@ -163,7 +163,7 @@ public class BooksEntryResource {
 		// 4.1 insert new category and default books (if not exists)
 		try {
 			if (categoryDAOC.getByID(user_id + category).isEmpty()) {
-				categoryDAOC.insert(new Category(user_id, category, "", ""));
+				categoryDAOC.insert(new Category(user_id, category, "FFFFFF", ""));
 			}
 		} catch (Exception e1) {
 			logger_.error("Error failed to get category or insert new category when insert books entry : " + category);
@@ -175,7 +175,7 @@ public class BooksEntryResource {
 		books.setId(books_id);
 		try {
 			if (booksDAOC.getByID(books_id).isEmpty()) {
-				books = new Books(user_id, books_name, new Date(), "", "");
+				books = new Books(user_id, books_name, new Date(), "FFFFFF", "");
 				booksDAOC.insert(books);
 			}
 		} catch (Exception e) {

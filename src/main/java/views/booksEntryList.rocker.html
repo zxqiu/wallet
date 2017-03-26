@@ -51,43 +51,11 @@
 		<div class="col-md-12">
 			<div class="btn-group btn-group-justified" role="group" aria-label="...">
 				<div class="btn-group" role="group">
-					<button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<button type="button" class="btn btn-info" onclick="location='/books/entry/0'">
                         new
-						<span class="caret"></span>
 					</button>
-					<ul class="dropdown-menu">
-						<li class="dropdown-header">Select Action</li>
-						<li><a href="/books/entry/0">New Entry</a></li>
-					</ul>
 				</div>
 				<div class="btn-group" role="group">
-					<!--<button type="button" id="categoryShow" class="regular-button btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        All
-					</button>
-					<ul class="dropdown-menu" id="entryFilterSelector">
-						<li class="dropdown-header">Select Category</li>
-						<li><a>All:&emsp;$Unknown</a></li>
-						@if (categoryList != null) {
-                        	@for (Category category : categoryList) {
-								<li class="category-list" style="background: #@?category.getPicture_id();">
-									<a>@?category.getName():&emsp;$Unknown</a>
-								</li>
-							}
-						}
-						<li class="divider"></li>
-						<li class="dropdown-header">Select Books</li>
-						<li><a>All:&emsp;$Unknown</a></li>
-						@if (booksMap != null) {
-							@for (Books books : booksMap.values()) {
-								<li class="books-list" style="background: #@?books.getPicture_id();">
-									<a>@?books.getName():&emsp;$Unknown</a>
-								</li>
-							}
-						}
-						<li class="divider"></li>
-						<li><a href="/books/categories" class="dropdown-control">Edit Categories</a></li>
-						<li><a href="/books/bookslist" class="dropdown-control">Edit Books</a></li>
-					</ul>-->
 					<select class="selectpicker" id="entryFilterSelector" multiple data-width="100%" data-size="false" data-style="btn-info">
 						<optgroup label="Select Category">
 							<option class="option-category" data-subtext="$unknown" selected>All</option>
@@ -195,7 +163,11 @@
 									style="background: #@?colorMap.get(booksEntryList.get(i).getCategory())"
 								}
 							>
-								@booksEntryList.get(i).getEvent_date() $@(((double)booksEntryList.get(i).getAmount())/100) @?booksEntryList.get(i).getNote()
+								@if (booksEntryList.get(i).getNote().length() < 10) {
+									@booksEntryList.get(i).getEvent_date() $@(((double)booksEntryList.get(i).getAmount())/100) @?booksEntryList.get(i).getNote()
+								} else {
+									@booksEntryList.get(i).getEvent_date() $@(((double)booksEntryList.get(i).getAmount())/100) @?booksEntryList.get(i).getNote().substring(0, 10)
+								}
 							</span>
 							<span class="books-list-text-info">
 								<span id="bookCategory">category: @booksEntryList.get(i).getCategory()</span>
