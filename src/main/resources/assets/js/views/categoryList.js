@@ -71,6 +71,7 @@ function newCategory() {
     name.setAttribute("type", "text");
     name.setAttribute("value", "");
     name.setAttribute("title", "");
+    name.setAttribute("style", "text-align: center;");
     name.setAttribute("class", "categoryName"
         + " form-control");
 

@@ -71,10 +71,9 @@ function newBooks() {
     name.setAttribute("type", "text");
     name.setAttribute("value", "");
     name.setAttribute("title", "");
+    name.setAttribute("style", "text-align: center;");
     name.setAttribute("class", "booksName"
-        + " form-control"
-        + " btn"
-        + " jscolor {valueElement:'newBooksColor" + newCnt + "',value:''}");
+        + " form-control");
 
     var deleteS = document.createElement("span");
     deleteS.setAttribute("class", "input-group-addon btn booksDelete");
