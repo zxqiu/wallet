@@ -61,8 +61,8 @@ function newBooks() {
     inputGroup.setAttribute("class", "input-group");
 
     var colorBtn = document.createElement("span");
-    colorBtn.setAttribute("class", "input-group-addon btn categoryColorBtn");
-    colorBtn.setAttribute("id", "newCategoryColorBtn" + newCnt);
+    colorBtn.setAttribute("class", "input-group-addon btn booksColorBtn");
+    colorBtn.setAttribute("id", "newBooksColorBtn" + newCnt);
     colorBtn.innerHTML = "Color";
 
     var name = document.createElement("input");
