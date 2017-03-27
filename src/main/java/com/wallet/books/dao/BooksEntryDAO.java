@@ -23,7 +23,7 @@ public static final String TABLE_NAME = "books_entry";
 			+ "`" + Dict.BOOKS_ID + "` varchar(64) not null,"
 			+ "`" + Dict.CATEGORY + "` varchar(32) not null,"
 			+ "`" + Dict.EVENT_DATE + "` datetime not null,"
-			+ "`" + Dict.AMOUNT + "` bigint (64) not null,"
+			+ "`" + Dict.AMOUNT + "` bigint not null,"
 			+ "`" + Dict.NOTE + "` text,"
 			+ "`" + Dict.PHOTO + "` varchar(64),"
 			+ "`" + Dict.DATA + "` text,"

@@ -24,6 +24,9 @@ public class Dict {
 	public static final String EDIT = "edit";
 	public static final String DELETE = "delete";
 	public static final String DEFAULT = "default";
+	public static final String SHORT_URL = "short_url";
+	public static final String FULL_URL = "full_url";
+	public static final String EXPIRE_CLICK = "expire_click";
 
 	public static final String FACEBOOK_PREFIX = "fb-";
 }

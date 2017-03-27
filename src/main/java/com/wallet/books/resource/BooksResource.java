@@ -168,7 +168,7 @@ public class BooksResource {
     @Timed
     @Path("/getbooks")
 	@Produces(value = MediaType.APPLICATION_JSON)
-	public Response getCategories(@QueryParam(Dict.USER_ID) String user_id,
+	public Response getBooks(@QueryParam(Dict.USER_ID) String user_id,
 			@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
 		// 1. extract request
 		// 2. verify and parse request
