@@ -85,7 +85,7 @@ public class BooksResource {
 		}
 		
 		// 4. transaction
-		Books books = new Books(user_id, name, new Date(), picture_id, "");
+		Books books = new Books(user_id, user_id, name, new Date(), picture_id, "");
 		try {
 		    if (id != null && id.length() > 1) {
 				logger_.info("Update books " + books.getName() + " for user " + user_id);
@@ -133,6 +133,7 @@ public class BooksResource {
 			}
 
 			Books books = new Books(user_id
+					, user_id
 					, jsonObject.getString(Dict.NAME)
 					, new Date()
 					, jsonObject.getString(Dict.PICTURE_ID)

@@ -18,6 +18,7 @@ public interface BooksDAO {
 	@SqlUpdate("create table if not exists " + TABLE_NAME + " ("
 			+ "`" + Dict.ID + "` varchar(64) not null unique,"
 			+ "`" + Dict.USER_ID + "` varchar(64) not null,"
+			+ "`" + Dict.CREATE_USER_ID + "` varchar(64) not null,"
 			+ "`" + Dict.NAME + "` varchar(64) not null,"
 			+ "`" + Dict.CREATE_TIME + "` datetime not null,"
 			+ "`" + Dict.EDIT_TIME + "` datetime not null,"
@@ -37,6 +38,7 @@ public interface BooksDAO {
     @SqlUpdate("insert into " + TABLE_NAME + " ("
     		+ Dict.ID
     		+ ", " + Dict.USER_ID
+			+ ", " + Dict.CREATE_USER_ID
     		+ ", " + Dict.NAME
     		+ ", " + Dict.CREATE_TIME
 			+ ", " + Dict.EDIT_TIME
@@ -45,6 +47,7 @@ public interface BooksDAO {
     		+ ") values ("
     		+ ":" + Dict.ID
     		+ ",:" + Dict.USER_ID
+			+ ",:" + Dict.CREATE_USER_ID
     		+ ",:" + Dict.NAME
 			+ ",:" + Dict.CREATE_TIME
 			+ ",:" + Dict.EDIT_TIME
@@ -55,6 +58,7 @@ public interface BooksDAO {
     void insert(
             @Bind(Dict.ID) String id
             , @Bind(Dict.USER_ID) String user_id
+			, @Bind(Dict.CREATE_USER_ID) String create_user_id
             , @Bind(Dict.NAME) String name
             , @Bind(Dict.CREATE_TIME) Date create_time
 			, @Bind(Dict.EDIT_TIME) Date edit_time

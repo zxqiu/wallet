@@ -15,6 +15,9 @@ public class Books {
     private String user_id;
 
     @JsonProperty
+    private String create_user_id;
+
+    @JsonProperty
     private String name;
 
     @JsonProperty
@@ -32,9 +35,10 @@ public class Books {
     public Books() {
     }
 
-    public Books(String user_id, String name, Date edit_time, String picture_id, String data) {
+    public Books(String user_id, String create_user_id, String name, Date edit_time, String picture_id, String data) {
         this.setId(user_id + "-" + name);
         this.setUser_id(user_id);
+        this.setCreate_user_id(create_user_id);
         this.setName(name);
         this.setCreate_time(new Date());
         this.setEdit_time(edit_time);
@@ -42,10 +46,11 @@ public class Books {
         this.setData(data);
     }
 
-    public Books(String id, String user_id, String name, Date create_time, Date edit_time, String picture_id
+    public Books(String id, String user_id, String create_user_id, String name, Date create_time, Date edit_time, String picture_id
             , String data) {
         this.setId(id);
         this.setUser_id(user_id);
+        this.setCreate_user_id(create_user_id);
         this.setName(name);
         this.setCreate_time(create_time);
         this.setEdit_time(edit_time);
@@ -107,5 +112,13 @@ public class Books {
 
     public void setData(String data) {
         this.data = data;
+    }
+
+    public String getCreate_user_id() {
+        return create_user_id;
+    }
+
+    public void setCreate_user_id(String create_user_id) {
+        this.create_user_id = create_user_id;
     }
 }

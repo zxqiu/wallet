@@ -14,6 +14,7 @@ public class BooksMapper implements ResultSetMapper<Books> {
 		
 		books.setId(resultSet.getString(Dict.ID));
 		books.setUser_id(resultSet.getString(Dict.USER_ID));
+		books.setCreate_user_id(resultSet.getString(Dict.CREATE_USER_ID));
 		books.setName(resultSet.getString(Dict.NAME));
 		books.setCreate_time(resultSet.getDate(Dict.CREATE_TIME));
 		books.setEdit_time(resultSet.getDate(Dict.EDIT_TIME));

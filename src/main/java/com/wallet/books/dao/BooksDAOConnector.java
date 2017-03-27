@@ -66,7 +66,7 @@ public class BooksDAOConnector {
 	
 	public void insert(Books books) throws Exception {
 		try {
-			booksDAO.insert(books.getId(), books.getUser_id(), books.getName(), books.getCreate_time()
+			booksDAO.insert(books.getId(), books.getUser_id(), books.getCreate_user_id(), books.getName(), books.getCreate_time()
 					, books.getEdit_time(), books.getPicture_id(), books.getData());
 		} catch (Exception e) {
 			if (e.getMessage().contains("Duplicate entry")) {
@@ -92,7 +92,7 @@ public class BooksDAOConnector {
 	}
 	
 	public static void test() throws Exception {
-		Books books = new Books("admin", "name", new Date()
+		Books books = new Books("admin", "admin", "name", new Date()
 				, "photo", "test data");
 		
 		logger_.info("BooksDAOConnector test ...");

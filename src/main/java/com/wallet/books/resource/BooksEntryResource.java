@@ -175,7 +175,7 @@ public class BooksEntryResource {
 		books.setId(books_id);
 		try {
 			if (booksDAOC.getByID(books_id).isEmpty()) {
-				books = new Books(user_id, books_name, new Date(), "FFFFFF", "");
+				books = new Books(user_id, user_id, books_name, new Date(), "FFFFFF", "");
 				booksDAOC.insert(books);
 			}
 		} catch (Exception e) {
