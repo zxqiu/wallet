@@ -6,6 +6,7 @@ import com.wallet.books.resource.BooksResource;
 import com.wallet.tinyUrl.core.TinyUrl;
 import com.wallet.tinyUrl.dao.TinyUrlDAO;
 import com.wallet.tinyUrl.dao.TinyUrlDAOConnector;
+import com.wallet.tinyUrl.resource.TinyUrlResource;
 import org.skife.jdbi.v2.DBI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,6 +81,7 @@ public class WalletService extends Application<WalletConfiguration> {
 		environment.jersey().register(new BooksResource());
 	    environment.jersey().register(new BooksEntryResource());
 	    environment.jersey().register(new CategoryResource());
+		environment.jersey().register(new TinyUrlResource());
 
 	    environment.jersey().register(new RockerMessageBodyWriter());
 	    RockerRuntime.getInstance().setReloading(true);

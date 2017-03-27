@@ -1,6 +1,7 @@
 package com.wallet.tinyUrl.core;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.wallet.utils.misc.RandomUtils;
 import com.wallet.utils.misc.TimeUtils;
 
 import java.util.Date;
@@ -19,13 +20,13 @@ public class TinyUrl {
     private Date create_time;
 
     @JsonProperty
-    private Integer expire_click;
+    private Integer expire_click; // 0 means infinite
 
     public TinyUrl() {
     }
 
     public TinyUrl(String full_url, Integer expire_click) {
-        this.setShort_url(Long.toHexString(TimeUtils.getUniqueTimeStampInMS()));
+        this.setShort_url(RandomUtils.genString(8));
         this.setFull_url(full_url);
         this.setCreate_time(new Date());
         this.setExpire_click(expire_click);

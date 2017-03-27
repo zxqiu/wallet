@@ -58,16 +58,20 @@ public class TinyUrlDAOConnector {
 		}
 	}
 	
-	public void deleteTable() throws SQLException {
+	public void deleteTable(){
 		tinyUrlDAO.dropTable();
 		instance_ = null;
 	}
+
+	public List<TinyUrl> getAll() {
+		return tinyUrlDAO.findAll();
+	}
 	
-	public List<TinyUrl> getByShortUrl(String short_url) throws SQLException {
+	public List<TinyUrl> getByShortUrl(String short_url) {
 		return tinyUrlDAO.findByShortUrl(short_url);
 	}
 	
-	public List<TinyUrl> getByFullUrl(String full_url) throws SQLException {
+	public List<TinyUrl> getByFullUrl(String full_url) {
 		return tinyUrlDAO.findByFullUrl(full_url);
 	}
 	
@@ -85,11 +89,11 @@ public class TinyUrlDAOConnector {
 		}
 	}
 	
-	public void updateExpireClickByFullUrl(TinyUrl tinyUrl) throws SQLException {
+	public void updateExpireClickByFullUrl(TinyUrl tinyUrl) {
 		tinyUrlDAO.updateExpireClickByFullUrl(tinyUrl.getFull_url(), tinyUrl.getExpire_click());
 	}
 
-	public void updateExpireClickByShortUrl(TinyUrl tinyUrl) throws SQLException {
+	public void updateExpireClickByShortUrl(TinyUrl tinyUrl) {
 		tinyUrlDAO.updateExpireClickByShortUrl(tinyUrl.getShort_url(), tinyUrl.getExpire_click());
 	}
 
@@ -102,10 +106,13 @@ public class TinyUrlDAOConnector {
 	}
 
 	public static void test() throws Exception {
-		TinyUrl tinyUrl = new TinyUrl("fuuuuuullurl", 2);
-		
+		TinyUrl tinyUrl = new TinyUrl("/books", 2);
+
 		logger_.info("TinyUrlDAOConnector test ...");
-		
+
+		logger_.info("0. clear old test url");
+		TinyUrlDAOConnector.instance().deleteByFullUrl("/books");
+
 		logger_.info("1. insert");
 		
 		TinyUrlDAOConnector.instance().insert(tinyUrl);
@@ -118,7 +125,7 @@ public class TinyUrlDAOConnector {
 		
 		tinyUrl.setExpire_click(10);
 		TinyUrlDAOConnector.instance().updateExpireClickByFullUrl(tinyUrl);
-		tinyUrl.setExpire_click(30);
+		tinyUrl.setExpire_click(3);
 		TinyUrlDAOConnector.instance().updateExpireClickByShortUrl(tinyUrl);
 		List<TinyUrl> tinyUrl2 = TinyUrlDAOConnector.instance().getByFullUrl(tinyUrl.getFull_url());
 		if (tinyUrl2.isEmpty()) {
@@ -134,7 +141,10 @@ public class TinyUrlDAOConnector {
 			logger_.error("TinyUrlDAOConnector test failed!");
 			throw new Exception("TinyUrlDAOConnector test failed!");
 		}
-		
+
+		// reserve this url for testing
+		TinyUrlDAOConnector.instance().insert(tinyUrl);
+
 		logger_.info("TinyUrlDAOConnector test passed");
 	}
 }

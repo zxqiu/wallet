@@ -40,7 +40,7 @@ public class CategoryResource {
 	@GET
 	@Timed
 	@Path("/allcategories")
-	@Produces(value = MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	public List<Category> getAll() throws SQLException {
 		return categoryDAOC.getByUserID("admin");
 	}
