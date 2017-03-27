@@ -19,10 +19,10 @@ public interface TinyUrlDAO {
 
     @SqlUpdate("create table if not exists " + TABLE_NAME + " ("
             + "`" + Dict.SHORT_URL + "` varchar(128) not null unique,"
-            + "`" + Dict.FULL_URL + "` varchar(128) not null unique,"
+            + "`" + Dict.FULL_URL + "` varchar(128) not null,"
             + "`" + Dict.CREATE_TIME + "` datetime not null,"
             + "`" + Dict.EXPIRE_CLICK + "` int not null,"
-            + "primary key (`" + Dict.SHORT_URL + "`),"
+            + "primary key (`" + Dict.SHORT_URL + "`)"
             + ")ENGINE=InnoDB DEFAULT CHARSET=utf8 collate=utf8_unicode_ci;"
     )
     void createTable();
@@ -49,6 +49,22 @@ public interface TinyUrlDAO {
             ,@Bind(Dict.EXPIRE_CLICK) int expire_click
     );
 
+    @SqlUpdate("update " + TABLE_NAME + " set "
+            + Dict.EXPIRE_CLICK + "= :" + Dict.EXPIRE_CLICK
+            + " where " + Dict.FULL_URL + "= :" + Dict.FULL_URL
+    )
+    void updateExpireClickByFullUrl(@Bind(Dict.FULL_URL) String full_url
+            , @Bind(Dict.EXPIRE_CLICK) int expire_click
+    );
+
+    @SqlUpdate("update " + TABLE_NAME + " set "
+            + Dict.EXPIRE_CLICK + "= :" + Dict.EXPIRE_CLICK
+            + " where " + Dict.SHORT_URL + "= :" + Dict.SHORT_URL
+    )
+    void updateExpireClickByShortUrl(@Bind(Dict.SHORT_URL) String short_url
+            , @Bind(Dict.EXPIRE_CLICK) int expire_click
+    );
+
     @SqlQuery("select * from " + TABLE_NAME)
     @Mapper(TinyUrlMapper.class)
     List<TinyUrl> findAll();
@@ -65,9 +81,14 @@ public interface TinyUrlDAO {
             @Bind(Dict.FULL_URL) String full_url
     );
 
-    @SqlUpdate("delete from " + TABLE_NAME + " where " + Dict.USER_ID + " = :" + Dict.USER_ID)
-    void deleteByUserID(
-            @Bind(Dict.USER_ID) String user_id
+    @SqlUpdate("delete from " + TABLE_NAME + " where " + Dict.SHORT_URL + " = :" + Dict.SHORT_URL)
+    void deleteByShortUrl(
+            @Bind(Dict.SHORT_URL) String short_url
+    );
+
+    @SqlUpdate("delete from " + TABLE_NAME + " where " + Dict.FULL_URL + " = :" + Dict.FULL_URL)
+    void deleteByFullUrl(
+            @Bind(Dict.FULL_URL) String full_url
     );
 
     @SqlUpdate("delete from " + TABLE_NAME + " where " + Dict.ACCESS_TOKEN + " = :" + Dict.ACCESS_TOKEN)

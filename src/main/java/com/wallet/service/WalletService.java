@@ -3,6 +3,9 @@ package com.wallet.service;
 import com.fizzed.rocker.runtime.RockerRuntime;
 import com.wallet.books.dao.*;
 import com.wallet.books.resource.BooksResource;
+import com.wallet.tinyUrl.core.TinyUrl;
+import com.wallet.tinyUrl.dao.TinyUrlDAO;
+import com.wallet.tinyUrl.dao.TinyUrlDAOConnector;
 import org.skife.jdbi.v2.DBI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,24 +52,28 @@ public class WalletService extends Application<WalletConfiguration> {
 	    final BooksDAO booksDAO = jdbi.onDemand(BooksDAO.class);
 	    final BooksEntryDAO booksEntryDAO = jdbi.onDemand(BooksEntryDAO.class);
 	    final CategoryDAO categoryDAO = jdbi.onDemand(CategoryDAO.class);
+	    final TinyUrlDAO tinyUrlDAO = jdbi.onDemand(TinyUrlDAO.class);
 	    
 	    UserDAOConnector.init(userDAO);
 	    SessionDAOConnector.init(sessionDAO);
 	    BooksDAOConnector.init(booksDAO);
 	    BooksEntryDAOConnector.init(booksEntryDAO);
 	    CategoryDAOConnector.init(categoryDAO);
+		TinyUrlDAOConnector.init(tinyUrlDAO);
 	    
 	    sessionDAO.dropTable();
 	    booksDAO.dropTable();
 	    booksEntryDAO.dropTable();
 	    categoryDAO.dropTable();
 	    userDAO.dropTable();
+	    tinyUrlDAO.dropTable();
 	    
 	    UserDAOConnector.test();
 	    SessionDAOConnector.test();
 		BooksDAOConnector.test();
 	    BooksEntryDAOConnector.test();
 	    CategoryDAOConnector.test();
+	    TinyUrlDAOConnector.test();
 	    
 	    environment.jersey().register(new UserResource());
 	    environment.jersey().register(new SessionResource());
