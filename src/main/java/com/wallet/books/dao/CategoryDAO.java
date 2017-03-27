@@ -25,7 +25,7 @@ public interface CategoryDAO {
 			+ "key `fk_category_user` (`" + Dict.USER_ID + "`),"
 			+ "constraint `fk_category_user` foreign key (`" + Dict.USER_ID + "`) "
 			+ "references `" + UserDAO.TABLE_NAME + "` (`" + Dict.USER_ID + "`)"
-			+ ")ENGINE = InnoDB DEFAULT CHARSET = utf8"
+			+ ")ENGINE=InnoDB DEFAULT CHARSET=utf8 collate=utf8_unicode_ci;"
 			)
 	void createTable();
 	

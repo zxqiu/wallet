@@ -27,7 +27,7 @@ public interface BooksDAO {
 			+ "key `fk_books_user` (`" + Dict.USER_ID + "`),"
 			+ "constraint `fk_books_user` foreign key (`" + Dict.USER_ID + "`) "
 			+ "references `" + UserDAO.TABLE_NAME + "` (`" + Dict.USER_ID + "`)"
-			+ ")ENGINE = InnoDB DEFAULT CHARSET = utf8"
+			+ ")ENGINE=InnoDB DEFAULT CHARSET=utf8 collate=utf8_unicode_ci;"
 			)
 	void createTable();
 	

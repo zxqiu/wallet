@@ -50,6 +50,8 @@ echo "[mysqld]" > my.cnf
 echo "datadir="$MYSQL_PATH"/mysql/data" >> my.cnf
 echo "socket=/tmp/mysql.sock" >> my.cnf
 echo "symbolic-links=0" >> my.cnf
+echo "character-set-server=utf8" >> my.cnf
+echo "collation-server=utf8_general_ci" >> my.cnf
 echo "[mysqld_safe]" >> my.cnf
 sudo mv my.cnf /etc/my.cnf
 

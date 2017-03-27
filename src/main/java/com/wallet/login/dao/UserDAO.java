@@ -22,7 +22,7 @@ public interface UserDAO {
 			+ "`" + Dict.PRIORITY + "` varchar(16) not null,"
 			+ "`" + Dict.DATA + "` text,"
 			+ "primary key (`" + Dict.USER_ID + "`)"
-			+ ")ENGINE = InnoDB DEFAULT CHARSET = utf8"
+			+ ")ENGINE=InnoDB DEFAULT CHARSET=utf8 collate=utf8_unicode_ci;"
 		)
 	void createTable();
 	
