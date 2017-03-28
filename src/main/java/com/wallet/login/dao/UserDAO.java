@@ -75,9 +75,9 @@ public interface UserDAO {
         @Bind(Dict.USER_ID) String user_id
     );
 	
-    @SqlQuery("select * from " + TABLE_NAME + " where " +
-    			Dict.USER_ID + " = :" + Dict.USER_ID +
-    			" and " + Dict.PASSWORD + " = :" + Dict.PASSWORD)
+    @SqlQuery("select * from " + TABLE_NAME + " where "
+    			+ Dict.USER_ID + " = :" + Dict.USER_ID
+    			+ " and " + Dict.PASSWORD + " = :" + Dict.PASSWORD)
     @Mapper(UserMapper.class)
     List<User> findByUserIDAndPassword(
         @Bind(Dict.USER_ID) String user_id

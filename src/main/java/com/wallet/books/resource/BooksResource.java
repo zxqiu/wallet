@@ -42,6 +42,7 @@ public class BooksResource {
 		return booksDAOC.getByUserID("admin");
 	}
 
+	public static final String PATH_BOOKS_LIST = "/books/bookslist/";
 	@GET
 	@Timed
 	@Path("/bookslist")
@@ -88,6 +89,7 @@ public class BooksResource {
 		Books books = new Books(user_id, user_id, name, new Date(), picture_id, "");
 		try {
 		    if (id != null && id.length() > 1) {
+				logger_.info("Update books " + books.getName() + " for user " + user_id);
 				logger_.info("Update books " + books.getName() + " for user " + user_id);
 		    	booksDAOC.update(books);
 			} else {
@@ -206,6 +208,7 @@ public class BooksResource {
 		return Response.status(200).entity(jsonArray.toString()).build();
 	}
 
+	public static final String PATH_RECEIVE_BOOKS = "/books/receivebooks/";
 	@GET
 	@Timed
 	@Path("/receivebooks/{" + Dict.USER_ID + "}/{" + Dict.BOOKS_ID + "}")
@@ -217,8 +220,69 @@ public class BooksResource {
 	) throws Exception {
 		String request_user = ApiUtils.getUserIDFromCookie(cookie);
 
-		if (request_user.length() < 1 || !sessionDAOC.verifySessionCookie(cookie)) {
-			return Response.ok().entity(views.login.template()).build();
+		if (request_user == null || request_user.length() < 1 || !sessionDAOC.verifySessionCookie(cookie)) {
+			return Response.ok().entity(views.login.template(PATH_RECEIVE_BOOKS + user_id + "/" + books_id)).build();
 		}
+
+		if (user_id.length() < 1 || books_id.length() < 1) {
+			return Response
+					.serverError()
+					.entity(ApiUtils
+							.buildJSONResponse(false, "wrong user id or books id"))
+					.build();
+		}
+
+		List<Books> booksList = booksDAOC.getByID(books_id);
+		Books book;
+		if (booksList.isEmpty()) {
+			return Response
+					.serverError()
+					.entity(ApiUtils
+							.buildJSONResponse(false, "books not found"))
+					.build();
+		}
+
+		book = booksList.get(booksList.size() - 1);
+		if (!book.getUser_id().equals(user_id)) {
+			return Response
+					.serverError()
+					.entity(ApiUtils
+							.buildJSONResponse(false, "user not found"))
+					.build();
+		}
+
+		book.setUser_id(request_user);
+		book.updateBooksID();
+		try {
+			booksDAOC.insert(book);
+		} catch (Exception e) {
+			return Response
+					.serverError()
+					.entity(ApiUtils
+							.buildJSONResponse(false, "failed to insert new book " + book.getId()))
+					.build();
+		}
+
+		if (appendUserToAll(book.getName(), book.getCreate_user_id(), request_user).isEmpty()) {
+			return Response
+					.serverError()
+					.entity(ApiUtils
+							.buildJSONResponse(false, "failed to append user " + user_id))
+					.build();
+		}
+
+
+		return Response.seeOther(URI.create(PATH_BOOKS_LIST)).build();
+	}
+
+	public List<Books> appendUserToAll(String book_name, String create_user_id, String append_user_id) throws Exception {
+		List<Books> booksList = booksDAOC.getByNameAndCreateUserID(book_name, create_user_id);
+
+		for (Books book : booksList) {
+			book.appendUser(append_user_id);
+			booksDAOC.update(book);
+		}
+
+		return booksList;
 	}
 }

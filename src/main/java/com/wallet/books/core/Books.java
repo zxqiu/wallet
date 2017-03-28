@@ -66,11 +66,21 @@ public class Books {
         this.appendUser(user_id);
     }
 
+    public void updateBooksID() {
+        this.setId(this.getUser_id() + "-" + this.getName());
+    }
+
     public void appendUser(String user_id) throws JSONException {
         String dataString = this.getData();
-
-        JSONObject data = new JSONObject(dataString);
+        JSONObject data;
         JSONArray user_list;
+
+        if (dataString == null || dataString.length() < 2) {
+            data = new JSONObject();
+        } else {
+            data = new JSONObject(dataString);
+        }
+
 
         if (!data.has(Dict.USER_LIST)) {
             data.put(Dict.USER_LIST, new JSONArray());
@@ -90,6 +100,10 @@ public class Books {
 
     public void removeUser(String user_id) throws JSONException {
         String dataString = this.getData();
+
+        if (dataString == null || dataString.length() < 2) {
+            return;
+        }
 
         JSONObject data = new JSONObject(dataString);
         JSONArray user_list;

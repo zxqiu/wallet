@@ -89,21 +89,28 @@ public interface BooksDAO {
     List<Books> findByUserID(
             @Bind(Dict.USER_ID) String user_id
     );
-	
+
+	@SqlQuery("select * from " + TABLE_NAME + " where " + Dict.CREATE_USER_ID + " = :" + Dict.CREATE_USER_ID)
+	@Mapper(BooksMapper.class)
+	List<Books> findByCreateUserID(
+			@Bind(Dict.CREATE_USER_ID) String create_user_id
+	);
+
 	@SqlQuery("select * from " + TABLE_NAME + " where " + Dict.ID + " = :" + Dict.ID)
     @Mapper(BooksMapper.class)
     List<Books> findByID(
             @Bind(Dict.ID) String id
     );
 	
-	@SqlQuery("select * from " + TABLE_NAME + " where " + Dict.NAME + " = :" + Dict.NAME
-			+ " and " + Dict.USER_ID + " = : " + Dict.USER_ID)
-    @Mapper(BooksMapper.class)
-    List<Books> findByNameAndUserID(
-            @Bind(Dict.NAME) String name,
-            @Bind(Dict.USER_ID) String user_id
-    );
-	
+	@SqlQuery("select * from " + TABLE_NAME + " where "
+			+ Dict.NAME + " = :" + Dict.NAME
+			+ " and " + Dict.CREATE_USER_ID + " = :" + Dict.CREATE_USER_ID)
+	@Mapper(BooksMapper.class)
+	List<Books> findByNameAndCreateUserID(
+			@Bind(Dict.NAME) String name,
+			@Bind(Dict.CREATE_USER_ID) String create_user_id
+	);
+
 	@SqlUpdate("delete from " + TABLE_NAME + " where " + Dict.USER_ID + " = :" + Dict.USER_ID)
     void deleteByUserID(
             @Bind(Dict.USER_ID) String user_id

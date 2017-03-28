@@ -1,3 +1,5 @@
+@args (String redirect)
+
 <html lang="en">
 
 <head>
@@ -38,6 +40,7 @@
 <div class="row">
     <div class="col-md-4">
         <form role="form" action="/login" method="post" id="loginForm">
+            <input type="hidden" name="redirect" value="@?redirect">
             <div class="form-group">
                 <label for="loginUserID">
                     user ID

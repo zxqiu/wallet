@@ -63,7 +63,15 @@ public class BooksDAOConnector {
 	public List<Books> getByUserID(String user_id) throws Exception {
 		return booksDAO.findByUserID(user_id);
 	}
-	
+
+	public List<Books> getByCreateUserID(String create_user_id) throws Exception {
+		return booksDAO.findByCreateUserID(create_user_id);
+	}
+
+	public List<Books> getByNameAndCreateUserID(String name, String create_user_id) throws Exception {
+		return booksDAO.findByNameAndCreateUserID(name, create_user_id);
+	}
+
 	public void insert(Books books) throws Exception {
 		try {
 			booksDAO.insert(books.getId(), books.getUser_id(), books.getCreate_user_id(), books.getName(), books.getCreate_time()
@@ -93,7 +101,7 @@ public class BooksDAOConnector {
 	
 	public static void test() throws Exception {
 		Books books = new Books("admin", "admin", "name", new Date()
-				, "photo", "test data");
+				, "photo", "");
 		
 		logger_.info("BooksDAOConnector test ...");
 		
@@ -109,7 +117,7 @@ public class BooksDAOConnector {
 		
 		books.setPicture_id("nooooooote");
 		BooksDAOConnector.instance().update(books);
-		if (BooksDAOConnector.instance().getByID(books.getId()).isEmpty()) {
+		if (BooksDAOConnector.instance().getByNameAndCreateUserID(books.getName(), books.getCreate_user_id()).isEmpty()) {
 			logger_.error("Error BooksDAOConnector test failed");
 			throw new Exception("BooksDAOConnector test failed");
 		}

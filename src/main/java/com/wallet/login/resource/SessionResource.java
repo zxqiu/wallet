@@ -46,8 +46,9 @@ public class SessionResource {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.TEXT_HTML)
     public Object login(
-        @FormParam(Dict.ID) String id,
-        @FormParam(Dict.PASSWORD) String password) throws Exception {
+            @FormParam(Dict.DIRECT) String redirect,
+            @FormParam(Dict.ID) String id,
+            @FormParam(Dict.PASSWORD) String password) throws Exception {
 
         if (id.startsWith(Dict.FACEBOOK_PREFIX) || password.startsWith(Dict.FACEBOOK_PREFIX)) {
             return Response.status(Status.ERROR)
@@ -76,8 +77,12 @@ public class SessionResource {
         NewCookie cookies = new NewCookie(cookie);
 
         logger_.info("User " + user_id + " login with session + " + session.getAccess_token());
+        String redirect_path = BooksEntryResource.PATH_BOOKS;
+        if (redirect != null && redirect.length() > 1) {
+            redirect_path = redirect;
+        }
         return Response
-                .seeOther(URI.create(BooksEntryResource.PATH_BOOKS))
+                .seeOther(URI.create(redirect_path))
                 .cookie(cookies)
                 .build();
     }
@@ -150,10 +155,10 @@ public class SessionResource {
             }
 
             NewCookie cookies = new NewCookie(cookie, null, 0, false);
-            return Response.ok().entity(views.login.template()).cookie(cookies).build();
+            return Response.ok().entity(views.login.template("")).cookie(cookies).build();
         }
 
-        return Response.ok().entity(views.login.template()).build();
+        return Response.ok().entity(views.login.template("")).build();
     }
 
     public static final String PATH_RESTORE_SESSION = "/";
@@ -170,7 +175,7 @@ public class SessionResource {
                     .build();
     	}
 
-        return Response.ok().entity(views.login.template()).build();
+        return Response.ok().entity(views.login.template("")).build();
     }
 
 

@@ -28,6 +28,7 @@ public class Dict {
 	public static final String SHORT_URL = "short_url";
 	public static final String FULL_URL = "full_url";
 	public static final String EXPIRE_CLICK = "expire_click";
+	public static final String DIRECT = "redirect";
 
 	public static final String FACEBOOK_PREFIX = "fb-";
 }
