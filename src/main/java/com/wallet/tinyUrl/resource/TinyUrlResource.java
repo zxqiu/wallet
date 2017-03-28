@@ -68,7 +68,7 @@ public class TinyUrlResource {
 
     @GET
     @Timed
-    @Path("/tolong/{short_url}")
+    @Path("/tolong/{" + Dict.SHORT_URL + "}")
     @Produces(MediaType.TEXT_HTML)
     public Response toLong(
             @PathParam(Dict.SHORT_URL) String short_url

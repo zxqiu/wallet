@@ -169,7 +169,8 @@ public class BooksResource {
     @Path("/getbooks")
 	@Produces(value = MediaType.APPLICATION_JSON)
 	public Response getBooks(@QueryParam(Dict.USER_ID) String user_id,
-			@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
+			@CookieParam("walletSessionCookie") Cookie cookie
+	) throws Exception {
 		// 1. extract request
 		// 2. verify and parse request
 		// 3. verify parameters 
@@ -203,5 +204,21 @@ public class BooksResource {
 		
 		logger_.info("Response user " + user_id + "'s books : " + jsonArray.toString());
 		return Response.status(200).entity(jsonArray.toString()).build();
+	}
+
+	@GET
+	@Timed
+	@Path("/receivebooks/{" + Dict.USER_ID + "}/{" + Dict.BOOKS_ID + "}")
+	@Produces(MediaType.TEXT_HTML)
+	public Response receiveBooks(
+			@PathParam(Dict.USER_ID) String user_id
+			, @PathParam(Dict.BOOKS_ID) String books_id
+			, @CookieParam("walletSessionCookie") Cookie cookie
+	) throws Exception {
+		String request_user = ApiUtils.getUserIDFromCookie(cookie);
+
+		if (request_user.length() < 1 || !sessionDAOC.verifySessionCookie(cookie)) {
+			return Response.ok().entity(views.login.template()).build();
+		}
 	}
 }

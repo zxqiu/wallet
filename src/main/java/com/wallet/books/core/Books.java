@@ -1,6 +1,10 @@
 package com.wallet.books.core;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.wallet.utils.misc.Dict;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Date;
 
@@ -35,7 +39,7 @@ public class Books {
     public Books() {
     }
 
-    public Books(String user_id, String create_user_id, String name, Date edit_time, String picture_id, String data) {
+    public Books(String user_id, String create_user_id, String name, Date edit_time, String picture_id, String data) throws JSONException {
         this.setId(user_id + "-" + name);
         this.setUser_id(user_id);
         this.setCreate_user_id(create_user_id);
@@ -44,10 +48,12 @@ public class Books {
         this.setEdit_time(edit_time);
         this.setPicture_id(picture_id);
         this.setData(data);
+
+        this.appendUser(user_id);
     }
 
     public Books(String id, String user_id, String create_user_id, String name, Date create_time, Date edit_time, String picture_id
-            , String data) {
+            , String data) throws JSONException {
         this.setId(id);
         this.setUser_id(user_id);
         this.setCreate_user_id(create_user_id);
@@ -56,6 +62,53 @@ public class Books {
         this.setEdit_time(edit_time);
         this.setPicture_id(picture_id);
         this.setData(data);
+
+        this.appendUser(user_id);
+    }
+
+    public void appendUser(String user_id) throws JSONException {
+        String dataString = this.getData();
+
+        JSONObject data = new JSONObject(dataString);
+        JSONArray user_list;
+
+        if (!data.has(Dict.USER_LIST)) {
+            data.put(Dict.USER_LIST, new JSONArray());
+        }
+
+        user_list = data.getJSONArray(Dict.USER_LIST);
+        for (int i = 0; i < user_list.length(); i++) {
+            if (user_id.equals(user_list.getString(i))) {
+                return;
+            }
+        }
+
+        user_list.put(user_id);
+
+        this.setData(data.toString());
+    }
+
+    public void removeUser(String user_id) throws JSONException {
+        String dataString = this.getData();
+
+        JSONObject data = new JSONObject(dataString);
+        JSONArray user_list;
+        JSONArray new_user_list = new JSONArray();
+
+        if (!data.has(Dict.USER_LIST)) {
+            return;
+        }
+
+        user_list = data.getJSONArray(Dict.USER_LIST);
+
+        for (int i = 0; i < user_list.length(); i++) {
+            String cur_user_id = user_list.getString(i);
+            if (!cur_user_id.equals(user_id)) {
+                new_user_list.put(cur_user_id);
+            }
+        }
+
+        data.put(Dict.USER_LIST, new_user_list);
     }
 
     public String getId() {
