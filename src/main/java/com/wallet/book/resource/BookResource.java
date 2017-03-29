@@ -41,7 +41,7 @@ public class BookResource {
 	@GET
 	@Timed
 	@Path("/allbooks")
-	@Produces(value = MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	public List<Book> getAll() throws Exception {
 		return bookDAOC.getByUserID("admin");
 	}

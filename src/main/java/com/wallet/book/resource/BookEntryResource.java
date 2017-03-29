@@ -160,7 +160,7 @@ public class BookEntryResource {
 		// 4.1 insert new category and default book (if not exists)
 		try {
 			if (categoryDAOC.getByID(user_id + category).isEmpty()) {
-				categoryDAOC.insert(new Category(user_id, category, "FFFFFF", ""));
+				categoryDAOC.insert(new Category(user_id, category, "#FFFFFF", ""));
 			}
 		} catch (Exception e1) {
 			logger_.error("Error failed to get category or insert new category when insert book entry : " + category);
