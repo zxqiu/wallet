@@ -8,7 +8,6 @@ import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.wallet.books.core.Books;
 import com.wallet.login.core.User;
 import com.wallet.login.core.UserPriority;
 import com.wallet.login.dao.SessionDAOConnector;

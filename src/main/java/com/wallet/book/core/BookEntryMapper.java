@@ -1,4 +1,4 @@
-package com.wallet.books.core;
+package com.wallet.book.core;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,15 +8,15 @@ import org.skife.jdbi.v2.tweak.ResultSetMapper;
 
 import com.wallet.utils.misc.Dict;
 
-public class BooksEntryMapper implements ResultSetMapper<BooksEntry> {
+public class BookEntryMapper implements ResultSetMapper<BookEntry> {
 
-	public BooksEntry map(int i, ResultSet resultSet, StatementContext context) throws SQLException {
-		BooksEntry entry = new BooksEntry();
+	public BookEntry map(int i, ResultSet resultSet, StatementContext context) throws SQLException {
+		BookEntry entry = new BookEntry();
 		
 		entry.setId(resultSet.getString(Dict.ID));
 		entry.setUser_id(resultSet.getString(Dict.USER_ID));
 		entry.setCreate_user_id(resultSet.getString(Dict.CREATE_USER_ID));
-		entry.setBooks_id(resultSet.getString(Dict.BOOKS_ID));
+		entry.setBook_id(resultSet.getString(Dict.BOOK_ID));
 		entry.setCategory(resultSet.getString(Dict.CATEGORY));
 		entry.setEvent_date(resultSet.getDate(Dict.EVENT_DATE));
 		entry.setAmount(resultSet.getLong(Dict.AMOUNT));

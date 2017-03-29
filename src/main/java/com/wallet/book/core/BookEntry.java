@@ -1,10 +1,11 @@
-package com.wallet.books.core;
+package com.wallet.book.core;
 
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.wallet.utils.misc.TimeUtils;
 
-public class BooksEntry {
+public class BookEntry {
 	@JsonProperty
 	private String id;
 	
@@ -15,7 +16,7 @@ public class BooksEntry {
 	private String create_user_id;
 
 	@JsonProperty
-	private String books_id;
+	private String book_id;
 
 	@JsonProperty
 	private String category;
@@ -38,14 +39,14 @@ public class BooksEntry {
 	@JsonProperty
 	private Date edit_time;
 	
-	public BooksEntry() {
+	public BookEntry() {
 	}
 	
-	public BooksEntry(String id, String user_id, String create_user_id, String books_id, String category, Date event_date, long amount, String note, String photo, String data) {
-		this.setId(id);
+	public BookEntry(String user_id, String create_user_id, String book_id, String category, Date event_date, long amount, String note, String photo, String data) {
+		this.setId(user_id + TimeUtils.getUniqueTimeStampInMS());
 		this.setUser_id(user_id);
 		this.setCreate_user_id(create_user_id);
-		this.setBooks_id(books_id);
+		this.setBook_id(book_id);
 		this.setCategory(category);
 		this.setEvent_date(event_date);
 		this.setAmount(amount);
@@ -53,6 +54,10 @@ public class BooksEntry {
 		this.setPhoto(photo);
 		this.setEdit_time(new Date());
 		this.setData(data);
+	}
+
+	public void updateID() {
+		this.setId(this.getUser_id() + TimeUtils.getUniqueTimeStampInMS());
 	}
 
 	public String getId() {
@@ -127,12 +132,12 @@ public class BooksEntry {
 		this.create_user_id = create_user_id;
 	}
 
-	public String getBooks_id() {
-		return books_id;
+	public String getBook_id() {
+		return book_id;
 	}
 
-	public void setBooks_id(String books_id) {
-		this.books_id = books_id;
+	public void setBook_id(String book_id) {
+		this.book_id = book_id;
 	}
 
 	public String getData() {

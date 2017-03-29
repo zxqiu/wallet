@@ -1,7 +1,7 @@
-package com.wallet.books.dao;
+package com.wallet.book.dao;
 
-import com.wallet.books.core.Books;
-import com.wallet.books.core.BooksMapper;
+import com.wallet.book.core.Book;
+import com.wallet.book.core.BookMapper;
 import com.wallet.login.dao.UserDAO;
 import com.wallet.utils.misc.Dict;
 import org.skife.jdbi.v2.sqlobject.Bind;
@@ -12,8 +12,8 @@ import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
 import java.util.Date;
 import java.util.List;
 
-public interface BooksDAO {
-	public static final String TABLE_NAME = "books";
+public interface BookDAO {
+	public static final String TABLE_NAME = "book";
 	
 	@SqlUpdate("create table if not exists " + TABLE_NAME + " ("
 			+ "`" + Dict.ID + "` varchar(64) not null unique,"
@@ -25,8 +25,8 @@ public interface BooksDAO {
 			+ "`" + Dict.PICTURE_ID + "` varchar(64),"
 			+ "`" + Dict.DATA + "` text,"
 			+ "primary key (`" + Dict.ID + "`),"
-			+ "key `fk_books_user` (`" + Dict.USER_ID + "`),"
-			+ "constraint `fk_books_user` foreign key (`" + Dict.USER_ID + "`) "
+			+ "key `fk_book_user` (`" + Dict.USER_ID + "`),"
+			+ "constraint `fk_book_user` foreign key (`" + Dict.USER_ID + "`) "
 			+ "references `" + UserDAO.TABLE_NAME + "` (`" + Dict.USER_ID + "`)"
 			+ ")ENGINE=InnoDB DEFAULT CHARSET=utf8 collate=utf8_unicode_ci;"
 			)
@@ -81,32 +81,32 @@ public interface BooksDAO {
 	);
     
     @SqlQuery("select * from " + TABLE_NAME)
-    @Mapper(BooksMapper.class)
-    List<Books> findAll();
+    @Mapper(BookMapper.class)
+    List<Book> findAll();
     
 	@SqlQuery("select * from " + TABLE_NAME + " where " + Dict.USER_ID + " = :" + Dict.USER_ID)
-    @Mapper(BooksMapper.class)
-    List<Books> findByUserID(
+    @Mapper(BookMapper.class)
+    List<Book> findByUserID(
             @Bind(Dict.USER_ID) String user_id
     );
 
 	@SqlQuery("select * from " + TABLE_NAME + " where " + Dict.CREATE_USER_ID + " = :" + Dict.CREATE_USER_ID)
-	@Mapper(BooksMapper.class)
-	List<Books> findByCreateUserID(
+	@Mapper(BookMapper.class)
+	List<Book> findByCreateUserID(
 			@Bind(Dict.CREATE_USER_ID) String create_user_id
 	);
 
 	@SqlQuery("select * from " + TABLE_NAME + " where " + Dict.ID + " = :" + Dict.ID)
-    @Mapper(BooksMapper.class)
-    List<Books> findByID(
+    @Mapper(BookMapper.class)
+    List<Book> findByID(
             @Bind(Dict.ID) String id
     );
 	
 	@SqlQuery("select * from " + TABLE_NAME + " where "
 			+ Dict.NAME + " = :" + Dict.NAME
 			+ " and " + Dict.CREATE_USER_ID + " = :" + Dict.CREATE_USER_ID)
-	@Mapper(BooksMapper.class)
-	List<Books> findByNameAndCreateUserID(
+	@Mapper(BookMapper.class)
+	List<Book> findByNameAndCreateUserID(
 			@Bind(Dict.NAME) String name,
 			@Bind(Dict.CREATE_USER_ID) String create_user_id
 	);

@@ -138,7 +138,8 @@ public class MySqlConnector {
 		MySqlConnector.instance().execute(sql, null);
 		
 	}
-		public void deleteFromTable(Map<String, Object> keys, String tableName) throws SQLException {
+	
+	public void deleteFromTable(Map<String, Object> keys, String tableName) throws SQLException {
 		String sql = "DELETE FROM " + tableName;
 		sql += MapToSQLWhereAnd(keys) + ";";
 		MySqlConnector.instance().execute(sql, null);
@@ -420,7 +421,7 @@ public class MySqlConnector {
 	
 	/*
 	public static void main(String[] args) throws Exception {
-		BooksInfo order = new BooksInfo("00005", "product000", BooksInfo.OrderStatus.PAYING, 1, 10, BooksInfo.CloseReason.NOT_CLOSED, "addddress", "good-good", "/abc", "19900329182231", "user");
+		BookInfo order = new BookInfo("00005", "product000", BookInfo.OrderStatus.PAYING, 1, 10, BookInfo.CloseReason.NOT_CLOSED, "addddress", "good-good", "/abc", "19900329182231", "user");
 		String insert = "INSERT INTO tmpOrder " + MySqlConnector.instance().MapToSQLColumnsAndValue(order.toMap()).get(COLUMNS) + 
 				" VALUES " + MySqlConnector.instance().MapToSQLColumnsAndValue(order.toMap()).get(VALUES) + ";";
 		logger_.info(insert);

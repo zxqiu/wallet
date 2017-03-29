@@ -1,28 +1,28 @@
 function entryFilter() {
-    var entries = document.getElementById("booksList").children;
+    var entries = document.getElementById("bookList").children;
     var curYear = parseInt($("#yearShow").val());
     var curMonth = parseInt($("#monthShow").val());
     var selected = $("#entryFilterSelector").find("option:selected");
     var curCategory = new Array();
-    var curBooksName = new Array();
+    var curBookName = new Array();
     for (var i = 0; i < selected.length; i++) {
         if ($(selected[i]).hasClass("option-category")) {
             curCategory.push($(selected[i]).text().trim());
-        } else if ($(selected[i]).hasClass("option-books")) {
-            curBooksName.push($(selected[i]).text().trim());
+        } else if ($(selected[i]).hasClass("option-book")) {
+            curBookName.push($(selected[i]).text().trim());
         }
     }
 
     var categorySum = new Object();
-    var booksSum = new Object();
+    var bookSum = new Object();
     categorySum["All"] = 0.0;
-    booksSum["All"] = 0.0;
+    bookSum["All"] = 0.0;
 
     for (var i = 0; i < entries.length; i++) {
         var entryYear;
         var entryMonth;
         var entryCategory;
-        var entryBooksName;
+        var entryBookName;
         var entryAmount;
 
         var entry = entries[i];
@@ -43,19 +43,19 @@ function entryFilter() {
         }
         entryCategory = entryCategory[1].trim();
 
-        entryBooksName = $(entry).find("#bookName")[0];
-        entryBooksName = $(entryBooksName).text();
-        entryBooksName = entryBooksName.split(":");
-        if (entryBooksName.length < 2) {
+        entryBookName = $(entry).find("#bookName")[0];
+        entryBookName = $(entryBookName).text();
+        entryBookName = entryBookName.split(":");
+        if (entryBookName.length < 2) {
             return;
         }
-        entryBooksName = entryBooksName[1].trim();
+        entryBookName = entryBookName[1].trim();
 
         entryAmount = parseFloat(title[1].substr(1, title[1].length - 1));
 
         if (entryYear == curYear && entryMonth == curMonth) {
             if ((curCategory.indexOf("All") != -1 || curCategory.indexOf(entryCategory) != -1)
-                && (curBooksName.indexOf("All") != -1 || curBooksName.indexOf(entryBooksName) != -1)) {
+                && (curBookName.indexOf("All") != -1 || curBookName.indexOf(entryBookName) != -1)) {
                 $(entry).show();
             } else {
                 $(entry).hide();
@@ -67,23 +67,23 @@ function entryFilter() {
             categorySum["All"] += entryAmount;
             categorySum[entryCategory] += entryAmount;
 
-            if (!(booksSum.hasOwnProperty(entryBooksName))) {
-                booksSum[entryBooksName] = 0.0;
+            if (!(bookSum.hasOwnProperty(entryBookName))) {
+                bookSum[entryBookName] = 0.0;
             }
-            booksSum["All"] += entryAmount;
-            booksSum[entryBooksName] += entryAmount;
+            bookSum["All"] += entryAmount;
+            bookSum[entryBookName] += entryAmount;
         } else {
             $(entry).hide();
         }
     }
 
-    showSum(categorySum, booksSum);
+    showSum(categorySum, bookSum);
 }
 
-function showSum(categorySum, booksSum) {
+function showSum(categorySum, bookSum) {
     var list = $("#entryFilterSelector").find("option");
     console.log(categorySum);
-    console.log(booksSum);
+    console.log(bookSum);
     for (var i = 0; i < list.length; i++) {
         if ($(list[i]).hasClass("option-control")) {
             continue;
@@ -93,8 +93,8 @@ function showSum(categorySum, booksSum) {
         console.log(name);
         if ($(list[i]).hasClass("option-category") && categorySum.hasOwnProperty(name)) {
             $(list[i]).attr("data-subtext", "$" + categorySum[name].toFixed(2));
-        } else if ($(list[i]).hasClass("option-books") && booksSum.hasOwnProperty(name)) {
-            $(list[i]).attr("data-subtext", "$" + booksSum[name].toFixed(2));
+        } else if ($(list[i]).hasClass("option-book") && bookSum.hasOwnProperty(name)) {
+            $(list[i]).attr("data-subtext", "$" + bookSum[name].toFixed(2));
         } else {
             $(list[i]).attr("data-subtext", "$0.00");
         }
@@ -120,7 +120,7 @@ var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
 ];
 
 $(document).ready(function () {
-    var titles = $(".books-list-text-title");
+    var titles = $(".book-list-text-title");
     for (var i = 0; i < titles.length; i++) {
         var rgb = getBackgroundColorRGB(titles[i]);
         var bright = getBrightness(rgb);
@@ -146,9 +146,9 @@ $(document).ready(function () {
 });
 
 
-$('.books-list-text').on("click", function(e) {
+$('.book-list-text').on("click", function(e) {
     if ($(e.target).hasClass("dblclicked")) {
-        window.location.replace("/books/entry/" + $(this).attr("title"));
+        window.location.replace("/book/entry/" + $(this).attr("title"));
         $(e.target).removeClass("dblclicked");
     } else {
         $(e.target).addClass("dblclicked");

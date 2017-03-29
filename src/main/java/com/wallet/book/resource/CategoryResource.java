@@ -1,4 +1,4 @@
-package com.wallet.books.resource;
+package com.wallet.book.resource;
 
 import java.net.URI;
 import java.sql.SQLException;
@@ -19,8 +19,8 @@ import org.slf4j.LoggerFactory;
 
 import com.codahale.metrics.annotation.Timed;
 import com.google.gson.Gson;
-import com.wallet.books.core.Category;
-import com.wallet.books.dao.CategoryDAOConnector;
+import com.wallet.book.core.Category;
+import com.wallet.book.dao.CategoryDAOConnector;
 import com.wallet.login.dao.SessionDAOConnector;
 import com.wallet.utils.misc.ApiUtils;
 import com.wallet.utils.misc.Dict;
@@ -60,7 +60,7 @@ public class CategoryResource {
 	}
 
 	/**
-	 * Create a new category and insert to books
+	 * Create a new category and insert to book
 	 * @param name, picture_url
 	 * @return
 	 * @throws Exception 
@@ -104,7 +104,7 @@ public class CategoryResource {
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.INTERNAL_ERROR)).build();
 		}
 
-		return Response.seeOther(URI.create(BooksEntryResource.PATH_BOOKS)).build();
+		return Response.seeOther(URI.create(BookEntryResource.PATH_BOOKS)).build();
 	}
 
 	@POST
@@ -157,7 +157,7 @@ public class CategoryResource {
 			}
 		}
 
-		return Response.status(200).entity(ApiUtils.buildJSONResponse(true, BooksEntryResource.PATH_BOOKS)).build();
+		return Response.status(200).entity(ApiUtils.buildJSONResponse(true, BookEntryResource.PATH_BOOKS)).build();
 	}
 
 	/**
@@ -176,7 +176,7 @@ public class CategoryResource {
 		// 2. verify and parse request
 		// 3. verify parameters 
 		if (user_id.length() == 0 || sessionDAOC.verifySessionCookie(cookie)== false) {
-			logger_.error("ERROR: invalid get books request for \'" + user_id + "\'");
+			logger_.error("ERROR: invalid get book request for \'" + user_id + "\'");
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.QUERY_ARG_ERROR)).build();
 		}
 		
@@ -186,7 +186,7 @@ public class CategoryResource {
 			categories = categoryDAOC.getByUserID(user_id);
 		} catch (Exception e) {
 			e.printStackTrace();
-			logger_.error("Error : failed to insert new books item for " + user_id + " : " + e.getMessage());
+			logger_.error("Error : failed to insert new book item for " + user_id + " : " + e.getMessage());
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.INTERNAL_ERROR)).build();
 		}
 		

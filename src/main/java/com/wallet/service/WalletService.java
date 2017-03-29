@@ -1,9 +1,9 @@
 package com.wallet.service;
 
 import com.fizzed.rocker.runtime.RockerRuntime;
-import com.wallet.books.dao.*;
-import com.wallet.books.resource.BooksResource;
-import com.wallet.tinyUrl.core.TinyUrl;
+import com.wallet.book.dao.*;
+import com.wallet.book.resource.BookEntryResource;
+import com.wallet.book.resource.BookResource;
 import com.wallet.tinyUrl.dao.TinyUrlDAO;
 import com.wallet.tinyUrl.dao.TinyUrlDAOConnector;
 import com.wallet.tinyUrl.resource.TinyUrlResource;
@@ -11,8 +11,7 @@ import org.skife.jdbi.v2.DBI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.wallet.books.resource.BooksEntryResource;
-import com.wallet.books.resource.CategoryResource;
+import com.wallet.book.resource.CategoryResource;
 import com.wallet.login.dao.SessionDAO;
 import com.wallet.login.dao.SessionDAOConnector;
 import com.wallet.login.dao.UserDAO;
@@ -50,36 +49,36 @@ public class WalletService extends Application<WalletConfiguration> {
 	    
 	    final UserDAO userDAO = jdbi.onDemand(UserDAO.class);
 	    final SessionDAO sessionDAO = jdbi.onDemand(SessionDAO.class);
-	    final BooksDAO booksDAO = jdbi.onDemand(BooksDAO.class);
-	    final BooksEntryDAO booksEntryDAO = jdbi.onDemand(BooksEntryDAO.class);
+	    final BookDAO bookDAO = jdbi.onDemand(BookDAO.class);
+	    final BookEntryDAO bookEntryDAO = jdbi.onDemand(BookEntryDAO.class);
 	    final CategoryDAO categoryDAO = jdbi.onDemand(CategoryDAO.class);
 	    final TinyUrlDAO tinyUrlDAO = jdbi.onDemand(TinyUrlDAO.class);
 	    
 	    UserDAOConnector.init(userDAO);
 	    SessionDAOConnector.init(sessionDAO);
-	    BooksDAOConnector.init(booksDAO);
-	    BooksEntryDAOConnector.init(booksEntryDAO);
+	    BookDAOConnector.init(bookDAO);
+	    BookEntryDAOConnector.init(bookEntryDAO);
 	    CategoryDAOConnector.init(categoryDAO);
 		TinyUrlDAOConnector.init(tinyUrlDAO);
 	    
 	    sessionDAO.dropTable();
-	    booksDAO.dropTable();
-	    booksEntryDAO.dropTable();
+	    bookDAO.dropTable();
+	    bookEntryDAO.dropTable();
 	    categoryDAO.dropTable();
 	    userDAO.dropTable();
 	    tinyUrlDAO.dropTable();
 	    
 	    UserDAOConnector.test();
 	    SessionDAOConnector.test();
-		BooksDAOConnector.test();
-	    BooksEntryDAOConnector.test();
+		BookDAOConnector.test();
+	    BookEntryDAOConnector.test();
 	    CategoryDAOConnector.test();
 	    TinyUrlDAOConnector.test();
 	    
 	    environment.jersey().register(new UserResource());
 	    environment.jersey().register(new SessionResource());
-		environment.jersey().register(new BooksResource());
-	    environment.jersey().register(new BooksEntryResource());
+		environment.jersey().register(new BookResource());
+	    environment.jersey().register(new BookEntryResource());
 	    environment.jersey().register(new CategoryResource());
 		environment.jersey().register(new TinyUrlResource());
 

@@ -1,0 +1,179 @@
+@import com.wallet.book.core.Book;
+@import com.wallet.book.core.Category;
+@import java.util.List;
+
+@args (com.wallet.book.core.BookEntry bookEntry, List<Book> bookList, List<Category> categoryList, String date)
+
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>tiny wallet</title><!-- layoutit -->
+
+	<link href="/css/bootstrap.min.css" rel="stylesheet">
+	<link href="/css/bootstrap-datepicker.min.css" rel="stylesheet">
+	<link href="/css/style.css" rel="stylesheet">
+	<link href="/css/views/bookEntry.css" rel="stylesheet">
+</head>
+
+</head>
+
+<body>
+	<div class="row">
+		<div class="col-md-4">
+			<form role="form" action="/books/insertentry" method="post" id="bookEntryForm">
+				<input type="text" id="bookEntryID" name="id"
+					@if(bookEntry != null) {
+						value="@?bookEntry.getId()"
+					}
+					style="display: none">
+				<div class="form-group">
+					<label for="bookEntryEventDate">
+						Date
+					</label>
+					<div class='input-group date' data-provide='datepicker'>
+						<span class="btn input-group-addon">
+							<span class="glyphicon glyphicon-calendar"></span>
+						</span>
+						<input type="text" class="form-control" placeholder="mm/dd/yyyy" id="bookEntryEventDate" name="event_date" value="@date" required="true">
+					</div>
+				</div>
+				<div class="form-group">
+					 
+					<label for="bookEntryAmount">
+						Amount
+					</label>
+					<div class='input-group'>
+						<span class="input-group-addon">$</span>
+						<input type="number" step="0.01" class="form-control" placeholder="$" id="bookEntryAmount" name="amount"
+							@if (bookEntry != null) {
+								value="@(((double)bookEntry.getAmount())/100)"
+							}
+						 required="true">
+					</div>
+				</div>
+				<div class="form-group">
+
+					<label for="bookSelector">
+						Book ID
+					</label>
+					<div class='input-group'>
+						<span class="input-group-addon">B</span>
+						<select class="form-control" id="bookSelector" name="book_name">
+							<option class="book-option" value="default">
+								default
+							</option>
+							@if (bookList != null) {
+								@for (Book book : bookList) {
+								<option class="book-option" style="background: @?book.getPicture_id();" value="@?book.getName()"
+									@if (bookEntry != null && book.getId().equals(bookEntry.getBook_id())) {
+										selected
+									}
+								>
+									@?book.getName()
+								</option>
+								}
+							}
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					 
+					<label for="bookEntryCategory">
+						Category
+					</label>
+					<div class="input-group" id="bookEntryCategoryDiv">
+						<span class="btn input-group-addon dropdown-toggle" data-toggle="dropdown">
+							<span class="glyphicon glyphicon-menu-hamburger"></span>
+						</span>
+						<input class="form-control"
+							@if (bookEntry != null && categoryList != null) {
+								@for (Category category : categoryList) {
+									@if (category.getName().equals(bookEntry.getCategory())) {
+										value="@?bookEntry.getCategory()"
+									}
+                            	}
+							}
+							placeholder="input or select" id="bookEntryCategory" name="category" type="text" required="true">
+						<span class="input-group-addon" style="width:0px; padding-left:0px; padding-right:0px; border:none;"></span>
+						<select class="form-control" id="categorySelector">
+                            @if (categoryList != null) {
+								@for (Category category : categoryList) {
+								<option class="category-option" style="background: @?category.getPicture_id();" value="@?category.getName()"
+									@if (bookEntry != null && category.getName().equals(bookEntry.getCategory())) {
+										selected
+									}
+								>
+									@?category.getName()
+								</option>
+								}
+							}
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					 
+					<label for="bookEntryNote">
+						Note
+					</label>
+					<textarea type="text" class="form-control" id="bookEntryNote" name="note"
+						@if (bookEntry != null) {
+							>@?bookEntry.getNote().trim()</textarea>
+						} else {
+							></textarea>
+						}
+				</div>
+				<div class="form-group" style="display: none;">
+
+					<label for="bookEntryPhoto">
+						Photo
+					</label>
+					<textarea type="text" class="form-control" id="bookEntryPhoto" name="photo"
+						@if (bookEntry != null) {
+							value="@?bookEntry.getPhoto()"
+						}
+					></textarea>
+				</div>
+			</form>
+			<div class="btn-group btn-group-justified" role="group" aria-label="...">
+				<div class="btn-group" role="group">
+					<button type="button" class="btn btn-info" id="bookEntrySubmit">submit</button>
+				</div>
+				<div class="btn-group" role="group">
+					<button type="button" class="btn btn-info" onclick="location.href='/books'">cancle</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-4">
+			@if (bookEntry != null && bookEntry.getId() != null && bookEntry.getId().length() > 1) {
+			<form role="form" action="/books/deleteentry" method="post">
+				<input type="text" name="id"
+					   @if(bookEntry != null) {
+					   value="@?bookEntry.getId()"
+					   }
+					   style="display: none">
+				<div class="btn-group btn-group-justified" role="group" aria-label="...">
+					<div class="btn-group" role="group">
+						<button type="submit" class="btn btn-danger">delete</button>
+					</div>
+				</div>
+			</form>
+			}
+		</div>
+	</div>
+
+
+	<script src="/js/jquery.min.js"></script>
+	<script src="/js/bootstrap.min.js"></script>
+	<script src="/js/bootstrap-datepicker.min.js"></script>
+	<script src="/js/jscolor.min.js"></script>
+	<script src="/js/general.js"></script>
+	<script src="/js/views/bookEntry.js"></script>
+
+</body>
+</html>

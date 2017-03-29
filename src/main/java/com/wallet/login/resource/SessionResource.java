@@ -1,19 +1,14 @@
 package com.wallet.login.resource;
 
 import java.net.URI;
-import java.util.Date;
 import java.util.List;
-import java.util.Random;
-import java.util.UUID;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 
-import com.wallet.books.resource.BooksEntryResource;
+import com.wallet.book.resource.BookEntryResource;
 import com.wallet.login.core.User;
 import com.wallet.login.core.UserPriority;
-import com.wallet.utils.misc.TimeUtils;
-import jdk.nashorn.internal.runtime.ECMAException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,7 +72,7 @@ public class SessionResource {
         NewCookie cookies = new NewCookie(cookie);
 
         logger_.info("User " + user_id + " login with session + " + session.getAccess_token());
-        String redirect_path = BooksEntryResource.PATH_BOOKS;
+        String redirect_path = BookEntryResource.PATH_BOOKS;
         if (redirect != null && redirect.length() > 1) {
             redirect_path = redirect;
         }
@@ -104,7 +99,7 @@ public class SessionResource {
                         access_token)
                 != null) {
             return Response
-                    .seeOther(URI.create(BooksEntryResource.PATH_BOOKS))
+                    .seeOther(URI.create(BookEntryResource.PATH_BOOKS))
                     .build();
         }
 
@@ -171,7 +166,7 @@ public class SessionResource {
     	if (sessionDAOC.verifySessionCookie(cookie)) {
     	    logger_.info("Session restored " + cookie.getValue());
             return Response
-                    .seeOther(URI.create(BooksEntryResource.PATH_BOOKS))
+                    .seeOther(URI.create(BookEntryResource.PATH_BOOKS))
                     .build();
     	}
 

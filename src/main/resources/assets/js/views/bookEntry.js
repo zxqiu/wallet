@@ -2,14 +2,14 @@
 $(document).ready(function () {
     // this is to init category text field
     var selector = $(".category-option");
-    if ($("#booksEntryCategory").val().length == 0 && selector.length > 0) {
+    if ($("#bookEntryCategory").val().length == 0 && selector.length > 0) {
         $('#categorySelector').val($(selector[0]).val()).change();
     }
 });
 
 $('#categorySelector').on('change', function(){
-    $('#booksEntryCategory').val($(this).val()).change();
-    $('#booksEntryCategory').text($(this).val());
+    $('#bookEntryCategory').val($(this).val()).change();
+    $('#bookEntryCategory').text($(this).val());
 
     var selector = $(".category-option");
     if (selector.length > 0) {
@@ -37,15 +37,15 @@ $('.date').on('changeDate', function(ev){
 	$(this).datepicker('hide');
 });
 
-var form = document.getElementById("booksEntryForm");
+var form = document.getElementById("bookEntryForm");
 form.noValidate = true;
-$("#booksEntrySubmit").on("click", function() {
-    $("#booksEntrySubmit").html("submitted");
-    $("#booksEntrySubmit").attr("disabled", true);
+$("#bookEntrySubmit").on("click", function() {
+    $("#bookEntrySubmit").html("submitted");
+    $("#bookEntrySubmit").attr("disabled", true);
     $("#categorySelector").attr("disabled", true);
 
-    var amount = parseFloat($('#booksEntryAmount').val());
-    $('#booksEntryAmount').val(amount.toFixed(2));
+    var amount = parseFloat($('#bookEntryAmount').val());
+    $('#bookEntryAmount').val(amount.toFixed(2));
 
     for (var i = 0; i < form.length; i++) {
         if (!form[i].checkValidity()) {
@@ -54,8 +54,8 @@ $("#booksEntrySubmit").on("click", function() {
                 if ($(this).prop("required") == true && $(this).val() == "") {
                     $(this).parent().parent().addClass("has-error");
 
-                    $('#booksEntrySubmit').html("submit");
-                    $('#booksEntrySubmit').removeAttr("disabled");
+                    $('#bookEntrySubmit').html("submit");
+                    $('#bookEntrySubmit').removeAttr("disabled");
                 }
             });
             $("#categorySelector").attr("disabled", false);
@@ -68,14 +68,14 @@ $("#booksEntrySubmit").on("click", function() {
 });
 
 $("input").on('input', function() {
-	$('#booksEntryForm div').removeClass("has-error");;
+	$('#bookEntryForm div').removeClass("has-error");;
 });
 
 $(":input").on('change', function(){
-	$('#booksEntryForm div').removeClass("has-error");;
+	$('#bookEntryForm div').removeClass("has-error");;
 });
 
-$('#booksEntryDelete').on('click', function(){
-	$('#booksEntryDelete').html("deleted");
+$('#bookEntryDelete').on('click', function(){
+	$('#bookEntryDelete').html("deleted");
 	$(this).attr("disabled", true);
 });

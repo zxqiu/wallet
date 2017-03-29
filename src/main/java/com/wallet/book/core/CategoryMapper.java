@@ -1,4 +1,4 @@
-package com.wallet.books.core;
+package com.wallet.book.core;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

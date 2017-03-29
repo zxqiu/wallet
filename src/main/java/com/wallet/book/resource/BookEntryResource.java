@@ -1,4 +1,4 @@
-package com.wallet.books.resource;
+package com.wallet.book.resource;
 
 import java.net.URI;
 import java.text.SimpleDateFormat;
@@ -9,68 +9,66 @@ import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.wallet.books.core.Books;
-import com.wallet.books.dao.BooksDAOConnector;
+import com.wallet.book.core.Book;
+import com.wallet.book.core.BookEntry;
+import com.wallet.book.dao.BookDAOConnector;
 import com.wallet.login.core.User;
 import com.wallet.login.dao.UserDAOConnector;
 import com.wallet.login.resource.SessionResource;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.codahale.metrics.annotation.Timed;
-import com.wallet.books.core.BooksEntry;
-import com.wallet.books.core.Category;
-import com.wallet.books.dao.BooksEntryDAOConnector;
-import com.wallet.books.dao.CategoryDAOConnector;
+import com.wallet.book.core.Category;
+import com.wallet.book.dao.BookEntryDAOConnector;
+import com.wallet.book.dao.CategoryDAOConnector;
 import com.wallet.login.dao.SessionDAOConnector;
 import com.wallet.utils.misc.ApiUtils;
 import com.wallet.utils.misc.Dict;
-import com.wallet.utils.misc.TimeUtils;
 
 @Path("/books")
-public class BooksEntryResource {
-	private static final Logger logger_ = LoggerFactory.getLogger(BooksEntryResource.class);
-	private static final int booksEntrysEachLine = 4;
+public class BookEntryResource {
+	private static final Logger logger_ = LoggerFactory.getLogger(BookEntryResource.class);
+	private static final int bookEntrysEachLine = 4;
 
-	private BooksDAOConnector booksDAOC = null;
-	private BooksEntryDAOConnector booksEntryDAOC = null;
+	private BookDAOConnector bookDAOC = null;
+	private BookEntryDAOConnector bookEntryDAOC = null;
 	private CategoryDAOConnector categoryDAOC = null;
 	private UserDAOConnector userDAOC = null;
 
-	public BooksEntryResource() throws Exception {
-	    this.booksDAOC = BooksDAOConnector.instance();
-		this.booksEntryDAOC = BooksEntryDAOConnector.instance();
+	public BookEntryResource() throws Exception {
+	    this.bookDAOC = BookDAOConnector.instance();
+		this.bookEntryDAOC = BookEntryDAOConnector.instance();
 		this.categoryDAOC = CategoryDAOConnector.instance();
 		this.userDAOC = UserDAOConnector.instance();
 	}
 
 	@GET
 	@Timed
-	@Path("/allbooksentry")
+	@Path("/allbookentry")
 	@Produces(value = MediaType.APPLICATION_JSON)
-	public List<BooksEntry> getAll() throws Exception {
-		return booksEntryDAOC.getByUserID("admin");
+	public List<BookEntry> getAll() throws Exception {
+		return bookEntryDAOC.getByUserID("admin");
 	}
 
 	public static final String PATH_BOOKS = "/books";
 	/**
-	 * @return booksEntryList view. This is the main view of path /books
+	 * @return bookEntryList view. This is the main view of path /books
 	 */
 	@GET
 	@Timed
 	@Path("/")
 	@Produces(value = MediaType.TEXT_HTML)
-	public Response booksEntryListView(@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
+	public Response bookEntryListView(@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
 		String user_id = ApiUtils.getUserIDFromCookie(cookie);
 		if (SessionDAOConnector.instance().verifySessionCookie(cookie)== false || user_id == null) {
 			return Response.seeOther(URI.create(SessionResource.PATH_RESTORE_SESSION)).build();
 		}
 
 		User user = userDAOC.getByID(user_id);
-		List<Books> booksList = booksDAOC.getByUserID(user_id);
-		HashMap<String, Books> booksMap = new HashMap<>();
-		List<BooksEntry> booksEntryList = sortBooksByEventTime(booksEntryDAOC.getByUserID(user_id));
+		List<Book> bookList = bookDAOC.getByUserID(user_id);
+		HashMap<String, Book> bookMap = new HashMap<>();
+		List<BookEntry> bookEntryList = sortBookByEventTime(bookEntryDAOC.getByUserID(user_id));
 		List<Category> categoryList = categoryDAOC.getByUserID(user_id);
 		HashMap<String, String> colorMap = new HashMap<>();
 
@@ -78,22 +76,22 @@ public class BooksEntryResource {
 			colorMap.put(category.getName(), category.getPicture_id());
 		}
 
-		for (Books books : booksList) {
-			booksMap.put(books.getId(), books);
+		for (Book book : bookList) {
+			bookMap.put(book.getId(), book);
 		}
 
-		return Response.ok().entity(views.booksEntryList.template(booksEntryList, booksMap, categoryList, colorMap, booksEntrysEachLine, user)).build();
+		return Response.ok().entity(views.bookEntryList.template(bookEntryList, bookMap, categoryList, colorMap, bookEntrysEachLine, user)).build();
 	}
 
 	public static final String PATH_INSERT_ENTRY_VIEW = "/books/entry";
 	/**
-	 * @return booksEntry view. This is for showing and edit entry details.
+	 * @return bookEntry view. This is for showing and edit entry details.
 	 */
 	@GET
 	@Timed
 	@Path("/entry/{id}")
 	@Produces(value = MediaType.TEXT_HTML)
-	public Response booksEntryView(@PathParam(Dict.ID) String id,
+	public Response bookEntryView(@PathParam(Dict.ID) String id,
 								   @CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
 	    String user_id = ApiUtils.getUserIDFromCookie(cookie);
 		if (SessionDAOConnector.instance().verifySessionCookie(cookie)== false || user_id == null) {
@@ -102,25 +100,25 @@ public class BooksEntryResource {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 		String date = sdf.format(new Date());
-		BooksEntry booksEntry = null;
+		BookEntry bookEntry = null;
 		if (!id.equals("0")) {
-			List<BooksEntry> booksEntryList = booksEntryDAOC.getByID(id);
-			if (!booksEntryList.isEmpty()) {
-				booksEntry = booksEntryList.get(booksEntryList.size() - 1);
-				date = sdf.format(booksEntry.getEvent_date());
+			List<BookEntry> bookEntryList = bookEntryDAOC.getByID(id);
+			if (!bookEntryList.isEmpty()) {
+				bookEntry = bookEntryList.get(bookEntryList.size() - 1);
+				date = sdf.format(bookEntry.getEvent_date());
 			}
 		}
 
 		return Response.ok()
-				.entity(views.booksEntry.template(booksEntry
-                        , booksDAOC.getByUserID(user_id)
+				.entity(views.bookEntry.template(bookEntry
+                        , bookDAOC.getByUserID(user_id)
 						, categoryDAOC.getByUserID(user_id)
 						, date))
 				.build();
 	}
 
 	/**
-	 * Create a insert new or update existing books entry.
+	 * Create a insert new or update existing book entry.
 	 * @param id, event_date, amount, category, note, photo, cookie
 	 * @return
 	 * @throws Exception 
@@ -131,7 +129,7 @@ public class BooksEntryResource {
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.TEXT_HTML)
 	public Response insertEntry(@FormParam(Dict.ID) String id,
-								@FormParam(Dict.BOOKS_Name) String books_name,
+								@FormParam(Dict.BOOK_Name) String book_name,
 								@FormParam(Dict.EVENT_DATE) String event_date,
 								@FormParam(Dict.AMOUNT) double amount_double,
 								@FormParam(Dict.CATEGORY) String category,
@@ -143,53 +141,52 @@ public class BooksEntryResource {
 			return Response.seeOther(URI.create(SessionResource.PATH_RESTORE_SESSION)).build();
 		}
 
-		logger_.info("insertentry request : id:" + id + ", books_name:" + books_name + ", event_date:" + event_date
+		logger_.info("insertentry request : id:" + id + ", book_name:" + book_name + ", event_date:" + event_date
 				+ ", amount_double:" + amount_double + ", category:" + category + ", note:" + note + ", photo:" + photo + ".");
 
-		long currentTimeMS = TimeUtils.getUniqueTimeStampInMS();
 		long amount = (long)(amount_double * 100);
-		String books_id = "";
-		Books books = new Books();
+		String book_id = "";
+		Book book = new Book();
 
 		// 1. extract request
 		// 2. verify and parse request
 		// 3. verify parameters 
-		if (category.length() == 0 || event_date.length() == 0 || books_name.length() == 0) {
+		if (category.length() == 0 || event_date.length() == 0 || book_name.length() == 0) {
 			logger_.error("ERROR: invalid new item request: " + id);
 			return Response.serverError().build();
 		}
 		
 		// 4. transaction
-		// 4.1 insert new category and default books (if not exists)
+		// 4.1 insert new category and default book (if not exists)
 		try {
 			if (categoryDAOC.getByID(user_id + category).isEmpty()) {
 				categoryDAOC.insert(new Category(user_id, category, "FFFFFF", ""));
 			}
 		} catch (Exception e1) {
-			logger_.error("Error failed to get category or insert new category when insert books entry : " + category);
+			logger_.error("Error failed to get category or insert new category when insert book entry : " + category);
 			e1.printStackTrace();
 			return Response.serverError().build();
 		}
 
-		books_id = user_id + "-" + books_name;
-		books.setId(books_id);
+		book_id = user_id + "-" + book_name;
+		book.setId(book_id);
 		try {
-			if (booksDAOC.getByID(books_id).isEmpty()) {
-				books = new Books(user_id, user_id, books_name, new Date(), "FFFFFF", "");
-				booksDAOC.insert(books);
+			if (bookDAOC.getByID(book_id).isEmpty()) {
+				book = new Book(user_id, user_id, book_name, new Date(), "FFFFFF", "");
+				bookDAOC.insert(book);
 			}
 		} catch (Exception e) {
-			logger_.error("Error failed to get books or insert new books when insert books entry : " + books_id);
+			logger_.error("Error failed to get book or insert new book when insert book entry : " + book_id);
 			e.printStackTrace();
 			return Response.serverError().build();
 		}
 		
-		// 4.2 insert books
+		// 4.2 insert book
 		// 4.2.1 update if id is received and exists. Otherwise insert new.
 		boolean exist = false;
 		if (id.length() != 0) {
 			try {
-				exist = !booksEntryDAOC.getByID(id).isEmpty();
+				exist = !bookEntryDAOC.getByID(id).isEmpty();
 			} catch (Exception e) {
 				e.printStackTrace();
 				logger_.error("Error find out if item already exists : " + e.getMessage());
@@ -197,24 +194,21 @@ public class BooksEntryResource {
 			}
 		}
 		
-		if (!exist) {
-			id = user_id + currentTimeMS;
-		}
-		
-		// 4.2.2 insert 
+		// 4.2.2 insert
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-		BooksEntry booksEntry = new BooksEntry(id, user_id, user_id, books.getId(), category, sdf.parse(event_date), amount, note, photo, "");
+		BookEntry bookEntry = new BookEntry(user_id, user_id, book.getId(), category, sdf.parse(event_date), amount, note, photo, "");
 		try {
 			if (exist) {
-				logger_.info("Update books item : " + booksEntry.getId());
-				booksEntryDAOC.update(booksEntry);
+			    bookEntry.setId(id);
+				logger_.info("Update book item : " + bookEntry.getId());
+				bookEntryDAOC.update(bookEntry);
 			} else {
-				logger_.info("Insert new books item : " + booksEntry.getId());
-				booksEntryDAOC.insert(booksEntry);
+				logger_.info("Insert new book item : " + bookEntry.getId());
+				bookEntryDAOC.insert(bookEntry);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			logger_.error("Error : failed to insert new books : " + e.getMessage());
+			logger_.error("Error : failed to insert new book : " + e.getMessage());
 			return Response.serverError().build();
 		}
 
@@ -222,7 +216,7 @@ public class BooksEntryResource {
 	}
 	
 	/**
-	 * Delete books item
+	 * Delete book item
 	 * @param id
 	 * @return
 	 * @throws Exception 
@@ -242,26 +236,26 @@ public class BooksEntryResource {
 		// 2. verify and parse request
 		// 3. verify parameters 
 		if (id == null || id.length() == 0) {
-			logger_.error("ERROR: invalid delete books entry request for \'" + id + "\'");
+			logger_.error("ERROR: invalid delete book entry request for \'" + id + "\'");
 			return Response.serverError().build();
 		}
 		
 		// 4. transaction
 		try {
-			booksEntryDAOC.deleteByID(id);
+			bookEntryDAOC.deleteByID(id);
 		} catch (Exception e) {
 			e.printStackTrace();
-			logger_.error("Error : failed to delete new books entry \'" + id + "\' : " + e.getMessage());
+			logger_.error("Error : failed to delete new book entry \'" + id + "\' : " + e.getMessage());
 			return Response.serverError().build();
 		}
 		
 		// 5. generate response
-		logger_.info("Books entry \'" + id + "\' removed");
+		logger_.info("Book entry \'" + id + "\' removed");
 		return Response.seeOther(URI.create(PATH_BOOKS)).build();
 	}
 	
-	private static Comparator<BooksEntry> booksEntryTimeComparator = new Comparator<BooksEntry>() {
-		public int compare(BooksEntry a, BooksEntry b) {
+	private static Comparator<BookEntry> bookEntryTimeComparator = new Comparator<BookEntry>() {
+		public int compare(BookEntry a, BookEntry b) {
 			if (a.getEvent_date().before(b.getEvent_date())) {
 				return -1;
 			} else {
@@ -270,12 +264,12 @@ public class BooksEntryResource {
 		}
 	};
 	
-	private List<BooksEntry> sortBooksByEventTime(List<BooksEntry> list) {
+	private List<BookEntry> sortBookByEventTime(List<BookEntry> list) {
 		if (list == null) {
 			return null;
 		}
 
-		Collections.sort(list, booksEntryTimeComparator);
+		Collections.sort(list, bookEntryTimeComparator);
 		
 		return list;
 	}

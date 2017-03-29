@@ -1,12 +1,12 @@
-@import com.wallet.books.core.Books;
-@import com.wallet.books.core.BooksEntry;
-@import com.wallet.books.core.Category;
+@import com.wallet.book.core.Book;
+@import com.wallet.book.core.BookEntry;
+@import com.wallet.book.core.Category;
 @import com.wallet.login.core.User;
 @import com.wallet.utils.misc.Dict;
 @import java.util.List;
 @import java.util.HashMap;
 
-@args (List<BooksEntry> booksEntryList, HashMap<String, Books> booksMap, List<Category> categoryList, HashMap<String, String> colorMap, int booksEntrysEachLine, User user)
+@args (List<BookEntry> bookEntryList, HashMap<String, Book> bookMap, List<Category> categoryList, HashMap<String, String> colorMap, int bookEntrysEachLine, User user)
 
 <html lang="en">
 
@@ -20,7 +20,7 @@
 	<link href="/css/bootstrap.min.css" rel="stylesheet">
 	<link href="/css/bootstrap-select.min.css" rel="stylesheet">
 	<link href="/css/style.css" rel="stylesheet">
-	<link href="/css/views/booksEntryList.css" rel="stylesheet">
+	<link href="/css/views/bookEntryList.css" rel="stylesheet">
 
 </head>
 
@@ -67,19 +67,19 @@
 								}
 							}
 						</optgroup>
-						<optgroup label="Select Books">
-						<option class="option-books" data-subtext="$unknown" selected>All</option>
-						@if (booksMap != null) {
-							@for (Books books : booksMap.values()) {
-								<option class="option-books" style="background: @?books.getPicture_id();" data-subtext="$unknown">
-									@?books.getName()
+						<optgroup label="Select Book">
+						<option class="option-book" data-subtext="$unknown" selected>All</option>
+						@if (bookMap != null) {
+							@for (Book book : bookMap.values()) {
+								<option class="option-book" style="background: @?book.getPicture_id();" data-subtext="$unknown">
+									@?book.getName()
 								</option>
 							}
 						}
                         </optgroup>
 						<option data-divider="true"></option>
-						<option class="option-control" value="/books/categories">Edit Categories</option>
-						<option class="option-control" value="/books/bookslist">Edit Books</option>
+						<option class="option-control" value="/book/categories">Edit Categories</option>
+						<option class="option-control" value="/book/booklist">Edit Book</option>
 					</select>
 				</div>
 
@@ -148,33 +148,33 @@
 			</div>
 		</div>
 	</div>
-    @if (booksEntryList == null || booksEntryList.size() == 0) {
+    @if (bookEntryList == null || bookEntryList.size() == 0) {
 	<div>nothing found</div>
 	}
 
-	<div id="booksList">
-		@for (int i = 0; booksEntryList != null && i < booksEntryList.size(); i++) {
-			<div class="col-md-@(12 / booksEntrysEachLine)">
-				<div class="books-list">
+	<div id="bookList">
+		@for (int i = 0; bookEntryList != null && i < bookEntryList.size(); i++) {
+			<div class="col-md-@(12 / bookEntrysEachLine)">
+				<div class="book-list">
 					<a>
-						<span class="books-list-text" title="@booksEntryList.get(i).getId()" tabindex="@i">
-							<span class="books-list-text-title" id="bookTitle"
-								@if (booksEntryList !=null && colorMap !=null) {
-									style="background: @?colorMap.get(booksEntryList.get(i).getCategory())"
+						<span class="book-list-text" title="@bookEntryList.get(i).getId()" tabindex="@i">
+							<span class="book-list-text-title" id="bookTitle"
+								@if (bookEntryList !=null && colorMap !=null) {
+									style="background: @?colorMap.get(bookEntryList.get(i).getCategory())"
 								}
 							>
-								@if (booksEntryList.get(i).getNote().length() < 10) {
-									@booksEntryList.get(i).getEvent_date() $@(((double)booksEntryList.get(i).getAmount())/100) @?booksEntryList.get(i).getNote()
+								@if (bookEntryList.get(i).getNote().length() < 10) {
+									@bookEntryList.get(i).getEvent_date() $@(((double)bookEntryList.get(i).getAmount())/100) @?bookEntryList.get(i).getNote()
 								} else {
-									@booksEntryList.get(i).getEvent_date() $@(((double)booksEntryList.get(i).getAmount())/100) @?booksEntryList.get(i).getNote().substring(0, 10)
+									@bookEntryList.get(i).getEvent_date() $@(((double)bookEntryList.get(i).getAmount())/100) @?bookEntryList.get(i).getNote().substring(0, 10)
 								}
 							</span>
-							<span class="books-list-text-info">
-								<span id="bookCategory">category: @booksEntryList.get(i).getCategory()</span>
-								@if (booksMap != null  && booksMap.containsKey(booksEntryList.get(i).getBooks_id())) {
-									<span id="bookName">books: @?booksMap.get(booksEntryList.get(i).getBooks_id()).getName()</span>
+							<span class="book-list-text-info">
+								<span id="bookCategory">category: @bookEntryList.get(i).getCategory()</span>
+								@if (bookMap != null  && bookMap.containsKey(bookEntryList.get(i).getBook_id())) {
+									<span id="bookName">book: @?bookMap.get(bookEntryList.get(i).getBook_id()).getName()</span>
                                 } else {
-									<span id="bookName">books: default</span>
+									<span id="bookName">book: default</span>
 								}
 							</span>
 						</span>
@@ -189,7 +189,7 @@
 	<script src="/js/bootstrap.min.js"></script>
 	<script src="/js/bootstrap-select.min.js"></script>
 	<script src="/js/general.js"></script>
-	<script src="/js/views/booksEntryList.js"></script>
+	<script src="/js/views/bookEntryList.js"></script>
 
 </body>
 </html>

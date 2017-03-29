@@ -5,27 +5,27 @@
 var hostURL = window.location.protocol + "//" + window.location.host;
 var apiInsertEntry = "/books/insertentry";
 var apiDeleteItem = "/books/deleteentry";
-var apiGetBooks = "/books/getentries";
-var apiInsertBooksList = "/books/insertbookslist";
+var apiGetBookEntries = "/books/getentries";
+var apiInsertBookList = "/books/insertbooklist";
 var apiInsertCategoryList = "/books/insertcategorylist";
-var apiFaceBooksLogin = "/fblogin";
+var apiFaceBookLogin = "/fblogin";
 
 var APIs = {
     createNew: function() {
         var api_ = {};
 
-        api_.postBooksEntrySuccess = null;
-        api_.postBooksEntryError = null;
+        api_.postBookEntrySuccess = null;
+        api_.postBookEntryError = null;
 
-        api_.setPostBooksEntrySuccessCallback = function(callback) {
-            api_.postBooksEntrySuccess = callback;
+        api_.setPostBookEntrySuccessCallback = function(callback) {
+            api_.postBookEntrySuccess = callback;
         }
 
-        api_.setPostBooksEntryErrorCallback = function(callback) {
-            api_.postBooksEntryError = callback;
+        api_.setPostBookEntryErrorCallback = function(callback) {
+            api_.postBookEntryError = callback;
         }
 
-        api_.postBooksEntry = function(jsonObj) {
+        api_.postBookEntry = function(jsonObj) {
             var postURL = hostURL + apiInsertEntry;
             console.log(postURL);
             console.log(jsonObj);
@@ -38,35 +38,35 @@ var APIs = {
                 dataType: 'json',
                 contentType: 'application/json',
                 success: function(data, textStatus, jqXHR) {
-                    if (api_.postBooksEntrySuccess && typeof(api_.postBooksEntrySuccess) == "function") {
-                        api_.postBooksEntrySuccess(data);
+                    if (api_.postBookEntrySuccess && typeof(api_.postBookEntrySuccess) == "function") {
+                        api_.postBookEntrySuccess(data);
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
-                    if (api_.postBooksEntryError && typeof(api_.postBooksEntryError) == "function") {
-                        api_.postBooksEntryError(textStatus);
+                    if (api_.postBookEntryError && typeof(api_.postBookEntryError) == "function") {
+                        api_.postBookEntryError(textStatus);
                     }
                 }
             });
         };
 
-        api_.getAllBooksEntrySuccess = null;
-        api_.getAllBooksEntryError = null;
+        api_.getAllBookEntrySuccess = null;
+        api_.getAllBookEntryError = null;
 
-        api_.setGetAllBooksEntrySuccessCallback = function(callback) {
-            api_.getAllBooksEntrySuccess = callback;
+        api_.setGetAllBookEntrySuccessCallback = function(callback) {
+            api_.getAllBookEntrySuccess = callback;
         };
 
-        api_.setGetAllBooksEntryErrorCallback = function(callback) {
-            api_.getAllBooksEntryError = callback;
+        api_.setGetAllBookEntryErrorCallback = function(callback) {
+            api_.getAllBookEntryError = callback;
         };
 
-        api_.getAllBooksEntry = function(user_id) {
+        api_.getAllBookEntry = function(user_id) {
             var param = new Object();
             param.user_id = user_id;
             var retData = null;
 
-            var request = hostURL + apiGetBooks;
+            var request = hostURL + apiGetBookEntries;
             $.ajax({
                 type: "GET",
                 url: request,
@@ -74,13 +74,13 @@ var APIs = {
                 data: param,
                 contentType: 'application/json',
                 success: function(data) {
-                    if (api_.getAllBooksEntrySuccess && typeof(api_.getAllBooksEntrySuccess) == "function") {
-                        api_.getAllBooksEntrySuccess(data);
+                    if (api_.getAllBookEntrySuccess && typeof(api_.getAllBookEntrySuccess) == "function") {
+                        api_.getAllBookEntrySuccess(data);
                     }
                 },
                 error: function(data) {
-                    if (api_.getAllBooksEntryError && typeof(api_.getAllBooksEntryError) == "function") {
-                        api_.getAllBooksEntryError(data);
+                    if (api_.getAllBookEntryError && typeof(api_.getAllBookEntryError) == "function") {
+                        api_.getAllBookEntryError(data);
                     }
                 }
             }).then(function(data) {
@@ -91,18 +91,18 @@ var APIs = {
             return retData;
         };
 
-        api_.deleteBooksEntrySuccess = null;
-        api_.deleteBooksEntryError = null;
+        api_.deleteBookEntrySuccess = null;
+        api_.deleteBookEntryError = null;
 
-        api_.setDeleteBooksEntrySuccessCallback = function(callback) {
-            api_.deleteBooksEntrySuccess = callback;
+        api_.setDeleteBookEntrySuccessCallback = function(callback) {
+            api_.deleteBookEntrySuccess = callback;
         }
 
-        api_.setDeleteBooksEntryErrorCallback = function(callback) {
-            api_.deleteBooksEntryError = callback;
+        api_.setDeleteBookEntryErrorCallback = function(callback) {
+            api_.deleteBookEntryError = callback;
         }
 
-        api_.deleteBooksEntry = function(id) {
+        api_.deleteBookEntry = function(id) {
             var param = new Object();
             param.id = id;
             var retData = null;
@@ -115,13 +115,13 @@ var APIs = {
                 data: param,
                 contentType: 'application/json',
                 success: function(data) {
-                    if (api_.deleteBooksEntrySuccess && typeof(api_.deleteBooksEntrySuccess) == "function") {
-                        api_.deleteBooksEntrySuccess(data);
+                    if (api_.deleteBookEntrySuccess && typeof(api_.deleteBookEntrySuccess) == "function") {
+                        api_.deleteBookEntrySuccess(data);
                     }
                 },
                 error: function(data) {
-                    if (api_.deleteBooksEntryError && typeof(api_.deleteBooksEntryError) == "function") {
-                        api_.deleteBooksEntryError(data);
+                    if (api_.deleteBookEntryError && typeof(api_.deleteBookEntryError) == "function") {
+                        api_.deleteBookEntryError(data);
                     }
                 }
             }).then(function(data) {
@@ -168,19 +168,19 @@ var APIs = {
             });
         };
 
-        api_.postBooksListSuccess = null;
-        api_.postBooksListError = null;
+        api_.postBookListSuccess = null;
+        api_.postBookListError = null;
 
-        api_.setPostBooksListSuccessCallback = function(callback) {
-            api_.postBooksListSuccess = callback;
+        api_.setPostBookListSuccessCallback = function(callback) {
+            api_.postBookListSuccess = callback;
         }
 
-        api_.setPostBooksListErrorCallback = function(callback) {
-            api_.postBooksListError = callback;
+        api_.setPostBookListErrorCallback = function(callback) {
+            api_.postBookListError = callback;
         }
 
-        api_.postBooksList = function(jsonObj) {
-            var postURL = hostURL + apiInsertBooksList;
+        api_.postBookList = function(jsonObj) {
+            var postURL = hostURL + apiInsertBookList;
             console.log(postURL);
             console.log(jsonObj);
             JSONString = JSON.stringify(jsonObj);
@@ -192,13 +192,13 @@ var APIs = {
                 dataType: 'json',
                 contentType: 'application/json',
                 success: function(data, textStatus, jqXHR) {
-                    if (api_.postBooksListSuccess && typeof(api_.postBooksListSuccess) == "function") {
-                        api_.postBooksListSuccess(data);
+                    if (api_.postBookListSuccess && typeof(api_.postBookListSuccess) == "function") {
+                        api_.postBookListSuccess(data);
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
-                    if (api_.postBooksListError && typeof(api_.postBooksListError) == "function") {
-                        api_.postBooksListError(textStatus);
+                    if (api_.postBookListError && typeof(api_.postBookListError) == "function") {
+                        api_.postBookListError(textStatus);
                     }
                 }
             });
@@ -216,7 +216,7 @@ var APIs = {
         }
 
         api_.postFBLogin = function(jsonObj) {
-            var postURL = hostURL + apiFaceBooksLogin;
+            var postURL = hostURL + apiFaceBookLogin;
             console.log(postURL);
             console.log(jsonObj);
             JSONString = JSON.stringify(jsonObj);

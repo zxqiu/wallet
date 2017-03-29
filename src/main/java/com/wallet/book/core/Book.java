@@ -1,4 +1,4 @@
-package com.wallet.books.core;
+package com.wallet.book.core;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wallet.utils.misc.Dict;
@@ -11,7 +11,7 @@ import java.util.Date;
 /**
  * Created by neo on 3/23/17.
  */
-public class Books {
+public class Book {
     @JsonProperty
     private String id;
 
@@ -36,10 +36,10 @@ public class Books {
     @JsonProperty
     private String data;
 
-    public Books() {
+    public Book() {
     }
 
-    public Books(String user_id, String create_user_id, String name, Date edit_time, String picture_id, String data) throws JSONException {
+    public Book(String user_id, String create_user_id, String name, Date edit_time, String picture_id, String data) throws JSONException {
         this.setId(user_id + "-" + name);
         this.setUser_id(user_id);
         this.setCreate_user_id(create_user_id);
@@ -52,7 +52,7 @@ public class Books {
         this.appendUser(user_id);
     }
 
-    public Books(String id, String user_id, String create_user_id, String name, Date create_time, Date edit_time, String picture_id
+    public Book(String id, String user_id, String create_user_id, String name, Date create_time, Date edit_time, String picture_id
             , String data) throws JSONException {
         this.setId(id);
         this.setUser_id(user_id);
@@ -66,7 +66,7 @@ public class Books {
         this.appendUser(user_id);
     }
 
-    public void updateBooksID() {
+    public void updateBookID() {
         this.setId(this.getUser_id() + "-" + this.getName());
     }
 
@@ -123,6 +123,38 @@ public class Books {
         }
 
         data.put(Dict.USER_LIST, new_user_list);
+        this.setData(data.toString());
+    }
+
+    public JSONArray getUserList() throws JSONException {
+        String dataString = this.getData();
+
+        if (dataString == null || dataString.length() < 2) {
+            return null;
+        }
+
+        JSONObject data = new JSONObject(dataString);
+        if (!data.has(Dict.USER_LIST)) {
+            return null;
+        }
+
+        return data.getJSONArray(Dict.USER_LIST);
+    }
+
+    public void updateUserList(JSONArray user_list) throws JSONException {
+        String dataString = this.getData();
+
+        if (dataString == null || dataString.length() < 2) {
+            return;
+        }
+
+        JSONObject data = new JSONObject(dataString);
+        if (data != null) {
+            return;
+        }
+
+        data.put(Dict.USER_LIST, user_list);
+        this.setData(data.toString());
     }
 
     public String getId() {

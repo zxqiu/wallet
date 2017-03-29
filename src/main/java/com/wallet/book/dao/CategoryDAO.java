@@ -1,4 +1,4 @@
-package com.wallet.books.dao;
+package com.wallet.book.dao;
 
 import java.util.List;
 
@@ -7,8 +7,8 @@ import org.skife.jdbi.v2.sqlobject.SqlQuery;
 import org.skife.jdbi.v2.sqlobject.SqlUpdate;
 import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
 
-import com.wallet.books.core.Category;
-import com.wallet.books.core.CategoryMapper;
+import com.wallet.book.core.Category;
+import com.wallet.book.core.CategoryMapper;
 import com.wallet.login.dao.UserDAO;
 import com.wallet.utils.misc.Dict;
 
