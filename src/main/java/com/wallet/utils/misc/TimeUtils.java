@@ -13,7 +13,7 @@ public class TimeUtils {
 	private static final Logger logger_ = LoggerFactory.getLogger(TimeUtils.class);
 	
 	private static final AtomicLong TIMESTAMP_LAST_TIME_MS = new AtomicLong();
-	
+
 	/**
 	 * 
 	 * @return get Beijing time
@@ -54,15 +54,15 @@ public class TimeUtils {
 	            return now;
 	    }
 	}
-	
+
 	public static String formatISOToUS(String iso) {
 		return iso.substring(5, 7) + "/" + iso.substring(8, 10) + "/" + iso.substring(0, 4);
 	}
-	
+
 	public static String formatUSToISO(String us) {
-		return us.substring(6, 10) + "-" + us.substring(3, 5) + "-" + us.substring(0, 2); 
+		return us.substring(6, 10) + "-" + us.substring(3, 5) + "-" + us.substring(0, 2);
 	}
-	
+
 	// test
 	public static void main(String[] arg) throws Exception
 	{

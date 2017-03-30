@@ -9,6 +9,7 @@ var apiGetBookEntries = "/books/getentries";
 var apiInsertBookList = "/books/insertbooklist";
 var apiInsertCategoryList = "/books/insertcategorylist";
 var apiFaceBookLogin = "/fblogin";
+var apiTinyUrlToShort = "/t/toshort";
 
 var APIs = {
     createNew: function() {
@@ -235,6 +236,42 @@ var APIs = {
                 error: function(jqXHR, textStatus, errorThrown) {
                     if (api_.postFBLoginError && typeof(api_.postFBLoginError) == "function") {
                         api_.postFBLoginError(textStatus);
+                    }
+                }
+            });
+        };
+
+        api_.postTinyUrlToShortSuccess = null;
+        api_.postTinyUrlToShortError = null;
+
+        api_.setPostTinyUrlToShortSuccessCallback = function(callback) {
+            api_.postTinyUrlToShortSuccess = callback;
+        }
+
+        api_.setPostTinyUrlToShortErrorCallback = function(callback) {
+            api_.postTinyUrlToShortError = callback;
+        }
+
+        api_.postTinyUrlToShort = function(jsonObj) {
+            var postURL = hostURL + apiTinyUrlToShort;
+            console.log(postURL);
+            console.log(jsonObj);
+            JSONString = JSON.stringify(jsonObj);
+
+            $.ajax({
+                type: "POST",
+                url: postURL,
+                data: JSONString,
+                dataType: 'json',
+                contentType: 'application/json',
+                success: function(data, textStatus, jqXHR) {
+                    if (api_.postTinyUrlToShortSuccess && typeof(api_.postTinyUrlToShortSuccess) == "function") {
+                        api_.postTinyUrlToShortSuccess(data);
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    if (api_.postTinyUrlToShortError && typeof(api_.postTinyUrlToShortError) == "function") {
+                        api_.postTinyUrlToShortError(textStatus);
                     }
                 }
             });

@@ -22,6 +22,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.URI;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 @Path("/books")
@@ -268,7 +270,7 @@ public class BookResource {
 					.build();
 		}
 
-		if (syncUserList(book.getName(), book.getCreate_user_id(), book.getUserList()).isEmpty()) {
+		if (syncBookUserList(book.getName(), book.getCreate_user_id(), book.getUserList()).isEmpty()) {
 			return Response
 					.serverError()
 					.entity(ApiUtils
@@ -276,11 +278,12 @@ public class BookResource {
 					.build();
 		}
 
+		syncBookEntries(user_id, book.getId(), request_user);
 
 		return Response.seeOther(URI.create(PATH_BOOKS_LIST)).build();
 	}
 
-	public List<Book> syncUserList(String book_name, String create_user_id, JSONArray user_list) throws Exception {
+	public List<Book> syncBookUserList(String book_name, String create_user_id, JSONArray user_list) throws Exception {
 		List<Book> bookList = bookDAOC.getByNameAndCreateUserID(book_name, create_user_id);
 
 		for (Book book : bookList) {
@@ -291,13 +294,27 @@ public class BookResource {
 		return bookList;
 	}
 
-	public List<BookEntry> syncBookEntries(String book_id, String target_user_id) throws Exception {
-		List<BookEntry> entryList = bookEntryDAOC.getByBookID(book_id);
+	public List<BookEntry> syncBookEntries(String user_id, String book_id, String target_user_id) throws Exception {
+		List<BookEntry> entryList = bookEntryDAOC.getByUserIDAndBookID(user_id, book_id);
+		List<BookEntry> existingEntryList = bookEntryDAOC.getByUserIDAndBookID(target_user_id, book_id);
+		HashMap<String, BookEntry> fingerPrintMap = new HashMap<>();
+
+		for (BookEntry entry : existingEntryList) {
+			fingerPrintMap.put(entry.getFingerPrint(), entry);
+		}
 
 		for (BookEntry entry : entryList) {
-			entry.setUser_id(target_user_id);
-			entry.updateID();
-			bookEntryDAOC.insert(entry);
+			String finger_print = entry.getFingerPrint();
+			if (fingerPrintMap.containsKey(finger_print)) {
+			    BookEntry tmp = fingerPrintMap.get(finger_print);
+			    tmp.update(tmp.getUser_id(), entry.getBook_id(), entry.getCategory(), entry.getEvent_date(), entry.getAmount()
+						, entry.getNote(), entry.getPhoto());
+			    bookEntryDAOC.update(tmp);
+			} else {
+				entry.setUser_id(target_user_id);
+				entry.updateID();
+				bookEntryDAOC.insert(entry);
+			}
 		}
 
 		return entryList;

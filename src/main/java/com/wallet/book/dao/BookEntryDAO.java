@@ -28,6 +28,7 @@ public static final String TABLE_NAME = "book_entry";
 			+ "`" + Dict.PHOTO + "` varchar(64),"
 			+ "`" + Dict.DATA + "` text,"
 			+ "`" + Dict.EDIT_TIME + "` datetime not null,"
+			+ "`" + Dict.CREATE_TIME + "` datetime not null,"
 			+ "primary key (`" + Dict.ID + "`),"
 			+ "key `fk_book_entry_user` (`" + Dict.USER_ID + "`),"
 			+ "constraint `fk_book_entry_user` foreign key (`" + Dict.USER_ID + "`) "
@@ -40,17 +41,18 @@ public static final String TABLE_NAME = "book_entry";
 	void dropTable();
 	
 	@SqlUpdate("insert into " + TABLE_NAME + " ("
-			+ Dict.ID + ", "
-			+ Dict.USER_ID + ", "
-			+ Dict.CREATE_USER_ID + ", "
-			+ Dict.BOOK_ID + ", "
-			+ Dict.CATEGORY + ", "
-			+ Dict.EVENT_DATE + ", "
-			+ Dict.AMOUNT + ", "
-			+ Dict.NOTE + ", "
-			+ Dict.PHOTO + ", "
-			+ Dict.DATA + ", "
-			+ Dict.EDIT_TIME
+			+ Dict.ID
+			+ ", " + Dict.USER_ID
+			+ ", " + Dict.CREATE_USER_ID
+			+ ", " + Dict.BOOK_ID
+			+ ", " + Dict.CATEGORY
+			+ ", " + Dict.EVENT_DATE
+			+ ", " + Dict.AMOUNT
+			+ ", " + Dict.NOTE
+			+ ", " + Dict.PHOTO
+			+ ", " + Dict.DATA
+			+ ", " + Dict.EDIT_TIME
+			+ ", " + Dict.CREATE_TIME
 			+ ") values ("
 			+ ":" + Dict.ID
 			+ ", :" + Dict.USER_ID
@@ -63,19 +65,22 @@ public static final String TABLE_NAME = "book_entry";
 			+ ", :" + Dict.PHOTO
 			+ ", :" + Dict.DATA
 			+ ", :" + Dict.EDIT_TIME
+			+ ", :" + Dict.CREATE_TIME
 			+ ")"
 		)
-	void insert(@Bind(Dict.ID) String id,
-				@Bind(Dict.USER_ID) String user_id,
-				@Bind(Dict.CREATE_USER_ID) String create_user_id,
-				@Bind(Dict.BOOK_ID) String book_id,
-				@Bind(Dict.CATEGORY) String category,
-				@Bind(Dict.EVENT_DATE) Date event_date,
-				@Bind(Dict.AMOUNT) long amount,
-				@Bind(Dict.NOTE) String note,
-				@Bind(Dict.PHOTO) String photo,
-				@Bind(Dict.DATA) String data,
-				@Bind(Dict.EDIT_TIME) Date edit_time);
+	void insert(@Bind(Dict.ID) String id
+				, @Bind(Dict.USER_ID) String user_id
+				, @Bind(Dict.CREATE_USER_ID) String create_user_id
+				, @Bind(Dict.BOOK_ID) String book_id
+				, @Bind(Dict.CATEGORY) String category
+				, @Bind(Dict.EVENT_DATE) Date event_date
+				, @Bind(Dict.AMOUNT) long amount
+				, @Bind(Dict.NOTE) String note
+				, @Bind(Dict.PHOTO) String photo
+				, @Bind(Dict.DATA) String data
+				, @Bind(Dict.EDIT_TIME) Date edit_time
+				, @Bind(Dict.CREATE_TIME) Date create_time
+	);
 	
 	@SqlUpdate("update " + TABLE_NAME + " set "
 			+ Dict.USER_ID + "= :" + Dict.USER_ID + ", "
@@ -110,6 +115,16 @@ public static final String TABLE_NAME = "book_entry";
 	@Mapper(BookEntryMapper.class)
 	List<BookEntry> findByBookID(
 			@Bind(Dict.BOOK_ID) String book_id
+	);
+
+	@SqlQuery("select * from " + TABLE_NAME + " where "
+			+ Dict.BOOK_ID + " = :" + Dict.BOOK_ID
+			+ " and " + Dict.USER_ID + " = :" + Dict.USER_ID
+	)
+	@Mapper(BookEntryMapper.class)
+	List<BookEntry> findByUserIDAndBookID(
+			@Bind(Dict.USER_ID) String user_id
+			, @Bind(Dict.BOOK_ID) String book_id
 	);
 
 	@SqlQuery("select * from " + TABLE_NAME + " where " + Dict.USER_ID + " = :" + Dict.USER_ID)

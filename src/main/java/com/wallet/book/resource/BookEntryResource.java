@@ -183,10 +183,13 @@ public class BookEntryResource {
 		
 		// 4.2 insert book
 		// 4.2.1 update if id is received and exists. Otherwise insert new.
-		boolean exist = false;
+		BookEntry bookEntry = null;
 		if (id.length() != 0) {
 			try {
-				exist = !bookEntryDAOC.getByID(id).isEmpty();
+				List<BookEntry> list = bookEntryDAOC.getByID(id);
+				if (!list.isEmpty()) {
+					bookEntry = list.get(list.size() - 1);
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				logger_.error("Error find out if item already exists : " + e.getMessage());
@@ -196,19 +199,24 @@ public class BookEntryResource {
 		
 		// 4.2.2 insert
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-		BookEntry bookEntry = new BookEntry(user_id, user_id, book.getId(), category, sdf.parse(event_date), amount, note, photo, "");
 		try {
-			if (exist) {
-			    bookEntry.setId(id);
+			if (bookEntry != null) {
+				bookEntry.setBook_id(book.getId());
+			    bookEntry.setCategory(category);
+			    bookEntry.setEvent_date(sdf.parse(event_date));
+			    bookEntry.setAmount(amount);
+			    bookEntry.setNote(note);
+			    bookEntry.setPhoto(photo);
 				logger_.info("Update book item : " + bookEntry.getId());
 				bookEntryDAOC.update(bookEntry);
 			} else {
+				bookEntry = new BookEntry(user_id, user_id, book.getId(), category, sdf.parse(event_date), amount, note, photo);
 				logger_.info("Insert new book item : " + bookEntry.getId());
 				bookEntryDAOC.insert(bookEntry);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			logger_.error("Error : failed to insert new book : " + e.getMessage());
+			logger_.error("Error : failed to insert or update book entry : " + e.getMessage());
 			return Response.serverError().build();
 		}
 

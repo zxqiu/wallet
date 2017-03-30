@@ -67,13 +67,17 @@ public class BookEntryDAOConnector {
 	public List<BookEntry> getByUserID(String user_id) throws Exception {
 		return bookEntryDAO.findByUserID(user_id);
 	}
-	
+
+	public List<BookEntry> getByUserIDAndBookID(String user_id, String book_id) throws Exception {
+		return bookEntryDAO.findByUserIDAndBookID(user_id, book_id);
+	}
+
 	public void insert(BookEntry bookEntry) throws Exception {
 		try {
 			bookEntryDAO.insert(bookEntry.getId(), bookEntry.getUser_id(), bookEntry.getCreate_user_id()
 					, bookEntry.getBook_id(), bookEntry.getCategory(), bookEntry.getEvent_date()
 					, bookEntry.getAmount(), bookEntry.getNote(), bookEntry.getPhoto(), bookEntry.getData()
-					, bookEntry.getEdit_time());
+					, bookEntry.getEdit_time(),bookEntry.getCreate_time());
 		} catch (Exception e) {
 			if (e.getMessage().contains("Duplicate entry")) {
 				logger_.info("Book entry already exists : " + bookEntry.getId());
@@ -101,7 +105,7 @@ public class BookEntryDAOConnector {
 	
 	public static void test() throws Exception {
 		BookEntry bookEntry = new BookEntry("admin", "admin", "adminbook","asdfasf", new Date()
-				, (long)10, "note", "photo", "test data");
+				, (long)10, "note", "photo");
 		
 		logger_.info("BookEntryDAOConnector test ...");
 		

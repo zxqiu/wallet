@@ -3,7 +3,10 @@ package com.wallet.book.core;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.wallet.utils.misc.Dict;
 import com.wallet.utils.misc.TimeUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class BookEntry {
 	@JsonProperty
@@ -38,11 +41,14 @@ public class BookEntry {
 
 	@JsonProperty
 	private Date edit_time;
-	
+
+	@JsonProperty
+	private Date create_time;
+
 	public BookEntry() {
 	}
 	
-	public BookEntry(String user_id, String create_user_id, String book_id, String category, Date event_date, long amount, String note, String photo, String data) {
+	public BookEntry(String user_id, String create_user_id, String book_id, String category, Date event_date, long amount, String note, String photo) throws JSONException {
 		this.setId(user_id + TimeUtils.getUniqueTimeStampInMS());
 		this.setUser_id(user_id);
 		this.setCreate_user_id(create_user_id);
@@ -53,7 +59,54 @@ public class BookEntry {
 		this.setNote(note);
 		this.setPhoto(photo);
 		this.setEdit_time(new Date());
-		this.setData(data);
+		this.setCreate_time(new Date()); // must be unique
+
+		this.setFingerPrint();
+	}
+
+	public void update(String user_id, String book_id, String category, Date event_date, long amount, String note, String photo) {
+		this.setUser_id(user_id);
+		this.setBook_id(book_id);
+		this.setCategory(category);
+		this.setAmount(amount);
+		this.setEvent_date(event_date);
+		this.setNote(note);
+		this.setPhoto(photo);
+	}
+
+	/**
+     * Will do nothing if finger print already exists or finger_print entry does not exists in data
+	 * @throws JSONException
+	 */
+	public void setFingerPrint() throws JSONException {
+		String JSONString = this.getData();
+		if (JSONString == null || JSONString.length() < 2) {
+			return;
+		}
+
+		JSONObject data = new JSONObject(JSONString);
+		if (data == null) {
+			return;
+		}
+
+		if (!data.has(Dict.FINGER_PRINT)) {
+			String finger_print = this.create_user_id + TimeUtils.getUniqueTimeStampInMS();
+			data.put(Dict.FINGER_PRINT, finger_print);
+		}
+	}
+
+	public String getFingerPrint() throws JSONException {
+		String JSONString = this.getData();
+		if (JSONString == null || JSONString.length() < 2) {
+			return null;
+		}
+
+		JSONObject data = new JSONObject(JSONString);
+		if (data == null || !data.has(Dict.FINGER_PRINT)) {
+			return null;
+		}
+
+		return data.getString(Dict.FINGER_PRINT);
 	}
 
 	public void updateID() {
@@ -146,5 +199,13 @@ public class BookEntry {
 
 	public void setData(String data) {
 		this.data = data;
+	}
+
+	public Date getCreate_time() {
+		return create_time;
+	}
+
+	public void setCreate_time(Date create_time) {
+		this.create_time = create_time;
 	}
 }

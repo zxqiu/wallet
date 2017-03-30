@@ -63,9 +63,11 @@
 					<div class='input-group'>
 						<span class="input-group-addon">B</span>
 						<select class="form-control" id="bookSelector" name="book_name">
-							<option class="book-option" value="default">
-								default
-							</option>
+							@if (bookList == null || bookList.size() == 0) {
+								<option class="book-option" value="default">
+									default
+								</option>
+                            }
 							@if (bookList != null) {
 								@for (Book book : bookList) {
 								<option class="book-option" style="background: @?book.getPicture_id();" value="@?book.getName()"

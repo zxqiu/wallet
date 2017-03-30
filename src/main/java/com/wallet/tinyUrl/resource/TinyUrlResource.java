@@ -39,6 +39,32 @@ public class TinyUrlResource {
 
     @POST
     @Timed
+    @Path("/toshortbyform")
+    @Produces(MediaType.APPLICATION_JSON)
+    public TinyUrl toShort(
+            @FormParam(Dict.FULL_URL) String full_url
+            , @FormParam(Dict.EXPIRE_CLICK) int expire_click
+    ) throws Exception {
+        List<TinyUrl> tinyUrls = tinyUrlDAOC.getByFullUrl(full_url);
+        if (!tinyUrls.isEmpty()) {
+            return tinyUrls.get(tinyUrls.size() - 1);
+        }
+
+        TinyUrl tinyUrl = new TinyUrl(full_url, expire_click);
+
+        try {
+            tinyUrlDAOC.insert(tinyUrl);
+        } catch (Exception e) {
+            // retry to solve duplicate generated short url issue
+            tinyUrl = new TinyUrl(full_url, expire_click);
+            tinyUrlDAOC.insert(tinyUrl);
+        }
+
+        return tinyUrl;
+    }
+
+    @POST
+    @Timed
     @Path("/toshort")
     @Produces(MediaType.APPLICATION_JSON)
     public TinyUrl toShort(
@@ -65,6 +91,8 @@ public class TinyUrlResource {
 
         return tinyUrl;
     }
+
+    private TinyUrl
 
     @GET
     @Timed
