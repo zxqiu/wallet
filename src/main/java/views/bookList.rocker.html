@@ -53,28 +53,30 @@
 									   style="background-color: @?book.getPicture_id(); text-align: center;"
 									   required="true" readonly>
 								<span class="input-group-addon btn bookDelete">X</span>
+								<span class="input-group-addon btn bookShare">Share</span>
 							</div>
 						</div>
 					</form>
-					<form role="form" id="bookShareForm" method="post">
-						<input type="hidden" name="full_url" value="/books/receivebook/@book.getUser_id()/@book.getId()">
-						<div class="form-group">
-							<label for="expireClick">
-								Visit limit (0 as unlimited, unsafe)
-							</label>
-							<div class="input-group">
-								<input type="number" class="form-control" id="expireClick" name="expire_click" value="1" required="true">
-								<span class="input-group-addon btn" id="bookShareFormSubmit">Get link</span>
+					<div id="bookShareFormDiv@book.getId()" style="display: none">
+						<form class="bookShareForm" role="form" id="bookShareForm" method="post">
+							<input type="hidden" id="fullUrl" name="full_url" value="/books/receivebook/@book.getUser_id()/@book.getId()">
+							<div class="form-group">
+								<label for="expireClick">
+									Visit limit (0 as unlimited, unsafe)
+								</label>
+								<div class="input-group">
+									<input type="number" class="form-control" id="expireClick" name="expire_click" value="1" required="true">
+									<span class="input-group-addon btn bookShareFormSubmit" id="bookShareFormSubmit">Get link</span>
+								</div>
 							</div>
-						</div>
-					</form>
+						</form>
+					</div>
 				}
 			}
 		</div>
 	</div>
 
 	<script src="/js/jquery.min.js"></script>
-	<script src="/js/jquery.form.min.js"></script>
 	<script src="/js/bootstrap.min.js"></script>
 	<script src="/js/bootstrap-datepicker.min.js"></script>
 	<script src="/js/tinycolor.js"></script>

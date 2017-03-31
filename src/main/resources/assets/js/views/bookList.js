@@ -7,7 +7,7 @@ function submitSuccess(data) {
     window.location.href = data.message;
 }
 function submitList () {
-    var forms = $("form");
+    var forms = $("#bookForm");
     var categories = new Array();
 
     forms.each(function(i) {
@@ -95,6 +95,24 @@ function newBook() {
     initBookColorBtn();
 }
 
+function initShareBookBtn() {
+    $(".bookShare").click(function (e) {
+        var btn = $(e.target);
+        var parent = btn.parent();
+        var grandparent = parent.parent();
+        var grandgrandparent = grandparent.parent();
+        var bookID = grandgrandparent.find(".bookID")[0].value;
+        var id = "bookShareFormDiv" + bookID;
+
+        if (btn.hasClass("share")) {
+            btn.removeClass("share");
+            document.getElementById(id).setAttribute("style", "display: none;");
+        } else {
+            btn.addClass("share")
+            document.getElementById(id).setAttribute("style", "display: block;");
+        }
+    });
+}
 
 function initDeleteBookBtn() {
     $(".bookDelete").click(function (e) {
@@ -157,42 +175,51 @@ function initBookColorBtn() {
 /************************** jquery functions ********************************/
 
 $(document).ready(function () {
+    initShareBookBtn();
     initDeleteBookBtn();
     initBookColorBtn();
 });
 
-$('#bookShareForm').ajaxForm({
-    url : '/t/toshortbyform',
-    success : function (response) {
-        console.log(response);
-        var form = document.getElementById("bookShareForm");
-        while (form.children.length > 0) {
-            form.removeChild(form.firstChild);
-        }
-
-        var shortUrl = document.createElement("input");
-        shortUrl.setAttribute("disabled", "true");
-        shortUrl.setAttribute("type", "text");
-        shortUrl.setAttribute("value", window.location.host + "/t/tolong/" + response.short_url);
-        shortUrl.setAttribute("class", "form-control");
-
-        form.appendChild(shortUrl);
-    }
-});
-
-var form = document.getElementById("bookShareForm");
-form.noValidate = true;
-$("#bookShareFormSubmit").on("click", function() {
-    for (var i = 0; i < form.length; i++) {
-        if (!form[i].checkValidity()) {
+var form = document.getElementsByClassName("bookShareForm");
+for (var i = 0; i < form.length; i++) {
+    form[i].noValidate = true;
+}
+$(".bookShareFormSubmit").on("click", function(e) {
+    var btn = $(e.target);
+    var parent = btn.parent();
+    var grandparent = parent.parent();
+    var grandgrandparent = grandparent.parent();
+    var formCur = grandgrandparent[0];
+    for (var i = 0; i < formCur.length; i++) {
+        if (!formCur[i].checkValidity()) {
             $("input").each(function () {
-                if ($(this).prop("required") == true && $(this).val() == "") {
-                    $(this).parent().parent().addClass("has-error");
+                if ($(btn).prop("required") == true && $(this).val() == "") {
+                    $(btn).parent().parent().addClass("has-error");
                 }
             });
             return;
         }
     }
 
-    form.submit();
+    var request = new Object();
+    request["full_url"] = $(formCur).find("#fullUrl")[0].value;
+    request["expire_click"] = parseInt($(formCur).find("#expireClick")[0].value);
+
+    api.setPostTinyUrlToShortSuccessCallback(function (response) {
+        while (formCur.firstChild) {
+            formCur.removeChild(formCur.firstChild);
+        }
+
+        var shortUrl = document.createElement("input");
+        shortUrl.setAttribute("readonly", "true");
+        shortUrl.setAttribute("type", "text");
+        shortUrl.setAttribute("value", window.location.host + "/t/tolong/" + response.short_url);
+        shortUrl.setAttribute("class", "form-control");
+        shortUrl.setAttribute("style", "cursor:pointer");
+        shortUrl.setAttribute("onClick", "this.setSelectionRange(0, this.value.length)");
+
+        formCur.appendChild(shortUrl);
+    });
+
+    api.postTinyUrlToShort(request);
 });
