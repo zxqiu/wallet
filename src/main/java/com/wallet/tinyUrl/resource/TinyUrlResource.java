@@ -50,17 +50,7 @@ public class TinyUrlResource {
             return tinyUrls.get(tinyUrls.size() - 1);
         }
 
-        TinyUrl tinyUrl = new TinyUrl(full_url, expire_click);
-
-        try {
-            tinyUrlDAOC.insert(tinyUrl);
-        } catch (Exception e) {
-            // retry to solve duplicate generated short url issue
-            tinyUrl = new TinyUrl(full_url, expire_click);
-            tinyUrlDAOC.insert(tinyUrl);
-        }
-
-        return tinyUrl;
+        return tinyUrlDAOC.insertOrUpdateExisting(full_url, expire_click);
     }
 
     @POST
@@ -74,25 +64,8 @@ public class TinyUrlResource {
         String full_url = tinyUrlParam.getString(Dict.FULL_URL);
         int expire_click = tinyUrlParam.getInt(Dict.EXPIRE_CLICK);
 
-        List<TinyUrl> tinyUrls = tinyUrlDAOC.getByFullUrl(full_url);
-        if (!tinyUrls.isEmpty()) {
-            return tinyUrls.get(tinyUrls.size() - 1);
-        }
-
-        TinyUrl tinyUrl = new TinyUrl(full_url, expire_click);
-
-        try {
-            tinyUrlDAOC.insert(tinyUrl);
-        } catch (Exception e) {
-            // retry to solve duplicate generated short url issue
-            tinyUrl = new TinyUrl(full_url, expire_click);
-            tinyUrlDAOC.insert(tinyUrl);
-        }
-
-        return tinyUrl;
+        return tinyUrlDAOC.insertOrUpdateExisting(full_url, expire_click);
     }
-
-    private TinyUrl
 
     @GET
     @Timed

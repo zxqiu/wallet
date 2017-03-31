@@ -33,6 +33,8 @@
 					<button type="button" class="btn btn-info" onclick="location.href='/'">cancel</button>
 				</div>
 			</div>
+		</div>
+		<div class="col-md-4" id="bookList">
 			@if (bookList != null) {
 				@for (Book book : bookList) {
 					<form role="form" id="bookForm">
@@ -54,8 +56,17 @@
 							</div>
 						</div>
 					</form>
-					<form role="form" id="bookShareForm">
-						<input type="hidden" name="">
+					<form role="form" id="bookShareForm" method="post">
+						<input type="hidden" name="full_url" value="/books/receivebook/@book.getUser_id()/@book.getId()">
+						<div class="form-group">
+							<label for="expireClick">
+								Visit limit (0 as unlimited, unsafe)
+							</label>
+							<div class="input-group">
+								<input type="number" class="form-control" id="expireClick" name="expire_click" value="1" required="true">
+								<span class="input-group-addon btn" id="bookShareFormSubmit">Get link</span>
+							</div>
+						</div>
 					</form>
 				}
 			}
@@ -63,6 +74,7 @@
 	</div>
 
 	<script src="/js/jquery.min.js"></script>
+	<script src="/js/jquery.form.min.js"></script>
 	<script src="/js/bootstrap.min.js"></script>
 	<script src="/js/bootstrap-datepicker.min.js"></script>
 	<script src="/js/tinycolor.js"></script>

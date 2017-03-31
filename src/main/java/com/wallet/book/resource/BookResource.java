@@ -215,6 +215,14 @@ public class BookResource {
 	}
 
 	public static final String PATH_RECEIVE_BOOKS = "/books/receivebook/";
+
+	/**
+	 * @param user_id	the user who is sharing the book
+	 * @param book_id
+	 * @param cookie	must login to receive book
+	 * @return
+	 * @throws Exception
+	 */
 	@GET
 	@Timed
 	@Path("/receivebook/{" + Dict.USER_ID + "}/{" + Dict.BOOK_ID + "}")

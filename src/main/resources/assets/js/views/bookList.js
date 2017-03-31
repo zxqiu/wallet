@@ -160,3 +160,39 @@ $(document).ready(function () {
     initDeleteBookBtn();
     initBookColorBtn();
 });
+
+$('#bookShareForm').ajaxForm({
+    url : '/t/toshortbyform',
+    success : function (response) {
+        console.log(response);
+        var form = document.getElementById("bookShareForm");
+        while (form.children.length > 0) {
+            form.removeChild(form.firstChild);
+        }
+
+        var shortUrl = document.createElement("input");
+        shortUrl.setAttribute("disabled", "true");
+        shortUrl.setAttribute("type", "text");
+        shortUrl.setAttribute("value", window.location.host + "/t/tolong/" + response.short_url);
+        shortUrl.setAttribute("class", "form-control");
+
+        form.appendChild(shortUrl);
+    }
+});
+
+var form = document.getElementById("bookShareForm");
+form.noValidate = true;
+$("#bookShareFormSubmit").on("click", function() {
+    for (var i = 0; i < form.length; i++) {
+        if (!form[i].checkValidity()) {
+            $("input").each(function () {
+                if ($(this).prop("required") == true && $(this).val() == "") {
+                    $(this).parent().parent().addClass("has-error");
+                }
+            });
+            return;
+        }
+    }
+
+    form.submit();
+});

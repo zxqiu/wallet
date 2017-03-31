@@ -88,7 +88,29 @@ public class TinyUrlDAOConnector {
 			}
 		}
 	}
-	
+
+	public TinyUrl insertOrUpdateExisting(String full_url, int expire_click) throws Exception {
+		List<TinyUrl> tinyUrls = instance().getByFullUrl(full_url);
+		if (!tinyUrls.isEmpty()) {
+			TinyUrl tinyUrl = tinyUrls.get(tinyUrls.size() - 1);
+			tinyUrl.setExpire_click(expire_click);
+			instance().updateExpireClickByShortUrl(tinyUrl);
+			return tinyUrl;
+		}
+
+		TinyUrl tinyUrl = new TinyUrl(full_url, expire_click);
+
+		try {
+			instance().insert(tinyUrl);
+		} catch (Exception e) {
+			// retry to solve duplicate generated short url issue
+			tinyUrl = new TinyUrl(full_url, expire_click);
+			instance().insert(tinyUrl);
+		}
+
+		return tinyUrl;
+	}
+
 	public void updateExpireClickByFullUrl(TinyUrl tinyUrl) {
 		tinyUrlDAO.updateExpireClickByFullUrl(tinyUrl.getFull_url(), tinyUrl.getExpire_click());
 	}
