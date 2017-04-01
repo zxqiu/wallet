@@ -37,7 +37,7 @@
 		<div class="col-md-4" id="bookList">
 			@if (bookList != null) {
 				@for (Book book : bookList) {
-					<form role="form" id="bookForm">
+					<form role="form" class="bookForm">
 						<input type="hidden" class="bookID" name="id" value="@?book.getId()">
 						<div class="form-group">
 							<input type="hidden" class="bookAction" name="action" value="edit">

@@ -1,6 +1,7 @@
 package com.wallet.service;
 
 import com.fizzed.rocker.runtime.RockerRuntime;
+import com.wallet.book.core.syncHelper;
 import com.wallet.book.dao.*;
 import com.wallet.book.resource.BookEntryResource;
 import com.wallet.book.resource.BookResource;
@@ -60,13 +61,13 @@ public class WalletService extends Application<WalletConfiguration> {
 	    BookEntryDAOConnector.init(bookEntryDAO);
 	    CategoryDAOConnector.init(categoryDAO);
 		TinyUrlDAOConnector.init(tinyUrlDAO);
-	    
-	    //sessionDAO.dropTable();
-	    //bookDAO.dropTable();
-	    //bookEntryDAO.dropTable();
-	    //categoryDAO.dropTable();
-	    //userDAO.dropTable();
-	    //tinyUrlDAO.dropTable();
+
+	    sessionDAO.dropTable();
+	    bookDAO.dropTable();
+	    bookEntryDAO.dropTable();
+	    categoryDAO.dropTable();
+	    userDAO.dropTable();
+	    tinyUrlDAO.dropTable();
 	    
 	    UserDAOConnector.test();
 	    SessionDAOConnector.test();
@@ -84,5 +85,8 @@ public class WalletService extends Application<WalletConfiguration> {
 
 	    environment.jersey().register(new RockerMessageBodyWriter());
 	    RockerRuntime.getInstance().setReloading(true);
+
+		syncHelper.init();
+
 	}
 }

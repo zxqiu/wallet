@@ -7,8 +7,8 @@ function submitSuccess(data) {
     window.location.href = data.message;
 }
 function submitList () {
-    var forms = $("#bookForm");
-    var categories = new Array();
+    var forms = $(".bookForm");
+    var books = new Array();
 
     forms.each(function(i) {
         var idElem = forms[i].getElementsByClassName("bookID");
@@ -16,15 +16,15 @@ function submitList () {
         var nameElem = forms[i].getElementsByClassName("bookName");
         var colorElem = forms[i].getElementsByClassName("bookColor");
 
-        categories[i] = new Object();
-        categories[i].id = idElem[0].value;
-        categories[i].action = action[0].value;
-        categories[i].name = nameElem[0].value;
-        categories[i].picture_id = colorElem[0].value;
+        books[i] = new Object();
+        books[i].id = idElem[0].value;
+        books[i].action = action[0].value;
+        books[i].name = nameElem[0].value;
+        books[i].picture_id = colorElem[0].value;
     });
 
     api.setPostBookListSuccessCallback(submitSuccess);
-    api.postBookList(categories);
+    api.postBookList(books);
 };
 
 var newCnt = 0;
@@ -33,7 +33,7 @@ function newBook() {
 
     var form = document.createElement("form");
     form.setAttribute("role", "form");
-    form.setAttribute("id", "bookForm");
+    form.setAttribute("class", "bookForm");
 
     var id = document.createElement("input");
     id.setAttribute("type", "hidden");

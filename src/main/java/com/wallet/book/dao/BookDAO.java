@@ -83,7 +83,21 @@ public interface BookDAO {
 			, @Bind(Dict.PICTURE_ID) String picture_id
 			, @Bind(Dict.DATA) String data
 	);
-    
+
+	@SqlUpdate("update " + TABLE_NAME + " set "
+			+ Dict.NAME + "= :" + Dict.NAME
+			+ ", " + Dict.EDIT_TIME + "= :" + Dict.EDIT_TIME
+			+ ", " + Dict.PICTURE_ID + "= :" + Dict.PICTURE_ID
+			+ ", " + Dict.DATA + "= :" + Dict.DATA
+			+ " where " + Dict.GROUP_ID + "= :" + Dict.GROUP_ID
+	)
+	void updateByGroupID(@Bind(Dict.GROUP_ID) String group_id
+			, @Bind(Dict.NAME) String name
+			, @Bind(Dict.EDIT_TIME) Date edit_time
+			, @Bind(Dict.PICTURE_ID) String picture_id
+			, @Bind(Dict.DATA) String data
+	);
+
     @SqlQuery("select * from " + TABLE_NAME)
     @Mapper(BookMapper.class)
     List<Book> findAll();
@@ -105,7 +119,22 @@ public interface BookDAO {
     List<Book> findByID(
             @Bind(Dict.ID) String id
     );
-	
+
+	@SqlQuery("select * from " + TABLE_NAME + " where " + Dict.GROUP_ID + " = :" + Dict.GROUP_ID)
+	@Mapper(BookMapper.class)
+	List<Book> findByGroupID(
+			@Bind(Dict.GROUP_ID) String group_id
+	);
+
+	@SqlQuery("select * from " + TABLE_NAME + " where "
+			+ Dict.NAME + " = :" + Dict.NAME
+			+ " and " + Dict.USER_ID + " = :" + Dict.USER_ID)
+	@Mapper(BookMapper.class)
+	List<Book> findByNameAndUserID(
+			@Bind(Dict.NAME) String name,
+			@Bind(Dict.USER_ID) String user_id
+	);
+
 	@SqlQuery("select * from " + TABLE_NAME + " where "
 			+ Dict.NAME + " = :" + Dict.NAME
 			+ " and " + Dict.CREATE_USER_ID + " = :" + Dict.CREATE_USER_ID)
@@ -113,6 +142,11 @@ public interface BookDAO {
 	List<Book> findByNameAndCreateUserID(
 			@Bind(Dict.NAME) String name,
 			@Bind(Dict.CREATE_USER_ID) String create_user_id
+	);
+
+	@SqlQuery("select " + Dict.BOOK_GROUP_ID + " from " + TABLE_NAME + " where " + Dict.ID + " = :" + Dict.ID)
+	List<String> findGroupIDByID(
+			@Bind(Dict.ID) String id
 	);
 
 	@SqlUpdate("delete from " + TABLE_NAME + " where " + Dict.USER_ID + " = :" + Dict.USER_ID)

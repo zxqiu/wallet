@@ -59,7 +59,11 @@ public class BookDAOConnector {
 	public List<Book> getByID(String id) throws Exception {
 		return bookDAO.findByID(id);
 	}
-	
+
+	public List<Book> getByGroupID(String group_id) throws Exception {
+		return bookDAO.findByGroupID(group_id);
+	}
+
 	public List<Book> getByUserID(String user_id) throws Exception {
 		return bookDAO.findByUserID(user_id);
 	}
@@ -68,8 +72,16 @@ public class BookDAOConnector {
 		return bookDAO.findByCreateUserID(create_user_id);
 	}
 
+	public List<Book> getByNameAndUserID(String name, String user_id) throws Exception {
+		return bookDAO.findByNameAndUserID(name, user_id);
+	}
+
 	public List<Book> getByNameAndCreateUserID(String name, String create_user_id) throws Exception {
 		return bookDAO.findByNameAndCreateUserID(name, create_user_id);
+	}
+
+	public List<String> getGroupIDByID(String id) {
+		return bookDAO.findGroupIDByID(id);
 	}
 
 	public void insert(Book book) throws Exception {
@@ -90,7 +102,11 @@ public class BookDAOConnector {
 	public void update(Book book) throws Exception {
 		bookDAO.update(book.getId(), book.getName(), book.getEdit_time(), book.getPicture_id(), book.getData());
 	}
-	
+
+	public void updateByGroupID(Book book) throws Exception {
+		bookDAO.update(book.getGroup_id(), book.getName(), book.getEdit_time(), book.getPicture_id(), book.getData());
+	}
+
 	public void deleteByID(String id) throws Exception {
 		bookDAO.deleteByID(id);
 	}

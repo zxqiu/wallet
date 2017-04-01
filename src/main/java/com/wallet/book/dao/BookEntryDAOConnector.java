@@ -64,12 +64,16 @@ public class BookEntryDAOConnector {
 		return bookEntryDAO.findByBookID(book_id);
 	}
 
+	public List<BookEntry> getByBookGroupID(String book_group_id) throws Exception {
+		return bookEntryDAO.findByBookGroupID(book_group_id);
+	}
+
 	public List<BookEntry> getByUserID(String user_id) throws Exception {
 		return bookEntryDAO.findByUserID(user_id);
 	}
 
-	public List<BookEntry> getByUserIDAndBookID(String user_id, String book_id) throws Exception {
-		return bookEntryDAO.findByUserIDAndBookID(user_id, book_id);
+	public List<BookEntry> getByUserIDAndBookGroupID(String user_id, String book_id) throws Exception {
+		return bookEntryDAO.findByUserIDAndBookGroupID(user_id, book_id);
 	}
 
 	public List<BookEntry> getByUserIDAndGroupID(String user_id, String group_id) throws Exception {
@@ -79,7 +83,7 @@ public class BookEntryDAOConnector {
 	public void insert(BookEntry bookEntry) throws Exception {
 		try {
 			bookEntryDAO.insert(bookEntry.getId(), bookEntry.getUser_id(), bookEntry.getCreate_user_id()
-					, bookEntry.getBook_id(), bookEntry.getGroup_id(), bookEntry.getCategory(), bookEntry.getEvent_date()
+					, bookEntry.getBook_id(), bookEntry.getBook_group_id(), bookEntry.getGroup_id(), bookEntry.getCategory(), bookEntry.getEvent_date()
 					, bookEntry.getAmount(), bookEntry.getNote(), bookEntry.getPhoto(), bookEntry.getData()
 					, bookEntry.getEdit_time(),bookEntry.getCreate_time());
 		} catch (Exception e) {
@@ -94,7 +98,7 @@ public class BookEntryDAOConnector {
 	}
 	
 	public void update(BookEntry bookEntry) throws Exception {
-		bookEntryDAO.update(bookEntry.getId(), bookEntry.getUser_id(), bookEntry.getBook_id()
+		bookEntryDAO.update(bookEntry.getId(), bookEntry.getBook_id(), bookEntry.getBook_group_id()
 				, bookEntry.getCategory(), bookEntry.getEvent_date(), bookEntry.getAmount(), bookEntry.getNote()
 				, bookEntry.getPhoto(), bookEntry.getData(), bookEntry.getEdit_time());
 	}
@@ -108,7 +112,7 @@ public class BookEntryDAOConnector {
 	}
 	
 	public static void test() throws Exception {
-		BookEntry bookEntry = new BookEntry("admin", "admin", "adminbook","asdfasf", new Date()
+		BookEntry bookEntry = new BookEntry("admin", "admin", "adminbook", "adminbook", "asdfasf", new Date()
 				, (long)10, "note", "photo");
 		
 		logger_.info("BookEntryDAOConnector test ...");

@@ -4,6 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.google.gson.Gson;
 import com.wallet.book.core.Book;
 import com.wallet.book.core.BookEntry;
+import com.wallet.book.core.syncHelper;
 import com.wallet.book.dao.BookDAOConnector;
 import com.wallet.book.dao.BookEntryDAOConnector;
 import com.wallet.login.dao.SessionDAOConnector;
@@ -265,6 +266,15 @@ public class BookResource {
 					.build();
 		}
 
+		// check duplicate book name
+		if (!bookDAOC.getByNameAndUserID(book.getName(), request_user).isEmpty()) {
+			return Response
+					.serverError()
+					.entity(ApiUtils
+							.buildJSONResponse(false, "You already have a book with name " + book.getName()))
+					.build();
+		}
+
 		book.setUser_id(request_user);
 		book.updateBookID();
 		book.appendUser(request_user);
@@ -278,54 +288,10 @@ public class BookResource {
 					.build();
 		}
 
-		if (syncBookUserList(book.getName(), book.getCreate_user_id(), book.getUserList()).isEmpty()) {
-			return Response
-					.serverError()
-					.entity(ApiUtils
-							.buildJSONResponse(false, "failed to append user " + user_id))
-					.build();
-		}
+		syncHelper.syncBook(book);
 
-		syncBookEntries(user_id, book_id, request_user);
+		syncHelper.syncBookEntries(book.getGroup_id(), request_user, book.getId());
 
 		return Response.seeOther(URI.create(PATH_BOOKS_LIST)).build();
-	}
-
-	public List<Book> syncBookUserList(String book_name, String create_user_id, JSONArray user_list) throws Exception {
-		List<Book> bookList = bookDAOC.getByNameAndCreateUserID(book_name, create_user_id);
-
-		for (Book book : bookList) {
-			book.updateUserList(user_list);
-			bookDAOC.update(book);
-		}
-
-		return bookList;
-	}
-
-	public List<BookEntry> syncBookEntries(String user_id, String book_id, String target_user_id) throws Exception {
-		List<BookEntry> entryList = bookEntryDAOC.getByUserIDAndBookID(user_id, book_id);
-		List<BookEntry> existingEntryList = bookEntryDAOC.getByUserIDAndBookID(target_user_id, book_id);
-		HashMap<String, BookEntry> fingerPrintMap = new HashMap<>();
-
-		for (BookEntry entry : existingEntryList) {
-			fingerPrintMap.put(entry.getGroup_id(), entry);
-		}
-
-		logger_.info("sync user " + user_id + " book_id " + book_id + " entryList " + entryList.toString());
-		for (BookEntry entry : entryList) {
-			String group_id = entry.getGroup_id();
-			if (fingerPrintMap.containsKey(group_id)) {
-			    BookEntry tmp = fingerPrintMap.get(group_id);
-			    tmp.update(tmp.getUser_id(), entry.getBook_id(), entry.getCategory(), entry.getEvent_date()
-						, entry.getAmount(), entry.getNote(), entry.getPhoto());
-			    bookEntryDAOC.update(tmp);
-			} else {
-				entry.setUser_id(target_user_id);
-				entry.updateID();
-				bookEntryDAOC.insert(entry);
-			}
-		}
-
-		return entryList;
 	}
 }

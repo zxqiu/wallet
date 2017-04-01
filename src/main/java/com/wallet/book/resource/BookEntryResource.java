@@ -146,7 +146,7 @@ public class BookEntryResource {
 
 		long amount = (long)(amount_double * 100);
 		String book_id = "";
-		Book book = new Book();
+		Book book;
 
 		// 1. extract request
 		// 2. verify and parse request
@@ -169,11 +169,13 @@ public class BookEntryResource {
 		}
 
 		book_id = user_id + "-" + book_name;
-		book.setId(book_id);
 		try {
-			if (bookDAOC.getByID(book_id).isEmpty()) {
+			List<Book> bookList = bookDAOC.getByID(book_id);
+			if (bookList.isEmpty()) {
 				book = new Book(user_id, user_id, book_name, new Date(), "FFFFFF", "");
 				bookDAOC.insert(book);
+			} else {
+				book = bookList.get(bookList.size() - 1);
 			}
 		} catch (Exception e) {
 			logger_.error("Error failed to get book or insert new book when insert book entry : " + book_id);
@@ -201,16 +203,12 @@ public class BookEntryResource {
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 		try {
 			if (bookEntry != null) {
-				bookEntry.setBook_id(book.getId());
-			    bookEntry.setCategory(category);
-			    bookEntry.setEvent_date(sdf.parse(event_date));
-			    bookEntry.setAmount(amount);
-			    bookEntry.setNote(note);
-			    bookEntry.setPhoto(photo);
 				logger_.info("Update book item : " + bookEntry.getId());
+				bookEntry.update(book.getId(), book.getGroup_id(), category, sdf.parse(event_date), amount, note, photo);
 				bookEntryDAOC.update(bookEntry);
 			} else {
-				bookEntry = new BookEntry(user_id, user_id, book.getId(), category, sdf.parse(event_date), amount, note, photo);
+				bookEntry = new BookEntry(user_id, user_id, book.getId(), book.getGroup_id(), category
+						, sdf.parse(event_date), amount, note, photo);
 				logger_.info("Insert new book item : " + bookEntry.getId());
 				bookEntryDAOC.insert(bookEntry);
 			}
