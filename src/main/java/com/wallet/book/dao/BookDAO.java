@@ -23,6 +23,7 @@ public interface BookDAO {
 			+ "`" + Dict.CREATE_TIME + "` datetime not null,"
 			+ "`" + Dict.EDIT_TIME + "` datetime not null,"
 			+ "`" + Dict.PICTURE_ID + "` varchar(64),"
+			+ "`" + Dict.GROUP_ID + "` varchar(64) not null,"
 			+ "`" + Dict.DATA + "` text,"
 			+ "primary key (`" + Dict.ID + "`),"
 			+ "key `fk_book_user` (`" + Dict.USER_ID + "`),"
@@ -43,6 +44,7 @@ public interface BookDAO {
     		+ ", " + Dict.CREATE_TIME
 			+ ", " + Dict.EDIT_TIME
 			+ ", " + Dict.PICTURE_ID
+			+ ", " + Dict.GROUP_ID
 			+ ", " + Dict.DATA
     		+ ") values ("
     		+ ":" + Dict.ID
@@ -52,6 +54,7 @@ public interface BookDAO {
 			+ ",:" + Dict.CREATE_TIME
 			+ ",:" + Dict.EDIT_TIME
 			+ ",:" + Dict.PICTURE_ID
+			+ ",:" + Dict.GROUP_ID
 			+ ",:" + Dict.DATA
 			+ ")"
     		)
@@ -63,6 +66,7 @@ public interface BookDAO {
             , @Bind(Dict.CREATE_TIME) Date create_time
 			, @Bind(Dict.EDIT_TIME) Date edit_time
 			, @Bind(Dict.PICTURE_ID) String picture_id
+			, @Bind(Dict.GROUP_ID) String group_id
 			, @Bind(Dict.DATA) String data
     );
     

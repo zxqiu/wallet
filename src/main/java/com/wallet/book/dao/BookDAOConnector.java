@@ -75,7 +75,7 @@ public class BookDAOConnector {
 	public void insert(Book book) throws Exception {
 		try {
 			bookDAO.insert(book.getId(), book.getUser_id(), book.getCreate_user_id(), book.getName(), book.getCreate_time()
-					, book.getEdit_time(), book.getPicture_id(), book.getData());
+					, book.getEdit_time(), book.getPicture_id(), book.getGroup_id(), book.getData());
 		} catch (Exception e) {
 			if (e.getMessage().contains("Duplicate entry")) {
 				logger_.info("Book already exists : " + book.getId());

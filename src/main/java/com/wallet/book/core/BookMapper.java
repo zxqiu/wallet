@@ -20,6 +20,7 @@ public class BookMapper implements ResultSetMapper<Book> {
 		book.setEdit_time(resultSet.getDate(Dict.EDIT_TIME));
 		book.setPicture_id(resultSet.getString(Dict.PICTURE_ID));
 		book.setData(resultSet.getString(Dict.DATA));
+		book.setGroup_id(resultSet.getString(Dict.GROUP_ID));
 
 		return book;
 	}

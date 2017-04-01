@@ -29,7 +29,7 @@ public class Dict {
 	public static final String FULL_URL = "full_url";
 	public static final String EXPIRE_CLICK = "expire_click";
 	public static final String DIRECT = "redirect";
-	public static final String FINGER_PRINT = "finger_print";
+	public static final String GROUP_ID = "group_id";
 
 	public static final String FACEBOOK_PREFIX = "fb-";
 }

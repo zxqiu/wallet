@@ -72,10 +72,14 @@ public class BookEntryDAOConnector {
 		return bookEntryDAO.findByUserIDAndBookID(user_id, book_id);
 	}
 
+	public List<BookEntry> getByUserIDAndGroupID(String user_id, String group_id) throws Exception {
+		return bookEntryDAO.findByUserIDAndGroupID(user_id, group_id);
+	}
+
 	public void insert(BookEntry bookEntry) throws Exception {
 		try {
 			bookEntryDAO.insert(bookEntry.getId(), bookEntry.getUser_id(), bookEntry.getCreate_user_id()
-					, bookEntry.getBook_id(), bookEntry.getCategory(), bookEntry.getEvent_date()
+					, bookEntry.getBook_id(), bookEntry.getGroup_id(), bookEntry.getCategory(), bookEntry.getEvent_date()
 					, bookEntry.getAmount(), bookEntry.getNote(), bookEntry.getPhoto(), bookEntry.getData()
 					, bookEntry.getEdit_time(),bookEntry.getCreate_time());
 		} catch (Exception e) {

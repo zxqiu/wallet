@@ -22,6 +22,9 @@ public class BookEntry {
 	private String book_id;
 
 	@JsonProperty
+	private String group_id;
+
+	@JsonProperty
 	private String category;
 	
 	@JsonProperty
@@ -53,15 +56,14 @@ public class BookEntry {
 		this.setUser_id(user_id);
 		this.setCreate_user_id(create_user_id);
 		this.setBook_id(book_id);
+		this.setGroup_id(create_user_id + TimeUtils.getUniqueTimeStampInMS());
 		this.setCategory(category);
 		this.setEvent_date(event_date);
 		this.setAmount(amount);
 		this.setNote(note);
 		this.setPhoto(photo);
 		this.setEdit_time(new Date());
-		this.setCreate_time(new Date()); // must be unique
-
-		this.setFingerPrint();
+		this.setCreate_time(new Date());
 	}
 
 	public void update(String user_id, String book_id, String category, Date event_date, long amount, String note, String photo) {
@@ -72,41 +74,6 @@ public class BookEntry {
 		this.setEvent_date(event_date);
 		this.setNote(note);
 		this.setPhoto(photo);
-	}
-
-	/**
-     * Will do nothing if finger print already exists or finger_print entry does not exists in data
-	 * @throws JSONException
-	 */
-	public void setFingerPrint() throws JSONException {
-		String JSONString = this.getData();
-		if (JSONString == null || JSONString.length() < 2) {
-			return;
-		}
-
-		JSONObject data = new JSONObject(JSONString);
-		if (data == null) {
-			return;
-		}
-
-		if (!data.has(Dict.FINGER_PRINT)) {
-			String finger_print = this.create_user_id + TimeUtils.getUniqueTimeStampInMS();
-			data.put(Dict.FINGER_PRINT, finger_print);
-		}
-	}
-
-	public String getFingerPrint() throws JSONException {
-		String JSONString = this.getData();
-		if (JSONString == null || JSONString.length() < 2) {
-			return null;
-		}
-
-		JSONObject data = new JSONObject(JSONString);
-		if (data == null || !data.has(Dict.FINGER_PRINT)) {
-			return null;
-		}
-
-		return data.getString(Dict.FINGER_PRINT);
 	}
 
 	public void updateID() {
@@ -207,5 +174,13 @@ public class BookEntry {
 
 	public void setCreate_time(Date create_time) {
 		this.create_time = create_time;
+	}
+
+	public String getGroup_id() {
+		return group_id;
+	}
+
+	public void setGroup_id(String group_id) {
+		this.group_id = group_id;
 	}
 }

@@ -286,7 +286,7 @@ public class BookResource {
 					.build();
 		}
 
-		syncBookEntries(user_id, book.getId(), request_user);
+		syncBookEntries(user_id, book_id, request_user);
 
 		return Response.seeOther(URI.create(PATH_BOOKS_LIST)).build();
 	}
@@ -308,15 +308,16 @@ public class BookResource {
 		HashMap<String, BookEntry> fingerPrintMap = new HashMap<>();
 
 		for (BookEntry entry : existingEntryList) {
-			fingerPrintMap.put(entry.getFingerPrint(), entry);
+			fingerPrintMap.put(entry.getGroup_id(), entry);
 		}
 
+		logger_.info("sync user " + user_id + " book_id " + book_id + " entryList " + entryList.toString());
 		for (BookEntry entry : entryList) {
-			String finger_print = entry.getFingerPrint();
-			if (fingerPrintMap.containsKey(finger_print)) {
-			    BookEntry tmp = fingerPrintMap.get(finger_print);
-			    tmp.update(tmp.getUser_id(), entry.getBook_id(), entry.getCategory(), entry.getEvent_date(), entry.getAmount()
-						, entry.getNote(), entry.getPhoto());
+			String group_id = entry.getGroup_id();
+			if (fingerPrintMap.containsKey(group_id)) {
+			    BookEntry tmp = fingerPrintMap.get(group_id);
+			    tmp.update(tmp.getUser_id(), entry.getBook_id(), entry.getCategory(), entry.getEvent_date()
+						, entry.getAmount(), entry.getNote(), entry.getPhoto());
 			    bookEntryDAOC.update(tmp);
 			} else {
 				entry.setUser_id(target_user_id);

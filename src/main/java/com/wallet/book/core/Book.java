@@ -2,6 +2,7 @@ package com.wallet.book.core;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wallet.utils.misc.Dict;
+import com.wallet.utils.misc.TimeUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,6 +35,9 @@ public class Book {
     private String picture_id;
 
     @JsonProperty
+    private String group_id;
+
+    @JsonProperty
     private String data;
 
     public Book() {
@@ -49,11 +53,12 @@ public class Book {
         this.setPicture_id(picture_id);
         this.setData(data);
 
+        this.setGroup_id(create_user_id + TimeUtils.getUniqueTimeStampInMS());
         this.appendUser(user_id);
     }
 
     public Book(String id, String user_id, String create_user_id, String name, Date create_time, Date edit_time, String picture_id
-            , String data) throws JSONException {
+            , String data, String group_id) throws JSONException {
         this.setId(id);
         this.setUser_id(user_id);
         this.setCreate_user_id(create_user_id);
@@ -63,6 +68,7 @@ public class Book {
         this.setPicture_id(picture_id);
         this.setData(data);
 
+        this.setGroup_id(group_id);
         this.appendUser(user_id);
     }
 
@@ -219,5 +225,13 @@ public class Book {
 
     public void setCreate_user_id(String create_user_id) {
         this.create_user_id = create_user_id;
+    }
+
+    public String getGroup_id() {
+        return group_id;
+    }
+
+    public void setGroup_id(String group_id) {
+        this.group_id = group_id;
     }
 }

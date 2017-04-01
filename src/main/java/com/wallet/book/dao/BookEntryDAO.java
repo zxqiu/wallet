@@ -21,6 +21,7 @@ public static final String TABLE_NAME = "book_entry";
 			+ "`" + Dict.USER_ID + "` varchar(64) not null,"
 			+ "`" + Dict.CREATE_USER_ID + "` varchar(64) not null,"
 			+ "`" + Dict.BOOK_ID + "` varchar(64) not null,"
+			+ "`" + Dict.GROUP_ID + "` varchar(64) not null,"
 			+ "`" + Dict.CATEGORY + "` varchar(32) not null,"
 			+ "`" + Dict.EVENT_DATE + "` datetime not null,"
 			+ "`" + Dict.AMOUNT + "` bigint not null,"
@@ -45,6 +46,7 @@ public static final String TABLE_NAME = "book_entry";
 			+ ", " + Dict.USER_ID
 			+ ", " + Dict.CREATE_USER_ID
 			+ ", " + Dict.BOOK_ID
+			+ ", " + Dict.GROUP_ID
 			+ ", " + Dict.CATEGORY
 			+ ", " + Dict.EVENT_DATE
 			+ ", " + Dict.AMOUNT
@@ -58,6 +60,7 @@ public static final String TABLE_NAME = "book_entry";
 			+ ", :" + Dict.USER_ID
 			+ ", :" + Dict.CREATE_USER_ID
 			+ ", :" + Dict.BOOK_ID
+			+ ", :" + Dict.GROUP_ID
 			+ ", :" + Dict.CATEGORY
 			+ ", :" + Dict.EVENT_DATE
 			+ ", :" + Dict.AMOUNT
@@ -69,17 +72,18 @@ public static final String TABLE_NAME = "book_entry";
 			+ ")"
 		)
 	void insert(@Bind(Dict.ID) String id
-				, @Bind(Dict.USER_ID) String user_id
-				, @Bind(Dict.CREATE_USER_ID) String create_user_id
-				, @Bind(Dict.BOOK_ID) String book_id
-				, @Bind(Dict.CATEGORY) String category
-				, @Bind(Dict.EVENT_DATE) Date event_date
-				, @Bind(Dict.AMOUNT) long amount
-				, @Bind(Dict.NOTE) String note
-				, @Bind(Dict.PHOTO) String photo
-				, @Bind(Dict.DATA) String data
-				, @Bind(Dict.EDIT_TIME) Date edit_time
-				, @Bind(Dict.CREATE_TIME) Date create_time
+			, @Bind(Dict.USER_ID) String user_id
+			, @Bind(Dict.CREATE_USER_ID) String create_user_id
+			, @Bind(Dict.BOOK_ID) String book_id
+			, @Bind(Dict.GROUP_ID) String group_id
+			, @Bind(Dict.CATEGORY) String category
+			, @Bind(Dict.EVENT_DATE) Date event_date
+			, @Bind(Dict.AMOUNT) long amount
+			, @Bind(Dict.NOTE) String note
+			, @Bind(Dict.PHOTO) String photo
+			, @Bind(Dict.DATA) String data
+			, @Bind(Dict.EDIT_TIME) Date edit_time
+			, @Bind(Dict.CREATE_TIME) Date create_time
 	);
 	
 	@SqlUpdate("update " + TABLE_NAME + " set "
@@ -125,6 +129,16 @@ public static final String TABLE_NAME = "book_entry";
 	List<BookEntry> findByUserIDAndBookID(
 			@Bind(Dict.USER_ID) String user_id
 			, @Bind(Dict.BOOK_ID) String book_id
+	);
+
+	@SqlQuery("select * from " + TABLE_NAME + " where "
+			+ Dict.GROUP_ID + " = :" + Dict.GROUP_ID
+			+ " and " + Dict.USER_ID + " = :" + Dict.USER_ID
+	)
+	@Mapper(BookEntryMapper.class)
+	List<BookEntry> findByUserIDAndGroupID(
+			@Bind(Dict.USER_ID) String user_id
+			, @Bind(Dict.GROUP_ID) String group_id
 	);
 
 	@SqlQuery("select * from " + TABLE_NAME + " where " + Dict.USER_ID + " = :" + Dict.USER_ID)
