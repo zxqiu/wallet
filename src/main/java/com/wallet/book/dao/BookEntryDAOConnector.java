@@ -120,7 +120,11 @@ public class BookEntryDAOConnector {
 	public void deleteByUserID(String user_id) throws Exception {
 		bookEntryDAO.deleteByUserID(user_id);;
 	}
-	
+
+	public void deleteByBookID(String book_id) throws Exception {
+		bookEntryDAO.deleteByBookID(book_id);;
+	}
+
 	public static void test() throws Exception {
 		BookEntry bookEntry = new BookEntry("admin", "admin", "adminbook", "adminbook", "asdfasf", new Date()
 				, (long)10, "note", "photo");

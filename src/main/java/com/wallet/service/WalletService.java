@@ -64,7 +64,7 @@ public class WalletService extends Application<WalletConfiguration> {
 
 	    //sessionDAO.dropTable();
 	    //bookDAO.dropTable();
-	    bookEntryDAO.dropTable();
+	    //bookEntryDAO.dropTable();
 	    //categoryDAO.dropTable();
 	    //userDAO.dropTable();
 	    //tinyUrlDAO.dropTable();

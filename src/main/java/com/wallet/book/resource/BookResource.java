@@ -176,7 +176,12 @@ public class BookResource {
 				}
 			} else if (jsonObject.getString(Dict.ACTION).equals(Dict.DELETE)) {
 				logger_.info("Delete book : " + jsonObject.toString());
-				bookDAOC.deleteByID(id);
+				List<Book> bookList = bookDAOC.getByID(id);
+				if (!bookList.isEmpty()) {
+					Book book = bookList.get(bookList.size() - 1);
+					bookDAOC.deleteByID(id);
+					bookEntryDAOC.deleteByBookID(book.getId());
+				}
 			}
 		}
 

@@ -194,4 +194,9 @@ public static final String TABLE_NAME = "book_entry";
     void deleteByUserID(
         @Bind(Dict.USER_ID) String user_id
     );
+
+	@SqlUpdate("delete from " + TABLE_NAME + " where " + Dict.BOOK_ID + " = :" + Dict.BOOK_ID)
+	void deleteByBookID(
+			@Bind(Dict.BOOK_ID) String book_id
+	);
 }
