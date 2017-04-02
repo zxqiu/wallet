@@ -102,7 +102,13 @@ public class BookEntryDAOConnector {
 				, bookEntry.getCategory(), bookEntry.getEvent_date(), bookEntry.getAmount(), bookEntry.getNote()
 				, bookEntry.getPhoto(), bookEntry.getData(), bookEntry.getEdit_time());
 	}
-	
+
+	public void updateByGroupID(BookEntry bookEntry) throws Exception {
+		bookEntryDAO.update(bookEntry.getGroup_id(), bookEntry.getBook_id(), bookEntry.getBook_group_id()
+				, bookEntry.getCategory(), bookEntry.getEvent_date(), bookEntry.getAmount(), bookEntry.getNote()
+				, bookEntry.getPhoto(), bookEntry.getData(), bookEntry.getEdit_time());
+	}
+
 	public void deleteByID(String id) throws Exception {
 		bookEntryDAO.deleteByID(id);
 	}

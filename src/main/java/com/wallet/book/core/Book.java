@@ -72,6 +72,13 @@ public class Book {
         this.appendUser(user_id);
     }
 
+    public void update(String name, Date edit_time, String picture_id, String data) {
+        this.setName(name);
+        this.setEdit_time(edit_time);
+        this.setPicture_id(picture_id);
+        this.setData(data);
+    }
+
     public void updateBookID() {
         this.setId(this.getUser_id() + "-" + this.getName());
     }

@@ -112,7 +112,30 @@ public static final String TABLE_NAME = "book_entry";
 				@Bind(Dict.PHOTO) String photo,
 				@Bind(Dict.DATA) String data,
 				@Bind(Dict.EDIT_TIME) Date edit_time);
-	
+
+	@SqlUpdate("update " + TABLE_NAME + " set "
+			+ Dict.BOOK_ID + "= :" + Dict.BOOK_ID + ", "
+			+ Dict.BOOK_GROUP_ID + "= :" + Dict.BOOK_GROUP_ID + ", "
+			+ Dict.CATEGORY + "= :" + Dict.CATEGORY + ","
+			+ Dict.EVENT_DATE + "= :" + Dict.EVENT_DATE + ","
+			+ Dict.AMOUNT + "= :" + Dict.AMOUNT + ","
+			+ Dict.NOTE + "= :" + Dict.NOTE + ","
+			+ Dict.PHOTO + "= :" + Dict.PHOTO + ","
+			+ Dict.DATA + "= :" + Dict.DATA + ","
+			+ Dict.EDIT_TIME + "= :" + Dict.EDIT_TIME
+			+ " where " + Dict.GROUP_ID + "= :" + Dict.GROUP_ID
+	)
+	void updateByGroupID(@Bind(Dict.GROUP_ID) String group_id,
+				@Bind(Dict.BOOK_ID) String book_id,
+				@Bind(Dict.BOOK_GROUP_ID) String book_group_id,
+				@Bind(Dict.CATEGORY) String category,
+				@Bind(Dict.EVENT_DATE) Date event_date,
+				@Bind(Dict.AMOUNT) long amount,
+				@Bind(Dict.NOTE) String note,
+				@Bind(Dict.PHOTO) String photo,
+				@Bind(Dict.DATA) String data,
+				@Bind(Dict.EDIT_TIME) Date edit_time);
+
 	@SqlQuery("select * from " + TABLE_NAME + " where " + Dict.ID + " = :" + Dict.ID)
     @Mapper(BookEntryMapper.class)
     List<BookEntry> findByID(

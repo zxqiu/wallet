@@ -93,13 +93,18 @@ public class BookResource {
 		}
 		
 		// 4. transaction
-		Book book = new Book(user_id, user_id, name, new Date(), picture_id, "");
 		try {
 		    if (id != null && id.length() > 1) {
-				logger_.info("Update book " + book.getName() + " for user " + user_id);
-				logger_.info("Update book " + book.getName() + " for user " + user_id);
-		    	bookDAOC.update(book);
+				List<Book> bookList = bookDAOC.getByID(id);
+				if (!bookList.isEmpty()) {
+					Book book = bookList.get(bookList.size() - 1);
+					book.update(name, new Date(), picture_id, book.getData());
+					logger_.info("Update book " + book.getName() + " for user " + user_id);
+					bookDAOC.update(book);
+					syncHelper.syncBook(book);
+				}
 			} else {
+				Book book = new Book(user_id, user_id, name, new Date(), picture_id, "");
 				logger_.info("Insert book " + book.getName() + " for user " + user_id);
 				bookDAOC.insert(book);
 			}
@@ -141,21 +146,32 @@ public class BookResource {
 				continue;
 			}
 
-			Book book = new Book(user_id
-					, user_id
-					, jsonObject.getString(Dict.NAME)
-					, new Date()
-					, jsonObject.getString(Dict.PICTURE_ID)
-					, ""
-			);
-
 			String id = jsonObject.getString(Dict.ID);
+
 			if (jsonObject.getString(Dict.ACTION).equals(Dict.EDIT)) {
-				if (id.length() > 1) {
-					logger_.info("Updating book : " + jsonObject.toString());
-					bookDAOC.update(book);
+				if (id != null && id.length() > 1) {
+					List<Book> bookList = bookDAOC.getByID(id);
+					if (!bookList.isEmpty()) {
+						Book book = bookList.get(bookList.size() - 1);
+						book.update(
+								jsonObject.getString(Dict.NAME)
+								, new Date()
+								, jsonObject.getString(Dict.PICTURE_ID)
+								, book.getData()
+						);
+						logger_.info("Book list Update book : " + jsonObject.toString());
+						bookDAOC.update(book);
+						syncHelper.syncBook(book);
+					}
 				} else {
-					logger_.info("Insert new book : " + jsonObject.toString());
+					Book book = new Book(user_id
+							, user_id
+							, jsonObject.getString(Dict.NAME)
+							, new Date()
+							, jsonObject.getString(Dict.PICTURE_ID)
+							, ""
+					);
+					logger_.info("Book list insert new book : " + jsonObject.toString());
 					bookDAOC.insert(book);
 				}
 			} else if (jsonObject.getString(Dict.ACTION).equals(Dict.DELETE)) {

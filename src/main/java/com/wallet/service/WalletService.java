@@ -62,12 +62,12 @@ public class WalletService extends Application<WalletConfiguration> {
 	    CategoryDAOConnector.init(categoryDAO);
 		TinyUrlDAOConnector.init(tinyUrlDAO);
 
-	    sessionDAO.dropTable();
-	    bookDAO.dropTable();
-	    bookEntryDAO.dropTable();
-	    categoryDAO.dropTable();
-	    userDAO.dropTable();
-	    tinyUrlDAO.dropTable();
+	    //sessionDAO.dropTable();
+	    //bookDAO.dropTable();
+	    //bookEntryDAO.dropTable();
+	    //categoryDAO.dropTable();
+	    //userDAO.dropTable();
+	    //tinyUrlDAO.dropTable();
 	    
 	    UserDAOConnector.test();
 	    SessionDAOConnector.test();

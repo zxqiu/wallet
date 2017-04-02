@@ -23,7 +23,13 @@ public class syncHelper {
     }
 
     public static void syncBook(Book book) throws Exception {
+        logger_.info("Update book by group id : " + book.getGroup_id());
+        logger_.info("name " + book.getName() + " data " + book.getData() + " picture_id " + book.getPicture_id());
         bookDAOC.updateByGroupID(book);
+    }
+
+    public static void syncBookEntry(BookEntry bookEntry) throws Exception {
+        bookEntryDAOC.updateByGroupID(bookEntry);
     }
 
     public static List<BookEntry> syncBookEntries(String book_group_id, String target_user_id, String target_book_id) throws Exception {
