@@ -11,6 +11,7 @@ import javax.ws.rs.core.Response;
 
 import com.wallet.book.core.Book;
 import com.wallet.book.core.BookEntry;
+import com.wallet.book.core.syncHelper;
 import com.wallet.book.dao.BookDAOConnector;
 import com.wallet.login.core.User;
 import com.wallet.login.dao.UserDAOConnector;
@@ -204,13 +205,23 @@ public class BookEntryResource {
 		try {
 			if (bookEntry != null) {
 				logger_.info("Update book item : " + bookEntry.getId());
-				bookEntry.update(book.getId(), book.getGroup_id(), category, sdf.parse(event_date), amount, note, photo);
-				bookEntryDAOC.update(bookEntry);
+				if (bookEntry.getBook_id().equals(book.getId())) {
+					bookEntry.update(book.getId(), book.getGroup_id(), category, sdf.parse(event_date), amount, note, photo);
+					bookEntryDAOC.update(bookEntry);
+					// Update if book id is not changed.
+					syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_Action.UPDATE);
+				} else {
+					// Delete if book id is changed.
+                    syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_Action.DELETE);
+					bookEntry.update(book.getId(), book.getGroup_id(), category, sdf.parse(event_date), amount, note, photo);
+					bookEntryDAOC.insert(bookEntry);
+				}
 			} else {
 				bookEntry = new BookEntry(user_id, user_id, book.getId(), book.getGroup_id(), category
 						, sdf.parse(event_date), amount, note, photo);
 				logger_.info("Insert new book item : " + bookEntry.getId());
-				bookEntryDAOC.insert(bookEntry);
+				//bookEntryDAOC.insert(bookEntry); // remove this to avoid duplication
+				syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_Action.ADD);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -222,7 +233,7 @@ public class BookEntryResource {
 	}
 	
 	/**
-	 * Delete book item
+	 * Delete book entry
 	 * @param id
 	 * @return
 	 * @throws Exception 
@@ -248,7 +259,13 @@ public class BookEntryResource {
 		
 		// 4. transaction
 		try {
-			bookEntryDAOC.deleteByID(id);
+		    List<BookEntry> bookEntryList = bookEntryDAOC.getByID(id);
+		    if (!bookEntryList.isEmpty()) {
+		    	BookEntry bookEntry = bookEntryList.get(bookEntryList.size() - 1);
+				logger_.info("Delete book entry : " + bookEntry.getId());
+				bookEntryDAOC.deleteByID(id);
+				syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_Action.DELETE);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger_.error("Error : failed to delete new book entry \'" + id + "\' : " + e.getMessage());

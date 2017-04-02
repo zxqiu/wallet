@@ -3,10 +3,8 @@ package com.wallet.book.core;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.wallet.utils.misc.Dict;
 import com.wallet.utils.misc.TimeUtils;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 public class BookEntry {
 	@JsonProperty

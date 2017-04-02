@@ -114,8 +114,6 @@ public static final String TABLE_NAME = "book_entry";
 				@Bind(Dict.EDIT_TIME) Date edit_time);
 
 	@SqlUpdate("update " + TABLE_NAME + " set "
-			+ Dict.BOOK_ID + "= :" + Dict.BOOK_ID + ", "
-			+ Dict.BOOK_GROUP_ID + "= :" + Dict.BOOK_GROUP_ID + ", "
 			+ Dict.CATEGORY + "= :" + Dict.CATEGORY + ","
 			+ Dict.EVENT_DATE + "= :" + Dict.EVENT_DATE + ","
 			+ Dict.AMOUNT + "= :" + Dict.AMOUNT + ","
@@ -126,8 +124,6 @@ public static final String TABLE_NAME = "book_entry";
 			+ " where " + Dict.GROUP_ID + "= :" + Dict.GROUP_ID
 	)
 	void updateByGroupID(@Bind(Dict.GROUP_ID) String group_id,
-				@Bind(Dict.BOOK_ID) String book_id,
-				@Bind(Dict.BOOK_GROUP_ID) String book_group_id,
 				@Bind(Dict.CATEGORY) String category,
 				@Bind(Dict.EVENT_DATE) Date event_date,
 				@Bind(Dict.AMOUNT) long amount,
@@ -188,7 +184,12 @@ public static final String TABLE_NAME = "book_entry";
     void deleteByID(
         @Bind(Dict.ID) String id
     );
-	
+
+	@SqlUpdate("delete from " + TABLE_NAME + " where " + Dict.GROUP_ID + " = :" + Dict.GROUP_ID)
+	void deleteByGroupID(
+			@Bind(Dict.GROUP_ID) String group_id
+	);
+
 	@SqlUpdate("delete from " + TABLE_NAME + " where " + Dict.USER_ID + " = :" + Dict.USER_ID)
     void deleteByUserID(
         @Bind(Dict.USER_ID) String user_id

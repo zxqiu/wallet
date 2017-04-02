@@ -17,6 +17,8 @@ public class syncHelper {
     private static BookDAOConnector bookDAOC = null;
     private static BookEntryDAOConnector bookEntryDAOC = null;
 
+    public enum SYNC_Action {ADD, DELETE, UPDATE}
+
     public static void init() throws Exception {
         bookDAOC = BookDAOConnector.instance();
         bookEntryDAOC = BookEntryDAOConnector.instance();
@@ -28,8 +30,30 @@ public class syncHelper {
         bookDAOC.updateByGroupID(book);
     }
 
-    public static void syncBookEntry(BookEntry bookEntry) throws Exception {
-        bookEntryDAOC.updateByGroupID(bookEntry);
+    public static void syncBookEntry(BookEntry bookEntry, SYNC_Action action) throws Exception {
+        switch (action) {
+            case ADD:
+                logger_.info("Add book entry by group id : " + bookEntry.getGroup_id());
+                for (Book book : bookDAOC.getByGroupID(bookEntry.getBook_group_id())) {
+                    logger_.info("Add book entry by group id : " + bookEntry.getGroup_id() + " for user " + book.getUser_id());
+                    bookEntry.setUser_id(book.getUser_id());
+                    bookEntry.updateIDWithUserID();
+                    bookEntry.setBook_id(book.getId());
+                    bookEntry.setBook_group_id(book.getGroup_id());
+                    bookEntryDAOC.insert(bookEntry);
+                }
+                break;
+            case UPDATE:
+                logger_.info("Update book entry by group id : " + bookEntry.getGroup_id());
+                bookEntryDAOC.updateByGroupID(bookEntry);
+                break;
+            case DELETE:
+                logger_.info("Delete book entry by group id : " + bookEntry.getGroup_id());
+                bookEntryDAOC.deleteByGroupID(bookEntry.getGroup_id());
+                break;
+            default:
+                logger_.info("Unknown action when syncBookEntry");
+        }
     }
 
     public static List<BookEntry> syncBookEntries(String book_group_id, String target_user_id, String target_book_id) throws Exception {

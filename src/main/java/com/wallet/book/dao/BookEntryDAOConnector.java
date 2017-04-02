@@ -104,7 +104,7 @@ public class BookEntryDAOConnector {
 	}
 
 	public void updateByGroupID(BookEntry bookEntry) throws Exception {
-		bookEntryDAO.update(bookEntry.getGroup_id(), bookEntry.getBook_id(), bookEntry.getBook_group_id()
+		bookEntryDAO.updateByGroupID(bookEntry.getGroup_id()
 				, bookEntry.getCategory(), bookEntry.getEvent_date(), bookEntry.getAmount(), bookEntry.getNote()
 				, bookEntry.getPhoto(), bookEntry.getData(), bookEntry.getEdit_time());
 	}
@@ -112,7 +112,11 @@ public class BookEntryDAOConnector {
 	public void deleteByID(String id) throws Exception {
 		bookEntryDAO.deleteByID(id);
 	}
-	
+
+	public void deleteByGroupID(String group_id) throws Exception {
+		bookEntryDAO.deleteByGroupID(group_id);
+	}
+
 	public void deleteByUserID(String user_id) throws Exception {
 		bookEntryDAO.deleteByUserID(user_id);;
 	}
