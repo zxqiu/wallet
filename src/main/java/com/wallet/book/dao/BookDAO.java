@@ -16,7 +16,7 @@ public interface BookDAO {
 	public static final String TABLE_NAME = "book";
 	
 	@SqlUpdate("create table if not exists " + TABLE_NAME + " ("
-			+ "`" + Dict.ID + "` varchar(64) not null unique,"
+			+ "`" + Dict.ID + "` varchar(192) not null unique,"
 			+ "`" + Dict.USER_ID + "` varchar(64) not null,"
 			+ "`" + Dict.CREATE_USER_ID + "` varchar(64) not null,"
 			+ "`" + Dict.NAME + "` varchar(64) not null,"

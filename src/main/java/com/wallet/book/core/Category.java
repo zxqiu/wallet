@@ -10,6 +10,9 @@ public class Category {
 	private String user_id;
 
 	@JsonProperty
+	private String book_group_id;
+
+	@JsonProperty
 	private String name;
 
 	@JsonProperty
@@ -21,9 +24,10 @@ public class Category {
 	public Category() {
 	}
 	
-	public Category(String user_id, String name, String picture_id, String data) {
-		this.setId(user_id + name);
+	public Category(String user_id, String book_group_id, String name, String picture_id, String data) {
+		this.setId(user_id + book_group_id + name);
 		this.setUser_id(user_id);
+		this.setBook_group_id(book_group_id);
 		this.setName(name);
 		this.setPicture_id(picture_id);
 		this.setData(data);
@@ -67,5 +71,13 @@ public class Category {
 
 	public void setData(String data) {
 		this.data = data;
+	}
+
+	public String getBook_group_id() {
+		return book_group_id;
+	}
+
+	public void setBook_group_id(String book_group_id) {
+		this.book_group_id = book_group_id;
 	}
 }

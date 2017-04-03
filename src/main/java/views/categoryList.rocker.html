@@ -1,7 +1,8 @@
 @import com.wallet.book.core.Category;
+@import com.wallet.book.core.Book;
 @import java.util.List;
 
-@args (List<Category> categoryList)
+@args (List<Category> categoryList, List<Book> bookList, String user_id)
 
 <html lang="en">
 
@@ -16,16 +17,18 @@
 	<link href="/css/bootstrap-datepicker.min.css" rel="stylesheet">
 	<link href="/css/bootstrap.colorpickersliders.css" rel="stylesheet">
 	<link href="/css/style.css" rel="stylesheet">
-	<link href="/css/views/categoryList.css" rel="stylesheet">
 
 </head>
 
 <body>
 	<div class="row">
+		@if (user_id != null) {
+        	<input type="hidden" id="userID" value="@user_id">
+		}
 		<div class="col-md-4" id="categoryList">
 			<div class="btn-group btn-group-justified" role="group" aria-label="...">
 				<div class="btn-group" role="group">
-					<button type="button" class="btn btn-info" onclick="newCategory()">new</button>
+					<button type="button" class="btn btn-info" id="newCategoryBtn" onclick="newCategory()" disabled>loading..</button>
 				</div>
 				<div class="btn-group" role="group">
 					<button type="button" class="btn btn-info" onclick="submitList()">submit</button>
@@ -51,6 +54,27 @@
 									   title="@?category.getName()"
                                        style="background-color: @?category.getPicture_id(); text-align: center;"
 									   required="true" readonly>
+								<span class="input-group-addon">Book</span>
+								@if (bookList != null) {
+									@for (Book book : bookList) {
+										@if (category.getBook_group_id().equals(book.getGroup_id())) {
+											<span class="input-group-addon">@?book.getName()</span>
+                                        }
+									}
+								}
+								<select class="form-control bookSelector" style="display: none;">
+									@if (bookList != null) {
+										@for (Book book : bookList) {
+											<option class="book-option" style="background: @?book.getPicture_id();" value="@?book.getGroup_id()"
+												@if (category.getBook_group_id().equals(book.getGroup_id())) {
+													selected
+												}
+											>
+												@?book.getName()
+											</option>
+										}
+									}
+								</select>
 								<span class="input-group-addon btn categoryDelete">X</span>
 							</div>
 						</div>

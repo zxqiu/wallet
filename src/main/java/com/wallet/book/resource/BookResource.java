@@ -180,7 +180,7 @@ public class BookResource {
 				if (!bookList.isEmpty()) {
 					Book book = bookList.get(bookList.size() - 1);
 					bookDAOC.deleteByID(id);
-					bookEntryDAOC.deleteByBookGroupIDAndUserID(book.getGroup_id(), book.getUser_id());
+					bookEntryDAOC.deleteByUserIDAndBookGroupID(book.getUser_id(), book.getGroup_id());
 				}
 			}
 		}
@@ -189,7 +189,7 @@ public class BookResource {
 	}
 
 	/**
-	 * Get categories of a user
+	 * Get books of a user
 	 * @param user_id
 	 * @return
 	 * @throws Exception 
@@ -204,7 +204,7 @@ public class BookResource {
 		// 1. extract request
 		// 2. verify and parse request
 		// 3. verify parameters 
-		if (user_id.length() == 0 || sessionDAOC.verifySessionCookie(cookie)== false) {
+		if (user_id!= null && user_id.length() == 0 || sessionDAOC.verifySessionCookie(cookie)== false) {
 			logger_.error("ERROR: invalid get book request for \'" + user_id + "\'");
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.QUERY_ARG_ERROR)).build();
 		}

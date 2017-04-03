@@ -10,6 +10,7 @@ import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.wallet.book.dao.BookDAOConnector;
 import com.wallet.login.resource.SessionResource;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,10 +31,12 @@ public class CategoryResource {
 	private static final Logger logger_ = LoggerFactory.getLogger(CategoryResource.class);
 	
 	private CategoryDAOConnector categoryDAOC = null;
+	private BookDAOConnector bookDAOC = null;
 	private SessionDAOConnector sessionDAOC = null;
 	
 	public CategoryResource() throws Exception {
 		this.categoryDAOC = CategoryDAOConnector.instance();
+		this.bookDAOC = BookDAOConnector.instance();
 		this.sessionDAOC = SessionDAOConnector.instance();
 	}
 
@@ -56,7 +59,11 @@ public class CategoryResource {
 			return Response.seeOther(URI.create(SessionResource.PATH_RESTORE_SESSION)).build();
 		}
 
-		return Response.ok().entity(views.categoryList.template(categoryDAOC.getByUserID(user_id))).build();
+		return Response.ok()
+				.entity(views.categoryList.template(categoryDAOC.getByUserID(user_id)
+													, bookDAOC.getByUserID(user_id)
+													, user_id
+				)).build();
 	}
 
 	/**
@@ -72,6 +79,7 @@ public class CategoryResource {
 	@Produces(MediaType.TEXT_HTML)
 	public Response insertCategory(
 			@FormParam(Dict.ID) String id,
+			@FormParam(Dict.BOOK_GROUP_ID) String book_group_id,
 			@FormParam(Dict.NAME) String name,
 			@FormParam(Dict.PICTURE_ID) String picture_id,
 			@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
@@ -89,7 +97,7 @@ public class CategoryResource {
 		}
 		
 		// 4. transaction
-		Category category = new Category(user_id, name, picture_id, "");
+		Category category = new Category(user_id, book_group_id, name, picture_id, "");
 		try {
 		    if (id != null && id.length() > 1) {
 				logger_.info("Update category " + category.getName() + " for user " + user_id);
@@ -126,6 +134,7 @@ public class CategoryResource {
 			JSONObject jsonObject = categories.getJSONObject(i);
 
 			if (!jsonObject.has(Dict.ID)
+					|| !jsonObject.has(Dict.BOOK_GROUP_ID)
                     || !jsonObject.has(Dict.ACTION)
 					|| !jsonObject.has(Dict.NAME)
 					|| !jsonObject.has(Dict.PICTURE_ID)) {
@@ -137,6 +146,7 @@ public class CategoryResource {
 			}
 
 			Category category = new Category(user_id
+					, jsonObject.getString(Dict.BOOK_GROUP_ID)
 					, jsonObject.getString(Dict.NAME)
 					, jsonObject.getString(Dict.PICTURE_ID)
 					, ""

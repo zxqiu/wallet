@@ -16,8 +16,9 @@ public interface CategoryDAO {
 	public static final String TABLE_NAME = "category";
 	
 	@SqlUpdate("create table if not exists " + TABLE_NAME + " ("
-			+ "`" + Dict.ID + "` varchar(64) not null unique,"
+			+ "`" + Dict.ID + "` varchar(192) not null unique,"
 			+ "`" + Dict.USER_ID + "` varchar(64) not null,"
+			+ "`" + Dict.BOOK_GROUP_ID + "` varchar(64) not null,"
 			+ "`" + Dict.NAME + "` varchar(64) not null,"
 			+ "`" + Dict.PICTURE_ID + "` varchar(64),"
 			+ "`" + Dict.DATA + "` text,"
@@ -35,12 +36,14 @@ public interface CategoryDAO {
     @SqlUpdate("insert into " + TABLE_NAME + " ("
     		+ Dict.ID
     		+ ", " + Dict.USER_ID
+			+ ", " + Dict.BOOK_GROUP_ID
     		+ ", " + Dict.NAME
     		+ ", " + Dict.PICTURE_ID
 			+ ", " + Dict.DATA
     		+ ") values ("
     		+ ":" + Dict.ID
     		+ ",:" + Dict.USER_ID
+			+ ",:" + Dict.BOOK_GROUP_ID
     		+ ",:" + Dict.NAME
     		+ ",:" + Dict.PICTURE_ID
 			+ ",:" + Dict.DATA
@@ -49,6 +52,7 @@ public interface CategoryDAO {
     void insert(
         	@Bind(Dict.ID) String id
         	, @Bind(Dict.USER_ID) String user_id
+			, @Bind(Dict.BOOK_GROUP_ID) String book_group_id
         	, @Bind(Dict.NAME) String name
         	, @Bind(Dict.PICTURE_ID) String picture_id
 			, @Bind(Dict.DATA) String data
@@ -59,8 +63,8 @@ public interface CategoryDAO {
 			+ ", " + Dict.DATA + "= :" + Dict.DATA
 			+ " where " + Dict.ID + "= :" + Dict.ID
 		)
-	void update(@Bind(Dict.ID) String id,
-			@Bind(Dict.PICTURE_ID) String picture_id
+	void update(@Bind(Dict.ID) String id
+			, @Bind(Dict.PICTURE_ID) String picture_id
 			, @Bind(Dict.DATA) String data
 	);
     

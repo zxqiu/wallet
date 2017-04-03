@@ -159,16 +159,6 @@ public class BookEntryResource {
 		
 		// 4. transaction
 		// 4.1 insert new category and default book (if not exists)
-		try {
-			if (categoryDAOC.getByID(user_id + category).isEmpty()) {
-				categoryDAOC.insert(new Category(user_id, category, "#FFFFFF", ""));
-			}
-		} catch (Exception e1) {
-			logger_.error("Error failed to get category or insert new category when insert book entry : " + category);
-			e1.printStackTrace();
-			return Response.serverError().build();
-		}
-
 		book_id = user_id + "-" + book_name;
 		try {
 			List<Book> bookList = bookDAOC.getByID(book_id);
@@ -183,7 +173,17 @@ public class BookEntryResource {
 			e.printStackTrace();
 			return Response.serverError().build();
 		}
-		
+
+		try {
+			if (categoryDAOC.getByID(user_id + category).isEmpty()) {
+				categoryDAOC.insert(new Category(user_id, book.getGroup_id(), category, "#FFFFFF", ""));
+			}
+		} catch (Exception e1) {
+			logger_.error("Error failed to get category or insert new category when insert book entry : " + category);
+			e1.printStackTrace();
+			return Response.serverError().build();
+		}
+
 		// 4.2 insert book
 		// 4.2.1 update if id is received and exists. Otherwise insert new.
 		BookEntry bookEntry = null;

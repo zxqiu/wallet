@@ -74,7 +74,7 @@ public class CategoryDAOConnector {
 	
 	public void insert(Category category) throws Exception {
 		try {
-			categoryDAO.insert(category.getId(), category.getUser_id(), category.getName(), category.getPicture_id(), category.getData());
+			categoryDAO.insert(category.getId(), category.getUser_id(), category.getBook_group_id(), category.getName(), category.getPicture_id(), category.getData());
 		} catch (Exception e) {
 			if (e.getMessage().contains("Duplicate entry")) {
 				logger_.info("Category " + category.getName() + " already exists for user : " + category.getUser_id());
@@ -86,7 +86,7 @@ public class CategoryDAOConnector {
 		}
 	}
 	
-	public void updatePictureID(Category category) throws SQLException {
+	public void updatePictureID(Category category) {
 		categoryDAO.update(category.getId(), category.getPicture_id(), category.getData());
 	}
 	
@@ -99,7 +99,7 @@ public class CategoryDAOConnector {
 	}
 	
 	public static void test() throws Exception {
-		Category category = new Category("admin", "good", "", "");
+		Category category = new Category("admin", "test_group", "test_name", "#FFFFFF", "");
 		
 		logger_.info("CategoryDAOConnector test ...");
 		
@@ -113,7 +113,7 @@ public class CategoryDAOConnector {
 		
 		logger_.info("2. update");
 		
-		category.setPicture_id("gooooooooooooooooood");
+		category.setPicture_id("#FFFFFF");
 		CategoryDAOConnector.instance().updatePictureID(category);
 		List<Category> category2 = CategoryDAOConnector.instance().getByID(category.getId());
 		if (category2.isEmpty()) {
@@ -123,13 +123,13 @@ public class CategoryDAOConnector {
 		logger_.info("updated picture id : " + category2.get(category2.size() - 1).getPicture_id());
 		
 		logger_.info("3. delete");
-		
+
 		CategoryDAOConnector.instance().deleteByID(category.getId());
 		if (!CategoryDAOConnector.instance().getByID(category.getId()).isEmpty()) {
 			logger_.error("CategoryDAOConnector test failed!");
 			throw new Exception("CategoryDAOConnector test failed!");
 		}
-		
+
 		logger_.info("CategoryDAOConnector test passed");
 	}
 }

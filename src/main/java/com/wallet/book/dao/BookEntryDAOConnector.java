@@ -117,7 +117,7 @@ public class BookEntryDAOConnector {
 		bookEntryDAO.deleteByUserID(user_id);;
 	}
 
-	public void deleteByBookGroupIDAndUserID(String book_group_id, String user_id) throws Exception {
+	public void deleteByUserIDAndBookGroupID(String user_id, String book_group_id) throws Exception {
 		bookEntryDAO.deleteByBookGroupIDAndUserID(book_group_id, user_id);;
 	}
 

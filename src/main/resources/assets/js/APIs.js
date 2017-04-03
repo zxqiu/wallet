@@ -6,6 +6,7 @@ var hostURL = window.location.protocol + "//" + window.location.host;
 var apiInsertEntry = "/books/insertentry";
 var apiDeleteItem = "/books/deleteentry";
 var apiGetBookEntries = "/books/getentries";
+var apiGetBook = "/books/getbook";
 var apiInsertBookList = "/books/insertbooklist";
 var apiInsertCategoryList = "/books/insertcategorylist";
 var apiFaceBookLogin = "/fblogin";
@@ -123,6 +124,47 @@ var APIs = {
                 error: function(data) {
                     if (api_.deleteBookEntryError && typeof(api_.deleteBookEntryError) == "function") {
                         api_.deleteBookEntryError(data);
+                    }
+                }
+            }).then(function(data) {
+                console.log(data);
+                retData = data;
+            });
+
+            return retData;
+        };
+
+        api_.getAllBookSuccess = null;
+        api_.getAllBookError = null;
+
+        api_.setGetAllBookSuccessCallback = function(callback) {
+            api_.getAllBookSuccess = callback;
+        };
+
+        api_.setGetAllBookErrorCallback = function(callback) {
+            api_.getAllBookError = callback;
+        };
+
+        api_.getAllBook = function(user_id) {
+            var param = new Object();
+            param.user_id = user_id;
+            var retData = null;
+
+            var request = hostURL + apiGetBook;
+            $.ajax({
+                type: "GET",
+                url: request,
+                dataType: "json",
+                data: param,
+                contentType: 'application/json',
+                success: function(data) {
+                    if (api_.getAllBookSuccess && typeof(api_.getAllBookSuccess) == "function") {
+                        api_.getAllBookSuccess(data);
+                    }
+                },
+                error: function(data) {
+                    if (api_.getAllBookError && typeof(api_.getAllBookError) == "function") {
+                        api_.getAllBookError(data);
                     }
                 }
             }).then(function(data) {

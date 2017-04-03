@@ -13,11 +13,13 @@ function submitList () {
     forms.each(function(i) {
         var idElem = forms[i].getElementsByClassName("categoryID");
         var action = forms[i].getElementsByClassName("categoryAction");
+        var bookSelector = forms[i].getElementsByClassName("bookSelector");
         var nameElem = forms[i].getElementsByClassName("categoryName");
         var colorElem = forms[i].getElementsByClassName("categoryColor");
 
         categories[i] = new Object();
         categories[i].id = idElem[0].value;
+        categories[i].book_group_id = bookSelector[0].value;
         categories[i].action = action[0].value;
         categories[i].name = nameElem[0].value;
         categories[i].picture_id = colorElem[0].value;
@@ -26,6 +28,16 @@ function submitList () {
     api.setPostCategoryListSuccessCallback(submitSuccess);
     api.postCategoryList(categories);
 };
+
+var user_id = $("#userID").val();
+var bookList;
+api.setGetAllBookSuccessCallback(function (data) {
+    var newCategoryBtn = document.getElementById("newCategoryBtn");
+    newCategoryBtn.removeAttribute("disabled");
+    newCategoryBtn.innerHTML = "new";
+    bookList = data;
+});
+api.getAllBook(user_id);
 
 var newCnt = 0;
 function newCategory() {
@@ -75,12 +87,29 @@ function newCategory() {
     name.setAttribute("class", "categoryName"
         + " form-control");
 
+    var emptyS = document.createElement("span");
+    emptyS.setAttribute("class", "input-group-addon");
+    emptyS.innerHTML = "Book"
+
+    var bookSelect = document.createElement("select");
+    bookSelect.setAttribute("class", "form-control bookSelector");
+    for (var i = 0; i < bookList.length; i++) {
+        var bookO = document.createElement("option");
+        bookO.setAttribute("class", "book-option");
+        bookO.setAttribute("style", "background: " + bookList[i]["picture_id"]);
+        bookO.setAttribute("value", bookList[i]["group_id"]);
+        bookO.innerHTML = bookList[i]["name"];
+        bookSelect.appendChild(bookO);
+    }
+
     var deleteS = document.createElement("span");
     deleteS.setAttribute("class", "input-group-addon btn categoryDelete");
     deleteS.innerHTML = "X";
 
     inputGroup.appendChild(colorBtn);
     inputGroup.appendChild(name);
+    inputGroup.appendChild(emptyS);
+    inputGroup.appendChild(bookSelect);
     inputGroup.appendChild(deleteS);
     div.appendChild(action);
     div.appendChild(color);
