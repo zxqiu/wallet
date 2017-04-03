@@ -180,7 +180,7 @@ public class BookResource {
 				if (!bookList.isEmpty()) {
 					Book book = bookList.get(bookList.size() - 1);
 					bookDAOC.deleteByID(id);
-					bookEntryDAOC.deleteByBookID(book.getId());
+					bookEntryDAOC.deleteByBookGroupIDAndUserID(book.getGroup_id(), book.getUser_id());
 				}
 			}
 		}

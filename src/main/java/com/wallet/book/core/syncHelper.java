@@ -38,7 +38,6 @@ public class syncHelper {
                     logger_.info("Add book entry by group id : " + bookEntry.getGroup_id() + " for user " + book.getUser_id());
                     bookEntry.setUser_id(book.getUser_id());
                     bookEntry.updateIDWithUserID();
-                    bookEntry.setBook_id(book.getId());
                     bookEntry.setBook_group_id(book.getGroup_id());
                     bookEntryDAOC.insert(bookEntry);
                 }
@@ -70,13 +69,12 @@ public class syncHelper {
             String group_id = entry.getGroup_id();
             if (fingerPrintMap.containsKey(group_id)) {
                 BookEntry tmp = fingerPrintMap.get(group_id);
-                tmp.update(tmp.getUser_id(), fingerPrintMap.get(group_id).getBook_id(), entry.getCategory(), entry.getEvent_date()
+                tmp.update(entry.getBook_group_id(), entry.getCategory(), entry.getEvent_date()
                         , entry.getAmount(), entry.getNote(), entry.getPhoto());
                 bookEntryDAOC.update(tmp);
             } else {
                 entry.setUser_id(target_user_id);
                 entry.updateIDWithUserID();
-                entry.setBook_id(target_book_id);
                 bookEntryDAOC.insert(entry);
             }
         }

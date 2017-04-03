@@ -8,10 +8,10 @@ public class Category {
 	
 	@JsonProperty
 	private String user_id;
-	
+
 	@JsonProperty
 	private String name;
-	
+
 	@JsonProperty
 	private String picture_id;
 

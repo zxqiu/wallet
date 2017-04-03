@@ -20,7 +20,6 @@ public static final String TABLE_NAME = "book_entry";
 			+ "`" + Dict.ID + "` varchar(64) not null unique,"
 			+ "`" + Dict.USER_ID + "` varchar(64) not null,"
 			+ "`" + Dict.CREATE_USER_ID + "` varchar(64) not null,"
-			+ "`" + Dict.BOOK_ID + "` varchar(64) not null,"
 			+ "`" + Dict.BOOK_GROUP_ID + "` varchar(64) not null,"
 			+ "`" + Dict.GROUP_ID + "` varchar(64) not null,"
 			+ "`" + Dict.CATEGORY + "` varchar(32) not null,"
@@ -46,7 +45,6 @@ public static final String TABLE_NAME = "book_entry";
 			+ Dict.ID
 			+ ", " + Dict.USER_ID
 			+ ", " + Dict.CREATE_USER_ID
-			+ ", " + Dict.BOOK_ID
 			+ ", " + Dict.BOOK_GROUP_ID
 			+ ", " + Dict.GROUP_ID
 			+ ", " + Dict.CATEGORY
@@ -61,7 +59,6 @@ public static final String TABLE_NAME = "book_entry";
 			+ ":" + Dict.ID
 			+ ", :" + Dict.USER_ID
 			+ ", :" + Dict.CREATE_USER_ID
-			+ ", :" + Dict.BOOK_ID
 			+ ", :" + Dict.BOOK_GROUP_ID
 			+ ", :" + Dict.GROUP_ID
 			+ ", :" + Dict.CATEGORY
@@ -77,7 +74,6 @@ public static final String TABLE_NAME = "book_entry";
 	void insert(@Bind(Dict.ID) String id
 			, @Bind(Dict.USER_ID) String user_id
 			, @Bind(Dict.CREATE_USER_ID) String create_user_id
-			, @Bind(Dict.BOOK_ID) String book_id
 			, @Bind(Dict.BOOK_GROUP_ID) String book_group_id
 			, @Bind(Dict.GROUP_ID) String group_id
 			, @Bind(Dict.CATEGORY) String category
@@ -91,7 +87,6 @@ public static final String TABLE_NAME = "book_entry";
 	);
 	
 	@SqlUpdate("update " + TABLE_NAME + " set "
-			+ Dict.BOOK_ID + "= :" + Dict.BOOK_ID + ", "
 			+ Dict.BOOK_GROUP_ID + "= :" + Dict.BOOK_GROUP_ID + ", "
 			+ Dict.CATEGORY + "= :" + Dict.CATEGORY + ","
 			+ Dict.EVENT_DATE + "= :" + Dict.EVENT_DATE + ","
@@ -103,7 +98,6 @@ public static final String TABLE_NAME = "book_entry";
 			+ " where " + Dict.ID + "= :" + Dict.ID
 		)
 	void update(@Bind(Dict.ID) String id,
-				@Bind(Dict.BOOK_ID) String book_id,
 				@Bind(Dict.BOOK_GROUP_ID) String book_group_id,
 				@Bind(Dict.CATEGORY) String category,
 				@Bind(Dict.EVENT_DATE) Date event_date,
@@ -137,12 +131,6 @@ public static final String TABLE_NAME = "book_entry";
     List<BookEntry> findByID(
         @Bind(Dict.ID) String id
     );
-
-	@SqlQuery("select * from " + TABLE_NAME + " where " + Dict.BOOK_ID + " = :" + Dict.BOOK_ID)
-	@Mapper(BookEntryMapper.class)
-	List<BookEntry> findByBookID(
-			@Bind(Dict.BOOK_ID) String book_id
-	);
 
 	@SqlQuery("select * from " + TABLE_NAME + " where " + Dict.BOOK_GROUP_ID + " = :" + Dict.BOOK_GROUP_ID)
 	@Mapper(BookEntryMapper.class)
@@ -195,8 +183,12 @@ public static final String TABLE_NAME = "book_entry";
         @Bind(Dict.USER_ID) String user_id
     );
 
-	@SqlUpdate("delete from " + TABLE_NAME + " where " + Dict.BOOK_ID + " = :" + Dict.BOOK_ID)
-	void deleteByBookID(
-			@Bind(Dict.BOOK_ID) String book_id
+	@SqlUpdate("delete from " + TABLE_NAME
+			+ " where " + Dict.BOOK_GROUP_ID + " = :" + Dict.BOOK_GROUP_ID
+			+ " and " + Dict.USER_ID + " = :" + Dict.USER_ID
+	)
+	void deleteByBookGroupIDAndUserID(
+			@Bind(Dict.BOOK_GROUP_ID) String book_group_id
+			, @Bind(Dict.USER_ID) String user_id
 	);
 }

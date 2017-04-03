@@ -60,10 +60,6 @@ public class BookEntryDAOConnector {
 		return bookEntryDAO.findByID(id);
 	}
 
-	public List<BookEntry> getByBookID(String book_id) throws Exception {
-		return bookEntryDAO.findByBookID(book_id);
-	}
-
 	public List<BookEntry> getByBookGroupID(String book_group_id) throws Exception {
 		return bookEntryDAO.findByBookGroupID(book_group_id);
 	}
@@ -83,7 +79,7 @@ public class BookEntryDAOConnector {
 	public void insert(BookEntry bookEntry) throws Exception {
 		try {
 			bookEntryDAO.insert(bookEntry.getId(), bookEntry.getUser_id(), bookEntry.getCreate_user_id()
-					, bookEntry.getBook_id(), bookEntry.getBook_group_id(), bookEntry.getGroup_id(), bookEntry.getCategory(), bookEntry.getEvent_date()
+					, bookEntry.getBook_group_id(), bookEntry.getGroup_id(), bookEntry.getCategory(), bookEntry.getEvent_date()
 					, bookEntry.getAmount(), bookEntry.getNote(), bookEntry.getPhoto(), bookEntry.getData()
 					, bookEntry.getEdit_time(),bookEntry.getCreate_time());
 		} catch (Exception e) {
@@ -98,7 +94,7 @@ public class BookEntryDAOConnector {
 	}
 	
 	public void update(BookEntry bookEntry) throws Exception {
-		bookEntryDAO.update(bookEntry.getId(), bookEntry.getBook_id(), bookEntry.getBook_group_id()
+		bookEntryDAO.update(bookEntry.getId(), bookEntry.getBook_group_id()
 				, bookEntry.getCategory(), bookEntry.getEvent_date(), bookEntry.getAmount(), bookEntry.getNote()
 				, bookEntry.getPhoto(), bookEntry.getData(), bookEntry.getEdit_time());
 	}
@@ -121,12 +117,12 @@ public class BookEntryDAOConnector {
 		bookEntryDAO.deleteByUserID(user_id);;
 	}
 
-	public void deleteByBookID(String book_id) throws Exception {
-		bookEntryDAO.deleteByBookID(book_id);;
+	public void deleteByBookGroupIDAndUserID(String book_group_id, String user_id) throws Exception {
+		bookEntryDAO.deleteByBookGroupIDAndUserID(book_group_id, user_id);;
 	}
 
 	public static void test() throws Exception {
-		BookEntry bookEntry = new BookEntry("admin", "admin", "adminbook", "adminbook", "asdfasf", new Date()
+		BookEntry bookEntry = new BookEntry("admin", "admin", "adminbook", "asdfasf", new Date()
 				, (long)10, "note", "photo");
 		
 		logger_.info("BookEntryDAOConnector test ...");

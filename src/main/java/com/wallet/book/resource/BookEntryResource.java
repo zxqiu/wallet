@@ -205,19 +205,19 @@ public class BookEntryResource {
 		try {
 			if (bookEntry != null) {
 				logger_.info("Update book item : " + bookEntry.getId());
-				if (bookEntry.getBook_id().equals(book.getId())) {
-					bookEntry.update(book.getId(), book.getGroup_id(), category, sdf.parse(event_date), amount, note, photo);
+				if (bookEntry.getBook_group_id().equals(book.getGroup_id())) {
+					bookEntry.update(book.getGroup_id(), category, sdf.parse(event_date), amount, note, photo);
 					bookEntryDAOC.update(bookEntry);
 					// Update if book id is not changed.
 					syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_Action.UPDATE);
 				} else {
 					// Delete if book id is changed.
                     syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_Action.DELETE);
-					bookEntry.update(book.getId(), book.getGroup_id(), category, sdf.parse(event_date), amount, note, photo);
+					bookEntry.update(book.getGroup_id(), category, sdf.parse(event_date), amount, note, photo);
 					bookEntryDAOC.insert(bookEntry);
 				}
 			} else {
-				bookEntry = new BookEntry(user_id, user_id, book.getId(), book.getGroup_id(), category
+				bookEntry = new BookEntry(user_id, user_id, book.getGroup_id(), category
 						, sdf.parse(event_date), amount, note, photo);
 				logger_.info("Insert new book item : " + bookEntry.getId());
 				//bookEntryDAOC.insert(bookEntry); // remove this to avoid duplication

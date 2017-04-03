@@ -17,9 +17,6 @@ public class BookEntry {
 	private String create_user_id;
 
 	@JsonProperty
-	private String book_id;
-
-	@JsonProperty
 	private String book_group_id;
 
 	@JsonProperty
@@ -52,11 +49,10 @@ public class BookEntry {
 	public BookEntry() {
 	}
 	
-	public BookEntry(String user_id, String create_user_id, String book_id, String book_group_id, String category, Date event_date, long amount, String note, String photo) throws JSONException {
+	public BookEntry(String user_id, String create_user_id, String book_group_id, String category, Date event_date, long amount, String note, String photo) throws JSONException {
 		this.setId(user_id + TimeUtils.getUniqueTimeStampInMS());
 		this.setUser_id(user_id);
 		this.setCreate_user_id(create_user_id);
-		this.setBook_id(book_id);
 		this.setBook_group_id(book_group_id);
 		this.setGroup_id(create_user_id + TimeUtils.getUniqueTimeStampInMS());
 		this.setCategory(category);
@@ -68,8 +64,7 @@ public class BookEntry {
 		this.setCreate_time(new Date());
 	}
 
-	public void update(String book_id, String book_group_id, String category, Date event_date, long amount, String note, String photo) {
-		this.setBook_id(book_id);
+	public void update(String book_group_id, String category, Date event_date, long amount, String note, String photo) {
 		this.setBook_group_id(book_group_id);
 		this.setCategory(category);
 		this.setAmount(amount);
@@ -152,14 +147,6 @@ public class BookEntry {
 
 	public void setCreate_user_id(String create_user_id) {
 		this.create_user_id = create_user_id;
-	}
-
-	public String getBook_id() {
-		return book_id;
-	}
-
-	public void setBook_id(String book_id) {
-		this.book_id = book_id;
 	}
 
 	public String getData() {
