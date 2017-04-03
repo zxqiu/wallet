@@ -171,8 +171,8 @@
 							</span>
 							<span class="book-list-text-info">
 								<span id="bookCategory">category: @bookEntryList.get(i).getCategory()</span>
-								@if (bookMap != null  && bookMap.containsKey(bookEntryList.get(i).getBook_id())) {
-									<span id="bookName">book: @?bookMap.get(bookEntryList.get(i).getBook_id()).getName()</span>
+								@if (bookMap != null  && bookMap.containsKey(bookEntryList.get(i).getBook_group_id())) {
+									<span id="bookName">book: @?bookMap.get(bookEntryList.get(i).getBook_group_id()).getName()</span>
                                 } else {
 									<span id="bookName">book: default</span>
 								}

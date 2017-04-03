@@ -78,7 +78,7 @@ public class BookEntryResource {
 		}
 
 		for (Book book : bookList) {
-			bookMap.put(book.getId(), book);
+			bookMap.put(book.getGroup_id(), book);
 		}
 
 		return Response.ok().entity(views.bookEntryList.template(bookEntryList, bookMap, categoryList, colorMap, bookEntrysEachLine, user)).build();
