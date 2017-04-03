@@ -97,7 +97,11 @@ public class CategoryDAOConnector {
 	public void deleteByUserID(String user_id) {
 		categoryDAO.deleteByUserID(user_id);
 	}
-	
+
+	public void deleteByUserIDAndBookGroupID(String user_id, String book_group_id) {
+		categoryDAO.deleteByUserIDAndBookGroupID(user_id, book_group_id);
+	}
+
 	public static void test() throws Exception {
 		Category category = new Category("admin", "test_group", "test_name", "#FFFFFF", "");
 		

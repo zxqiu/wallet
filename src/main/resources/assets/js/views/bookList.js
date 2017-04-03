@@ -127,6 +127,7 @@ function initDeleteBookBtn() {
             name.val(name.attr("title"));
             action.val("edit");
         } else {
+            alert("Delete book will also delete all entries and categories in this book!");
             btn.addClass("delete")
             name.val("mark delete");
             action.val("delete");

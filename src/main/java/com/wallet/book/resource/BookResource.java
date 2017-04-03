@@ -7,6 +7,7 @@ import com.wallet.book.core.BookEntry;
 import com.wallet.book.core.syncHelper;
 import com.wallet.book.dao.BookDAOConnector;
 import com.wallet.book.dao.BookEntryDAOConnector;
+import com.wallet.book.dao.CategoryDAOConnector;
 import com.wallet.login.dao.SessionDAOConnector;
 import com.wallet.login.resource.SessionResource;
 import com.wallet.utils.misc.ApiUtils;
@@ -33,11 +34,13 @@ public class BookResource {
 
 	private BookDAOConnector bookDAOC = null;
 	private BookEntryDAOConnector bookEntryDAOC = null;
+	private CategoryDAOConnector categoryDAOC = null;
 	private SessionDAOConnector sessionDAOC = null;
 
 	public BookResource() throws Exception {
 		this.bookDAOC = BookDAOConnector.instance();
 		this.bookEntryDAOC = BookEntryDAOConnector.instance();
+		this.categoryDAOC = CategoryDAOConnector.instance();
 		this.sessionDAOC = SessionDAOConnector.instance();
 	}
 
@@ -181,6 +184,7 @@ public class BookResource {
 					Book book = bookList.get(bookList.size() - 1);
 					bookDAOC.deleteByID(id);
 					bookEntryDAOC.deleteByUserIDAndBookGroupID(book.getUser_id(), book.getGroup_id());
+					categoryDAOC.deleteByUserIDAndBookGroupID(book.getUser_id(), book.getGroup_id());
 				}
 			}
 		}

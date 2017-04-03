@@ -101,4 +101,13 @@ public interface CategoryDAO {
     void deleteByID(
         @Bind(Dict.ID) String id
     );
+
+	@SqlUpdate("delete from " + TABLE_NAME
+			+ " where " + Dict.USER_ID + " = :" + Dict.USER_ID
+			+ " and " + Dict.BOOK_GROUP_ID + " = :" + Dict.BOOK_GROUP_ID
+	)
+	void deleteByUserIDAndBookGroupID(
+			@Bind(Dict.USER_ID) String user_id
+			, @Bind(Dict.BOOK_GROUP_ID) String book_group_id
+	);
 }
