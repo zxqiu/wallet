@@ -2,7 +2,7 @@
 @import com.wallet.book.core.Category;
 @import java.util.List;
 
-@args (com.wallet.book.core.BookEntry bookEntry, List<Book> bookList, List<Category> categoryList, String date)
+@args (com.wallet.book.core.BookEntry bookEntry, List<Book> bookList, List<Category> categoryList, String date, String user_id)
 
 <html lang="en">
 
@@ -22,6 +22,7 @@
 </head>
 
 <body>
+	<input type="hidden" id="userID" value="@?user_id">
 	<div class="row">
 		<div class="col-md-4">
 			<form role="form" action="/books/insertentry" method="post" id="bookEntryForm">
@@ -101,10 +102,10 @@
 							}
 							placeholder="input or select" id="bookEntryCategory" name="category" type="text" required="true">
 						<span class="input-group-addon" style="width:0px; padding-left:0px; padding-right:0px; border:none;"></span>
-						<select class="form-control" id="categorySelector">
+						<select class="form-control" id="categorySelector" disabled>
                             @if (categoryList != null) {
 								@for (Category category : categoryList) {
-								<option class="category-option" style="background: @?category.getPicture_id();" value="@?category.getName()"
+								<option class="category-option" style="background: @?category.getPicture_id();" value="@?category.getName()" title="@category.getBook_group_id()"
 									@if (bookEntry != null && category.getName().equals(bookEntry.getCategory())) {
 										selected
 									}
@@ -174,6 +175,7 @@
 	<script src="/js/bootstrap.min.js"></script>
 	<script src="/js/bootstrap-datepicker.min.js"></script>
 	<script src="/js/general.js"></script>
+	<script src="/js/APIs.js"></script>
 	<script src="/js/views/bookEntry.js"></script>
 
 </body>

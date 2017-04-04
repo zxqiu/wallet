@@ -62,13 +62,8 @@ public class WalletService extends Application<WalletConfiguration> {
 	    CategoryDAOConnector.init(categoryDAO);
 		TinyUrlDAOConnector.init(tinyUrlDAO);
 
-	    sessionDAO.dropTable();
-	    bookDAO.dropTable();
-	    bookEntryDAO.dropTable();
-	    categoryDAO.dropTable();
-	    userDAO.dropTable();
-	    tinyUrlDAO.dropTable();
-	    
+		//cleanupDB(sessionDAO, bookDAO, bookEntryDAO, categoryDAO, userDAO, tinyUrlDAO);
+
 	    UserDAOConnector.test();
 	    SessionDAOConnector.test();
 		BookDAOConnector.test();
@@ -88,5 +83,15 @@ public class WalletService extends Application<WalletConfiguration> {
 
 		syncHelper.init();
 
+	}
+
+	private void cleanupDB(SessionDAO sessionDAO, BookDAO bookDAO, BookEntryDAO bookEntryDAO, CategoryDAO categoryDAO
+			, UserDAO userDAO, TinyUrlDAO tinyUrlDAO) {
+		sessionDAO.dropTable();
+		bookDAO.dropTable();
+		bookEntryDAO.dropTable();
+		categoryDAO.dropTable();
+		userDAO.dropTable();
+		tinyUrlDAO.dropTable();
 	}
 }

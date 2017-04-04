@@ -114,7 +114,9 @@ public class BookEntryResource {
 				.entity(views.bookEntry.template(bookEntry
                         , bookDAOC.getByUserID(user_id)
 						, categoryDAOC.getByUserID(user_id)
-						, date))
+						, date
+						, user_id
+				))
 				.build();
 	}
 
