@@ -27,7 +27,7 @@ function submitList () {
 
     api.setPostCategoryListSuccessCallback(submitSuccess);
     api.postCategoryList(categories);
-};
+}
 
 var user_id = $("#userID").val();
 var bookList;
@@ -89,7 +89,7 @@ function newCategory() {
 
     var emptyS = document.createElement("span");
     emptyS.setAttribute("class", "input-group-addon");
-    emptyS.innerHTML = "Book"
+    emptyS.innerHTML = "Book";
 
     var bookSelect = document.createElement("select");
     bookSelect.setAttribute("class", "form-control bookSelector");
@@ -138,7 +138,7 @@ function initDeleteCategoryBtn() {
             name.val(name.attr("title"));
             action.val("edit");
         } else {
-            btn.addClass("delete")
+            btn.addClass("delete");
             name.val("mark delete");
             action.val("delete");
         }
@@ -165,7 +165,7 @@ function initCategoryColorBtn() {
             previewontriggerelement: false,
             placement: 'bottom',
             color: categoryColorValue,
-            swatches: ["#D50000","#304FFE","#00B8D4","#00C853","#FFD600","#FF6D00","#FF1744","#3D5AFE","#00E5FF","#00E676","#FFEA00","#FF9100","#FF5252","#536DFE","#18FFFF","#69F0AE","#FFFF00","#FFAB40"],
+            swatches: COLOR_LIST,
             customswatches: false,
             order: {},
             onchange: function (container, color) {

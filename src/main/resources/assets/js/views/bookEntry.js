@@ -28,6 +28,36 @@ function showCategoryByBook() {
         }
     }
 }
+function setCategoryListFontColor() {
+    var selector = $(".category-list");
+
+    for (var i = 0; i < selector.length; i++) {
+        var a = $(selector[i]).find("a");
+        var rgb = getBackgroundColorRGB(selector[i]);
+        if (a.length == 0 || rgb.length < 3) {
+            continue;
+        }
+
+        var bright = getBrightness(rgb);
+        adjustFontColor(bright, a[0]);
+    }
+}
+
+function setCategoryOptionFontColor() {
+    var selector = $(".category-option");
+    for (var i = 0; i < selector.length; i++) {
+        var rgb = getBackgroundColorRGB(selector[i]);
+        var bright = getBrightness(rgb);
+
+        adjustFontColor(bright, selector[i]);
+    }
+
+    var parent = selector.parent()[0];
+    var rgb = getBackgroundColorRGB(parent);
+    var bright = getBrightness(rgb);
+
+    adjustFontColor(bright, parent);
+}
 
 /************************** jquery functions ********************************/
 $(document).ready(function () {
@@ -43,6 +73,9 @@ $(document).ready(function () {
         showCategoryByBook();
     });
     api.getAllBook(user_id);
+
+    setCategoryListFontColor();
+    setCategoryOptionFontColor();
 });
 
 $('#categorySelector').on('change', function(){

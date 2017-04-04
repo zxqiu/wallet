@@ -2,6 +2,9 @@
  * Created by zxqiu on 3/22/17.
  */
 
+var COLOR_LIST = ["#F0F8FF","#FAEBD7","#7FFFD4","#F0E68C","#ADD8E6","#F08080","#E0FFFF","#FFB6C1","#FFA07A","#87CEFA"
+    ,"#800000","#DB7093","#DDA0DD","#40E0D0","#EE82EE","#9ACD32","#FFE4E1","#40E0D0","#AFEEEE","#FFFFFF","#000000"];
+
 function getBrightness(rgb) {
     if (!rgb) {
         return;
@@ -35,38 +38,4 @@ function adjustFontColor(brightness, node) {
     }
 }
 
-function setCategoryListFontColor() {
-    var selector = $(".category-list");
 
-    for (var i = 0; i < selector.length; i++) {
-        var a = $(selector[i]).find("a");
-        var rgb = getBackgroundColorRGB(selector[i]);
-        if (a.length == 0 || rgb.length < 3) {
-            continue;
-        }
-
-        var bright = getBrightness(rgb);
-        adjustFontColor(bright, a[0]);
-    }
-}
-
-function setCategoryOptionFontColor() {
-    var selector = $(".category-option");
-    for (var i = 0; i < selector.length; i++) {
-        var rgb = getBackgroundColorRGB(selector[i]);
-        var bright = getBrightness(rgb);
-
-        adjustFontColor(bright, selector[i]);
-    }
-
-    var parent = selector.parent()[0];
-    var rgb = getBackgroundColorRGB(parent);
-    var bright = getBrightness(rgb);
-
-    adjustFontColor(bright, parent);
-}
-/************************** jquery functions ********************************/
-$(document).ready(function () {
-    setCategoryListFontColor();
-    setCategoryOptionFontColor();
-});

@@ -161,7 +161,7 @@ function initBookColorBtn() {
             previewontriggerelement: false,
             placement: 'bottom',
             color: bookColorValue,
-            swatches: ["#D50000","#304FFE","#00B8D4","#00C853","#FFD600","#FF6D00","#FF1744","#3D5AFE","#00E5FF","#00E676","#FFEA00","#FF9100","#FF5252","#536DFE","#18FFFF","#69F0AE","#FFFF00","#FFAB40"],
+            swatches: COLOR_LIST,
             customswatches: false,
             order: {},
             onchange: function (container, color) {

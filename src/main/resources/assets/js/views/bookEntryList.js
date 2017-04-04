@@ -125,11 +125,7 @@ $(document).ready(function () {
         var rgb = getBackgroundColorRGB(titles[i]);
         var bright = getBrightness(rgb);
 
-        if (bright > 135) {
-            titles[i].style.color = "#4A4A4A";
-        } else {
-            titles[i].style.color = "white";
-        }
+        adjustFontColor(bright, titles[i]);
     }
 
 
