@@ -114,6 +114,7 @@ function initShareBookBtn() {
     });
 }
 
+var deleteWarn = true;
 function initDeleteBookBtn() {
     $(".bookDelete").click(function (e) {
         var btn = $(e.target);
@@ -124,11 +125,16 @@ function initDeleteBookBtn() {
 
         if (btn.hasClass("delete")) {
             btn.removeClass("delete");
+            btn.text("X");
             name.val(name.attr("title"));
             action.val("edit");
         } else {
-            alert("Delete book will also delete all entries and categories in this book!");
+            if (deleteWarn) {
+                alert("Delete book will also delete all entries and categories in this book!");
+                deleteWarn = false;
+            }
             btn.addClass("delete")
+            btn.text("O");
             name.val("mark delete");
             action.val("delete");
         }

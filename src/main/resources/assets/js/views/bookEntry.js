@@ -1,3 +1,10 @@
+function showCategoryByBook() {
+    var bookSelector = $("#bookSelector").find(":selected");
+    var book_id = bookSelector.val();
+
+    var options = $(".category-option");
+}
+
 /************************** jquery functions ********************************/
 $(document).ready(function () {
     // this is to init category text field
@@ -5,6 +12,8 @@ $(document).ready(function () {
     if ($("#bookEntryCategory").val().length == 0 && selector.length > 0) {
         $('#categorySelector').val($(selector[0]).val()).change();
     }
+
+    showCategoryByBook();
 });
 
 $('#categorySelector').on('change', function(){

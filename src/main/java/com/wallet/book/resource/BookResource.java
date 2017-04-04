@@ -106,7 +106,7 @@ public class BookResource {
 					syncHelper.syncBook(book);
 				}
 			} else {
-				Book book = new Book(user_id, user_id, name, new Date(), picture_id, "");
+				Book book = new Book(user_id, user_id, name, new Date(), picture_id);
 				logger_.info("Insert book " + book.getName() + " for user " + user_id);
 				bookDAOC.insert(book);
 			}
@@ -171,7 +171,6 @@ public class BookResource {
 							, jsonObject.getString(Dict.NAME)
 							, new Date()
 							, jsonObject.getString(Dict.PICTURE_ID)
-							, ""
 					);
 					logger_.info("Book list insert new book : " + jsonObject.toString());
 					bookDAOC.insert(book);

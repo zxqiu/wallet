@@ -62,7 +62,7 @@
 					</label>
 					<div class='input-group'>
 						<span class="input-group-addon">B</span>
-						<select class="form-control" id="bookSelector" name="book_name">
+						<select class="form-control" id="bookSelector" name="book_id">
 							@if (bookList == null || bookList.size() == 0) {
 								<option class="book-option" value="default">
 									default
@@ -70,7 +70,7 @@
                             }
 							@if (bookList != null) {
 								@for (Book book : bookList) {
-								<option class="book-option" style="background: @?book.getPicture_id();" value="@?book.getName()"
+								<option class="book-option" style="background: @?book.getPicture_id();" value="@?book.getId()"
 									@if (bookEntry != null && book.getGroup_id().equals(bookEntry.getBook_group_id())) {
 										selected
 									}
@@ -173,7 +173,6 @@
 	<script src="/js/jquery.min.js"></script>
 	<script src="/js/bootstrap.min.js"></script>
 	<script src="/js/bootstrap-datepicker.min.js"></script>
-	<script src="/js/jscolor.min.js"></script>
 	<script src="/js/general.js"></script>
 	<script src="/js/views/bookEntry.js"></script>
 

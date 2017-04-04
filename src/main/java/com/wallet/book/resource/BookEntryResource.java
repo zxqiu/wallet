@@ -130,7 +130,7 @@ public class BookEntryResource {
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.TEXT_HTML)
 	public Response insertEntry(@FormParam(Dict.ID) String id,
-								@FormParam(Dict.BOOK_Name) String book_name,
+								@FormParam(Dict.BOOK_ID) String book_id,
 								@FormParam(Dict.EVENT_DATE) String event_date,
 								@FormParam(Dict.AMOUNT) double amount_double,
 								@FormParam(Dict.CATEGORY) String category,
@@ -142,31 +142,33 @@ public class BookEntryResource {
 			return Response.seeOther(URI.create(SessionResource.PATH_RESTORE_SESSION)).build();
 		}
 
-		logger_.info("insertentry request : id:" + id + ", book_name:" + book_name + ", event_date:" + event_date
+		logger_.info("insertentry request : id:" + id + ", book_id:" + book_id + ", event_date:" + event_date
 				+ ", amount_double:" + amount_double + ", category:" + category + ", note:" + note + ", photo:" + photo + ".");
 
 		long amount = (long)(amount_double * 100);
-		String book_id = "";
-		Book book;
+		Book book = null;
 
 		// 1. extract request
 		// 2. verify and parse request
 		// 3. verify parameters 
-		if (category.length() == 0 || event_date.length() == 0 || book_name.length() == 0) {
+		if (category.length() == 0 || event_date.length() == 0 || book_id.length() == 0) {
 			logger_.error("ERROR: invalid new item request: " + id);
 			return Response.serverError().build();
 		}
 		
 		// 4. transaction
-		// 4.1 insert new category and default book (if not exists)
-		book_id = user_id + "-" + book_name;
+		// 4.1 insert default book if not exists
 		try {
-			List<Book> bookList = bookDAOC.getByID(book_id);
-			if (bookList.isEmpty()) {
-				book = new Book(user_id, user_id, book_name, new Date(), "FFFFFF", "");
+			if (book_id != null) {
+				List<Book> bookList = bookDAOC.getByID(book_id);
+				if (!bookList.isEmpty()) {
+					book = bookList.get(bookList.size() - 1);
+				}
+			}
+
+			if (book_id == null || book == null) {
+				book = new Book(user_id, user_id, "default", new Date(), "#FFFFFF");
 				bookDAOC.insert(book);
-			} else {
-				book = bookList.get(bookList.size() - 1);
 			}
 		} catch (Exception e) {
 			logger_.error("Error failed to get book or insert new book when insert book entry : " + book_id);

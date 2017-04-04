@@ -117,7 +117,7 @@ public class BookDAOConnector {
 	
 	public static void test() throws Exception {
 		Book book = new Book("admin", "admin", "name", new Date()
-				, "photo", "");
+				, "photo");
 		
 		logger_.info("BookDAOConnector test ...");
 		
