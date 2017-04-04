@@ -28,7 +28,7 @@ public class Category {
 	public Category() {
 	}
 	
-	public Category(String user_id, String book_group_id, String name, String picture_id, String data) {
+	public Category(String user_id, String book_group_id, String name, String picture_id) {
 		this.setId(user_id + book_group_id + name);
 		this.setGroup_id(user_id + TimeUtils.getUniqueTimeStampInMS());
 		this.setUser_id(user_id);

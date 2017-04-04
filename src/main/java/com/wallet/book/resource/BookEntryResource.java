@@ -178,7 +178,7 @@ public class BookEntryResource {
 
 		try {
 			if (categoryDAOC.getByID(user_id + category).isEmpty()) {
-				Category tmp = new Category(user_id, book.getGroup_id(), category, "#FFFFFF", "");
+				Category tmp = new Category(user_id, book.getGroup_id(), category, "#FFFFFF");
 				categoryDAOC.insert(tmp);
 				syncHelper.syncCategory(tmp, syncHelper.SYNC_Action.ADD);
 			}

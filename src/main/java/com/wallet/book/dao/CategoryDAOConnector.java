@@ -123,7 +123,7 @@ public class CategoryDAOConnector {
 	}
 
 	public static void test() throws Exception {
-		Category category = new Category("admin", "test_group", "test_name", "#FFFFFF", "");
+		Category category = new Category("admin", "test_group", "test_name", "#FFFFFF");
 		
 		logger_.info("CategoryDAOConnector test ...");
 		
