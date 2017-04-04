@@ -138,7 +138,7 @@ public class UserDAOConnector {
 	}
 	
 	public static void test() throws Exception {
-		User user = new User("admin", "admin@gmail.com", "admin", "admin", UserPriority.ADMIN.name(), "");
+		User user = new User("admin", "admin@gmail.com", "admin", "admin", UserPriority.ADMIN.name());
 
 		logger_.info("UserDAOConnector test ...");
 		

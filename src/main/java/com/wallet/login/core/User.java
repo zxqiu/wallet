@@ -26,22 +26,20 @@ public class User {
     public User() {
 	}
 
-    public User(String email, String password, String name, String priority, String data) {
+    public User(String email, String password, String name, String priority) {
         this.setUser_id(email + TimeUtils.getUniqueTimeStampInMS());
         this.setEmail(email);
         this.setPassword(password);
         this.setName(name);
         this.setPriority(priority);
-        this.setData(data);
     }
 
-	public User(String user_id, String email, String password, String name, String priority, String data) {
+	public User(String user_id, String email, String password, String name, String priority) {
 		this.setUser_id(user_id);
 		this.setEmail(email);
 		this.setPassword(password);
 		this.setName(name);
 		this.setPriority(priority);
-		this.setData(data);
 	}
 
     public String getEmail() {

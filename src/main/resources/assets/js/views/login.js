@@ -5,7 +5,13 @@
 var api = new APIs.createNew();
 
 function fbLoginSuccessCallback(data) {
-    window.location.href = "/";
+    var redirect = $("#redirect");
+    redirect = redirect.val();
+    if (redirect && redirect.length > 0) {
+        window.location.href = redirect;
+    } else {
+        window.location.href = "/";
+    }
 }
 function fbLoginSuccess(response) {
     if (response.status != "connected" || !response.authResponse) {

@@ -34,8 +34,8 @@ public class UserResource {
     @Path("/getall")
     @Produces(value = MediaType.APPLICATION_JSON)
     public List<User> fetch() throws Exception {
-        return userDAOC.getAll();
-        //return null;
+        //return userDAOC.getAll();
+        return null;
     }
 
     @GET

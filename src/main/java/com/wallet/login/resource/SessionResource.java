@@ -41,7 +41,7 @@ public class SessionResource {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.TEXT_HTML)
     public Object login(
-            @FormParam(Dict.DIRECT) String redirect,
+            @FormParam(Dict.REDIRECT) String redirect,
             @FormParam(Dict.ID) String id,
             @FormParam(Dict.PASSWORD) String password) throws Exception {
 
