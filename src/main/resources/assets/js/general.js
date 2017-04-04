@@ -3,7 +3,8 @@
  */
 
 var COLOR_LIST = ["#F0F8FF","#FAEBD7","#7FFFD4","#F0E68C","#ADD8E6","#F08080","#E0FFFF","#FFB6C1","#FFA07A","#87CEFA"
-    ,"#800000","#DB7093","#DDA0DD","#40E0D0","#EE82EE","#9ACD32","#FFE4E1","#40E0D0","#AFEEEE","#FFFFFF","#000000"];
+    ,"#800000","#DB7093","#DDA0DD","#40E0D0","#EE82EE","#9ACD32","#FFE4E1","#40E0D0","#AFEEEE","#98FB98","#ADFF2F"
+    ,"#FFFFFF","#000000"];
 
 function getBrightness(rgb) {
     if (!rgb) {
