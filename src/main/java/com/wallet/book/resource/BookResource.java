@@ -183,6 +183,9 @@ public class BookResource {
 					bookDAOC.deleteByID(id);
 					bookEntryDAOC.deleteByUserIDAndBookGroupID(book.getUser_id(), book.getGroup_id());
 					categoryDAOC.deleteByUserIDAndBookGroupID(book.getUser_id(), book.getGroup_id());
+
+					book.removeUser(book.getUser_id());
+					syncHelper.syncBook(book);
 				}
 			}
 		}
