@@ -3,7 +3,6 @@ package com.wallet.book.resource;
 import com.codahale.metrics.annotation.Timed;
 import com.google.gson.Gson;
 import com.wallet.book.core.Book;
-import com.wallet.book.core.BookEntry;
 import com.wallet.book.core.syncHelper;
 import com.wallet.book.dao.BookDAOConnector;
 import com.wallet.book.dao.BookEntryDAOConnector;
@@ -314,8 +313,8 @@ public class BookResource {
 		}
 
 		syncHelper.syncBook(book);
-
-		syncHelper.syncBookEntries(book.getGroup_id(), request_user, book.getId());
+		syncHelper.syncBookEntries(book.getGroup_id(), request_user);
+		syncHelper.syncCategories(book.getGroup_id(), request_user);
 
 		return Response.seeOther(URI.create(PATH_BOOKS_LIST)).build();
 	}

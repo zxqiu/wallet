@@ -17,6 +17,7 @@ public interface CategoryDAO {
 	
 	@SqlUpdate("create table if not exists " + TABLE_NAME + " ("
 			+ "`" + Dict.ID + "` varchar(192) not null unique,"
+			+ "`" + Dict.GROUP_ID + "` varchar(64) not null,"
 			+ "`" + Dict.USER_ID + "` varchar(64) not null,"
 			+ "`" + Dict.BOOK_GROUP_ID + "` varchar(64) not null,"
 			+ "`" + Dict.NAME + "` varchar(64) not null,"
@@ -35,6 +36,7 @@ public interface CategoryDAO {
 	
     @SqlUpdate("insert into " + TABLE_NAME + " ("
     		+ Dict.ID
+			+ ", " + Dict.GROUP_ID
     		+ ", " + Dict.USER_ID
 			+ ", " + Dict.BOOK_GROUP_ID
     		+ ", " + Dict.NAME
@@ -42,6 +44,7 @@ public interface CategoryDAO {
 			+ ", " + Dict.DATA
     		+ ") values ("
     		+ ":" + Dict.ID
+			+ ",:" + Dict.GROUP_ID
     		+ ",:" + Dict.USER_ID
 			+ ",:" + Dict.BOOK_GROUP_ID
     		+ ",:" + Dict.NAME
@@ -51,6 +54,7 @@ public interface CategoryDAO {
     		)
     void insert(
         	@Bind(Dict.ID) String id
+			, @Bind(Dict.GROUP_ID) String group_id
         	, @Bind(Dict.USER_ID) String user_id
 			, @Bind(Dict.BOOK_GROUP_ID) String book_group_id
         	, @Bind(Dict.NAME) String name
@@ -63,11 +67,21 @@ public interface CategoryDAO {
 			+ ", " + Dict.DATA + "= :" + Dict.DATA
 			+ " where " + Dict.ID + "= :" + Dict.ID
 		)
-	void update(@Bind(Dict.ID) String id
+	void updateByID(@Bind(Dict.ID) String id
 			, @Bind(Dict.PICTURE_ID) String picture_id
 			, @Bind(Dict.DATA) String data
 	);
-    
+
+	@SqlUpdate("update " + TABLE_NAME + " set "
+			+ Dict.PICTURE_ID + "= :" + Dict.PICTURE_ID
+			+ ", " + Dict.DATA + "= :" + Dict.DATA
+			+ " where " + Dict.GROUP_ID + "= :" + Dict.GROUP_ID
+	)
+	void updateByGroupID(@Bind(Dict.GROUP_ID) String group_id
+			, @Bind(Dict.PICTURE_ID) String picture_id
+			, @Bind(Dict.DATA) String data
+	);
+
     @SqlQuery("select * from " + TABLE_NAME)
     @Mapper(CategoryMapper.class)
     List<Category> findAll();
@@ -83,15 +97,27 @@ public interface CategoryDAO {
     List<Category> findByID(
         @Bind(Dict.ID) String id
     );
-	
-	@SqlQuery("select * from " + TABLE_NAME + " where " + Dict.ID + " = :" + Dict.ID
-			+ " and " + Dict.USER_ID + " = : " + Dict.USER_ID)
+
+	@SqlQuery("select * from " + TABLE_NAME + " where " + Dict.GROUP_ID + " = :" + Dict.GROUP_ID)
+	@Mapper(CategoryMapper.class)
+	List<Category> findByGroupID(
+			@Bind(Dict.ID) String group_id
+	);
+
+	@SqlQuery("select * from " + TABLE_NAME + " where " + Dict.BOOK_GROUP_ID + " = :" + Dict.BOOK_GROUP_ID
+			+ " and " + Dict.USER_ID + " = :" + Dict.USER_ID)
     @Mapper(CategoryMapper.class)
-    List<Category> findByIDAndUserID(
-        @Bind(Dict.ID) String id,
+    List<Category> findByUserIDAndBookGroupID(
         @Bind(Dict.USER_ID) String user_id
+        , @Bind(Dict.BOOK_GROUP_ID) String book_group_id
     );
-	
+
+	@SqlQuery("select * from " + TABLE_NAME + " where " + Dict.BOOK_GROUP_ID + " = :" + Dict.BOOK_GROUP_ID)
+	@Mapper(CategoryMapper.class)
+	List<Category> findByBookGroupID(
+			@Bind(Dict.BOOK_GROUP_ID) String book_group_id
+	);
+
 	@SqlUpdate("delete from " + TABLE_NAME + " where " + Dict.USER_ID + " = :" + Dict.USER_ID)
     void deleteByUserID(
         @Bind(Dict.USER_ID) String user_id
@@ -101,6 +127,11 @@ public interface CategoryDAO {
     void deleteByID(
         @Bind(Dict.ID) String id
     );
+
+	@SqlUpdate("delete from " + TABLE_NAME + " where " + Dict.GROUP_ID + " = :" + Dict.GROUP_ID)
+	void deleteByGroupID(
+			@Bind(Dict.GROUP_ID) String group_id
+	);
 
 	@SqlUpdate("delete from " + TABLE_NAME
 			+ " where " + Dict.USER_ID + " = :" + Dict.USER_ID

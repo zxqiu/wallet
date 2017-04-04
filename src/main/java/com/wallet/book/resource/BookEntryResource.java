@@ -176,7 +176,9 @@ public class BookEntryResource {
 
 		try {
 			if (categoryDAOC.getByID(user_id + category).isEmpty()) {
-				categoryDAOC.insert(new Category(user_id, book.getGroup_id(), category, "#FFFFFF", ""));
+				Category tmp = new Category(user_id, book.getGroup_id(), category, "#FFFFFF", "");
+				categoryDAOC.insert(tmp);
+				syncHelper.syncCategory(tmp, syncHelper.SYNC_Action.ADD);
 			}
 		} catch (Exception e1) {
 			logger_.error("Error failed to get category or insert new category when insert book entry : " + category);

@@ -14,6 +14,7 @@ public class CategoryMapper implements ResultSetMapper<Category> {
 		Category category = new Category();
 		
 		category.setId(resultSet.getString(Dict.ID));
+		category.setGroup_id(resultSet.getString(Dict.GROUP_ID));
 		category.setUser_id(resultSet.getString(Dict.USER_ID));
 		category.setBook_group_id(resultSet.getString(Dict.BOOK_GROUP_ID));
 		category.setName(resultSet.getString(Dict.NAME));

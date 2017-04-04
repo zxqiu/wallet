@@ -10,6 +10,7 @@ import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.wallet.book.core.syncHelper;
 import com.wallet.book.dao.BookDAOConnector;
 import com.wallet.login.resource.SessionResource;
 import org.json.JSONArray;
@@ -101,10 +102,12 @@ public class CategoryResource {
 		try {
 		    if (id != null && id.length() > 1) {
 				logger_.info("Update category " + category.getName() + " for user " + user_id);
-		    	categoryDAOC.updatePictureID(category);
+		    	categoryDAOC.updateByID(category);
+				syncHelper.syncCategory(category, syncHelper.SYNC_Action.UPDATE);
 			} else {
 				logger_.info("Insert category " + category.getName() + " for user " + user_id);
 				categoryDAOC.insert(category);
+				syncHelper.syncCategory(category, syncHelper.SYNC_Action.ADD);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -156,14 +159,17 @@ public class CategoryResource {
 			if (jsonObject.getString(Dict.ACTION).equals(Dict.EDIT)) {
 				if (id.length() > 1) {
 					logger_.info("Updating category : " + jsonObject.toString());
-					categoryDAOC.updatePictureID(category);
+					categoryDAOC.updateByID(category);
+					syncHelper.syncCategory(category, syncHelper.SYNC_Action.UPDATE);
 				} else {
 					logger_.info("Insert new category : " + jsonObject.toString());
 					categoryDAOC.insert(category);
+					syncHelper.syncCategory(category, syncHelper.SYNC_Action.ADD);
 				}
 			} else if (jsonObject.getString(Dict.ACTION).equals(Dict.DELETE)) {
 				logger_.info("Delete category : " + jsonObject.toString());
 				categoryDAOC.deleteByID(id);
+				syncHelper.syncCategory(category, syncHelper.SYNC_Action.DELETE);
 			}
 		}
 

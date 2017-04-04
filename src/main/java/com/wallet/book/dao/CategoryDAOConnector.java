@@ -59,22 +59,34 @@ public class CategoryDAOConnector {
 		}
 	}
 	
-	public void deleteTable() throws SQLException {
+	public void deleteTable() {
 		categoryDAO.dropTable();
 		instance_ = null;
 	}
 	
-	public List<Category> getByUserID(String user_id) throws SQLException {
+	public List<Category> getByUserID(String user_id) {
 		return categoryDAO.findByUserID(user_id);
 	}
 	
-	public List<Category> getByID(String id) throws SQLException {
+	public List<Category> getByID(String id) {
 		return categoryDAO.findByID(id);
 	}
-	
+
+	public List<Category> getByGroupID(String group_id) {
+		return categoryDAO.findByGroupID(group_id);
+	}
+
+	public List<Category> getByBookGroupID(String book_group_id) throws SQLException {
+		return categoryDAO.findByBookGroupID(book_group_id);
+	}
+
+	public List<Category> getByUserIDAndBookGroupID(String user_id, String book_group_id) throws SQLException {
+		return categoryDAO.findByUserIDAndBookGroupID(user_id, book_group_id);
+	}
+
 	public void insert(Category category) throws Exception {
 		try {
-			categoryDAO.insert(category.getId(), category.getUser_id(), category.getBook_group_id(), category.getName(), category.getPicture_id(), category.getData());
+			categoryDAO.insert(category.getId(), category.getGroup_id(), category.getUser_id(), category.getBook_group_id(), category.getName(), category.getPicture_id(), category.getData());
 		} catch (Exception e) {
 			if (e.getMessage().contains("Duplicate entry")) {
 				logger_.info("Category " + category.getName() + " already exists for user : " + category.getUser_id());
@@ -86,14 +98,22 @@ public class CategoryDAOConnector {
 		}
 	}
 	
-	public void updatePictureID(Category category) {
-		categoryDAO.update(category.getId(), category.getPicture_id(), category.getData());
+	public void updateByID(Category category) {
+		categoryDAO.updateByID(category.getId(), category.getPicture_id(), category.getData());
 	}
-	
+
+	public void updateByGroupID(Category category) {
+		categoryDAO.updateByGroupID(category.getGroup_id(), category.getPicture_id(), category.getData());
+	}
+
 	public void deleteByID(String id) {
 		categoryDAO.deleteByID(id);
 	}
-	
+
+	public void deleteByGroupID(String group_id) {
+		categoryDAO.deleteByGroupID(group_id);
+    }
+
 	public void deleteByUserID(String user_id) {
 		categoryDAO.deleteByUserID(user_id);
 	}
@@ -118,7 +138,7 @@ public class CategoryDAOConnector {
 		logger_.info("2. update");
 		
 		category.setPicture_id("#FFFFFF");
-		CategoryDAOConnector.instance().updatePictureID(category);
+		CategoryDAOConnector.instance().updateByID(category);
 		List<Category> category2 = CategoryDAOConnector.instance().getByID(category.getId());
 		if (category2.isEmpty()) {
 			logger_.error("CategoryDAOConnector test failed!");
