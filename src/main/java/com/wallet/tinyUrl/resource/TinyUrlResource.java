@@ -39,23 +39,7 @@ public class TinyUrlResource {
 
     @POST
     @Timed
-    @Path("/toshortbyform")
-    @Produces(MediaType.APPLICATION_JSON)
-    public TinyUrl toShort(
-            @FormParam(Dict.FULL_URL) String full_url
-            , @FormParam(Dict.EXPIRE_CLICK) int expire_click
-    ) throws Exception {
-        List<TinyUrl> tinyUrls = tinyUrlDAOC.getByFullUrl(full_url);
-        if (!tinyUrls.isEmpty()) {
-            return tinyUrls.get(tinyUrls.size() - 1);
-        }
-
-        return tinyUrlDAOC.insertOrUpdateExisting(full_url, expire_click);
-    }
-
-    @POST
-    @Timed
-    @Path("/toshort")
+    @Path("/s")
     @Produces(MediaType.APPLICATION_JSON)
     public TinyUrl toShort(
             String request
@@ -69,7 +53,7 @@ public class TinyUrlResource {
 
     @GET
     @Timed
-    @Path("/tolong/{" + Dict.SHORT_URL + "}")
+    @Path("/l/{" + Dict.SHORT_URL + "}")
     @Produces(MediaType.TEXT_HTML)
     public Response toLong(
             @PathParam(Dict.SHORT_URL) String short_url

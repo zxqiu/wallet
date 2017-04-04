@@ -10,7 +10,7 @@ var apiGetBook = "/books/getbook";
 var apiInsertBookList = "/books/insertbooklist";
 var apiInsertCategoryList = "/books/insertcategorylist";
 var apiFaceBookLogin = "/fblogin";
-var apiTinyUrlToShort = "/t/toshort";
+var apiTinyUrlToShort = "/t/s";
 
 var APIs = {
     createNew: function() {

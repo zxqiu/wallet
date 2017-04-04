@@ -220,7 +220,7 @@ $(".bookShareFormSubmit").on("click", function(e) {
         var shortUrl = document.createElement("input");
         shortUrl.setAttribute("readonly", "true");
         shortUrl.setAttribute("type", "text");
-        shortUrl.setAttribute("value", window.location.host + "/t/tolong/" + response.short_url);
+        shortUrl.setAttribute("value", window.location.host + "/t/l/" + response.short_url);
         shortUrl.setAttribute("class", "form-control");
         shortUrl.setAttribute("style", "cursor:pointer");
         shortUrl.setAttribute("onClick", "this.setSelectionRange(0, this.value.length)");
