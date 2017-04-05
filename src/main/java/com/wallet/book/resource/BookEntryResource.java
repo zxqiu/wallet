@@ -71,17 +71,17 @@ public class BookEntryResource {
 		HashMap<String, Book> bookMap = new HashMap<>();
 		List<BookEntry> bookEntryList = sortBookByEventTime(bookEntryDAOC.getByUserID(user_id));
 		List<Category> categoryList = categoryDAOC.getByUserID(user_id);
-		HashMap<String, String> colorMap = new HashMap<>();
+		HashMap<String, Category> categoryMap = new HashMap<>();
 
 		for (Category category : categoryList) {
-			colorMap.put(category.getName(), category.getPicture_id());
+			categoryMap.put(category.getGroup_id(), category);
 		}
 
 		for (Book book : bookList) {
 			bookMap.put(book.getGroup_id(), book);
 		}
 
-		return Response.ok().entity(views.bookEntryList.template(bookEntryList, bookMap, categoryList, colorMap, bookEntrysEachLine, user)).build();
+		return Response.ok().entity(views.bookEntryList.template(bookEntryList, bookMap, categoryList, categoryMap, bookEntrysEachLine, user)).build();
 	}
 
 	public static final String PATH_INSERT_ENTRY_VIEW = "/books/entry";
@@ -135,7 +135,8 @@ public class BookEntryResource {
 								@FormParam(Dict.BOOK_ID) String book_id,
 								@FormParam(Dict.EVENT_DATE) String event_date,
 								@FormParam(Dict.AMOUNT) double amount_double,
-								@FormParam(Dict.CATEGORY) String category,
+								@FormParam(Dict.CATEGORY_NAME) String category_name,
+								@FormParam(Dict.CATEGORY_ID) String category_id,
 								@FormParam(Dict.NOTE) String note,
 								@FormParam(Dict.PHOTO) String photo,
 								@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
@@ -145,7 +146,8 @@ public class BookEntryResource {
 		}
 
 		logger_.info("insertentry request : id:" + id + ", book_id:" + book_id + ", event_date:" + event_date
-				+ ", amount_double:" + amount_double + ", category:" + category + ", note:" + note + ", photo:" + photo + ".");
+				+ ", amount_double:" + amount_double + ", category_name:" + category_name + ", category_id:"
+				+ category_id + ", note:" + note + ", photo:" + photo + ".");
 
 		long amount = (long)(amount_double * 100);
 		Book book = null;
@@ -153,7 +155,7 @@ public class BookEntryResource {
 		// 1. extract request
 		// 2. verify and parse request
 		// 3. verify parameters 
-		if (category.length() == 0 || event_date.length() == 0 || book_id.length() == 0) {
+		if (category_name.length() == 0 || event_date.length() == 0 || book_id.length() == 0) {
 			logger_.error("ERROR: invalid new item request: " + id);
 			return Response.serverError().build();
 		}
@@ -178,14 +180,23 @@ public class BookEntryResource {
 			return Response.serverError().build();
 		}
 
+		List<Category> categoryList = null;
+		Category category = null;
 		try {
-			if (categoryDAOC.getByID(user_id + category).isEmpty()) {
-				Category tmp = new Category(user_id, book.getGroup_id(), category, "#FFFFFF");
-				categoryDAOC.insert(tmp);
-				syncHelper.syncCategory(tmp, syncHelper.SYNC_Action.ADD);
+			if (category_id != null && category_id.length() > 1) {
+				categoryList = categoryDAOC.getByID(category_id);
+				if (categoryList != null && !categoryList.isEmpty()) {
+					category = categoryList.get(categoryList.size() - 1);
+				}
+			}
+			if (category == null || !category.getName().equals(category_name)) {
+			    // Prioritize category_name over category_id
+				category = new Category(user_id, book.getGroup_id(), category_name, "#FFFFFF");
+				//categoryDAOC.insert(category);
+				syncHelper.syncCategory(category, syncHelper.SYNC_ACTION.ADD);
 			}
 		} catch (Exception e1) {
-			logger_.error("Error failed to get category or insert new category when insert book entry : " + category);
+			logger_.error("Error failed to get category or insert new category when insert book entry : " + category_id);
 			e1.printStackTrace();
 			return Response.serverError().build();
 		}
@@ -212,23 +223,23 @@ public class BookEntryResource {
 			if (bookEntry != null) {
 				logger_.info("Update book item : " + bookEntry.getId());
 				if (bookEntry.getBook_group_id().equals(book.getGroup_id())) {
-					bookEntry.update(book.getGroup_id(), category, sdf.parse(event_date), amount, note, photo);
-					bookEntryDAOC.update(bookEntry);
+					bookEntry.update(book.getGroup_id(), category.getGroup_id(), sdf.parse(event_date), amount, note, photo);
+					bookEntryDAOC.updateByID(bookEntry);
 					// Update if book id is not changed.
-					syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_Action.UPDATE);
+					syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_ACTION.UPDATE);
 				} else {
 					// Re-insert if book id is changed.
-                    syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_Action.DELETE);
-					bookEntry.update(book.getGroup_id(), category, sdf.parse(event_date), amount, note, photo);
+                    syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_ACTION.DELETE);
+					bookEntry.update(book.getGroup_id(), category.getGroup_id(), sdf.parse(event_date), amount, note, photo);
 					//bookEntryDAOC.insert(bookEntry);
-					syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_Action.ADD);
+					syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_ACTION.ADD);
 				}
 			} else {
-				bookEntry = new BookEntry(user_id, user_id, book.getGroup_id(), category
+				bookEntry = new BookEntry(user_id, user_id, book.getGroup_id(), category.getGroup_id()
 						, sdf.parse(event_date), amount, note, photo);
 				logger_.info("Insert new book item : " + bookEntry.getId());
 				//bookEntryDAOC.insert(bookEntry); // remove this to avoid duplication
-				syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_Action.ADD);
+				syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_ACTION.ADD);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -271,7 +282,7 @@ public class BookEntryResource {
 		    	BookEntry bookEntry = bookEntryList.get(bookEntryList.size() - 1);
 				logger_.info("Delete book entry : " + bookEntry.getId());
 				bookEntryDAOC.deleteByID(id);
-				syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_Action.DELETE);
+				syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_ACTION.DELETE);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -105,6 +105,14 @@ public interface CategoryDAO {
 			@Bind(Dict.ID) String group_id
 	);
 
+	@SqlQuery("select * from " + TABLE_NAME + " where " + Dict.GROUP_ID + " = :" + Dict.GROUP_ID
+			+ " and " + Dict.USER_ID + " = :" + Dict.USER_ID)
+	@Mapper(CategoryMapper.class)
+	List<Category> findByUserIDAndGroupID(
+			@Bind(Dict.USER_ID) String user_id
+			, @Bind(Dict.GROUP_ID) String group_id
+	);
+
 	@SqlQuery("select * from " + TABLE_NAME + " where " + Dict.BOOK_GROUP_ID + " = :" + Dict.BOOK_GROUP_ID
 			+ " and " + Dict.USER_ID + " = :" + Dict.USER_ID)
     @Mapper(CategoryMapper.class)

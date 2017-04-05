@@ -6,7 +6,6 @@ import com.wallet.book.dao.CategoryDAOConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -20,7 +19,7 @@ public class syncHelper {
     private static BookEntryDAOConnector bookEntryDAOC = null;
     private static CategoryDAOConnector categoryDAOC = null;
 
-    public enum SYNC_Action {ADD, DELETE, UPDATE}
+    public enum SYNC_ACTION {ADD, DELETE, UPDATE}
 
     public static void init() throws Exception {
         bookDAOC = BookDAOConnector.instance();
@@ -34,7 +33,7 @@ public class syncHelper {
         bookDAOC.updateByGroupID(book);
     }
 
-    public static void syncBookEntry(BookEntry bookEntry, SYNC_Action action) throws Exception {
+    public static void syncBookEntry(BookEntry bookEntry, SYNC_ACTION action) throws Exception {
         switch (action) {
             case ADD:
                 logger_.info("Add book entry by group id : " + bookEntry.getGroup_id());
@@ -73,9 +72,9 @@ public class syncHelper {
             String group_id = entry.getGroup_id();
             if (fingerPrintMap.containsKey(group_id)) {
                 BookEntry tmp = fingerPrintMap.get(group_id);
-                tmp.update(entry.getBook_group_id(), entry.getCategory(), entry.getEvent_date()
+                tmp.update(entry.getBook_group_id(), entry.getCategory_group_id(), entry.getEvent_date()
                         , entry.getAmount(), entry.getNote(), entry.getPhoto());
-                bookEntryDAOC.update(tmp);
+                bookEntryDAOC.updateByID(tmp);
             } else {
                 entry.setUser_id(target_user_id);
                 entry.updateIDWithUserID();
@@ -86,7 +85,7 @@ public class syncHelper {
         return entryList;
     }
 
-    public static void syncCategory(Category category, SYNC_Action action) throws Exception {
+    public static void syncCategory(Category category, SYNC_ACTION action) throws Exception {
         switch (action) {
             case ADD:
                 logger_.info("Add category by group id : " + category.getGroup_id());

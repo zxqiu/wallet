@@ -103,11 +103,11 @@ public class CategoryResource {
 		    if (id != null && id.length() > 1) {
 				logger_.info("Update category " + category.getName() + " for user " + user_id);
 		    	categoryDAOC.updateByID(category);
-				syncHelper.syncCategory(category, syncHelper.SYNC_Action.UPDATE);
+				syncHelper.syncCategory(category, syncHelper.SYNC_ACTION.UPDATE);
 			} else {
 				logger_.info("Insert category " + category.getName() + " for user " + user_id);
-				categoryDAOC.insert(category);
-				syncHelper.syncCategory(category, syncHelper.SYNC_Action.ADD);
+				//categoryDAOC.insert(category);
+				syncHelper.syncCategory(category, syncHelper.SYNC_ACTION.ADD);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -166,18 +166,18 @@ public class CategoryResource {
 			if (jsonObject.getString(Dict.ACTION).equals(Dict.EDIT)) {
 				if (category == null) {
 					logger_.info("Insert new category : " + jsonObject.toString());
-					categoryDAOC.insert(categoryNew);
-					syncHelper.syncCategory(categoryNew, syncHelper.SYNC_Action.ADD);
+					//categoryDAOC.insert(categoryNew);
+					syncHelper.syncCategory(categoryNew, syncHelper.SYNC_ACTION.ADD);
 				} else {
 				    category.update(categoryNew);
 					logger_.info("Updating category : " + jsonObject.toString());
 					categoryDAOC.updateByID(category);
-					syncHelper.syncCategory(category, syncHelper.SYNC_Action.UPDATE);
+					syncHelper.syncCategory(category, syncHelper.SYNC_ACTION.UPDATE);
 				}
 			} else if (jsonObject.getString(Dict.ACTION).equals(Dict.DELETE)) {
 				logger_.info("Delete category : " + jsonObject.toString());
 				categoryDAOC.deleteByID(id);
-				syncHelper.syncCategory(category, syncHelper.SYNC_Action.DELETE);
+				syncHelper.syncCategory(category, syncHelper.SYNC_ACTION.DELETE);
 			}
 		}
 

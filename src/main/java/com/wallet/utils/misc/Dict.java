@@ -7,9 +7,10 @@ public class Dict {
 	public static final String USER_LIST = "user_list";
 	public static final String BOOK_ID = "book_id";
 	public static final String BOOK_GROUP_ID = "book_group_id";
-	public static final String BOOK_Name = "book_name";
+	public static final String CATEGORY_GROUP_ID = "category_group_id";
 	public static final String EMAIL = "email";
-	public static final String CATEGORY = "category";
+	public static final String CATEGORY_NAME = "category_name";
+	public static final String CATEGORY_ID = "category_id";
 	public static final String CREATE_TIME = "create_time";
 	public static final String EVENT_DATE = "event_date";
 	public static final String AMOUNT = "amount";

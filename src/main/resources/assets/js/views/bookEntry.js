@@ -21,7 +21,12 @@ function showCategoryByBook() {
     var options = $(".category-option");
 
     for (var i = 0; i < options.length; i++) {
-        if (options[i].title != book_group_id) {
+        var tmp = options[i].title.split(":");
+        if (tmp.length < 2) {
+            continue;
+        }
+        var id = tmp[0];
+        if (id != book_group_id) {
             $(options[i]).hide();
         } else {
             $(options[i]).show();
@@ -63,7 +68,7 @@ function setCategoryOptionFontColor() {
 $(document).ready(function () {
     // this is to init category text field
     var selector = $(".category-option");
-    if ($("#bookEntryCategory").val().length == 0 && selector.length > 0) {
+    if ($("#bookEntryCategoryName").val().length == 0 && selector.length > 0) {
         $('#categorySelector').val($(selector[0]).val()).change();
     }
 
@@ -79,8 +84,19 @@ $(document).ready(function () {
 });
 
 $('#categorySelector').on('change', function(){
-    $('#bookEntryCategory').val($(this).val()).change();
-    $('#bookEntryCategory').text($(this).val());
+    var selected = $(this).find(":selected")[0];
+    var tmp = selected.title.split(":");
+
+    if (!tmp || tmp.length < 2) {
+        console.log("Page Error!");
+        return;
+    }
+
+    var category_id = tmp[1];
+
+    $('#bookEntryCategoryName').val($(this).val()).change();
+    $('#bookEntryCategoryName').text($(this).val());
+    $('#bookEntryCategoryID').val(category_id).change();
 
     var selector = $(".category-option");
     if (selector.length > 0) {

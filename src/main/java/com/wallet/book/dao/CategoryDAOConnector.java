@@ -80,7 +80,11 @@ public class CategoryDAOConnector {
 		return categoryDAO.findByBookGroupID(book_group_id);
 	}
 
-	public List<Category> getByUserIDAndBookGroupID(String user_id, String book_group_id) throws SQLException {
+	public List<Category> getByUserIDAndGroupID(String user_id, String group_id) {
+		return categoryDAO.findByUserIDAndGroupID(user_id, group_id);
+	}
+
+	public List<Category> getByUserIDAndBookGroupID(String user_id, String book_group_id) {
 		return categoryDAO.findByUserIDAndBookGroupID(user_id, book_group_id);
 	}
 

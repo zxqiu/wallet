@@ -9,7 +9,10 @@ import org.json.JSONException;
 public class BookEntry {
 	@JsonProperty
 	private String id;
-	
+
+	@JsonProperty
+	private String group_id;
+
 	@JsonProperty
 	private String user_id;
 
@@ -20,10 +23,7 @@ public class BookEntry {
 	private String book_group_id;
 
 	@JsonProperty
-	private String group_id;
-
-	@JsonProperty
-	private String category;
+	private String category_group_id;
 	
 	@JsonProperty
 	private Date event_date;
@@ -49,13 +49,13 @@ public class BookEntry {
 	public BookEntry() {
 	}
 	
-	public BookEntry(String user_id, String create_user_id, String book_group_id, String category, Date event_date, long amount, String note, String photo) throws JSONException {
+	public BookEntry(String user_id, String create_user_id, String book_group_id, String category_group_id, Date event_date, long amount, String note, String photo) throws JSONException {
 		this.setId(user_id + TimeUtils.getUniqueTimeStampInMS());
 		this.setUser_id(user_id);
 		this.setCreate_user_id(create_user_id);
 		this.setBook_group_id(book_group_id);
 		this.setGroup_id(create_user_id + TimeUtils.getUniqueTimeStampInMS());
-		this.setCategory(category);
+		this.setCategory_group_id(category_group_id);
 		this.setEvent_date(event_date);
 		this.setAmount(amount);
 		this.setNote(note);
@@ -64,9 +64,9 @@ public class BookEntry {
 		this.setCreate_time(new Date());
 	}
 
-	public void update(String book_group_id, String category, Date event_date, long amount, String note, String photo) {
+	public void update(String book_group_id, String category_group_id, Date event_date, long amount, String note, String photo) {
 		this.setBook_group_id(book_group_id);
-		this.setCategory(category);
+		this.setCategory_group_id(category_group_id);
 		this.setAmount(amount);
 		this.setEvent_date(event_date);
 		this.setNote(note);
@@ -91,14 +91,6 @@ public class BookEntry {
 
 	public void setUser_id(String user_id) {
 		this.user_id = user_id;
-	}
-
-	public String getCategory() {
-		return category;
-	}
-
-	public void setCategory(String category) {
-		this.category = category;
 	}
 
 	public long getAmount() {
@@ -179,5 +171,13 @@ public class BookEntry {
 
 	public void setBook_group_id(String book_group_id) {
 		this.book_group_id = book_group_id;
+	}
+
+	public String getCategory_group_id() {
+		return category_group_id;
+	}
+
+	public void setCategory_group_id(String category_group_id) {
+		this.category_group_id = category_group_id;
 	}
 }
