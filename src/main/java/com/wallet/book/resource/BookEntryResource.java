@@ -217,10 +217,11 @@ public class BookEntryResource {
 					// Update if book id is not changed.
 					syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_Action.UPDATE);
 				} else {
-					// Delete if book id is changed.
+					// Re-insert if book id is changed.
                     syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_Action.DELETE);
 					bookEntry.update(book.getGroup_id(), category, sdf.parse(event_date), amount, note, photo);
-					bookEntryDAOC.insert(bookEntry);
+					//bookEntryDAOC.insert(bookEntry);
+					syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_Action.ADD);
 				}
 			} else {
 				bookEntry = new BookEntry(user_id, user_id, book.getGroup_id(), category
