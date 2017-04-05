@@ -24,6 +24,7 @@ public interface CategoryDAO {
 			+ "`" + Dict.PICTURE_ID + "` varchar(64),"
 			+ "`" + Dict.DATA + "` text,"
 			+ "primary key (`" + Dict.ID + "`),"
+            + "unique key `category_unique_combined` (`" + Dict.USER_ID + "`,`" + Dict.BOOK_GROUP_ID + "`,`" + Dict.NAME + "`),"
 			+ "key `fk_category_user` (`" + Dict.USER_ID + "`),"
 			+ "constraint `fk_category_user` foreign key (`" + Dict.USER_ID + "`) "
 			+ "references `" + UserDAO.TABLE_NAME + "` (`" + Dict.USER_ID + "`)"

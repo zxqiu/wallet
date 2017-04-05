@@ -26,6 +26,7 @@ public interface BookDAO {
 			+ "`" + Dict.GROUP_ID + "` varchar(64) not null,"
 			+ "`" + Dict.DATA + "` text,"
 			+ "primary key (`" + Dict.ID + "`),"
+			+ "unique key `book_unique_combined` (`" + Dict.USER_ID + "`,`" + Dict.NAME + "`),"
 			+ "key `fk_book_user` (`" + Dict.USER_ID + "`),"
 			+ "constraint `fk_book_user` foreign key (`" + Dict.USER_ID + "`) "
 			+ "references `" + UserDAO.TABLE_NAME + "` (`" + Dict.USER_ID + "`)"

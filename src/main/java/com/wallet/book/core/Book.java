@@ -44,7 +44,7 @@ public class Book {
     }
 
     public Book(String user_id, String create_user_id, String name, Date edit_time, String picture_id) throws JSONException {
-        this.setId(user_id + "-" + name);
+        this.setId(user_id + TimeUtils.getUniqueTimeStampInMS());
         this.setUser_id(user_id);
         this.setCreate_user_id(create_user_id);
         this.setName(name);
