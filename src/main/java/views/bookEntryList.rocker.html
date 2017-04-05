@@ -59,20 +59,22 @@
 				<div class="btn-group" role="group">
 					<select class="selectpicker" id="entryFilterSelector" multiple data-width="100%" data-size="false" data-style="btn-info">
 						<optgroup label="Select Category">
-							<option class="option-category" data-subtext="$unknown" selected>All</option>
+							<option class="option-category" data-subtext="$unknown" id="All" selected>All</option>
 							@if (categoryList != null) {
 								@for (Category category : categoryList) {
-									<option class="option-category" style="background: @?category.getPicture_id();" data-subtext="$unknown">
+									<option class="option-category" style="background: @?category.getPicture_id();"
+											data-subtext="$unknown" id="@category.getGroup_id()">
 										@?category.getName()
 									</option>
 								}
 							}
 						</optgroup>
 						<optgroup label="Select Book">
-						<option class="option-book" data-subtext="$unknown" selected>All</option>
+						<option class="option-book" data-subtext="$unknown" id="All" selected>All</option>
 						@if (bookMap != null) {
 							@for (Book book : bookMap.values()) {
-								<option class="option-book" style="background: @?book.getPicture_id();" data-subtext="$unknown">
+								<option class="option-book" style="background: @?book.getPicture_id();"
+										data-subtext="$unknown" id="@book.getGroup_id()">
 									@?book.getName()
 								</option>
 							}
@@ -172,10 +174,10 @@
 							</span>
 							<span class="book-list-text-info">
 								<span id="bookCategory">category: @categoryMap.get(bookEntryList.get(i).getCategory_group_id()).getName()</span>
+                                <input type="hidden" id="bookCategoryGroupID" value="@bookEntryList.get(i).getCategory_group_id()">
 								@if (bookMap != null  && bookMap.containsKey(bookEntryList.get(i).getBook_group_id())) {
+                                	<input type="hidden" id="bookGroupID" value="@bookEntryList.get(i).getBook_group_id()">
 									<span id="bookName">book: @?bookMap.get(bookEntryList.get(i).getBook_group_id()).getName()</span>
-                                } else {
-									<span id="bookName">book: default</span>
 								}
 							</span>
 						</span>

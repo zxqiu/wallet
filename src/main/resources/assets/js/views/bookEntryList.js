@@ -3,13 +3,14 @@ function entryFilter() {
     var curYear = parseInt($("#yearShow").val());
     var curMonth = parseInt($("#monthShow").val());
     var selected = $("#entryFilterSelector").find("option:selected");
-    var curCategory = new Array();
-    var curBookName = new Array();
+    var curCategoryGroupID = new Array();
+    var curBookGroupID = new Array();
     for (var i = 0; i < selected.length; i++) {
+        var id = selected[i].id;
         if ($(selected[i]).hasClass("option-category")) {
-            curCategory.push($(selected[i]).text().trim());
+            curCategoryGroupID.push(id);
         } else if ($(selected[i]).hasClass("option-book")) {
-            curBookName.push($(selected[i]).text().trim());
+            curBookGroupID.push(id);
         }
     }
 
@@ -21,8 +22,8 @@ function entryFilter() {
     for (var i = 0; i < entries.length; i++) {
         var entryYear;
         var entryMonth;
-        var entryCategory;
-        var entryBookName;
+        var entryCategoryGroupID;
+        var entryBookGroupID;
         var entryAmount;
 
         var entry = entries[i];
@@ -35,43 +36,35 @@ function entryFilter() {
         entryYear = parseInt(d[0]);
         entryMonth = parseInt(d[1]);
 
-        entryCategory = $(entry).find("#bookCategory")[0];
-        entryCategory = $(entryCategory).text();
-        entryCategory = entryCategory.split(":");
-        if (entryCategory.length < 2) {
-            return;
-        }
-        entryCategory = entryCategory[1].trim();
+        entryCategoryGroupID = $(entry).find("#bookCategoryGroupID")[0];
+        entryCategoryGroupID = $(entryCategoryGroupID).val();
 
-        entryBookName = $(entry).find("#bookName")[0];
-        entryBookName = $(entryBookName).text();
-        entryBookName = entryBookName.split(":");
-        if (entryBookName.length < 2) {
-            return;
-        }
-        entryBookName = entryBookName[1].trim();
+        entryBookGroupID = $(entry).find("#bookGroupID")[0];
+        entryBookGroupID = $(entryBookGroupID).val();
 
         entryAmount = parseFloat(title[1].substr(1, title[1].length - 1));
 
         if (entryYear == curYear && entryMonth == curMonth) {
-            if ((curCategory.indexOf("All") != -1 || curCategory.indexOf(entryCategory) != -1)
-                && (curBookName.indexOf("All") != -1 || curBookName.indexOf(entryBookName) != -1)) {
+            var allIndex = curCategoryGroupID.indexOf("All");
+            var allIndex = curBookGroupID.indexOf("All");
+            if ((curCategoryGroupID.indexOf("All") != -1 || curCategoryGroupID.indexOf(entryCategoryGroupID) != -1)
+                && (curBookGroupID.indexOf("All") != -1 || curBookGroupID.indexOf(entryBookGroupID) != -1)) {
                 $(entry).show();
             } else {
                 $(entry).hide();
             }
 
-            if (!(categorySum.hasOwnProperty(entryCategory))) {
-                categorySum[entryCategory] = 0.0;
+            if (!(categorySum.hasOwnProperty(entryCategoryGroupID))) {
+                categorySum[entryCategoryGroupID] = 0.0;
             }
             categorySum["All"] += entryAmount;
-            categorySum[entryCategory] += entryAmount;
+            categorySum[entryCategoryGroupID] += entryAmount;
 
-            if (!(bookSum.hasOwnProperty(entryBookName))) {
-                bookSum[entryBookName] = 0.0;
+            if (!(bookSum.hasOwnProperty(entryBookGroupID))) {
+                bookSum[entryBookGroupID] = 0.0;
             }
             bookSum["All"] += entryAmount;
-            bookSum[entryBookName] += entryAmount;
+            bookSum[entryBookGroupID] += entryAmount;
         } else {
             $(entry).hide();
         }
