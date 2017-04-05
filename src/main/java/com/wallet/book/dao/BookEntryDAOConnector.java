@@ -79,9 +79,9 @@ public class BookEntryDAOConnector {
 	public void insert(BookEntry bookEntry) throws Exception {
 		try {
 			bookEntryDAO.insert(bookEntry.getId(), bookEntry.getUser_id(), bookEntry.getCreate_user_id()
-					, bookEntry.getBook_group_id(), bookEntry.getGroup_id(), bookEntry.getCategory(), bookEntry.getEvent_date()
-					, bookEntry.getAmount(), bookEntry.getNote(), bookEntry.getPhoto(), bookEntry.getData()
-					, bookEntry.getEdit_time(),bookEntry.getCreate_time());
+					, bookEntry.getBook_group_id(), bookEntry.getGroup_id(), bookEntry.getCategory_group_id()
+					, bookEntry.getEvent_date(), bookEntry.getAmount(), bookEntry.getNote(), bookEntry.getPhoto()
+					, bookEntry.getData(), bookEntry.getEdit_time(),bookEntry.getCreate_time());
 		} catch (Exception e) {
 			if (e.getMessage().contains("Duplicate entry")) {
 				logger_.info("Book entry already exists : " + bookEntry.getId());
@@ -93,15 +93,15 @@ public class BookEntryDAOConnector {
 		}
 	}
 	
-	public void update(BookEntry bookEntry) throws Exception {
-		bookEntryDAO.update(bookEntry.getId(), bookEntry.getBook_group_id()
-				, bookEntry.getCategory(), bookEntry.getEvent_date(), bookEntry.getAmount(), bookEntry.getNote()
+	public void updateByID(BookEntry bookEntry) throws Exception {
+		bookEntryDAO.update(bookEntry.getId(), bookEntry.getBook_group_id(), bookEntry.getCategory_group_id()
+				, bookEntry.getEvent_date(), bookEntry.getAmount(), bookEntry.getNote()
 				, bookEntry.getPhoto(), bookEntry.getData(), bookEntry.getEdit_time());
 	}
 
 	public void updateByGroupID(BookEntry bookEntry) throws Exception {
-		bookEntryDAO.updateByGroupID(bookEntry.getGroup_id()
-				, bookEntry.getCategory(), bookEntry.getEvent_date(), bookEntry.getAmount(), bookEntry.getNote()
+		bookEntryDAO.updateByGroupID(bookEntry.getGroup_id(), bookEntry.getCategory_group_id()
+				, bookEntry.getEvent_date(), bookEntry.getAmount(), bookEntry.getNote()
 				, bookEntry.getPhoto(), bookEntry.getData(), bookEntry.getEdit_time());
 	}
 
@@ -122,7 +122,7 @@ public class BookEntryDAOConnector {
 	}
 
 	public static void test() throws Exception {
-		BookEntry bookEntry = new BookEntry("admin", "admin", "adminbook", "asdfasf", new Date()
+		BookEntry bookEntry = new BookEntry("admin", "admin", "adminbook", "admincategory", new Date()
 				, (long)10, "note", "photo");
 		
 		logger_.info("BookEntryDAOConnector test ...");
@@ -138,7 +138,7 @@ public class BookEntryDAOConnector {
 		logger_.info("2. update");
 		
 		bookEntry.setNote("nooooooote");
-		BookEntryDAOConnector.instance().update(bookEntry);
+		BookEntryDAOConnector.instance().updateByID(bookEntry);
 		if (BookEntryDAOConnector.instance().getByID(bookEntry.getId()).isEmpty()) {
 			logger_.error("Error BookEntryDAOConnector test failed");
 			throw new Exception("BookEntryDAOConnector test failed");

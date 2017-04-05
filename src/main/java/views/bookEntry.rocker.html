@@ -85,28 +85,35 @@
 				</div>
 				<div class="form-group">
 					 
-					<label for="bookEntryCategory">
+					<label for="bookEntryCategoryName">
 						Category
 					</label>
 					<div class="input-group" id="bookEntryCategoryDiv">
 						<span class="btn input-group-addon dropdown-toggle" data-toggle="dropdown">
 							<span class="glyphicon glyphicon-menu-hamburger"></span>
 						</span>
-						<input class="form-control"
-							@if (bookEntry != null && categoryList != null) {
-								@for (Category category : categoryList) {
-									@if (category.getName().equals(bookEntry.getCategory())) {
-										value="@?bookEntry.getCategory()"
-									}
-                            	}
-							}
-							placeholder="input or select" id="bookEntryCategory" name="category" type="text" required="true">
+						@if (bookEntry != null && categoryList != null) {
+							@for (Category category : categoryList) {
+								@if (category.getGroup_id().equals(bookEntry.getCategory_group_id())) {
+									<input class="form-control" value="@category.getName()" placeholder="input or select"
+										   id="bookEntryCategoryName" name="category_name" type="text" required="true">
+									<input type="hidden" id="bookEntryCategoryID" name="category_id" value="@category.getId()"
+										   required="true">
+								}
+                       		}
+						} else {
+							<input class="form-control" placeholder="input or select"
+								   id="bookEntryCategoryName" name="category_name" type="text" required="true">
+							<input type="hidden" id="bookEntryCategoryID" name="category_id" value="0"
+								   required="true">
+						}
 						<span class="input-group-addon" style="width:0px; padding-left:0px; padding-right:0px; border:none;"></span>
 						<select class="form-control" id="categorySelector" disabled>
                             @if (categoryList != null) {
 								@for (Category category : categoryList) {
-								<option class="category-option" style="background: @?category.getPicture_id();" value="@?category.getName()" title="@category.getBook_group_id()"
-									@if (bookEntry != null && category.getName().equals(bookEntry.getCategory())) {
+								<option class="category-option" style="background: @?category.getPicture_id();"
+										value="@?category.getName()" title="@category.getBook_group_id():@category.getId()"
+									@if (bookEntry != null && category.getGroup_id().equals(bookEntry.getCategory_group_id())) {
 										selected
 									}
 								>

@@ -18,7 +18,7 @@ public class BookEntryMapper implements ResultSetMapper<BookEntry> {
 		entry.setCreate_user_id(resultSet.getString(Dict.CREATE_USER_ID));
 		entry.setBook_group_id(resultSet.getString(Dict.BOOK_GROUP_ID));
 		entry.setGroup_id(resultSet.getString(Dict.GROUP_ID));
-		entry.setCategory(resultSet.getString(Dict.CATEGORY));
+		entry.setCategory_group_id(resultSet.getString(Dict.CATEGORY_GROUP_ID));
 		entry.setEvent_date(resultSet.getDate(Dict.EVENT_DATE));
 		entry.setAmount(resultSet.getLong(Dict.AMOUNT));
 		entry.setNote(resultSet.getString(Dict.NOTE));

@@ -62,7 +62,7 @@ public class WalletService extends Application<WalletConfiguration> {
 	    CategoryDAOConnector.init(categoryDAO);
 		TinyUrlDAOConnector.init(tinyUrlDAO);
 
-		//cleanupDB(sessionDAO, bookDAO, bookEntryDAO, categoryDAO, userDAO, tinyUrlDAO);
+		cleanupDB(sessionDAO, bookDAO, bookEntryDAO, categoryDAO, userDAO, tinyUrlDAO);
 
 	    UserDAOConnector.test();
 	    SessionDAOConnector.test();
@@ -79,7 +79,7 @@ public class WalletService extends Application<WalletConfiguration> {
 		environment.jersey().register(new TinyUrlResource());
 
 	    environment.jersey().register(new RockerMessageBodyWriter());
-	    //RockerRuntime.getInstance().setReloading(true);
+	    RockerRuntime.getInstance().setReloading(true);
 
 		syncHelper.init();
 

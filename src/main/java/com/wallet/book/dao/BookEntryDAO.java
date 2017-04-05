@@ -22,7 +22,7 @@ public static final String TABLE_NAME = "book_entry";
 			+ "`" + Dict.CREATE_USER_ID + "` varchar(64) not null,"
 			+ "`" + Dict.BOOK_GROUP_ID + "` varchar(64) not null,"
 			+ "`" + Dict.GROUP_ID + "` varchar(64) not null,"
-			+ "`" + Dict.CATEGORY + "` varchar(32) not null,"
+			+ "`" + Dict.CATEGORY_GROUP_ID + "` varchar(64) not null,"
 			+ "`" + Dict.EVENT_DATE + "` datetime not null,"
 			+ "`" + Dict.AMOUNT + "` bigint not null,"
 			+ "`" + Dict.NOTE + "` text,"
@@ -47,7 +47,7 @@ public static final String TABLE_NAME = "book_entry";
 			+ ", " + Dict.CREATE_USER_ID
 			+ ", " + Dict.BOOK_GROUP_ID
 			+ ", " + Dict.GROUP_ID
-			+ ", " + Dict.CATEGORY
+			+ ", " + Dict.CATEGORY_GROUP_ID
 			+ ", " + Dict.EVENT_DATE
 			+ ", " + Dict.AMOUNT
 			+ ", " + Dict.NOTE
@@ -61,7 +61,7 @@ public static final String TABLE_NAME = "book_entry";
 			+ ", :" + Dict.CREATE_USER_ID
 			+ ", :" + Dict.BOOK_GROUP_ID
 			+ ", :" + Dict.GROUP_ID
-			+ ", :" + Dict.CATEGORY
+			+ ", :" + Dict.CATEGORY_GROUP_ID
 			+ ", :" + Dict.EVENT_DATE
 			+ ", :" + Dict.AMOUNT
 			+ ", :" + Dict.NOTE
@@ -76,7 +76,7 @@ public static final String TABLE_NAME = "book_entry";
 			, @Bind(Dict.CREATE_USER_ID) String create_user_id
 			, @Bind(Dict.BOOK_GROUP_ID) String book_group_id
 			, @Bind(Dict.GROUP_ID) String group_id
-			, @Bind(Dict.CATEGORY) String category
+			, @Bind(Dict.CATEGORY_GROUP_ID) String category_group_id
 			, @Bind(Dict.EVENT_DATE) Date event_date
 			, @Bind(Dict.AMOUNT) long amount
 			, @Bind(Dict.NOTE) String note
@@ -88,7 +88,7 @@ public static final String TABLE_NAME = "book_entry";
 	
 	@SqlUpdate("update " + TABLE_NAME + " set "
 			+ Dict.BOOK_GROUP_ID + "= :" + Dict.BOOK_GROUP_ID + ", "
-			+ Dict.CATEGORY + "= :" + Dict.CATEGORY + ","
+			+ Dict.CATEGORY_GROUP_ID + "= :" + Dict.CATEGORY_GROUP_ID + ","
 			+ Dict.EVENT_DATE + "= :" + Dict.EVENT_DATE + ","
 			+ Dict.AMOUNT + "= :" + Dict.AMOUNT + ","
 			+ Dict.NOTE + "= :" + Dict.NOTE + ","
@@ -99,7 +99,7 @@ public static final String TABLE_NAME = "book_entry";
 		)
 	void update(@Bind(Dict.ID) String id,
 				@Bind(Dict.BOOK_GROUP_ID) String book_group_id,
-				@Bind(Dict.CATEGORY) String category,
+				@Bind(Dict.CATEGORY_GROUP_ID) String category_group_id,
 				@Bind(Dict.EVENT_DATE) Date event_date,
 				@Bind(Dict.AMOUNT) long amount,
 				@Bind(Dict.NOTE) String note,
@@ -108,7 +108,7 @@ public static final String TABLE_NAME = "book_entry";
 				@Bind(Dict.EDIT_TIME) Date edit_time);
 
 	@SqlUpdate("update " + TABLE_NAME + " set "
-			+ Dict.CATEGORY + "= :" + Dict.CATEGORY + ","
+			+ Dict.CATEGORY_GROUP_ID + "= :" + Dict.CATEGORY_GROUP_ID + ","
 			+ Dict.EVENT_DATE + "= :" + Dict.EVENT_DATE + ","
 			+ Dict.AMOUNT + "= :" + Dict.AMOUNT + ","
 			+ Dict.NOTE + "= :" + Dict.NOTE + ","
@@ -118,7 +118,7 @@ public static final String TABLE_NAME = "book_entry";
 			+ " where " + Dict.GROUP_ID + "= :" + Dict.GROUP_ID
 	)
 	void updateByGroupID(@Bind(Dict.GROUP_ID) String group_id,
-				@Bind(Dict.CATEGORY) String category,
+				@Bind(Dict.CATEGORY_GROUP_ID) String category_group_id,
 				@Bind(Dict.EVENT_DATE) Date event_date,
 				@Bind(Dict.AMOUNT) long amount,
 				@Bind(Dict.NOTE) String note,

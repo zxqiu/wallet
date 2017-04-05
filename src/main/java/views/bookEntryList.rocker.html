@@ -6,7 +6,8 @@
 @import java.util.List;
 @import java.util.HashMap;
 
-@args (List<BookEntry> bookEntryList, HashMap<String, Book> bookMap, List<Category> categoryList, HashMap<String, String> colorMap, int bookEntriesEachLine, User user)
+@args (List<BookEntry> bookEntryList, HashMap<String, Book> bookMap, List<Category> categoryList
+	, HashMap<String, Category> categoryMap, int bookEntriesEachLine, User user)
 
 <html lang="en">
 
@@ -159,8 +160,8 @@
 					<a>
 						<span class="book-list-text" title="@bookEntryList.get(i).getId()" tabindex="@i">
 							<span class="book-list-text-title" id="bookTitle"
-								@if (bookEntryList !=null && colorMap !=null) {
-									style="background: @?colorMap.get(bookEntryList.get(i).getCategory())"
+								@if (bookEntryList !=null && categoryMap !=null) {
+									style="background: @?categoryMap.get(bookEntryList.get(i).getCategory_group_id()).getPicture_id()"
 								}
 							>
 								@if (bookEntryList.get(i).getNote().length() < 10) {
@@ -170,7 +171,7 @@
 								}
 							</span>
 							<span class="book-list-text-info">
-								<span id="bookCategory">category: @bookEntryList.get(i).getCategory()</span>
+								<span id="bookCategory">category: @categoryMap.get(bookEntryList.get(i).getCategory_group_id()).getName()</span>
 								@if (bookMap != null  && bookMap.containsKey(bookEntryList.get(i).getBook_group_id())) {
 									<span id="bookName">book: @?bookMap.get(bookEntryList.get(i).getBook_group_id()).getName()</span>
                                 } else {
