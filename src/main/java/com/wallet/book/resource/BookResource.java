@@ -100,7 +100,7 @@ public class BookResource {
 				List<Book> bookList = bookDAOC.getByID(id);
 				if (!bookList.isEmpty()) {
 					Book book = bookList.get(bookList.size() - 1);
-					book.update(name, new Date(), picture_id, book.getData());
+					book.update(name, new Date(), picture_id);
 					logger_.info("Update book " + book.getName() + " for user " + user_id);
 					bookDAOC.update(book);
 					syncHelper.syncBook(book);
@@ -159,7 +159,6 @@ public class BookResource {
 								jsonObject.getString(Dict.NAME)
 								, new Date()
 								, jsonObject.getString(Dict.PICTURE_ID)
-								, book.getData()
 						);
 						logger_.info("Book list Update book : " + jsonObject.toString());
 						bookDAOC.update(book);

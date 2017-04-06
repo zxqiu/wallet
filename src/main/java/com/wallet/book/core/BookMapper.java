@@ -16,11 +16,13 @@ public class BookMapper implements ResultSetMapper<Book> {
 		book.setUser_id(resultSet.getString(Dict.USER_ID));
 		book.setCreate_user_id(resultSet.getString(Dict.CREATE_USER_ID));
 		book.setName(resultSet.getString(Dict.NAME));
-		book.setCreate_time(resultSet.getDate(Dict.CREATE_TIME));
 		book.setEdit_time(resultSet.getDate(Dict.EDIT_TIME));
-		book.setPicture_id(resultSet.getString(Dict.PICTURE_ID));
-		book.setData(resultSet.getString(Dict.DATA));
 		book.setGroup_id(resultSet.getString(Dict.GROUP_ID));
+		try {
+			book.setData(new BookData(resultSet.getBinaryStream(Dict.DATA)));
+		} catch (Exception e) {
+			throw new SQLException("Cannot map Book from resultSet");
+		}
 
 		return book;
 	}

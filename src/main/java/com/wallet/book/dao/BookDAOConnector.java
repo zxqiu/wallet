@@ -86,8 +86,8 @@ public class BookDAOConnector {
 
 	public void insert(Book book) throws Exception {
 		try {
-			bookDAO.insert(book.getId(), book.getUser_id(), book.getCreate_user_id(), book.getName(), book.getCreate_time()
-					, book.getEdit_time(), book.getPicture_id(), book.getGroup_id(), book.getData());
+			bookDAO.insert(book.getId(), book.getUser_id(), book.getCreate_user_id(), book.getName()
+					, book.getEdit_time(), book.getGroup_id(), book.getData().toByteArray());
 		} catch (Exception e) {
 			if (e.getMessage().contains("Duplicate entry")) {
 				logger_.info("Book already exists : " + book.getId());
@@ -100,11 +100,11 @@ public class BookDAOConnector {
 	}
 	
 	public void update(Book book) throws Exception {
-		bookDAO.update(book.getId(), book.getName(), new Date(), book.getPicture_id(), book.getData());
+		bookDAO.update(book.getId(), book.getName(), new Date(), book.getData().toByteArray());
 	}
 
 	public void updateByGroupID(Book book) throws Exception {
-		bookDAO.updateByGroupID(book.getGroup_id(), book.getName(), new Date(), book.getPicture_id(), book.getData());
+		bookDAO.updateByGroupID(book.getGroup_id(), book.getName(), new Date(), book.getData().toByteArray());
 	}
 
 	public void deleteByID(String id) throws Exception {
@@ -137,8 +137,8 @@ public class BookDAOConnector {
 			logger_.error("Error BookDAOConnector test failed");
 			throw new Exception("BookDAOConnector test failed");
 		}
-		logger_.info("updated note : " + BookDAOConnector.instance().getByID(book.getId()).get(0).getPicture_id());
-		
+		logger_.info("updated picture_id : " + BookDAOConnector.instance().getByID(book.getId()).get(0).getPicture_id());
+
 		logger_.info("3. delete");
 		
 		BookDAOConnector.instance().deleteByID(book.getId());

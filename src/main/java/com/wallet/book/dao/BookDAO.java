@@ -20,11 +20,9 @@ public interface BookDAO {
 			+ "`" + Dict.USER_ID + "` varchar(64) not null,"
 			+ "`" + Dict.CREATE_USER_ID + "` varchar(64) not null,"
 			+ "`" + Dict.NAME + "` varchar(64) not null,"
-			+ "`" + Dict.CREATE_TIME + "` datetime not null,"
 			+ "`" + Dict.EDIT_TIME + "` datetime not null,"
-			+ "`" + Dict.PICTURE_ID + "` varchar(64),"
 			+ "`" + Dict.GROUP_ID + "` varchar(64) not null,"
-			+ "`" + Dict.DATA + "` text,"
+			+ "`" + Dict.DATA + "` varbinary(32768),"
 			+ "primary key (`" + Dict.ID + "`),"
 			+ "unique key `book_unique_combined` (`" + Dict.USER_ID + "`,`" + Dict.NAME + "`),"
 			+ "key `fk_book_user` (`" + Dict.USER_ID + "`),"
@@ -42,9 +40,7 @@ public interface BookDAO {
     		+ ", " + Dict.USER_ID
 			+ ", " + Dict.CREATE_USER_ID
     		+ ", " + Dict.NAME
-    		+ ", " + Dict.CREATE_TIME
 			+ ", " + Dict.EDIT_TIME
-			+ ", " + Dict.PICTURE_ID
 			+ ", " + Dict.GROUP_ID
 			+ ", " + Dict.DATA
     		+ ") values ("
@@ -52,9 +48,7 @@ public interface BookDAO {
     		+ ",:" + Dict.USER_ID
 			+ ",:" + Dict.CREATE_USER_ID
     		+ ",:" + Dict.NAME
-			+ ",:" + Dict.CREATE_TIME
 			+ ",:" + Dict.EDIT_TIME
-			+ ",:" + Dict.PICTURE_ID
 			+ ",:" + Dict.GROUP_ID
 			+ ",:" + Dict.DATA
 			+ ")"
@@ -64,39 +58,33 @@ public interface BookDAO {
             , @Bind(Dict.USER_ID) String user_id
 			, @Bind(Dict.CREATE_USER_ID) String create_user_id
             , @Bind(Dict.NAME) String name
-            , @Bind(Dict.CREATE_TIME) Date create_time
 			, @Bind(Dict.EDIT_TIME) Date edit_time
-			, @Bind(Dict.PICTURE_ID) String picture_id
 			, @Bind(Dict.GROUP_ID) String group_id
-			, @Bind(Dict.DATA) String data
+			, @Bind(Dict.DATA) byte[] data
     );
     
     @SqlUpdate("update " + TABLE_NAME + " set "
 			+ Dict.NAME + "= :" + Dict.NAME
 			+ ", " + Dict.EDIT_TIME + "= :" + Dict.EDIT_TIME
-			+ ", " + Dict.PICTURE_ID + "= :" + Dict.PICTURE_ID
 			+ ", " + Dict.DATA + "= :" + Dict.DATA
 			+ " where " + Dict.ID + "= :" + Dict.ID
 		)
 	void update(@Bind(Dict.ID) String id
             , @Bind(Dict.NAME) String name
 			, @Bind(Dict.EDIT_TIME) Date edit_time
-			, @Bind(Dict.PICTURE_ID) String picture_id
-			, @Bind(Dict.DATA) String data
+			, @Bind(Dict.DATA) byte[] data
 	);
 
 	@SqlUpdate("update " + TABLE_NAME + " set "
 			+ Dict.NAME + "= :" + Dict.NAME
 			+ ", " + Dict.EDIT_TIME + "= :" + Dict.EDIT_TIME
-			+ ", " + Dict.PICTURE_ID + "= :" + Dict.PICTURE_ID
 			+ ", " + Dict.DATA + "= :" + Dict.DATA
 			+ " where " + Dict.GROUP_ID + "= :" + Dict.GROUP_ID
 	)
 	void updateByGroupID(@Bind(Dict.GROUP_ID) String group_id
 			, @Bind(Dict.NAME) String name
 			, @Bind(Dict.EDIT_TIME) Date edit_time
-			, @Bind(Dict.PICTURE_ID) String picture_id
-			, @Bind(Dict.DATA) String data
+			, @Bind(Dict.DATA) byte[] data
 	);
 
     @SqlQuery("select * from " + TABLE_NAME)
