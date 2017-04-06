@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Created by neo on 3/31/17.
+ * Created by zxqiu on 3/31/17.
  */
 public class syncHelper {
     private static final Logger logger_ = LoggerFactory.getLogger(syncHelper.class);

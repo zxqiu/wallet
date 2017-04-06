@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by neo on 3/23/17.
+ * Created by zxqiu on 3/23/17.
  */
 public class Book {
     @JsonProperty
