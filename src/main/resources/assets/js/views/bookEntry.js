@@ -27,9 +27,12 @@ function showCategoryByBook() {
         }
         var id = tmp[0];
         if (id != book_group_id) {
-            $(options[i]).hide();
+            $(options[i]).prop("disabled", true);
+            options[i].style.display = "none";
         } else {
-            $(options[i]).show();
+            $(options[i]).prop("disabled", false);
+            options[i].style.display = "";
+            $("#categorySelector").val(options[i].value).change();
         }
     }
 }
