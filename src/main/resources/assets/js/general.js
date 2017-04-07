@@ -39,4 +39,9 @@ function adjustFontColor(brightness, node) {
     }
 }
 
-
+function noBookWarning(bookList) {
+    if ((!bookList || bookList.length == 0)
+        && confirm("Add a new book first! Press OK to edit books.") == true) {
+        window.location = "/books/booklist";
+    }
+}

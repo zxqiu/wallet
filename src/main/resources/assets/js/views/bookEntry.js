@@ -77,6 +77,7 @@ $(document).ready(function () {
 
     api.setGetAllBookSuccessCallback(function (data) {
         bookList = data;
+        noBookWarning(bookList);
         $("#categorySelector").removeAttr("disabled");
         showCategoryByBook();
     });

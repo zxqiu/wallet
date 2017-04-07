@@ -34,8 +34,9 @@ var bookList;
 api.setGetAllBookSuccessCallback(function (data) {
     var newCategoryBtn = document.getElementById("newCategoryBtn");
     newCategoryBtn.removeAttribute("disabled");
-    newCategoryBtn.innerHTML = "new";
+    newCategoryBtn.innerHTML = "new cat";
     bookList = data;
+    noBookWarning(bookList);
 });
 api.getAllBook(user_id);
 

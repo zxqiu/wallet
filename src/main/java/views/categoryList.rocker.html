@@ -62,7 +62,7 @@
                                         }
 									}
 								}
-								<select class="form-control bookSelector" style="display: none;">
+								<select class="form-control bookSelector" style="display: none;" required="true">
 									@if (bookList != null) {
 										@for (Book book : bookList) {
 											<option class="book-option" style="background: @?book.getPicture_id();" value="@?book.getGroup_id()"
