@@ -1,5 +1,6 @@
 package com.wallet.book.dao;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
@@ -90,7 +91,7 @@ public class CategoryDAOConnector {
 
 	public void insert(Category category) throws Exception {
 		try {
-			categoryDAO.insert(category.getId(), category.getGroup_id(), category.getUser_id(), category.getBook_group_id(), category.getName(), category.getPicture_id(), category.getData());
+			categoryDAO.insert(category.getId(), category.getGroup_id(), category.getUser_id(), category.getBook_group_id(), category.getName(), category.getData().toByteArray());
 		} catch (Exception e) {
 			if (e.getMessage().contains("Duplicate entry")) {
 				logger_.info("Category " + category.getName() + " already exists for user : " + category.getUser_id());
@@ -102,12 +103,12 @@ public class CategoryDAOConnector {
 		}
 	}
 	
-	public void updateByID(Category category) {
-		categoryDAO.updateByID(category.getId(), category.getPicture_id(), category.getData());
+	public void updateByID(Category category) throws IOException {
+		categoryDAO.updateByID(category.getId(), category.getData().toByteArray());
 	}
 
-	public void updateByGroupID(Category category) {
-		categoryDAO.updateByGroupID(category.getGroup_id(), category.getPicture_id(), category.getData());
+	public void updateByGroupID(Category category) throws IOException {
+		categoryDAO.updateByGroupID(category.getGroup_id(), category.getData().toByteArray());
 	}
 
 	public void deleteByID(String id) {

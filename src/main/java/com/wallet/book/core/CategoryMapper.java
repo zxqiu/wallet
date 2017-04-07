@@ -1,5 +1,6 @@
 package com.wallet.book.core;
 
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -18,8 +19,11 @@ public class CategoryMapper implements ResultSetMapper<Category> {
 		category.setUser_id(resultSet.getString(Dict.USER_ID));
 		category.setBook_group_id(resultSet.getString(Dict.BOOK_GROUP_ID));
 		category.setName(resultSet.getString(Dict.NAME));
-		category.setPicture_id(resultSet.getString(Dict.PICTURE_ID));
-		category.setData(resultSet.getString(Dict.DATA));
+		try {
+			category.setData(new CategoryData(resultSet.getBinaryStream(Dict.DATA)));
+		} catch (Exception e) {
+			throw new SQLException("Cannot map Category from resultSet : " + e.getMessage());
+		}
 
 		return category;
 	}

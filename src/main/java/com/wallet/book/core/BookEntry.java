@@ -52,10 +52,7 @@ public class BookEntry {
 		this.setAmount(amount);
 		this.setEdit_time(new Date());
 
-		this.data = new BookEntryData();
-		this.setNote(note);
-		this.setPicture_id(picture_id);
-		this.setCreate_time(new Date());
+		this.data = new BookEntryData(new Date(), note, picture_id);
 	}
 
 	public void update(String book_group_id, String category_group_id, Date event_date, long amount, String note

@@ -47,24 +47,7 @@ public class Book {
         this.setEdit_time(edit_time);
         this.setGroup_id(create_user_id + TimeUtils.getUniqueTimeStampInMS());
 
-        this.data = new BookData();
-        this.setCreate_time(new Date());
-        this.setPicture_id(picture_id);
-        this.appendUser(user_id);
-    }
-
-    public Book(String id, String user_id, String create_user_id, String name, Date create_time, Date edit_time, String picture_id
-            , String group_id) {
-        this.setId(id);
-        this.setUser_id(user_id);
-        this.setCreate_user_id(create_user_id);
-        this.setName(name);
-        this.setEdit_time(edit_time);
-        this.setGroup_id(group_id);
-
-        this.data = new BookData();
-        this.setCreate_time(new Date());
-        this.setPicture_id(picture_id);
+        this.data = new BookData(new Date(), picture_id, new ArrayList<String>());
         this.appendUser(user_id);
     }
 

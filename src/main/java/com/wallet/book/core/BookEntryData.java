@@ -13,7 +13,10 @@ public class BookEntryData implements Serializable, Serializer<BookEntryData> {
     private String note;
     private String picture_id;
 
-    public BookEntryData() {
+    public BookEntryData(Date create_time, String note, String picture_id) {
+        this.setCreate_time(create_time);
+        this.setNote(note);
+        this.setPicture_id(picture_id);
     }
 
     public BookEntryData(InputStream in) throws IOException, ClassNotFoundException {

@@ -16,7 +16,10 @@ public class BookData implements Serializable, Serializer<BookData> {
 
     private List<String> user_list; // store user id
 
-    public BookData() {
+    public BookData(Date create_time, String picture_id, List<String> user_list) {
+        this.setCreate_time(create_time);
+        this.setPicture_id(picture_id);
+        this.setUser_list(user_list);
     }
 
     public BookData(InputStream in) throws NullPointerException, IOException, ClassNotFoundException {

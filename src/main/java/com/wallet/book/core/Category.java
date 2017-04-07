@@ -20,10 +20,7 @@ public class Category {
 	private String name;
 
 	@JsonProperty
-	private String picture_id;
-
-	@JsonProperty
-	private String data;
+	private CategoryData data;
 
 	public Category() {
 	}
@@ -34,8 +31,8 @@ public class Category {
 		this.setUser_id(user_id);
 		this.setBook_group_id(book_group_id);
 		this.setName(name);
-		this.setPicture_id(picture_id);
-		this.setData(data);
+
+		this.data = new CategoryData(picture_id);
 	}
 
 	public void update(Category src) {
@@ -63,11 +60,11 @@ public class Category {
 	}
 
 	public String getPicture_id() {
-		return picture_id;
+		return data.getPicture_id();
 	}
 
 	public void setPicture_id(String picture_id) {
-		this.picture_id = picture_id;
+		this.data.setPicture_id(picture_id);
 	}
 
 	public String getId() {
@@ -76,14 +73,6 @@ public class Category {
 
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	public String getData() {
-		return data;
-	}
-
-	public void setData(String data) {
-		this.data = data;
 	}
 
 	public String getBook_group_id() {
@@ -100,5 +89,13 @@ public class Category {
 
 	public void setGroup_id(String group_id) {
 		this.group_id = group_id;
+	}
+
+	public CategoryData getData() {
+		return data;
+	}
+
+	public void setData(CategoryData data) {
+		this.data = data;
 	}
 }

@@ -21,8 +21,7 @@ public interface CategoryDAO {
 			+ "`" + Dict.USER_ID + "` varchar(64) not null,"
 			+ "`" + Dict.BOOK_GROUP_ID + "` varchar(64) not null,"
 			+ "`" + Dict.NAME + "` varchar(64) not null,"
-			+ "`" + Dict.PICTURE_ID + "` varchar(64),"
-			+ "`" + Dict.DATA + "` text,"
+			+ "`" + Dict.DATA + "` varbinary(60000),"
 			+ "primary key (`" + Dict.ID + "`),"
             + "unique key `category_unique_combined` (`" + Dict.USER_ID + "`,`" + Dict.BOOK_GROUP_ID + "`,`" + Dict.NAME + "`),"
 			+ "key `fk_category_user` (`" + Dict.USER_ID + "`),"
@@ -41,7 +40,6 @@ public interface CategoryDAO {
     		+ ", " + Dict.USER_ID
 			+ ", " + Dict.BOOK_GROUP_ID
     		+ ", " + Dict.NAME
-    		+ ", " + Dict.PICTURE_ID
 			+ ", " + Dict.DATA
     		+ ") values ("
     		+ ":" + Dict.ID
@@ -49,7 +47,6 @@ public interface CategoryDAO {
     		+ ",:" + Dict.USER_ID
 			+ ",:" + Dict.BOOK_GROUP_ID
     		+ ",:" + Dict.NAME
-    		+ ",:" + Dict.PICTURE_ID
 			+ ",:" + Dict.DATA
 			+ ")"
     		)
@@ -59,28 +56,23 @@ public interface CategoryDAO {
         	, @Bind(Dict.USER_ID) String user_id
 			, @Bind(Dict.BOOK_GROUP_ID) String book_group_id
         	, @Bind(Dict.NAME) String name
-        	, @Bind(Dict.PICTURE_ID) String picture_id
-			, @Bind(Dict.DATA) String data
+			, @Bind(Dict.DATA) byte[] data
     );
     
     @SqlUpdate("update " + TABLE_NAME + " set "
-			+ Dict.PICTURE_ID + "= :" + Dict.PICTURE_ID
-			+ ", " + Dict.DATA + "= :" + Dict.DATA
+			+ Dict.DATA + "= :" + Dict.DATA
 			+ " where " + Dict.ID + "= :" + Dict.ID
 		)
 	void updateByID(@Bind(Dict.ID) String id
-			, @Bind(Dict.PICTURE_ID) String picture_id
-			, @Bind(Dict.DATA) String data
+			, @Bind(Dict.DATA) byte[] data
 	);
 
 	@SqlUpdate("update " + TABLE_NAME + " set "
-			+ Dict.PICTURE_ID + "= :" + Dict.PICTURE_ID
-			+ ", " + Dict.DATA + "= :" + Dict.DATA
+			+ Dict.DATA + "= :" + Dict.DATA
 			+ " where " + Dict.GROUP_ID + "= :" + Dict.GROUP_ID
 	)
 	void updateByGroupID(@Bind(Dict.GROUP_ID) String group_id
-			, @Bind(Dict.PICTURE_ID) String picture_id
-			, @Bind(Dict.DATA) String data
+			, @Bind(Dict.DATA) byte[] data
 	);
 
     @SqlQuery("select * from " + TABLE_NAME)
