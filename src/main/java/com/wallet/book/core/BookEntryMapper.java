@@ -1,5 +1,6 @@
 package com.wallet.book.core;
 
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -21,11 +22,13 @@ public class BookEntryMapper implements ResultSetMapper<BookEntry> {
 		entry.setCategory_group_id(resultSet.getString(Dict.CATEGORY_GROUP_ID));
 		entry.setEvent_date(resultSet.getDate(Dict.EVENT_DATE));
 		entry.setAmount(resultSet.getLong(Dict.AMOUNT));
-		entry.setNote(resultSet.getString(Dict.NOTE));
-		entry.setPhoto(resultSet.getString(Dict.PHOTO));
-		entry.setData(resultSet.getString(Dict.DATA));
 		entry.setEdit_time(resultSet.getDate(Dict.EDIT_TIME));
-		entry.setCreate_time(resultSet.getDate(Dict.CREATE_TIME));
+
+		try {
+			entry.setData(new BookEntryData(resultSet.getBinaryStream(Dict.DATA)));
+		} catch (Exception e) {
+			throw new SQLException("Cannot map Book from resultSet : " + e.getMessage());
+		}
 
 		return entry;
 	}

@@ -32,24 +32,16 @@ public class BookEntry {
 	private long amount; // in cents
 	
 	@JsonProperty
-	private String note;
-	
-	@JsonProperty
-	private String photo;
-
-	@JsonProperty
-	private String data;
-
-	@JsonProperty
 	private Date edit_time;
 
 	@JsonProperty
-	private Date create_time;
+	private BookEntryData data;
 
 	public BookEntry() {
 	}
 	
-	public BookEntry(String user_id, String create_user_id, String book_group_id, String category_group_id, Date event_date, long amount, String note, String photo) throws JSONException {
+	public BookEntry(String user_id, String create_user_id, String book_group_id, String category_group_id
+			, Date event_date, long amount, String note, String picture_id) throws JSONException {
 		this.setId(user_id + TimeUtils.getUniqueTimeStampInMS());
 		this.setUser_id(user_id);
 		this.setCreate_user_id(create_user_id);
@@ -58,19 +50,23 @@ public class BookEntry {
 		this.setCategory_group_id(category_group_id);
 		this.setEvent_date(event_date);
 		this.setAmount(amount);
-		this.setNote(note);
-		this.setPhoto(photo);
 		this.setEdit_time(new Date());
+
+		this.data = new BookEntryData();
+		this.setNote(note);
+		this.setPicture_id(picture_id);
 		this.setCreate_time(new Date());
 	}
 
-	public void update(String book_group_id, String category_group_id, Date event_date, long amount, String note, String photo) {
+	public void update(String book_group_id, String category_group_id, Date event_date, long amount, String note
+			, String picture_id) {
 		this.setBook_group_id(book_group_id);
 		this.setCategory_group_id(category_group_id);
 		this.setAmount(amount);
 		this.setEvent_date(event_date);
+
 		this.setNote(note);
-		this.setPhoto(photo);
+		this.setPicture_id(picture_id);
 	}
 
 	public void updateIDWithUserID() {
@@ -101,22 +97,6 @@ public class BookEntry {
 		this.amount = amount;
 	}
 
-	public String getNote() {
-		return note;
-	}
-
-	public void setNote(String note) {
-		this.note = note;
-	}
-
-	public String getPhoto() {
-		return photo;
-	}
-
-	public void setPhoto(String photo) {
-		this.photo = photo;
-	}
-
 	public Date getEdit_time() {
 		return edit_time;
 	}
@@ -141,20 +121,12 @@ public class BookEntry {
 		this.create_user_id = create_user_id;
 	}
 
-	public String getData() {
+	public BookEntryData getData() {
 		return data;
 	}
 
-	public void setData(String data) {
+	public void setData(BookEntryData data) {
 		this.data = data;
-	}
-
-	public Date getCreate_time() {
-		return create_time;
-	}
-
-	public void setCreate_time(Date create_time) {
-		this.create_time = create_time;
 	}
 
 	public String getGroup_id() {
@@ -179,5 +151,29 @@ public class BookEntry {
 
 	public void setCategory_group_id(String category_group_id) {
 		this.category_group_id = category_group_id;
+	}
+
+	public Date getCreate_time() {
+		return data.getCreate_time();
+	}
+
+	public void setCreate_time(Date create_time) {
+		this.data.setCreate_time(create_time);
+	}
+
+	public String getNote() {
+		return data.getNote();
+	}
+
+	public void setNote(String note) {
+		this.data.setNote(note);
+	}
+
+	public String getPicture_id() {
+		return data.getPicture_id();
+	}
+
+	public void setPicture_id(String picture_id) {
+		this.data.setPicture_id(picture_id);
 	}
 }

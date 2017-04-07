@@ -22,7 +22,7 @@ public interface BookDAO {
 			+ "`" + Dict.NAME + "` varchar(64) not null,"
 			+ "`" + Dict.EDIT_TIME + "` datetime not null,"
 			+ "`" + Dict.GROUP_ID + "` varchar(64) not null,"
-			+ "`" + Dict.DATA + "` varbinary(32768),"
+			+ "`" + Dict.DATA + "` varbinary(60000),"
 			+ "primary key (`" + Dict.ID + "`),"
 			+ "unique key `book_unique_combined` (`" + Dict.USER_ID + "`,`" + Dict.NAME + "`),"
 			+ "key `fk_book_user` (`" + Dict.USER_ID + "`),"

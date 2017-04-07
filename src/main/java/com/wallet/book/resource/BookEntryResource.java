@@ -122,7 +122,7 @@ public class BookEntryResource {
 
 	/**
 	 * Create a insert new or update existing book entry.
-	 * @param id, event_date, amount, category, note, photo, cookie
+	 * @param id, event_date, amount, category, note, picture_id, cookie
 	 * @return
 	 * @throws Exception 
 	 */
@@ -138,7 +138,7 @@ public class BookEntryResource {
 								@FormParam(Dict.CATEGORY_NAME) String category_name,
 								@FormParam(Dict.CATEGORY_ID) String category_id,
 								@FormParam(Dict.NOTE) String note,
-								@FormParam(Dict.PHOTO) String photo,
+								@FormParam(Dict.PICTURE_ID) String picture_id,
 								@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
 		String user_id = ApiUtils.getUserIDFromCookie(cookie);
 		if (SessionDAOConnector.instance().verifySessionCookie(cookie)== false || user_id == null) {
@@ -147,7 +147,7 @@ public class BookEntryResource {
 
 		logger_.info("insertentry request : id:" + id + ", book_id:" + book_id + ", event_date:" + event_date
 				+ ", amount_double:" + amount_double + ", category_name:" + category_name + ", category_id:"
-				+ category_id + ", note:" + note + ", photo:" + photo + ".");
+				+ category_id + ", note:" + note + ", picture_id:" + picture_id + ".");
 
 		long amount = (long)(amount_double * 100);
 		Book book = null;
@@ -223,20 +223,22 @@ public class BookEntryResource {
 			if (bookEntry != null) {
 				logger_.info("Update book item : " + bookEntry.getId());
 				if (bookEntry.getBook_group_id().equals(book.getGroup_id())) {
-					bookEntry.update(book.getGroup_id(), category.getGroup_id(), sdf.parse(event_date), amount, note, photo);
+					bookEntry.update(book.getGroup_id(), category.getGroup_id(), sdf.parse(event_date), amount, note
+							, picture_id);
 					bookEntryDAOC.updateByID(bookEntry);
 					// Update if book id is not changed.
 					syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_ACTION.UPDATE);
 				} else {
 					// Re-insert if book id is changed.
                     syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_ACTION.DELETE);
-					bookEntry.update(book.getGroup_id(), category.getGroup_id(), sdf.parse(event_date), amount, note, photo);
+					bookEntry.update(book.getGroup_id(), category.getGroup_id(), sdf.parse(event_date), amount, note
+							, picture_id);
 					//bookEntryDAOC.insert(bookEntry);
 					syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_ACTION.ADD);
 				}
 			} else {
 				bookEntry = new BookEntry(user_id, user_id, book.getGroup_id(), category.getGroup_id()
-						, sdf.parse(event_date), amount, note, photo);
+						, sdf.parse(event_date), amount, note, picture_id);
 				logger_.info("Insert new book item : " + bookEntry.getId());
 				//bookEntryDAOC.insert(bookEntry); // remove this to avoid duplication
 				syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_ACTION.ADD);

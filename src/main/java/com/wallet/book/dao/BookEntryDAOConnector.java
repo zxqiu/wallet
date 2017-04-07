@@ -80,8 +80,8 @@ public class BookEntryDAOConnector {
 		try {
 			bookEntryDAO.insert(bookEntry.getId(), bookEntry.getUser_id(), bookEntry.getCreate_user_id()
 					, bookEntry.getBook_group_id(), bookEntry.getGroup_id(), bookEntry.getCategory_group_id()
-					, bookEntry.getEvent_date(), bookEntry.getAmount(), bookEntry.getNote(), bookEntry.getPhoto()
-					, bookEntry.getData(), bookEntry.getEdit_time(),bookEntry.getCreate_time());
+					, bookEntry.getEvent_date(), bookEntry.getAmount(), bookEntry.getData().toByteArray()
+					, bookEntry.getEdit_time());
 		} catch (Exception e) {
 			if (e.getMessage().contains("Duplicate entry")) {
 				logger_.info("Book entry already exists : " + bookEntry.getId());
@@ -95,14 +95,14 @@ public class BookEntryDAOConnector {
 	
 	public void updateByID(BookEntry bookEntry) throws Exception {
 		bookEntryDAO.update(bookEntry.getId(), bookEntry.getBook_group_id(), bookEntry.getCategory_group_id()
-				, bookEntry.getEvent_date(), bookEntry.getAmount(), bookEntry.getNote()
-				, bookEntry.getPhoto(), bookEntry.getData(), bookEntry.getEdit_time());
+				, bookEntry.getEvent_date(), bookEntry.getAmount(), bookEntry.getData().toByteArray()
+				, bookEntry.getEdit_time());
 	}
 
 	public void updateByGroupID(BookEntry bookEntry) throws Exception {
 		bookEntryDAO.updateByGroupID(bookEntry.getGroup_id(), bookEntry.getCategory_group_id()
-				, bookEntry.getEvent_date(), bookEntry.getAmount(), bookEntry.getNote()
-				, bookEntry.getPhoto(), bookEntry.getData(), bookEntry.getEdit_time());
+				, bookEntry.getEvent_date(), bookEntry.getAmount(), bookEntry.getData().toByteArray()
+				, bookEntry.getEdit_time());
 	}
 
 	public void deleteByID(String id) throws Exception {

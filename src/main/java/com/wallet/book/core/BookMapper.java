@@ -21,7 +21,7 @@ public class BookMapper implements ResultSetMapper<Book> {
 		try {
 			book.setData(new BookData(resultSet.getBinaryStream(Dict.DATA)));
 		} catch (Exception e) {
-			throw new SQLException("Cannot map Book from resultSet");
+			throw new SQLException("Cannot map Book from resultSet : " + e.getMessage());
 		}
 
 		return book;

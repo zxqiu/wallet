@@ -141,9 +141,9 @@
 					<label for="bookEntryPhoto">
 						Photo
 					</label>
-					<textarea type="text" class="form-control" id="bookEntryPhoto" name="photo"
+					<textarea type="text" class="form-control" id="bookEntryPhoto" name="picture_id"
 						@if (bookEntry != null) {
-							value="@?bookEntry.getPhoto()"
+							value="@?bookEntry.getPicture_id()"
 						}
 					></textarea>
 				</div>

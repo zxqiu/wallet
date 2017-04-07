@@ -25,11 +25,8 @@ public static final String TABLE_NAME = "book_entry";
 			+ "`" + Dict.CATEGORY_GROUP_ID + "` varchar(64) not null,"
 			+ "`" + Dict.EVENT_DATE + "` datetime not null,"
 			+ "`" + Dict.AMOUNT + "` bigint not null,"
-			+ "`" + Dict.NOTE + "` text,"
-			+ "`" + Dict.PHOTO + "` varchar(64),"
-			+ "`" + Dict.DATA + "` text,"
+			+ "`" + Dict.DATA + "` varbinary(60000),"
 			+ "`" + Dict.EDIT_TIME + "` datetime not null,"
-			+ "`" + Dict.CREATE_TIME + "` datetime not null,"
 			+ "primary key (`" + Dict.ID + "`),"
 			+ "key `fk_book_entry_user` (`" + Dict.USER_ID + "`),"
 			+ "constraint `fk_book_entry_user` foreign key (`" + Dict.USER_ID + "`) "
@@ -50,11 +47,8 @@ public static final String TABLE_NAME = "book_entry";
 			+ ", " + Dict.CATEGORY_GROUP_ID
 			+ ", " + Dict.EVENT_DATE
 			+ ", " + Dict.AMOUNT
-			+ ", " + Dict.NOTE
-			+ ", " + Dict.PHOTO
 			+ ", " + Dict.DATA
 			+ ", " + Dict.EDIT_TIME
-			+ ", " + Dict.CREATE_TIME
 			+ ") values ("
 			+ ":" + Dict.ID
 			+ ", :" + Dict.USER_ID
@@ -64,11 +58,8 @@ public static final String TABLE_NAME = "book_entry";
 			+ ", :" + Dict.CATEGORY_GROUP_ID
 			+ ", :" + Dict.EVENT_DATE
 			+ ", :" + Dict.AMOUNT
-			+ ", :" + Dict.NOTE
-			+ ", :" + Dict.PHOTO
 			+ ", :" + Dict.DATA
 			+ ", :" + Dict.EDIT_TIME
-			+ ", :" + Dict.CREATE_TIME
 			+ ")"
 		)
 	void insert(@Bind(Dict.ID) String id
@@ -79,11 +70,8 @@ public static final String TABLE_NAME = "book_entry";
 			, @Bind(Dict.CATEGORY_GROUP_ID) String category_group_id
 			, @Bind(Dict.EVENT_DATE) Date event_date
 			, @Bind(Dict.AMOUNT) long amount
-			, @Bind(Dict.NOTE) String note
-			, @Bind(Dict.PHOTO) String photo
-			, @Bind(Dict.DATA) String data
+			, @Bind(Dict.DATA) byte[] data
 			, @Bind(Dict.EDIT_TIME) Date edit_time
-			, @Bind(Dict.CREATE_TIME) Date create_time
 	);
 	
 	@SqlUpdate("update " + TABLE_NAME + " set "
@@ -91,8 +79,6 @@ public static final String TABLE_NAME = "book_entry";
 			+ Dict.CATEGORY_GROUP_ID + "= :" + Dict.CATEGORY_GROUP_ID + ","
 			+ Dict.EVENT_DATE + "= :" + Dict.EVENT_DATE + ","
 			+ Dict.AMOUNT + "= :" + Dict.AMOUNT + ","
-			+ Dict.NOTE + "= :" + Dict.NOTE + ","
-			+ Dict.PHOTO + "= :" + Dict.PHOTO + ","
 			+ Dict.DATA + "= :" + Dict.DATA + ","
 			+ Dict.EDIT_TIME + "= :" + Dict.EDIT_TIME
 			+ " where " + Dict.ID + "= :" + Dict.ID
@@ -102,17 +88,13 @@ public static final String TABLE_NAME = "book_entry";
 				@Bind(Dict.CATEGORY_GROUP_ID) String category_group_id,
 				@Bind(Dict.EVENT_DATE) Date event_date,
 				@Bind(Dict.AMOUNT) long amount,
-				@Bind(Dict.NOTE) String note,
-				@Bind(Dict.PHOTO) String photo,
-				@Bind(Dict.DATA) String data,
+				@Bind(Dict.DATA) byte[] data,
 				@Bind(Dict.EDIT_TIME) Date edit_time);
 
 	@SqlUpdate("update " + TABLE_NAME + " set "
 			+ Dict.CATEGORY_GROUP_ID + "= :" + Dict.CATEGORY_GROUP_ID + ","
 			+ Dict.EVENT_DATE + "= :" + Dict.EVENT_DATE + ","
 			+ Dict.AMOUNT + "= :" + Dict.AMOUNT + ","
-			+ Dict.NOTE + "= :" + Dict.NOTE + ","
-			+ Dict.PHOTO + "= :" + Dict.PHOTO + ","
 			+ Dict.DATA + "= :" + Dict.DATA + ","
 			+ Dict.EDIT_TIME + "= :" + Dict.EDIT_TIME
 			+ " where " + Dict.GROUP_ID + "= :" + Dict.GROUP_ID
@@ -121,9 +103,7 @@ public static final String TABLE_NAME = "book_entry";
 				@Bind(Dict.CATEGORY_GROUP_ID) String category_group_id,
 				@Bind(Dict.EVENT_DATE) Date event_date,
 				@Bind(Dict.AMOUNT) long amount,
-				@Bind(Dict.NOTE) String note,
-				@Bind(Dict.PHOTO) String photo,
-				@Bind(Dict.DATA) String data,
+				@Bind(Dict.DATA) byte[] data,
 				@Bind(Dict.EDIT_TIME) Date edit_time);
 
 	@SqlQuery("select * from " + TABLE_NAME + " where " + Dict.ID + " = :" + Dict.ID)
