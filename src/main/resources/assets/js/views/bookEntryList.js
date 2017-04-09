@@ -82,16 +82,17 @@ function showSum(categorySum, bookSum) {
             continue;
         }
 
-        var name = $(list[i]).text().trim();
-        console.log(name);
-        if ($(list[i]).hasClass("option-category") && categorySum.hasOwnProperty(name)) {
-            $(list[i]).attr("data-subtext", "$" + categorySum[name].toFixed(2));
-        } else if ($(list[i]).hasClass("option-book") && bookSum.hasOwnProperty(name)) {
-            $(list[i]).attr("data-subtext", "$" + bookSum[name].toFixed(2));
+        var id = list[i].id;
+        console.log(id);
+        if ($(list[i]).hasClass("option-category") && categorySum.hasOwnProperty(id)) {
+            $(list[i]).data("subtext", "$" + categorySum[id].toFixed(2));
+        } else if ($(list[i]).hasClass("option-book") && bookSum.hasOwnProperty(id)) {
+            $(list[i]).data("subtext", "$" + bookSum[id].toFixed(2));
         } else {
-            $(list[i]).attr("data-subtext", "$0.00");
+            $(list[i]).data("subtext", "$0.00");
         }
     }
+    $("#entryFilterSelector").selectpicker("refresh");
 }
 
 function logout() {
