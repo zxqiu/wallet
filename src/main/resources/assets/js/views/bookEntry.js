@@ -179,21 +179,18 @@ $("#bookEntryPhoto").on("change", function(e) {
     var canvas = document.getElementById("bookEntryShowPhoto");
     var ctx = canvas.getContext("2d");
     var reader = new FileReader();
-    reader.onload = function(event){
+    reader.onload = function(event) {
         var img = new Image();
         img.onload = function(){
-            var height = 300;
-            var width = (height / img.height) * img.width;
+            var scale = 300 / img.height;
+            var height = img.height * scale;
+            var width = img.width * scale;
+            var size = {width: width, height: height};
+            var rotation = 0;
+            var deg2Rad=Math.PI/180;
 
-            if (width > height) {
-                canvas.width = width;
-                canvas.height = width;
-            } else {
-                canvas.width = height;
-                canvas.height = height;
-            }
             getOrientation(e.target.files[0], function (orientation) {
-                switch(orientation) {
+                switch(6) {
                     case 2:
                         // horizontal flip
                         ctx.translate(canvas.width, 0);
@@ -216,8 +213,9 @@ $("#bookEntryPhoto").on("change", function(e) {
                         break;
                     case 6:
                         // 90° rotate right
-                        ctx.rotate(0.5 * Math.PI);
-                        ctx.translate(0, -canvas.height);
+                        //ctx.rotate(0.5 * Math.PI);
+                        //ctx.translate(0, -canvas.height);
+                        rotation = 90;
                         break;
                     case 7:
                         // horizontal flip + 90 rotate right
@@ -231,7 +229,28 @@ $("#bookEntryPhoto").on("change", function(e) {
                         ctx.translate(-canvas.width, 0);
                         break;
                 }
-                ctx.drawImage(img, 0, 0, width, height);
+
+                // new size
+                var rads = rotation * Math.PI/180;
+                var c = Math.cos(rads);
+                var s = Math.sin(rads);
+                if (s < 0) { s = -s; }
+                if (c < 0) { c = -c; }
+                size.width = height * s + width * c;
+                size.height = height * c + width * s ;
+
+                // draw
+                canvas.width = size.width;
+                canvas.height = size.height;
+
+                // calculate the center point of the canvas
+                var cx = canvas.width / 2;
+                var cy = canvas.height / 2;
+
+                // draw in the center of the newly sized canvas
+                ctx.translate(cx, cy);
+                ctx.rotate(rotation * deg2Rad);
+                ctx.drawImage(img, -width / 2, -height / 2, width, height);
             });
             canvas.style.display = "inline";
         };
