@@ -174,3 +174,86 @@ $('#bookEntryDelete').on('click', function(){
 	$('#bookEntryDelete').html("deleted");
 	$(this).attr("disabled", true);
 });
+
+$("#bookEntryPhoto").on("change", function(e) {
+    var canvas = document.getElementById("bookEntryShowPhoto");
+    var ctx = canvas.getContext("2d");
+    var reader = new FileReader();
+    reader.onload = function(event){
+        var img = new Image();
+        img.onload = function(){
+            var height = 300;
+            var width = (height / img.height) * img.width;
+
+            if (width > height) {
+                canvas.width = width;
+                canvas.height = width;
+            } else {
+                canvas.width = height;
+                canvas.height = height;
+            }
+            getOrientation(e.target.files[0], function (orientation) {
+                switch(orientation) {
+                    case 2:
+                        // horizontal flip
+                        ctx.translate(canvas.width, 0);
+                        ctx.scale(-1, 1);
+                        break;
+                    case 3:
+                        // 180° rotate left
+                        ctx.translate(canvas.width, canvas.height);
+                        ctx.rotate(Math.PI);
+                        break;
+                    case 4:
+                        // vertical flip
+                        ctx.translate(0, canvas.height);
+                        ctx.scale(1, -1);
+                        break;
+                    case 5:
+                        // vertical flip + 90 rotate right
+                        ctx.rotate(0.5 * Math.PI);
+                        ctx.scale(1, -1);
+                        break;
+                    case 6:
+                        // 90° rotate right
+                        ctx.rotate(0.5 * Math.PI);
+                        ctx.translate(0, -canvas.height);
+                        break;
+                    case 7:
+                        // horizontal flip + 90 rotate right
+                        ctx.rotate(0.5 * Math.PI);
+                        ctx.translate(canvas.width, -canvas.height);
+                        ctx.scale(-1, 1);
+                        break;
+                    case 8:
+                        // 90° rotate left
+                        ctx.rotate(-0.5 * Math.PI);
+                        ctx.translate(-canvas.width, 0);
+                        break;
+                }
+                ctx.drawImage(img, 0, 0, width, height);
+            });
+            canvas.style.display = "inline";
+        };
+        img.src = event.target.result;
+    };
+    /*
+    reader.onloadend = function() {
+        getOrientation(e.target.files[0], function (orientation) {
+            alert(orientation);
+            switch(6){
+                case 8:
+                    ctx.rotate(90*Math.PI/180);
+                    break;
+                case 3:
+                    ctx.rotate(180*Math.PI/180);
+                    break;
+                case 6:
+                    ctx.rotate(-90*Math.PI/180);
+                    break;
+            }
+        });
+    };
+    */
+    reader.readAsDataURL(e.target.files[0]);
+});
