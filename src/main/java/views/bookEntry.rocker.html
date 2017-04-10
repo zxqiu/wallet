@@ -141,7 +141,7 @@
 					<label for="bookEntryPhoto">
 						Photo
 					</label>
-					<input type="file" id="bookEntryPhoto" name="picture_id"
+					<input type="file" id="bookEntryPhoto" name="picture_id" accept=".jpg"
 						@if (bookEntry != null) {
 							value="@?bookEntry.getPicture_id()"
 						}
