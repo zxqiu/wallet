@@ -231,23 +231,5 @@ $("#bookEntryPhoto").on("change", function(e) {
         };
         img.src = event.target.result;
     };
-    /*
-    reader.onloadend = function() {
-        getOrientation(e.target.files[0], function (orientation) {
-            alert(orientation);
-            switch(6){
-                case 8:
-                    ctx.rotate(90*Math.PI/180);
-                    break;
-                case 3:
-                    ctx.rotate(180*Math.PI/180);
-                    break;
-                case 6:
-                    ctx.rotate(-90*Math.PI/180);
-                    break;
-            }
-        });
-    };
-    */
     reader.readAsDataURL(e.target.files[0]);
 });
