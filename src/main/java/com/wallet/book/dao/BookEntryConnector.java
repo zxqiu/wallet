@@ -9,42 +9,43 @@ import com.wallet.book.core.BookEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BookEntryDAOConnector {
+public class BookEntryConnector {
 	private static Lock createLock_ = new ReentrantLock();
-	private static final Logger logger_ = LoggerFactory.getLogger(BookEntryDAOConnector.class);
+	private static final Logger logger_ = LoggerFactory.getLogger(BookEntryConnector.class);
 	
 	private static BookEntryDAO bookEntryDAO = null;
-	private static BookEntryDAOConnector instance_ = null;
-	
+	private static BookEntryCache bookEntryCache = null;
+	private static BookEntryConnector instance_ = null;
+
 	public static final String TABLE_NAME = "book_table";
 
-	public static BookEntryDAOConnector instance() throws Exception {
+	public static BookEntryConnector instance() throws Exception {
 		if ( instance_ == null )
 		{
-			BookEntryDAOConnector.createLock_.lock();
+			BookEntryConnector.createLock_.lock();
 			try
 			{
-				
-				instance_ = new BookEntryDAOConnector();
+				instance_ = new BookEntryConnector();
 			}
 			finally
 			{
-				BookEntryDAOConnector.createLock_.unlock();
+				BookEntryConnector.createLock_.unlock();
 			}
 		}
 		
 		return instance_;
 	}
 	
-	private BookEntryDAOConnector() throws Exception {
+	private BookEntryConnector() throws Exception {
 		if (bookEntryDAO == null) {
-			throw new Exception("BookEntryDAOConnector not initialized");
+			throw new Exception("BookEntryConnector not initialized");
 		}
 		this.createTable();
 	}
 	
 	public static void init(BookEntryDAO bookEntryDAO) {
-		BookEntryDAOConnector.bookEntryDAO = bookEntryDAO;
+		BookEntryConnector.bookEntryDAO = bookEntryDAO;
+		bookEntryCache = BookEntryCache.instance();
 	}
 	
 	private void createTable() {
@@ -65,7 +66,8 @@ public class BookEntryDAOConnector {
 	}
 
 	public List<BookEntry> getByUserID(String user_id) throws Exception {
-		return bookEntryDAO.findByUserID(user_id);
+		//return bookEntryDAO.findByUserID(user_id);
+		return bookEntryCache.get(user_id);
 	}
 
 	public List<BookEntry> getByUserIDAndBookGroupID(String user_id, String book_id) throws Exception {
@@ -125,34 +127,34 @@ public class BookEntryDAOConnector {
 		BookEntry bookEntry = new BookEntry("admin", "admin", "adminbook", "admincategory", new Date()
 				, (long)10, "note", "photo");
 		
-		logger_.info("BookEntryDAOConnector test ...");
+		logger_.info("BookEntryConnector test ...");
 		
 		logger_.info("1. insert");
 		
-		BookEntryDAOConnector.instance().insert(bookEntry);
-		if (BookEntryDAOConnector.instance().getByID(bookEntry.getId()).isEmpty()) {
-			logger_.error("Error BookEntryDAOConnector test failed");
-			throw new Exception("BookEntryDAOConnector test failed");
+		BookEntryConnector.instance().insert(bookEntry);
+		if (BookEntryConnector.instance().getByID(bookEntry.getId()).isEmpty()) {
+			logger_.error("Error BookEntryConnector test failed");
+			throw new Exception("BookEntryConnector test failed");
 		}
 		
 		logger_.info("2. update");
 		
 		bookEntry.setNote("nooooooote");
-		BookEntryDAOConnector.instance().updateByID(bookEntry);
-		if (BookEntryDAOConnector.instance().getByID(bookEntry.getId()).isEmpty()) {
-			logger_.error("Error BookEntryDAOConnector test failed");
-			throw new Exception("BookEntryDAOConnector test failed");
+		BookEntryConnector.instance().updateByID(bookEntry);
+		if (BookEntryConnector.instance().getByID(bookEntry.getId()).isEmpty()) {
+			logger_.error("Error BookEntryConnector test failed");
+			throw new Exception("BookEntryConnector test failed");
 		}
-		logger_.info("updated note : " + BookEntryDAOConnector.instance().getByID(bookEntry.getId()).get(0).getNote());
+		logger_.info("updated note : " + BookEntryConnector.instance().getByID(bookEntry.getId()).get(0).getNote());
 		
 		logger_.info("3. delete");
 		
-		BookEntryDAOConnector.instance().deleteByID(bookEntry.getId());
-		if (!BookEntryDAOConnector.instance().getByID(bookEntry.getId()).isEmpty()) {
-			logger_.error("Error BookEntryDAOConnector test failed");
-			throw new Exception("BookEntryDAOConnector test failed");
+		BookEntryConnector.instance().deleteByID(bookEntry.getId());
+		if (!BookEntryConnector.instance().getByID(bookEntry.getId()).isEmpty()) {
+			logger_.error("Error BookEntryConnector test failed");
+			throw new Exception("BookEntryConnector test failed");
 		}
 		
-		logger_.info("BookEntryDAOConnector test passed");
+		logger_.info("BookEntryConnector test passed");
 	}
 }

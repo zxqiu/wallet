@@ -5,7 +5,7 @@ import com.google.gson.Gson;
 import com.wallet.book.core.Book;
 import com.wallet.book.core.syncHelper;
 import com.wallet.book.dao.BookDAOConnector;
-import com.wallet.book.dao.BookEntryDAOConnector;
+import com.wallet.book.dao.BookEntryConnector;
 import com.wallet.book.dao.CategoryDAOConnector;
 import com.wallet.login.dao.SessionDAOConnector;
 import com.wallet.login.resource.SessionResource;
@@ -23,8 +23,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.URI;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
 @Path("/books")
@@ -32,13 +30,13 @@ public class BookResource {
 	private static final Logger logger_ = LoggerFactory.getLogger(BookResource.class);
 
 	private BookDAOConnector bookDAOC = null;
-	private BookEntryDAOConnector bookEntryDAOC = null;
+	private BookEntryConnector bookEntryConnector = null;
 	private CategoryDAOConnector categoryDAOC = null;
 	private SessionDAOConnector sessionDAOC = null;
 
 	public BookResource() throws Exception {
 		this.bookDAOC = BookDAOConnector.instance();
-		this.bookEntryDAOC = BookEntryDAOConnector.instance();
+		this.bookEntryConnector = BookEntryConnector.instance();
 		this.categoryDAOC = CategoryDAOConnector.instance();
 		this.sessionDAOC = SessionDAOConnector.instance();
 	}
@@ -180,7 +178,7 @@ public class BookResource {
 				if (!bookList.isEmpty()) {
 					Book book = bookList.get(bookList.size() - 1);
 					bookDAOC.deleteByID(id);
-					bookEntryDAOC.deleteByUserIDAndBookGroupID(book.getUser_id(), book.getGroup_id());
+					bookEntryConnector.deleteByUserIDAndBookGroupID(book.getUser_id(), book.getGroup_id());
 					categoryDAOC.deleteByUserIDAndBookGroupID(book.getUser_id(), book.getGroup_id());
 
 					book.removeUser(book.getUser_id());

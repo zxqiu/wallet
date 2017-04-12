@@ -1,7 +1,7 @@
 package com.wallet.book.core;
 
 import com.wallet.book.dao.BookDAOConnector;
-import com.wallet.book.dao.BookEntryDAOConnector;
+import com.wallet.book.dao.BookEntryConnector;
 import com.wallet.book.dao.CategoryDAOConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,14 +16,14 @@ public class syncHelper {
     private static final Logger logger_ = LoggerFactory.getLogger(syncHelper.class);
 
     private static BookDAOConnector bookDAOC = null;
-    private static BookEntryDAOConnector bookEntryDAOC = null;
+    private static BookEntryConnector bookEntryConnector = null;
     private static CategoryDAOConnector categoryDAOC = null;
 
     public enum SYNC_ACTION {ADD, DELETE, UPDATE}
 
     public static void init() throws Exception {
         bookDAOC = BookDAOConnector.instance();
-        bookEntryDAOC = BookEntryDAOConnector.instance();
+        bookEntryConnector = BookEntryConnector.instance();
         categoryDAOC = CategoryDAOConnector.instance();
     }
 
@@ -42,16 +42,16 @@ public class syncHelper {
                     bookEntry.setUser_id(book.getUser_id());
                     bookEntry.updateIDWithUserID();
                     bookEntry.setBook_group_id(book.getGroup_id());
-                    bookEntryDAOC.insert(bookEntry);
+                    bookEntryConnector.insert(bookEntry);
                 }
                 break;
             case UPDATE:
                 logger_.info("Update book entry by group id : " + bookEntry.getGroup_id());
-                bookEntryDAOC.updateByGroupID(bookEntry);
+                bookEntryConnector.updateByGroupID(bookEntry);
                 break;
             case DELETE:
                 logger_.info("Delete book entry by group id : " + bookEntry.getGroup_id());
-                bookEntryDAOC.deleteByGroupID(bookEntry.getGroup_id());
+                bookEntryConnector.deleteByGroupID(bookEntry.getGroup_id());
                 break;
             default:
                 logger_.info("Unknown action when syncBookEntry");
@@ -59,8 +59,8 @@ public class syncHelper {
     }
 
     public static List<BookEntry> syncBookEntries(String book_group_id, String target_user_id) throws Exception {
-        List<BookEntry> entryList = bookEntryDAOC.getByBookGroupID(book_group_id);
-        List<BookEntry> existingEntryList = bookEntryDAOC.getByUserIDAndBookGroupID(target_user_id, book_group_id);
+        List<BookEntry> entryList = bookEntryConnector.getByBookGroupID(book_group_id);
+        List<BookEntry> existingEntryList = bookEntryConnector.getByUserIDAndBookGroupID(target_user_id, book_group_id);
         HashMap<String, BookEntry> fingerPrintMap = new HashMap<>();
 
         for (BookEntry entry : existingEntryList) {
@@ -74,11 +74,11 @@ public class syncHelper {
                 BookEntry tmp = fingerPrintMap.get(group_id);
                 tmp.update(entry.getBook_group_id(), entry.getCategory_group_id(), entry.getEvent_date()
                         , entry.getAmount(), entry.getNote(), entry.getPicture_id());
-                bookEntryDAOC.updateByID(tmp);
+                bookEntryConnector.updateByID(tmp);
             } else {
                 entry.setUser_id(target_user_id);
                 entry.updateIDWithUserID();
-                bookEntryDAOC.insert(entry);
+                bookEntryConnector.insert(entry);
             }
         }
 

@@ -54,11 +54,13 @@ public class WalletService extends Application<WalletConfiguration> {
 	    final BookEntryDAO bookEntryDAO = jdbi.onDemand(BookEntryDAO.class);
 	    final CategoryDAO categoryDAO = jdbi.onDemand(CategoryDAO.class);
 	    final TinyUrlDAO tinyUrlDAO = jdbi.onDemand(TinyUrlDAO.class);
-	    
+
+		BookEntryCache.init(bookEntryDAO);
+
 	    UserDAOConnector.init(userDAO);
 	    SessionDAOConnector.init(sessionDAO);
 	    BookDAOConnector.init(bookDAO);
-	    BookEntryDAOConnector.init(bookEntryDAO);
+	    BookEntryConnector.init(bookEntryDAO);
 	    CategoryDAOConnector.init(categoryDAO);
 		TinyUrlDAOConnector.init(tinyUrlDAO);
 
@@ -67,10 +69,12 @@ public class WalletService extends Application<WalletConfiguration> {
 	    UserDAOConnector.test();
 	    SessionDAOConnector.test();
 		BookDAOConnector.test();
-	    BookEntryDAOConnector.test();
+	    BookEntryConnector.test();
 	    CategoryDAOConnector.test();
 	    TinyUrlDAOConnector.test();
-	    
+
+		BookEntryCache.test();
+
 	    environment.jersey().register(new UserResource());
 	    environment.jersey().register(new SessionResource());
 		environment.jersey().register(new BookResource());
