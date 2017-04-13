@@ -67,9 +67,9 @@ function setCategoryOptionFontColor() {
     adjustFontColor(bright, parent);
 }
 
-function compress(source_img_obj, quality, maxWidth, output_format){
+function compress(source_img_obj, quality, maxWidth, output_format) {
     var mime_type = "image/jpeg";
-    if(typeof output_format !== "undefined" && output_format=="png"){
+    if (typeof output_format !== "undefined" && output_format == "png") {
         mime_type = "image/png";
     }
 
@@ -87,7 +87,7 @@ function compress(source_img_obj, quality, maxWidth, output_format){
     cvs.height = natH;
 
     var ctx = cvs.getContext("2d").drawImage(source_img_obj, 0, 0, natW, natH);
-    var newImageData = cvs.toDataURL(mime_type, quality/100);
+    var newImageData = cvs.toDataURL(mime_type, quality / 100);
     var result_image_obj = new Image();
     result_image_obj.src = newImageData;
     return result_image_obj;
@@ -113,7 +113,7 @@ $(document).ready(function () {
     setCategoryOptionFontColor();
 });
 
-$('#categorySelector').on('change', function(){
+$('#categorySelector').on('change', function () {
     var selected = $(this).find(":selected")[0];
     var tmp = selected.title.split(":");
 
@@ -140,27 +140,27 @@ $('#categorySelector').on('change', function(){
     }
 });
 
-$('#bookSelector').on('change', function(){
+$('#bookSelector').on('change', function () {
     showCategoryByBook();
 });
 
-$(function() {
-	$('.datepicker').datepicker( {
-		format: 'mm/dd/yyyy',
-		autoclose: true,
-		immediateUpdates: true,
-		assumeNearbyYear: true,
-		todayHighlight: true
-	});
+$(function () {
+    $('.datepicker').datepicker({
+        format: 'mm/dd/yyyy',
+        autoclose: true,
+        immediateUpdates: true,
+        assumeNearbyYear: true,
+        todayHighlight: true
+    });
 });
 
-$('.date').on('changeDate', function(ev){
-	$(this).datepicker('hide');
+$('.date').on('changeDate', function (ev) {
+    $(this).datepicker('hide');
 });
 
 var form = document.getElementById("bookEntryForm");
 form.noValidate = true;
-$("#bookEntrySubmit").on("click", function() {
+$("#bookEntrySubmit").on("click", function () {
     $("#bookEntrySubmit").html("submitted");
     $("#bookEntrySubmit").attr("disabled", true);
     $("#categorySelector").attr("disabled", true);
@@ -184,40 +184,52 @@ $("#bookEntrySubmit").on("click", function() {
         }
     }
 
+    uploadFile();
+
     form.submit();
     $("#categorySelector").attr("disabled", false);
 });
 
-$("input").on('input', function() {
-	$('#bookEntryForm div').removeClass("has-error");;
+function uploadFile() {
+    var bucket = "wallet-image";
+    var filename = form["bookEntryPhoto"].value.replace(/.*[\/\\]/, '');
+    //console.log(filename);
+
+
+}
+
+$("input").on('input', function () {
+    $('#bookEntryForm div').removeClass("has-error");
+    ;
 });
 
-$(":input").on('change', function(){
-	$('#bookEntryForm div').removeClass("has-error");;
+$(":input").on('change', function () {
+    $('#bookEntryForm div').removeClass("has-error");
+    ;
 });
 
-$('#bookEntryDelete').on('click', function(){
-	$('#bookEntryDelete').html("deleted");
-	$(this).attr("disabled", true);
+$('#bookEntryDelete').on('click', function () {
+    $('#bookEntryDelete').html("deleted");
+    $(this).attr("disabled", true);
 });
 
-$("#bookEntryPhoto").on("change", function(e) {
+$("#bookEntryPhoto").on("change", function (e) {
     var canvas = document.getElementById("bookEntryShowPhoto");
     var ctx = canvas.getContext("2d");
     var reader = new FileReader();
-    reader.onload = function(event) {
+    reader.onload = function (event) {
         var img = new Image();
-        img.onload = function(){
+        img.onload = function () {
             //compress(img, 30, 300, "jpg");
             var scale = 300 / img.height;
             var height = img.height * scale;
             var width = img.width * scale;
             var size = {width: width, height: height};
             var rotation = 0;
-            var deg2Rad=Math.PI/180;
+            var deg2Rad = Math.PI / 180;
 
             getOrientation(e.target.files[0], function (orientation) {
-                switch(orientation) {
+                switch (orientation) {
                     case 3:
                         // 180° rotate left
                         rotation = 180;
@@ -233,13 +245,17 @@ $("#bookEntryPhoto").on("change", function(e) {
                 }
 
                 // new size
-                var rads = rotation * Math.PI/180;
+                var rads = rotation * Math.PI / 180;
                 var c = Math.cos(rads);
                 var s = Math.sin(rads);
-                if (s < 0) { s = -s; }
-                if (c < 0) { c = -c; }
+                if (s < 0) {
+                    s = -s;
+                }
+                if (c < 0) {
+                    c = -c;
+                }
                 size.width = height * s + width * c;
-                size.height = height * c + width * s ;
+                size.height = height * c + width * s;
 
                 // draw
                 canvas.width = size.width;
@@ -257,6 +273,31 @@ $("#bookEntryPhoto").on("change", function(e) {
             canvas.style.display = "inline";
         };
         img.src = event.target.result;
+
+        /*
+         var dataURL = reader.result;
+         var bucket = "wallet-image";
+         var filename = user_id + "_" + e.target.value.replace(/.*[\/\\]/, '');
+         console.log(filename);
+         var request = new XMLHttpRequest();
+         request.open("POST", "/gcs/" + bucket + "/" + filename, true);
+         request.setRequestHeader('Content-Type', 'image/png');
+         request.send(e.target.files[0]);*/
+
+        var formData = new FormData();
+        formData.append('role', "form")
+        formData.append('action', "/books/uploadpicture");
+        formData.append('method', "post");
+        formData.append('image', e.target.files[0]);
+
+        $.ajax({
+            url: window.location.protocol + "//" + window.location.host + "/books/uploadpicture",
+            data: formData,
+            type: 'POST',
+            contentType: false, // NEEDED, DON'T OMIT THIS (requires jQuery 1.6+)
+            processData: false, // NEEDED, DON'T OMIT THIS
+            // ... Other options like success and etc
+        });
     };
     reader.readAsDataURL(e.target.files[0]);
 });

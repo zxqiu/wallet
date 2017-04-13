@@ -26,6 +26,7 @@ import com.wallet.book.dao.CategoryDAOConnector;
 import com.wallet.login.dao.SessionDAOConnector;
 import com.wallet.utils.misc.ApiUtils;
 import com.wallet.utils.misc.Dict;
+import com.wallet.utils.misc.CcsServletUtils;
 
 @Path("/books")
 public class BookEntryResource {
@@ -295,6 +296,15 @@ public class BookEntryResource {
 		// 5. generate response
 		logger_.info("Book entry \'" + id + "\' removed");
 		return Response.seeOther(URI.create(PATH_BOOKS)).build();
+	}
+
+	@POST
+	@Timed
+	@Path("/uploadpicture")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	public Response uploadPicture() {
+		logger_.error("enter function!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1");
+		return Response.accepted().build();
 	}
 	
 	private static Comparator<BookEntry> bookEntryTimeComparator = new Comparator<BookEntry>() {

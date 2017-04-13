@@ -4,6 +4,7 @@
 
 var hostURL = window.location.protocol + "//" + window.location.host;
 var apiInsertEntry = "/books/insertentry";
+var apiUploadPicture = "books/uploadpicture";
 var apiDeleteItem = "/books/deleteentry";
 var apiGetBookEntries = "/books/getentries";
 var apiGetBook = "/books/getbook";
@@ -51,6 +52,41 @@ var APIs = {
                 }
             });
         };
+
+/*
+        api_.setPostBookEntryPictureSuccessCallback = function(callback) {
+            api_.postBookEntryPictureSuccess = callback;
+        }
+
+        api_.setPostBookEntryPictureErrorCallback = function(callback) {
+            api_.postBookEntryPictureError = callback;
+        }
+        api_.postBookEntryPicture = function (jsonObj) {
+            var postURL = hostURL + apiUploadPicture;
+            console.log(postURL);
+            console.log(jsonObj);
+            var paramJSONString = JSON.stringify(jsonObj);
+
+            $.ajax({
+                type: "POST",
+                url: postURL,
+                data: paramJSONString,
+                dataType: 'json',
+                processData: false,
+                contentType: false,
+                success: function(data, textStatus, jqXHR) {
+                    if (api_.postBookEntryPictureSuccess && typeof(api_.postBookEntryPictureSuccess) == "function") {
+                        api_.postBookEntryPictureSuccess(data);
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    if (api_.postBookEntryPictureyError && typeof(api_.postBookEntryPictureError) == "function") {
+                        api_.postBookEntryPictureError(textStatus);
+                    }
+                }
+            });
+
+        };*/
 
         api_.getAllBookEntrySuccess = null;
         api_.getAllBookEntryError = null;
