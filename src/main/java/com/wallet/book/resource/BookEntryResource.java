@@ -3,11 +3,14 @@ package com.wallet.book.resource;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.io.InputStream;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import com.wallet.book.core.Book;
 import com.wallet.book.core.BookEntry;
@@ -302,9 +305,19 @@ public class BookEntryResource {
 	@Timed
 	@Path("/uploadpicture")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	public Response uploadPicture() {
+	public Response uploadPicture(@FormDataParam("image") InputStream uploadedInputStream,
+								  @FormDataParam("image") FormDataContentDisposition fileDetail) throws Exception {
+
+		if (uploadedInputStream == null) {
+			logger_.error("no image kangggggggggggggggggggggggggggggggggg");
+		} else {
+			logger_.error("image exists kangggggggggggggggggggggggggggggggggg");
+		}
+
 		logger_.error("enter function!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1");
-		return Response.accepted().build();
+		String output = "File uploaded to : ";
+
+		return Response.status(200).entity(output).build();
 	}
 	
 	private static Comparator<BookEntry> bookEntryTimeComparator = new Comparator<BookEntry>() {
