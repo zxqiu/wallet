@@ -53,7 +53,7 @@ public class BookEntryConnector {
 	}
 	
 	public void deleteTable() throws Exception {
-		bookEntryDAO.dropTable();;
+		bookEntryDAO.dropTable();
 		instance_ = null;
 	}
 
@@ -84,6 +84,15 @@ public class BookEntryConnector {
 					, bookEntry.getBook_group_id(), bookEntry.getGroup_id(), bookEntry.getCategory_group_id()
 					, bookEntry.getEvent_date(), bookEntry.getAmount(), bookEntry.getData().toByteArray()
 					, bookEntry.getEdit_time());
+
+			/*
+			// update cache
+			List<BookEntry> bookEntryList = bookEntryCache.get(bookEntry.getUser_id());
+			if (!bookEntryList.contains(bookEntry.getId())) {
+				bookEntryList.add(bookEntry);
+				bookEntryCache.put(bookEntry.getUser_id(), bookEntryList);
+			}
+			*/
 		} catch (Exception e) {
 			if (e.getMessage().contains("Duplicate entry")) {
 				logger_.info("Book entry already exists : " + bookEntry.getId());
@@ -99,6 +108,19 @@ public class BookEntryConnector {
 		bookEntryDAO.update(bookEntry.getId(), bookEntry.getBook_group_id(), bookEntry.getCategory_group_id()
 				, bookEntry.getEvent_date(), bookEntry.getAmount(), bookEntry.getData().toByteArray()
 				, bookEntry.getEdit_time());
+
+		/*
+		// update cache
+		List<BookEntry> bookEntryList = bookEntryCache.get(bookEntry.getUser_id());
+		for (BookEntry entry : bookEntryList) {
+		    if (entry.getId().equals(bookEntry.getId())) {
+		    	entry.update(bookEntry.getBook_group_id(), bookEntry.getCategory_group_id(), bookEntry.getEvent_date()
+						, bookEntry.getAmount(), bookEntry.getNote(), bookEntry.getPicture_id());
+				bookEntryCache.put(bookEntry.getUser_id(), bookEntryList);
+				break;
+			}
+		}
+		*/
 	}
 
 	public void updateByGroupID(BookEntry bookEntry) throws Exception {

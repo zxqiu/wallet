@@ -156,15 +156,13 @@
 	}
 
 	<div id="bookList">
-		@for (int i = 0; bookEntryList != null && i < bookEntryList.size(); i++) {
+		@for (int i = 0; bookEntryList != null && categoryMap !=null && i < bookEntryList.size(); i++) {
 			<div class="col-md-@(12 / bookEntriesEachLine)">
 				<div class="book-list">
 					<a>
-						<span class="book-list-text" title="@bookEntryList.get(i).getId()" tabindex="@i">
+						<span class="book-list-text" title="@?bookEntryList.get(i).getId()" tabindex="@i">
 							<span class="book-list-text-title" id="bookTitle"
-								@if (bookEntryList !=null && categoryMap !=null) {
-									style="background: @?categoryMap.get(bookEntryList.get(i).getCategory_group_id()).getPicture_id()"
-								}
+								style="background: @?categoryMap.get(bookEntryList.get(i).getCategory_group_id()).getPicture_id()"
 							>
 								@if (bookEntryList.get(i).getNote().length() < 10) {
 									@bookEntryList.get(i).getEvent_date() $@(((double)bookEntryList.get(i).getAmount())/100) @?bookEntryList.get(i).getNote()

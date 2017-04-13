@@ -65,7 +65,7 @@ public class BookEntryCache {
             }
         };
 
-        cache = new GuavaCache<>(10, 5, TimeUnit.MINUTES, 500, 1000, cacheLoader
+        cache = new GuavaCache<>(10, 1, TimeUnit.MINUTES, 500, 1000, cacheLoader
                 , removalListener);
     }
 
@@ -73,8 +73,16 @@ public class BookEntryCache {
         BookEntryCache.bookEntryDAO = bookEntryDAO;
     }
 
+    public void put(String user_id, List<BookEntry> bookEntryList) {
+        cache.put(user_id, bookEntryList);
+    }
+
     public List<BookEntry> get(String user_id) throws ExecutionException {
         return cache.get(user_id);
+    }
+
+    public void refresh(String user_id) {
+        cache.refresh(user_id);
     }
 
     public CacheStats getStats() {

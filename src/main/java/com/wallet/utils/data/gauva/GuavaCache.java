@@ -48,6 +48,10 @@ public class GuavaCache<K,V> {
 	{
 		cache_.invalidate(key);
 	}
+
+	public void refresh(K key) {
+		cache_.refresh(key);
+	}
 	
 	public void put(K key, V value)
 	{
