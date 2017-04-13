@@ -296,10 +296,6 @@ $("#bookEntryPhoto").on("change", function (e) {
             type: 'POST',
             contentType: false, // NEEDED, DON'T OMIT THIS (requires jQuery 1.6+)
             processData: false, // NEEDED, DON'T OMIT THIS
-            success: function (data) {
-                alert(data);
-            }
-            // ... Other options like success and etc
         });
     };
     reader.readAsDataURL(e.target.files[0]);
