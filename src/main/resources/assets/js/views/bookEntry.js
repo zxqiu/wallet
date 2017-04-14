@@ -67,30 +67,21 @@ function setCategoryOptionFontColor() {
     adjustFontColor(bright, parent);
 }
 
-function compress(source_img_obj, quality, maxWidth, output_format) {
+function compress(source_img_obj, fileSize, output_format) {
     var mime_type = "image/jpeg";
     if (typeof output_format !== "undefined" && output_format == "png") {
         mime_type = "image/png";
     }
 
-    maxWidth = maxWidth || 1000;
-    var natW = source_img_obj.naturalWidth;
-    var natH = source_img_obj.naturalHeight;
-    var ratio = natH / natW;
-    if (natW > maxWidth) {
-        natW = maxWidth;
-        natH = ratio * maxWidth;
+    if (fileSize <= 2097152) { // 2M
+        return source_img_obj.src;
     }
 
     var cvs = document.createElement('canvas');
-    cvs.width = natW;
-    cvs.height = natH;
-
-    var ctx = cvs.getContext("2d").drawImage(source_img_obj, 0, 0, natW, natH);
-    var newImageData = cvs.toDataURL(mime_type, quality / 100);
-    var result_image_obj = new Image();
-    result_image_obj.src = newImageData;
-    return result_image_obj;
+    cvs.width = source_img_obj.naturalWidth;
+    cvs.height = source_img_obj.naturalHeight;
+    cvs.getContext("2d").drawImage(source_img_obj, 0, 0, cvs.width, cvs.height);
+    return cvs.toDataURL(mime_type, 2097152 / fileSize);
 }
 
 /************************** jquery functions ********************************/
@@ -214,7 +205,6 @@ $("#bookEntryPhoto").on("change", function (e) {
     reader.onload = function (event) {
         var img = new Image();
         img.onload = function () {
-            //compress(img, 30, 300, "jpg");
             var scale = 300 / img.height;
             var height = img.height * scale;
             var width = img.width * scale;
@@ -267,8 +257,8 @@ $("#bookEntryPhoto").on("change", function (e) {
             canvas.style.display = "inline";
         };
         img.src = event.target.result;
-
-        api.postBookEntryPicture(e.target.files[0]);
+        var newImgData = compress(img, e.target.files[0].size, 300, "jpg");
+        api.postBookEntryPicture(e.target.files[0].name, newImgData);
     };
     reader.readAsDataURL(e.target.files[0]);
 });
