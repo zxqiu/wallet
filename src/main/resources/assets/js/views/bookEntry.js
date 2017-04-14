@@ -32,7 +32,9 @@ function showCategoryByBook() {
         } else {
             $(options[i]).prop("disabled", false);
             options[i].style.display = "";
-            $("#categorySelector").val(options[i].value).change();
+            if ($(options[i]).prop("selected")) {
+                $("#categorySelector").val(options[i].value).change();
+            }
         }
     }
 }

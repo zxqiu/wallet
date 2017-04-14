@@ -66,14 +66,14 @@ public class WalletService extends Application<WalletConfiguration> {
 
 		//cleanupDB(sessionDAO, bookDAO, bookEntryDAO, categoryDAO, userDAO, tinyUrlDAO);
 
+		BookEntryCache.test();
+
 	    UserDAOConnector.test();
 	    SessionDAOConnector.test();
 		BookDAOConnector.test();
 	    BookEntryConnector.test();
 	    CategoryDAOConnector.test();
 	    TinyUrlDAOConnector.test();
-
-		BookEntryCache.test();
 
 	    environment.jersey().register(new UserResource());
 	    environment.jersey().register(new SessionResource());

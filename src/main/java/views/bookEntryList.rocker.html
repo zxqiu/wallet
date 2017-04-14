@@ -162,16 +162,20 @@
 					<a>
 						<span class="book-list-text" title="@?bookEntryList.get(i).getId()" tabindex="@i">
 							<span class="book-list-text-title" id="bookTitle"
-								style="background: @?categoryMap.get(bookEntryList.get(i).getCategory_group_id()).getPicture_id()"
+								@if (categoryMap.containsKey(bookEntryList.get(i).getCategory_group_id())) {
+								    style="background: @?categoryMap.get(bookEntryList.get(i).getCategory_group_id()).getPicture_id()"
+								}
 							>
 								@if (bookEntryList.get(i).getNote().length() < 10) {
-									@bookEntryList.get(i).getEvent_date() $@(((double)bookEntryList.get(i).getAmount())/100) @?bookEntryList.get(i).getNote()
+									@(bookEntryList.get(i).getEvent_date().getYear()+1900)-@(bookEntryList.get(i).getEvent_date().getMonth()+1)-@bookEntryList.get(i).getEvent_date().getDate() $@(((double)bookEntryList.get(i).getAmount())/100) @?bookEntryList.get(i).getNote()
 								} else {
-									@bookEntryList.get(i).getEvent_date() $@(((double)bookEntryList.get(i).getAmount())/100) @?bookEntryList.get(i).getNote().substring(0, 10)
+									@(bookEntryList.get(i).getEvent_date().getYear()+1900)-@(bookEntryList.get(i).getEvent_date().getMonth()+1)-@bookEntryList.get(i).getEvent_date().getDate() $@(((double)bookEntryList.get(i).getAmount())/100) @?bookEntryList.get(i).getNote().substring(0, 10)
 								}
 							</span>
 							<span class="book-list-text-info">
-								<span id="bookCategory">category: @categoryMap.get(bookEntryList.get(i).getCategory_group_id()).getName()</span>
+								@if (categoryMap.containsKey(bookEntryList.get(i).getCategory_group_id())) {
+								    <span id="bookCategory">category: @categoryMap.get(bookEntryList.get(i).getCategory_group_id()).getName()</span>
+								}
                                 <input type="hidden" id="bookCategoryGroupID" value="@bookEntryList.get(i).getCategory_group_id()">
 								@if (bookMap != null  && bookMap.containsKey(bookEntryList.get(i).getBook_group_id())) {
                                 	<input type="hidden" id="bookGroupID" value="@bookEntryList.get(i).getBook_group_id()">

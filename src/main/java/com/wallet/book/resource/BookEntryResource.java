@@ -103,7 +103,7 @@ public class BookEntryResource {
 		String date = sdf.format(new Date());
 		BookEntry bookEntry = null;
 		if (!id.equals("0")) {
-			List<BookEntry> bookEntryList = bookEntryConnector.getByID(id);
+			List<BookEntry> bookEntryList = bookEntryConnector.getByUserIDAndID(user_id, id);
 			if (!bookEntryList.isEmpty()) {
 				bookEntry = bookEntryList.get(bookEntryList.size() - 1);
 				date = sdf.format(bookEntry.getEvent_date());
@@ -201,12 +201,12 @@ public class BookEntryResource {
 			return Response.serverError().build();
 		}
 
-		// 4.2 insert book
+		// 4.2 insert book entry
 		// 4.2.1 update if id is received and exists. Otherwise insert new.
 		BookEntry bookEntry = null;
 		if (id.length() != 0) {
 			try {
-				List<BookEntry> list = bookEntryConnector.getByID(id);
+				List<BookEntry> list = bookEntryConnector.getByUserIDAndID(user_id, id);
 				if (!list.isEmpty()) {
 					bookEntry = list.get(list.size() - 1);
 				}
@@ -225,7 +225,7 @@ public class BookEntryResource {
 				if (bookEntry.getBook_group_id().equals(book.getGroup_id())) {
 					bookEntry.update(book.getGroup_id(), category.getGroup_id(), sdf.parse(event_date), amount, note
 							, picture_id);
-					bookEntryConnector.updateByID(bookEntry);
+					bookEntryConnector.updateByUserIDAndID(bookEntry);
 					// Update if book id is not changed.
 					syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_ACTION.UPDATE);
 				} else {
@@ -279,11 +279,11 @@ public class BookEntryResource {
 		
 		// 4. transaction
 		try {
-		    List<BookEntry> bookEntryList = bookEntryConnector.getByID(id);
+		    List<BookEntry> bookEntryList = bookEntryConnector.getByUserIDAndID(user_id, id);
 		    if (!bookEntryList.isEmpty()) {
 		    	BookEntry bookEntry = bookEntryList.get(bookEntryList.size() - 1);
 				logger_.info("Delete book entry : " + bookEntry.getId());
-				bookEntryConnector.deleteByID(id);
+				bookEntryConnector.deleteByUserIDAndID(user_id, id);
 				syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_ACTION.DELETE);
 			}
 		} catch (Exception e) {

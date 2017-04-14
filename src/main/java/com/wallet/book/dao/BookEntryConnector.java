@@ -57,25 +57,12 @@ public class BookEntryConnector {
 		instance_ = null;
 	}
 
-	public List<BookEntry> getByID(String id) throws Exception {
-		return bookEntryDAO.findByID(id);
-	}
-
-	public List<BookEntry> getByBookGroupID(String book_group_id) throws Exception {
-		return bookEntryDAO.findByBookGroupID(book_group_id);
+	public List<BookEntry> getByUserIDAndID(String user_id, String id) throws Exception {
+		return bookEntryCache.getByUserIDAndID(user_id, id);
 	}
 
 	public List<BookEntry> getByUserID(String user_id) throws Exception {
-		//return bookEntryDAO.findByUserID(user_id);
-		return bookEntryCache.get(user_id);
-	}
-
-	public List<BookEntry> getByUserIDAndBookGroupID(String user_id, String book_id) throws Exception {
-		return bookEntryDAO.findByUserIDAndBookGroupID(user_id, book_id);
-	}
-
-	public List<BookEntry> getByUserIDAndGroupID(String user_id, String group_id) throws Exception {
-		return bookEntryDAO.findByUserIDAndGroupID(user_id, group_id);
+		return bookEntryCache.getByUserID(user_id);
 	}
 
 	public void insert(BookEntry bookEntry) throws Exception {
@@ -85,14 +72,8 @@ public class BookEntryConnector {
 					, bookEntry.getEvent_date(), bookEntry.getAmount(), bookEntry.getData().toByteArray()
 					, bookEntry.getEdit_time());
 
-			/*
 			// update cache
-			List<BookEntry> bookEntryList = bookEntryCache.get(bookEntry.getUser_id());
-			if (!bookEntryList.contains(bookEntry.getId())) {
-				bookEntryList.add(bookEntry);
-				bookEntryCache.put(bookEntry.getUser_id(), bookEntryList);
-			}
-			*/
+            bookEntryCache.insert(bookEntry);
 		} catch (Exception e) {
 			if (e.getMessage().contains("Duplicate entry")) {
 				logger_.info("Book entry already exists : " + bookEntry.getId());
@@ -104,23 +85,48 @@ public class BookEntryConnector {
 		}
 	}
 	
-	public void updateByID(BookEntry bookEntry) throws Exception {
+	public void updateByUserIDAndID(BookEntry bookEntry) throws Exception {
 		bookEntryDAO.update(bookEntry.getId(), bookEntry.getBook_group_id(), bookEntry.getCategory_group_id()
 				, bookEntry.getEvent_date(), bookEntry.getAmount(), bookEntry.getData().toByteArray()
 				, bookEntry.getEdit_time());
 
-		/*
 		// update cache
-		List<BookEntry> bookEntryList = bookEntryCache.get(bookEntry.getUser_id());
-		for (BookEntry entry : bookEntryList) {
-		    if (entry.getId().equals(bookEntry.getId())) {
-		    	entry.update(bookEntry.getBook_group_id(), bookEntry.getCategory_group_id(), bookEntry.getEvent_date()
-						, bookEntry.getAmount(), bookEntry.getNote(), bookEntry.getPicture_id());
-				bookEntryCache.put(bookEntry.getUser_id(), bookEntryList);
-				break;
-			}
-		}
-		*/
+        bookEntryCache.updateByUserAndID(bookEntry);
+	}
+
+	public void deleteByUserIDAndID(String user_id, String id) throws Exception {
+		bookEntryDAO.deleteByID(id);
+
+		// update cache
+        bookEntryCache.deleteByUserIDAndID(user_id, id);
+	}
+
+	public void deleteByUserID(String user_id) throws Exception {
+		bookEntryDAO.deleteByUserID(user_id);;
+
+		// update cache
+		bookEntryCache.deleteByUserID(user_id);
+	}
+
+	/********************* Group Operations ************************/
+	public List<BookEntry> getByBookGroupID(String book_group_id) throws Exception {
+		return bookEntryDAO.findByBookGroupID(book_group_id);
+	}
+
+	public List<BookEntry> getByUserIDAndBookGroupID(String user_id, String book_id) throws Exception {
+		return bookEntryDAO.findByUserIDAndBookGroupID(user_id, book_id);
+	}
+
+	public List<BookEntry> getByUserIDAndGroupID(String user_id, String group_id) throws Exception {
+		return bookEntryDAO.findByUserIDAndGroupID(user_id, group_id);
+	}
+
+	public void deleteByGroupID(String group_id) throws Exception {
+		bookEntryDAO.deleteByGroupID(group_id);
+	}
+
+	public void deleteByUserIDAndBookGroupID(String user_id, String book_group_id) throws Exception {
+		bookEntryDAO.deleteByBookGroupIDAndUserID(book_group_id, user_id);
 	}
 
 	public void updateByGroupID(BookEntry bookEntry) throws Exception {
@@ -129,21 +135,6 @@ public class BookEntryConnector {
 				, bookEntry.getEdit_time());
 	}
 
-	public void deleteByID(String id) throws Exception {
-		bookEntryDAO.deleteByID(id);
-	}
-
-	public void deleteByGroupID(String group_id) throws Exception {
-		bookEntryDAO.deleteByGroupID(group_id);
-	}
-
-	public void deleteByUserID(String user_id) throws Exception {
-		bookEntryDAO.deleteByUserID(user_id);;
-	}
-
-	public void deleteByUserIDAndBookGroupID(String user_id, String book_group_id) throws Exception {
-		bookEntryDAO.deleteByBookGroupIDAndUserID(book_group_id, user_id);;
-	}
 
 	public static void test() throws Exception {
 		BookEntry bookEntry = new BookEntry("admin", "admin", "adminbook", "admincategory", new Date()
@@ -154,7 +145,8 @@ public class BookEntryConnector {
 		logger_.info("1. insert");
 		
 		BookEntryConnector.instance().insert(bookEntry);
-		if (BookEntryConnector.instance().getByID(bookEntry.getId()).isEmpty()) {
+		if (BookEntryConnector.instance().getByUserIDAndID(bookEntry.getUser_id(), bookEntry.getId()).isEmpty()
+				|| bookEntryDAO.findByID(bookEntry.getId()).isEmpty()) {
 			logger_.error("Error BookEntryConnector test failed");
 			throw new Exception("BookEntryConnector test failed");
 		}
@@ -162,17 +154,20 @@ public class BookEntryConnector {
 		logger_.info("2. update");
 		
 		bookEntry.setNote("nooooooote");
-		BookEntryConnector.instance().updateByID(bookEntry);
-		if (BookEntryConnector.instance().getByID(bookEntry.getId()).isEmpty()) {
+		BookEntryConnector.instance().updateByUserIDAndID(bookEntry);
+		if (BookEntryConnector.instance().getByUserIDAndID(bookEntry.getUser_id(), bookEntry.getId()).isEmpty()
+				|| bookEntryDAO.findByID(bookEntry.getId()).isEmpty()) {
 			logger_.error("Error BookEntryConnector test failed");
 			throw new Exception("BookEntryConnector test failed");
 		}
-		logger_.info("updated note : " + BookEntryConnector.instance().getByID(bookEntry.getId()).get(0).getNote());
+		logger_.info("updated note : " + BookEntryConnector.instance()
+				.getByUserIDAndID(bookEntry.getUser_id(), bookEntry.getId()).get(0).getNote());
 		
 		logger_.info("3. delete");
 		
-		BookEntryConnector.instance().deleteByID(bookEntry.getId());
-		if (!BookEntryConnector.instance().getByID(bookEntry.getId()).isEmpty()) {
+		BookEntryConnector.instance().deleteByUserIDAndID(bookEntry.getUser_id(), bookEntry.getId());
+		if (!BookEntryConnector.instance().getByUserIDAndID(bookEntry.getUser_id(), bookEntry.getId()).isEmpty()
+				|| !bookEntryDAO.findByID(bookEntry.getId()).isEmpty()) {
 			logger_.error("Error BookEntryConnector test failed");
 			throw new Exception("BookEntryConnector test failed");
 		}

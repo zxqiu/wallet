@@ -74,7 +74,7 @@ public class syncHelper {
                 BookEntry tmp = fingerPrintMap.get(group_id);
                 tmp.update(entry.getBook_group_id(), entry.getCategory_group_id(), entry.getEvent_date()
                         , entry.getAmount(), entry.getNote(), entry.getPicture_id());
-                bookEntryConnector.updateByID(tmp);
+                bookEntryConnector.updateByUserIDAndID(tmp);
             } else {
                 entry.setUser_id(target_user_id);
                 entry.updateIDWithUserID();

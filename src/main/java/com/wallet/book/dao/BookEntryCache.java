@@ -5,12 +5,14 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.CacheStats;
 import com.google.common.cache.RemovalListener;
 import com.google.common.cache.RemovalNotification;
-import com.wallet.book.core.Book;
 import com.wallet.book.core.BookEntry;
 import com.wallet.utils.data.gauva.GuavaCache;
+import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -73,14 +75,6 @@ public class BookEntryCache {
         BookEntryCache.bookEntryDAO = bookEntryDAO;
     }
 
-    public void put(String user_id, List<BookEntry> bookEntryList) {
-        cache.put(user_id, bookEntryList);
-    }
-
-    public List<BookEntry> get(String user_id) throws ExecutionException {
-        return cache.get(user_id);
-    }
-
     public void refresh(String user_id) {
         cache.refresh(user_id);
     }
@@ -93,26 +87,136 @@ public class BookEntryCache {
         return cache.getSize();
     }
 
+    public List<BookEntry> getByUserID(String user_id) throws ExecutionException {
+        if (user_id == null || user_id.length() == 0) {
+            return new ArrayList<>();
+        }
+
+        for (BookEntry entry : cache.get(user_id)) {
+            logger_.info("read cache : " + entry.toString());
+        }
+        return cache.get(user_id);
+    }
+
+    public List<BookEntry> getByUserIDAndID(String user_id, String id) throws ExecutionException {
+        List<BookEntry> bookEntryList = new ArrayList<>();
+        if (user_id == null || user_id.length() == 0
+                || id == null || id.length() == 0) {
+            return bookEntryList;
+        }
+
+        for (BookEntry entry : getByUserID(user_id)) {
+            if (entry.getId().equals(id)) {
+                bookEntryList.add(entry);
+            }
+        }
+
+        return bookEntryList;
+    }
+
+    public void insert(BookEntry bookEntry) throws ExecutionException {
+        if (bookEntry == null) {
+            return;
+        }
+
+        List<BookEntry> bookEntryList = cache.get(bookEntry.getUser_id());
+        if (!bookEntryList.contains(bookEntry.getId())) {
+            bookEntryList.add(bookEntry);
+            logger_.info("insert to cache " + bookEntry.toString());
+            cache.put(bookEntry.getUser_id(), bookEntryList);
+        }
+    }
+
+    public void deleteByUserID(String user_id) {
+        if (user_id == null || user_id.length() == 0) {
+            return;
+        }
+
+        cache.invalidate(user_id);
+    }
+
+    public void deleteByUserIDAndID(String user_id, String id) throws ExecutionException {
+        if (user_id == null || user_id.length() == 0) {
+            return;
+        }
+
+        List<BookEntry> bookEntryList = cache.get(user_id);
+        for (int i = 0; i < bookEntryList.size(); i++) {
+            BookEntry entry = bookEntryList.get(i);
+            logger_.info("searching cache : " + entry.getId());
+            if (entry.getId().equals(id)) {
+                bookEntryList.remove(i);
+                logger_.info("delete from cache : " + id);
+                cache.put(user_id, bookEntryList);
+                break;
+            }
+        }
+    }
+
+    public void updateByUserAndID(BookEntry bookEntry) throws ExecutionException {
+        if (bookEntry == null) {
+            return;
+        }
+
+        List<BookEntry> bookEntryList = cache.get(bookEntry.getUser_id());
+        for (int i = 0; i < bookEntryList.size(); i++) {
+            BookEntry entry = bookEntryList.get(i);
+            if (entry.getId().equals(bookEntry.getId())) {
+                entry.update(bookEntry.getBook_group_id(), bookEntry.getCategory_group_id(), bookEntry.getEvent_date()
+                        , bookEntry.getAmount(), bookEntry.getNote(), bookEntry.getPicture_id());
+                cache.put(bookEntry.getUser_id(), bookEntryList);
+                break;
+            }
+        }
+    }
+
     public void cleanUp() {
         cache.cleanUp();
     }
 
-    public static void test() throws ExecutionException {
+    public static void test() throws ExecutionException, JSONException {
         logger_.info("BookEntryCache test ...");
         BookEntryCache bookEntryCache = BookEntryCache.instance();
 
-        logger_.info("1. load test");
-        List<BookEntry> list = bookEntryCache.get("admin");
-        bookEntryCache.get("admin");
-        for (BookEntry bookEntry : list) {
-            logger_.info(bookEntry.getId());
-        }
+        List<BookEntry> tmpList = new ArrayList<>();
+        BookEntry tmpBook = new BookEntry("test_user", "test_user", "test_book", "test_category"
+                , new Date(), 1, "first test book", "test_picture");
+        tmpList.add(tmpBook);
 
-        logger_.info("2. get status");
+        logger_.info("0. initial status");
         logger_.info(bookEntryCache.getStats().toString());
         logger_.info("size : " + bookEntryCache.getSize());
 
-        logger_.info("3. clean up");
+        logger_.info("1. put test");
+        cache.put(tmpBook.getUser_id(), tmpList);
+        List<BookEntry> list = cache.get(tmpBook.getUser_id());
+        for (BookEntry bookEntry : list) {
+            logger_.info(bookEntry.getNote());
+        }
+        logger_.info(bookEntryCache.getStats().toString());
+        logger_.info("size : " + bookEntryCache.getSize());
+
+        logger_.info("2. update test");
+        BookEntry tmpBook2 = new BookEntry(tmpBook.getUser_id(), tmpBook.getUser_id(), "test_book", "test_category"
+                , new Date(), 1, "another test book", "test_picture");
+        list.add(tmpBook2);
+        cache.put(tmpBook2.getUser_id(), list);
+        list = cache.get(tmpBook.getUser_id());
+        for (BookEntry bookEntry : list) {
+            logger_.info(bookEntry.getNote());
+        }
+        logger_.info(bookEntryCache.getStats().toString());
+        logger_.info("size : " + bookEntryCache.getSize());
+
+        logger_.info("3. load test");
+        list = cache.get("admin");
+        for (BookEntry bookEntry : list) {
+            logger_.info(bookEntry.getId());
+        }
+        logger_.info(bookEntryCache.getStats().toString());
+        logger_.info("size : " + bookEntryCache.getSize());
+
+        logger_.info("4. clean up");
         bookEntryCache.cleanUp();
         logger_.info(bookEntryCache.getStats().toString());
         logger_.info("size : " + bookEntryCache.getSize());

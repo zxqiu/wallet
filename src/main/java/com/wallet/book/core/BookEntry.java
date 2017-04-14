@@ -3,6 +3,7 @@ package com.wallet.book.core;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.wallet.utils.misc.Dict;
 import com.wallet.utils.misc.TimeUtils;
 import org.json.JSONException;
 
@@ -68,6 +69,22 @@ public class BookEntry {
 
 	public void updateIDWithUserID() {
 		this.setId(this.getUser_id() + TimeUtils.getUniqueTimeStampInMS());
+	}
+
+	@Override
+	public String toString() {
+		return "["
+				+ Dict.USER_ID + ":" + id
+				+ "," + Dict.GROUP_ID + ":" + group_id
+				+ "," + Dict.USER_ID + ":" +user_id
+				+ "," + Dict.CREATE_USER_ID + ":" + create_user_id
+				+ "," + Dict.BOOK_GROUP_ID + ":" + book_group_id
+				+ "," + Dict.CATEGORY_GROUP_ID + ":" + category_group_id
+				+ "," + Dict.EVENT_DATE + ":" + event_date
+				+ "," + Dict.AMOUNT + ":" + amount
+				+ "," + Dict.EDIT_TIME + ":" + edit_time
+				+ "," + Dict.DATA + ":" + data.toString()
+				+ "]";
 	}
 
 	public String getId() {
