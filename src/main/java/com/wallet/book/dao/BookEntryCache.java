@@ -120,7 +120,7 @@ public class BookEntryCache {
         }
 
         List<BookEntry> bookEntryList = cache.get(bookEntry.getUser_id());
-        if (!bookEntryList.contains(bookEntry.getId())) {
+        if (!bookEntryList.contains(bookEntry)) {
             bookEntryList.add(bookEntry);
             logger_.info("insert to cache " + bookEntry.toString());
             cache.put(bookEntry.getUser_id(), bookEntryList);
