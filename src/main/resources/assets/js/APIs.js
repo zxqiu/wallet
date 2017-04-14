@@ -4,7 +4,7 @@
 
 var hostURL = window.location.protocol + "//" + window.location.host;
 var apiInsertEntry = "/books/insertentry";
-var apiUploadPicture = "books/uploadpicture";
+var apiUploadPicture = "/books/uploadpicture";
 var apiDeleteItem = "/books/deleteentry";
 var apiGetBookEntries = "/books/getentries";
 var apiGetBook = "/books/getbook";
@@ -53,7 +53,9 @@ var APIs = {
             });
         };
 
-/*
+        api_.postBookEntryPictureSuccess = null;
+        api_.postBookEntryPictureError = null;
+
         api_.setPostBookEntryPictureSuccessCallback = function(callback) {
             api_.postBookEntryPictureSuccess = callback;
         }
@@ -61,17 +63,20 @@ var APIs = {
         api_.setPostBookEntryPictureErrorCallback = function(callback) {
             api_.postBookEntryPictureError = callback;
         }
-        api_.postBookEntryPicture = function (jsonObj) {
+        api_.postBookEntryPicture = function (picture) {
+
             var postURL = hostURL + apiUploadPicture;
-            console.log(postURL);
-            console.log(jsonObj);
-            var paramJSONString = JSON.stringify(jsonObj);
+
+            var formData = new FormData();
+            formData.append('role', "form");
+            formData.append('action', apiUploadPicture);
+            formData.append('method', "post");
+            formData.append('image', picture);
 
             $.ajax({
                 type: "POST",
                 url: postURL,
-                data: paramJSONString,
-                dataType: 'json',
+                data: formData,
                 processData: false,
                 contentType: false,
                 success: function(data, textStatus, jqXHR) {
@@ -80,13 +85,12 @@ var APIs = {
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
-                    if (api_.postBookEntryPictureyError && typeof(api_.postBookEntryPictureError) == "function") {
+                    if (api_.postBookEntryPictureError && typeof(api_.postBookEntryPictureError) == "function") {
                         api_.postBookEntryPictureError(textStatus);
                     }
                 }
             });
-
-        };*/
+        };
 
         api_.getAllBookEntrySuccess = null;
         api_.getAllBookEntryError = null;

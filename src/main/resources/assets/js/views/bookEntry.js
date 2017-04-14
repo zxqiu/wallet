@@ -184,19 +184,10 @@ $("#bookEntrySubmit").on("click", function () {
         }
     }
 
-    uploadFile();
-
     form.submit();
     $("#categorySelector").attr("disabled", false);
 });
 
-function uploadFile() {
-    var bucket = "wallet-image";
-    var filename = form["bookEntryPhoto"].value.replace(/.*[\/\\]/, '');
-    //console.log(filename);
-
-
-}
 
 $("input").on('input', function () {
     $('#bookEntryForm div').removeClass("has-error");
@@ -277,19 +268,7 @@ $("#bookEntryPhoto").on("change", function (e) {
         };
         img.src = event.target.result;
 
-        var formData = new FormData();
-        formData.append('role', "form")
-        formData.append('action', "/books/uploadpicture");
-        formData.append('method', "post");
-        formData.append('image', e.target.files[0]);
-
-        $.ajax({
-            url: window.location.protocol + "//" + window.location.host + "/books/uploadpicture",
-            data: formData,
-            type: 'POST',
-            contentType: false, // NEEDED, DON'T OMIT THIS (requires jQuery 1.6+)
-            processData: false, // NEEDED, DON'T OMIT THIS
-        });
+        api.postBookEntryPicture(e.target.files[0]);
     };
     reader.readAsDataURL(e.target.files[0]);
 });
