@@ -216,6 +216,9 @@ $('#bookEntryDelete').on('click', function () {
 $("#bookEntryPhoto").on("change", function (e) {
     var canvas = document.getElementById("bookEntryShowPhoto");
     var ctx = canvas.getContext("2d");
+    ctx.clearRect(-canvas.width/2, -canvas.height/2, canvas.width, canvas.height);
+    canvas.width = 0;
+    canvas.height = 0;
     var reader = new FileReader();
     reader.onload = function (event) {
         var img = new Image();
@@ -273,16 +276,6 @@ $("#bookEntryPhoto").on("change", function (e) {
             canvas.style.display = "inline";
         };
         img.src = event.target.result;
-
-        /*
-         var dataURL = reader.result;
-         var bucket = "wallet-image";
-         var filename = user_id + "_" + e.target.value.replace(/.*[\/\\]/, '');
-         console.log(filename);
-         var request = new XMLHttpRequest();
-         request.open("POST", "/gcs/" + bucket + "/" + filename, true);
-         request.setRequestHeader('Content-Type', 'image/png');
-         request.send(e.target.files[0]);*/
 
         var formData = new FormData();
         formData.append('role', "form")
