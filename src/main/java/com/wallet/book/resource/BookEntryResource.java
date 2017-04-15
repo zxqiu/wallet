@@ -3,6 +3,7 @@ package com.wallet.book.resource;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import org.apache.commons.codec.binary.Base64;
 import java.io.InputStream;
 
 import javax.ws.rs.*;
@@ -317,16 +318,16 @@ public class BookEntryResource {
     @Timed
     @Path("/uploadpicture")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response uploadPicture(@FormDataParam("image") InputStream uploadedInputStream,
+    public Response uploadPicture(@FormDataParam("hosturl") String hostURL,
+                                  @FormDataParam("image") InputStream uploadedInputStream,
                                   @FormDataParam("image") FormDataContentDisposition fileDetail,
                                   @CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
-
         String user_id = ApiUtils.getUserIDFromCookie(cookie);
         if (SessionDAOConnector.instance().verifySessionCookie(cookie) == false || user_id == null) {
             return Response.seeOther(URI.create(SessionResource.PATH_RESTORE_SESSION)).build();
         }
-        String fileName = user_id + fileDetail.getFileName();
-
+        String fileName = hostURL + '#' + fileDetail.getFileName();
+        fileName = Base64.encodeBase64String(fileName.getBytes());
         // Instantiates a client
         Storage storage = StorageOptions.getDefaultInstance().getService();
 

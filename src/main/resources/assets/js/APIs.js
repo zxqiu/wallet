@@ -4,6 +4,7 @@
 
 var hostURL = window.location.protocol + "//" + window.location.host;
 var apiInsertEntry = "/books/insertentry";
+var apiGetPicture = "/books/getpicture";
 var apiUploadPicture = "/books/uploadpicture";
 var apiDeleteItem = "/books/deleteentry";
 var apiGetBookEntries = "/books/getentries";
@@ -48,60 +49,6 @@ var APIs = {
                 error: function(jqXHR, textStatus, errorThrown) {
                     if (api_.postBookEntryError && typeof(api_.postBookEntryError) == "function") {
                         api_.postBookEntryError(textStatus);
-                    }
-                }
-            });
-        };
-
-        api_.postBookEntryPictureSuccess = null;
-        api_.postBookEntryPictureError = null;
-
-        api_.setPostBookEntryPictureSuccessCallback = function(callback) {
-            api_.postBookEntryPictureSuccess = callback;
-        }
-
-        api_.setPostBookEntryPictureErrorCallback = function(callback) {
-            api_.postBookEntryPictureError = callback;
-        }
-        api_.postBookEntryPicture = function (name, dataURI) {
-            var byteString;
-            if (dataURI.split(',')[0].indexOf('base64') >= 0)
-                byteString = atob(dataURI.split(',')[1]);
-            else
-                byteString = decodeURI(dataURI.split(',')[1]);
-
-            // separate out the mime component
-            var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-
-            // write the bytes of the string to a typed array
-            var ia = new Uint8Array(byteString.length);
-            for (var i = 0; i < byteString.length; i++) {
-                ia[i] = byteString.charCodeAt(i);
-            }
-
-            var file = new File([ia], name, {type:mimeString});
-
-            var postURL = hostURL + apiUploadPicture;
-            var formData = new FormData();
-            formData.append('role', "form");
-            formData.append('action', apiUploadPicture);
-            formData.append('method', "post");
-            formData.append('image', file);
-
-            $.ajax({
-                type: "POST",
-                url: postURL,
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(data, textStatus, jqXHR) {
-                    if (api_.postBookEntryPictureSuccess && typeof(api_.postBookEntryPictureSuccess) == "function") {
-                        api_.postBookEntryPictureSuccess(data);
-                    }
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    if (api_.postBookEntryPictureError && typeof(api_.postBookEntryPictureError) == "function") {
-                        api_.postBookEntryPictureError(textStatus);
                     }
                 }
             });
@@ -369,6 +316,74 @@ var APIs = {
                 error: function(jqXHR, textStatus, errorThrown) {
                     if (api_.postTinyUrlToShortError && typeof(api_.postTinyUrlToShortError) == "function") {
                         api_.postTinyUrlToShortError(textStatus);
+                    }
+                }
+            });
+        };
+/*
+        api_.getBookEntryPictureSuccess = null;
+        api_.getBookEntryPictureError = null;
+
+        api_.setGetBookEntryPictureSuccessCallback = function(callback) {
+            api_.postBookEntryPictureSuccess = callback;
+        }
+
+        api_.setPostBookEntryPictureErrorCallback = function(callback) {
+            api_.postBookEntryPictureError = callback;
+        }
+*/
+
+        api_.postBookEntryPictureSuccess = null;
+        api_.postBookEntryPictureError = null;
+
+        api_.setPostBookEntryPictureSuccessCallback = function(callback) {
+            api_.postBookEntryPictureSuccess = callback;
+        }
+
+        api_.setPostBookEntryPictureErrorCallback = function(callback) {
+            api_.postBookEntryPictureError = callback;
+        }
+        api_.postBookEntryPicture = function (name, dataURI) {
+            var byteString;
+            if (dataURI.split(',')[0].indexOf('base64') >= 0)
+                byteString = atob(dataURI.split(',')[1]);
+            else
+                byteString = decodeURI(dataURI.split(',')[1]);
+
+            // separate out the mime component
+            var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+            // write the bytes of the string to a typed array
+            var ia = new Uint8Array(byteString.length);
+            for (var i = 0; i < byteString.length; i++) {
+                ia[i] = byteString.charCodeAt(i);
+            }
+
+            var file = new File([ia], name, {type:mimeString});
+
+            var postURL = hostURL + apiUploadPicture;
+            console.log("postURL = "+postURL);
+            var formData = new FormData();
+            formData.append('role', "form");
+            formData.append('action', apiUploadPicture);
+            formData.append('method', "post");
+            formData.append('hosturl', hostURL);
+            formData.append('image', file);
+
+            $.ajax({
+                type: "POST",
+                url: postURL,
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(data, textStatus, jqXHR) {
+                    if (api_.postBookEntryPictureSuccess && typeof(api_.postBookEntryPictureSuccess) == "function") {
+                        api_.postBookEntryPictureSuccess(data);
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    if (api_.postBookEntryPictureError && typeof(api_.postBookEntryPictureError) == "function") {
+                        api_.postBookEntryPictureError(textStatus);
                     }
                 }
             });

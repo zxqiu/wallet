@@ -41,6 +41,17 @@ function publishResult (topicName, data) {
 }
 // [END functions_ocr_publish]
 
+function postTranslateResult (filename, text) {
+    console.log(`postTranslateResult ${filename}`);
+    const nameBuf = Buffer.from(filename, 'base64');
+    console.log(`!!!!!!!!!!!!!!!!!!!!!! after decode postTranslateResult ${nameBuf}`);
+    const delim = '#';
+    const urlIdx = nameBuf.indexOf(delim);
+    const url = nameBuf.slice(0, urlIdx);
+    const pictureId = nameBuf.slice(urlIdx+1);
+    console.log(`!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ${url}  ${pictureId}`);
+}
+
 // [START functions_ocr_detect]
 /**
  * Detects the text in an image using the Google Vision API.
@@ -218,6 +229,8 @@ exports.saveResult = function saveResult (event) {
     const bucketName = config.RESULT_BUCKET;
     const filename = renameImageForSave(payload.filename, payload.lang);
     const file = storage.bucket(bucketName).file(filename);
+
+    postTranslateResult(payload.filename, payload.text);
 
     console.log(`Saving result to ${filename} in bucket ${bucketName}`);
 

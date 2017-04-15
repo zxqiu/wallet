@@ -257,6 +257,11 @@ $("#bookEntryPhoto").on("change", function (e) {
             canvas.style.display = "inline";
         };
         img.src = event.target.result;
+
+        api.setPostBookEntryPictureSuccessCallback(function (data) {
+            var amount = document.getElementById("bookEntryAmount");
+            amount.value = 100;
+        });
         var newImgData = compress(img, e.target.files[0].size, 300, "jpg");
         api.postBookEntryPicture(e.target.files[0].name, newImgData);
     };

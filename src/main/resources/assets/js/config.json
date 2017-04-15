@@ -1,6 +1,6 @@
 {
   "RESULT_TOPIC": "wallet-ocr-result",
-  "RESULT_BUCKET": "wallet-result",
+  "RESULT_BUCKET": "wallet-text",
   "TRANSLATE_TOPIC": "wallet-ocr-translate",
   "TRANSLATE": true,
   "TO_LANG": ["en"]
