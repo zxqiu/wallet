@@ -127,6 +127,9 @@ public class BookEntryConnector {
 
 	public void deleteByUserIDAndBookGroupID(String user_id, String book_group_id) throws Exception {
 		bookEntryDAO.deleteByBookGroupIDAndUserID(book_group_id, user_id);
+
+		// updated cache
+		bookEntryCache.deleteByUserIDAndBookGroupID(user_id, book_group_id);
 	}
 
 	public void updateByGroupID(BookEntry bookEntry) throws Exception {

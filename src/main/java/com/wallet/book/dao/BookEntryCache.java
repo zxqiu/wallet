@@ -143,12 +143,27 @@ public class BookEntryCache {
         List<BookEntry> bookEntryList = cache.get(user_id);
         for (int i = 0; i < bookEntryList.size(); i++) {
             BookEntry entry = bookEntryList.get(i);
-            logger_.info("searching cache : " + entry.getId());
             if (entry.getId().equals(id)) {
                 bookEntryList.remove(i);
                 logger_.info("delete from cache : " + id);
                 cache.put(user_id, bookEntryList);
                 break;
+            }
+        }
+    }
+
+    public void deleteByUserIDAndBookGroupID(String user_id, String book_group_id) throws ExecutionException {
+        if (user_id == null || user_id.length() == 0) {
+            return;
+        }
+
+        List<BookEntry> bookEntryList = cache.get(user_id);
+        for (int i = 0; i < bookEntryList.size(); i++) {
+            BookEntry entry = bookEntryList.get(i);
+            if (entry.getBook_group_id().equals(book_group_id)) {
+                bookEntryList.remove(i);
+                logger_.info("delete from cache : " + entry.getId());
+                cache.put(user_id, bookEntryList);
             }
         }
     }
