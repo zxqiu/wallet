@@ -144,12 +144,12 @@ public class BookEntryCache {
         for (int i = 0; i < bookEntryList.size(); i++) {
             BookEntry entry = bookEntryList.get(i);
             if (entry.getId().equals(id)) {
-                bookEntryList.remove(i);
+                bookEntryList.remove(i--);
                 logger_.info("delete from cache : " + id);
-                cache.put(user_id, bookEntryList);
                 break;
             }
         }
+        cache.put(user_id, bookEntryList);
     }
 
     public void deleteByUserIDAndBookGroupID(String user_id, String book_group_id) throws ExecutionException {
@@ -161,11 +161,11 @@ public class BookEntryCache {
         for (int i = 0; i < bookEntryList.size(); i++) {
             BookEntry entry = bookEntryList.get(i);
             if (entry.getBook_group_id().equals(book_group_id)) {
-                bookEntryList.remove(i);
+                bookEntryList.remove(i--);
                 logger_.info("delete from cache : " + entry.getId());
-                cache.put(user_id, bookEntryList);
             }
         }
+        cache.put(user_id, bookEntryList);
     }
 
     public void updateByUserAndID(BookEntry bookEntry) throws ExecutionException {
@@ -179,10 +179,10 @@ public class BookEntryCache {
             if (entry.getId().equals(bookEntry.getId())) {
                 entry.update(bookEntry.getBook_group_id(), bookEntry.getCategory_group_id(), bookEntry.getEvent_date()
                         , bookEntry.getAmount(), bookEntry.getNote(), bookEntry.getPicture_id());
-                cache.put(bookEntry.getUser_id(), bookEntryList);
                 break;
             }
         }
+        cache.put(bookEntry.getUser_id(), bookEntryList);
     }
 
     public void cleanUp() {
