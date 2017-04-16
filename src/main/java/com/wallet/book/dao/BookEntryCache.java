@@ -93,7 +93,7 @@ public class BookEntryCache {
         }
 
         for (BookEntry entry : cache.get(user_id)) {
-            logger_.info("read cache : " + entry.toString());
+            logger_.info("read user " + user_id + " from cache : " + entry.toString());
         }
         return cache.get(user_id);
     }
@@ -107,6 +107,7 @@ public class BookEntryCache {
 
         for (BookEntry entry : getByUserID(user_id)) {
             if (entry.getId().equals(id)) {
+                logger_.info("read user " + user_id + " from cache : " + entry.toString());
                 bookEntryList.add(entry);
             }
         }
@@ -120,11 +121,14 @@ public class BookEntryCache {
         }
 
         List<BookEntry> bookEntryList = cache.get(bookEntry.getUser_id());
-        if (!bookEntryList.contains(bookEntry)) {
-            bookEntryList.add(bookEntry);
-            logger_.info("insert to cache " + bookEntry.toString());
-            cache.put(bookEntry.getUser_id(), bookEntryList);
+        for (BookEntry entry : bookEntryList) {
+            if (entry.getId().equals(bookEntry.getId())) {
+                return;
+            }
         }
+        bookEntryList.add(new BookEntry(bookEntry));
+        logger_.info("insert to cache for user " + bookEntry.getUser_id() + " : " + bookEntry.toString());
+        cache.put(bookEntry.getUser_id(), bookEntryList);
     }
 
     public void deleteByUserID(String user_id) {
@@ -132,6 +136,7 @@ public class BookEntryCache {
             return;
         }
 
+        logger_.info("delete user " + user_id + " from cache");
         cache.invalidate(user_id);
     }
 
@@ -177,6 +182,7 @@ public class BookEntryCache {
         for (int i = 0; i < bookEntryList.size(); i++) {
             BookEntry entry = bookEntryList.get(i);
             if (entry.getId().equals(bookEntry.getId())) {
+                logger_.info("update for user + " + bookEntry.getUser_id() + " in cache : " + bookEntry.toString());
                 entry.update(bookEntry.getBook_group_id(), bookEntry.getCategory_group_id(), bookEntry.getEvent_date()
                         , bookEntry.getAmount(), bookEntry.getNote(), bookEntry.getPicture_id());
                 break;

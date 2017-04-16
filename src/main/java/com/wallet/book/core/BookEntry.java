@@ -40,7 +40,21 @@ public class BookEntry {
 
 	public BookEntry() {
 	}
-	
+
+	public BookEntry(BookEntry bookEntry) {
+		this.setId(bookEntry.getId());
+		this.setUser_id(bookEntry.getUser_id());
+		this.setCreate_user_id(bookEntry.getCreate_user_id());
+		this.setBook_group_id(bookEntry.getBook_group_id());
+		this.setGroup_id(bookEntry.getGroup_id());
+		this.setCategory_group_id(bookEntry.getCategory_group_id());
+		this.setEvent_date(bookEntry.getEvent_date());
+		this.setAmount(bookEntry.getAmount());
+		this.setEdit_time(new Date());
+
+		this.data = new BookEntryData(bookEntry.getData());
+	}
+
 	public BookEntry(String user_id, String create_user_id, String book_group_id, String category_group_id
 			, Date event_date, long amount, String note, String picture_id) throws JSONException {
 		this.setId(user_id + TimeUtils.getUniqueTimeStampInMS());
@@ -74,7 +88,7 @@ public class BookEntry {
 	@Override
 	public String toString() {
 		return "["
-				+ Dict.USER_ID + ":" + id
+				+ Dict.ID + ":" + id
 				+ "," + Dict.GROUP_ID + ":" + group_id
 				+ "," + Dict.USER_ID + ":" +user_id
 				+ "," + Dict.CREATE_USER_ID + ":" + create_user_id
