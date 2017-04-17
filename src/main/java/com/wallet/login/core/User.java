@@ -1,7 +1,10 @@
 package com.wallet.login.core;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.wallet.utils.misc.Hashing;
 import com.wallet.utils.misc.TimeUtils;
+
+import java.security.NoSuchAlgorithmException;
 
 public class User {
 
@@ -26,8 +29,9 @@ public class User {
     public User() {
 	}
 
-    public User(String email, String password, String name, String priority) {
-        this.setUser_id(email + TimeUtils.getUniqueTimeStampInMS());
+    public User(String email, String password, String name, String priority) throws NoSuchAlgorithmException {
+        long timeStamp = TimeUtils.getUniqueTimeStampInMS();
+        this.setUser_id(Hashing.MD5Hash(email + password + name + priority + timeStamp) + timeStamp);
         this.setEmail(email);
         this.setPassword(password);
         this.setName(name);
