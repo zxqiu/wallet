@@ -70,3 +70,6 @@ span.book-list-text:hover {
   z-index: 1;
 }
 
+span.help-info {
+  color: #8c8c8c;
+}
