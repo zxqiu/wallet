@@ -18,7 +18,11 @@ public class UserMapper implements ResultSetMapper<User> {
         user.setPassword(resultSet.getString(Dict.PASSWORD));
         user.setName(resultSet.getString(Dict.NAME));
         user.setPriority(resultSet.getString(Dict.PRIORITY));
-        user.setData(resultSet.getString(Dict.DATA));
+        try {
+            user.setData(new UserData(resultSet.getBinaryStream(Dict.DATA)));
+        } catch (Exception e) {
+            throw new SQLException("Cannot map User from resultSet : " + e.getMessage());
+        }
 
         return user;
     }

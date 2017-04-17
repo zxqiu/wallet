@@ -20,7 +20,7 @@ public interface UserDAO {
 			+ "`" + Dict.PASSWORD + "` varchar(64) not null,"
 			+ "`" + Dict.NAME + "` varchar(16) not null,"
 			+ "`" + Dict.PRIORITY + "` varchar(16) not null,"
-			+ "`" + Dict.DATA + "` text,"
+			+ "`" + Dict.DATA + "` varbinary(60000),"
 			+ "primary key (`" + Dict.USER_ID + "`)"
 			+ ")ENGINE=InnoDB DEFAULT CHARSET=utf8 collate=utf8_unicode_ci;"
 		)
@@ -50,7 +50,7 @@ public interface UserDAO {
 			, @Bind(Dict.PASSWORD) String password
 			, @Bind(Dict.NAME) String name
 			, @Bind(Dict.PRIORITY) String priority
-			, @Bind(Dict.DATA) String data
+			, @Bind(Dict.DATA) byte[] data
 	);
 	
 	@SqlUpdate("update " + TABLE_NAME + " set "
@@ -66,7 +66,7 @@ public interface UserDAO {
 			, @Bind(Dict.PASSWORD) String password
 			, @Bind(Dict.NAME) String name
 			, @Bind(Dict.PRIORITY) String priority
-			, @Bind(Dict.DATA) String data
+			, @Bind(Dict.DATA) byte[] data
 	);
 	
 	@SqlQuery("select * from " + TABLE_NAME + " where " + Dict.USER_ID + " = :" + Dict.USER_ID)
