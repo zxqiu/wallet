@@ -36,6 +36,7 @@ function showCategoryByBook() {
         }
     }
 }
+
 function setCategoryListFontColor() {
     var selector = $(".category-list");
 
@@ -99,6 +100,22 @@ $(document).ready(function () {
         showCategoryByBook();
     });
     api.getAllBook(user_id);
+
+    var picture_id = document.getElementById("bookEntryPhoto").getAttribute("value");
+    console.log("kagggggggggggggggg  " + picture_id);
+
+
+    api.setGetBookEntryPictureSuccessCallback(function (data) {
+         console.log("callback hello " + data["hello"]);
+
+         var image = new Image();
+         image.src = data["image"];
+         var canvas = document.getElementById("bookEntryShowPhoto");
+         var ctx = canvas.getContext("2d");
+         ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+    });
+    api.getBookEntryPicture(user_id, picture_id);
 
     setCategoryListFontColor();
     setCategoryOptionFontColor();
@@ -198,7 +215,7 @@ $('#bookEntryDelete').on('click', function () {
 $("#bookEntryPhoto").on("change", function (e) {
     var canvas = document.getElementById("bookEntryShowPhoto");
     var ctx = canvas.getContext("2d");
-    ctx.clearRect(-canvas.width/2, -canvas.height/2, canvas.width, canvas.height);
+    ctx.clearRect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
     canvas.width = 0;
     canvas.height = 0;
     var reader = new FileReader();
@@ -258,10 +275,6 @@ $("#bookEntryPhoto").on("change", function (e) {
         };
         img.src = event.target.result;
 
-        api.setPostBookEntryPictureSuccessCallback(function (data) {
-            var amount = document.getElementById("bookEntryAmount");
-            amount.value = 100;
-        });
         var newImgData = compress(img, e.target.files[0].size, 300, "jpg");
         api.postBookEntryPicture(e.target.files[0].name, newImgData);
     };

@@ -1,15 +1,22 @@
 package com.wallet.book.resource;
 
+import java.io.*;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import com.google.gson.Gson;
 import org.apache.commons.codec.binary.Base64;
-import java.io.InputStream;
+
+import org.apache.commons.io.FileUtils;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.glassfish.jersey.media.multipart.FormDataMultiPart;
+import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
+import javax.ws.rs.core.StreamingOutput;
 
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -21,6 +28,9 @@ import com.wallet.book.dao.BookDAOConnector;
 import com.wallet.login.core.User;
 import com.wallet.login.dao.UserDAOConnector;
 import com.wallet.login.resource.SessionResource;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +45,7 @@ import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.BucketInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
+import com.google.cloud.storage.Blob;
 
 @Path("/books")
 public class BookEntryResource {
@@ -47,7 +58,7 @@ public class BookEntryResource {
     private UserDAOConnector userDAOC = null;
 
     /* google cloud storage buckets */
-    private final String IMAGE_BUCEKT = "wallet-image";
+    private final String IMAGE_BUCKET = "wallet-image";
     private final String TEXT_BUCKET = "wallet-text";
 
     public BookEntryResource() throws Exception {
@@ -314,6 +325,103 @@ public class BookEntryResource {
         return Response.seeOther(URI.create(PATH_BOOKS)).build();
     }
 
+    /*
+    @GET
+    @Timed
+    @Path("/getpicture")
+    //@Produces(MediaType.TEXT_HTML)
+    @Produces(MediaType.MULTIPART_FORM_DATA)
+    public Response getPicture(@QueryParam("host_url") String hostURL,
+                               @QueryParam(Dict.PICTURE_ID) String pictureID,
+                               @CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
+        String user_id = ApiUtils.getUserIDFromCookie(cookie);
+
+        if (SessionDAOConnector.instance().verifySessionCookie(cookie) == false || user_id == null) {
+            return Response.seeOther(URI.create(SessionResource.PATH_RESTORE_SESSION)).build();
+        }
+        if (hostURL == null || pictureID == null || hostURL.length() == 0 || pictureID.length() == 0) {
+            return Response.status(200).build();
+        }
+
+        String fileName = createPictureName(hostURL, pictureID);
+        logger_.error("!!!! enter getPicture fileName = "+fileName);
+
+        // Instantiates a client
+        Storage storage = StorageOptions.getDefaultInstance().getService();
+
+        // Gets the new bucket
+        Bucket bucket = storage.get(IMAGE_BUCKET, Storage.BucketGetOption.fields());
+        if (bucket == null) {
+            logger_.error("IMAGE_BUCKET doesn't exist");
+            return Response.serverError().build();
+        }
+
+        Blob blob = bucket.get(fileName);
+        if (blob == null) {
+            return Response.status(200).build();
+        }
+
+        //byte[] content = blob.getContent();
+        String decode = Base64.encodeBase64String(blob.getContent());
+        //logger_.error("kangli base64 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  " + decode);
+        //FileUtils.writeByteArrayToFile(new File("test.jpg"), content);
+
+        //final FileDataBodyPart filePart = new FileDataBodyPart("my_pom", new File("pom.xml"));
+        final StreamDataBodyPart streamPart = new StreamDataBodyPart(pictureID, new ByteArrayInputStream(decode.getBytes()));
+
+        final FormDataMultiPart multipart = new FormDataMultiPart()
+                .field("hello", "hello!!")
+                .field("image", decode)
+                .bodyPart("image", streamPart, MediaType.APPLICATION_OCTET_STREAM_TYPE);
+
+        //return Response.ok().build();
+
+        return Response.ok()
+                .entity(multipart)
+                .build();
+
+    }
+    */
+
+    @GET
+    @Timed
+    @Path("/getpicture")
+    //@Produces(value = MediaType.APPLICATION_JSON)
+    @Produces(value = MediaType.APPLICATION_FORM_URLENCODED)
+    public Response getBook(@QueryParam(Dict.USER_ID) String user_id,
+                            @QueryParam("host_url") String hostURL,
+                            @QueryParam(Dict.PICTURE_ID) String pictureID,
+                            @CookieParam("walletSessionCookie") Cookie cookie
+    ) throws Exception {
+
+        if (hostURL == null || pictureID == null || hostURL.length() == 0 || pictureID.length() == 0) {
+            return Response.status(200).build();
+        }
+        String fileName = createPictureName(hostURL, pictureID);
+
+        // Instantiates a client
+        Storage storage = StorageOptions.getDefaultInstance().getService();
+
+        // Gets the new bucket
+        Bucket bucket = storage.get(IMAGE_BUCKET, Storage.BucketGetOption.fields());
+        if (bucket == null) {
+            logger_.error("IMAGE_BUCKET doesn't exist");
+            return Response.serverError().build();
+        }
+
+        Blob blob = bucket.get(fileName);
+        if (blob == null) {
+            return Response.status(200).build();
+        }
+
+        String decode = Base64.encodeBase64String(blob.getContent());
+
+        JSONObject obj = new JSONObject();
+        obj.put("hello", "hello!!!");
+        obj.put("image", decode);
+        return Response.status(200).entity(obj.toString()).build();
+    }
+
     @POST
     @Timed
     @Path("/uploadpicture")
@@ -326,17 +434,27 @@ public class BookEntryResource {
         if (SessionDAOConnector.instance().verifySessionCookie(cookie) == false || user_id == null) {
             return Response.seeOther(URI.create(SessionResource.PATH_RESTORE_SESSION)).build();
         }
-        String fileName = hostURL + '#' + fileDetail.getFileName();
-        fileName = Base64.encodeBase64String(fileName.getBytes());
+        String fileName = createPictureName(hostURL, fileDetail.getFileName());
+
         // Instantiates a client
         Storage storage = StorageOptions.getDefaultInstance().getService();
 
         // Creates the new bucket
-        Bucket bucket = storage.get(IMAGE_BUCEKT, Storage.BucketGetOption.fields());
+        Bucket bucket = storage.get(IMAGE_BUCKET, Storage.BucketGetOption.fields());
         if (bucket == null) {
-            bucket = storage.create(BucketInfo.of(IMAGE_BUCEKT));
+            bucket = storage.create(BucketInfo.of(IMAGE_BUCKET));
         }
         bucket.create(fileName, uploadedInputStream);
+
+        Blob blob = bucket.get(fileName);
+        if (blob == null) {
+            logger_.error("IMAGE_BUCKET doesn't exist");
+            return Response.serverError().build();
+        }
+
+        byte[] byteArray = blob.getContent();
+        String pathName = "/home/kangli/Desktop/" + fileName;
+        FileUtils.writeByteArrayToFile(new File(pathName), byteArray);
 
         return Response.status(200).build();
     }
@@ -359,5 +477,10 @@ public class BookEntryResource {
         Collections.sort(list, bookEntryTimeComparator);
 
         return list;
+    }
+
+    private String createPictureName(String hostURL, String pictureID) {
+        String s = hostURL + '#' + pictureID;
+        return Base64.encodeBase64String(s.getBytes());
     }
 }

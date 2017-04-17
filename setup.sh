@@ -1,12 +1,12 @@
 #!/bin/bash
 
-MYSQL_PACKAGE=$(pwd)/mysql-5.7.17-linux-glibc2.5-i686.tar.gz
+MYSQL_PACKAGE=$(pwd)/mysql-5.7.17-linux-glibc2.5-x86_64.tar.gz
 MYSQL_VERSION=${MYSQL_PACKAGE%.tar*}
 MYSQL_VERSION=${MYSQL_VERSION##*/}
 
 MYSQL_INSTALL_GROUPNAME=mysql
-MYSQL_INSTALL_USERNAME=zxqiu
-SYSTEM_USERNAME=zxqiu
+MYSQL_INSTALL_USERNAME=kangli
+SYSTEM_USERNAME=kangli
 CODE_PATH=$(pwd)
 MYSQL_PATH=/usr/local
 
