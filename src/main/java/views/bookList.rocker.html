@@ -1,7 +1,9 @@
 @import com.wallet.book.core.Book;
+@import com.wallet.login.core.User;
 @import java.util.List;
+@import java.util.Map;
 
-@args (List<Book> bookList)
+@args (List<Book> bookList, Map<String, User> userMap)
 
 <html lang="en">
 
@@ -60,6 +62,20 @@
 					<div id="bookShareFormDiv@book.getId()" style="display: none">
 						<form class="bookShareForm" role="form" id="bookShareForm" method="post">
 							<input type="hidden" id="fullUrl" name="full_url" value="/books/receivebook/@book.getUser_id()/@book.getId()">
+							@if (userMap != null) {
+							<p>Collaborators :
+								@for ((ForIterator i, String tmpId) : book.getUser_list()) {
+                                	@if (userMap.containsKey(tmpId) == false) {
+										@continue;
+									}
+									@if (i.last()) {
+										@userMap.get(tmpId).getName()
+									} else {
+										@userMap.get(tmpId).getName(),
+									}
+								}
+							</p>
+							}
 							<div class="form-group">
 								<label for="expireClick">
 									Visit limit (0 as unlimited, unsafe)
