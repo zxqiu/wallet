@@ -9,15 +9,11 @@ import java.util.Date;
  * Created by zxqiu on 4/6/17.
  */
 public class BookEntryData implements Serializable, Serializer<BookEntryData> {
+    static final long serialVersionUID = -3223924565786962317L;
+
     private Date create_time;
     private String note;
     private String picture_id;
-
-    public BookEntryData(BookEntryData bookEntryData) {
-        this.setCreate_time(bookEntryData.getCreate_time());
-        this.setNote(bookEntryData.getNote());
-        this.setPicture_id(bookEntryData.getPicture_id());
-    }
 
     public BookEntryData(Date create_time, String note, String picture_id) {
         this.setCreate_time(create_time);
@@ -35,6 +31,10 @@ public class BookEntryData implements Serializable, Serializer<BookEntryData> {
         this.setCreate_time(bookEntryData.getCreate_time());
         this.setNote(bookEntryData.getNote());
         this.setPicture_id(bookEntryData.getPicture_id());
+    }
+
+    public BookEntryData clone() {
+        return new BookEntryData(this.getCreate_time(), this.getNote(), this.getPicture_id());
     }
 
     public byte[] toByteArray() throws IOException {

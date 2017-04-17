@@ -31,7 +31,18 @@ public class WalletService extends Application<WalletConfiguration> {
     public static final String name = "";
     private static final Logger logger_ = LoggerFactory.getLogger(WalletService.class);
     private static String configFileName_ = "wallet.yml";
+
+    private static boolean isCleanup = false;
+    private static boolean isRelease = false;
+
 	public static void main(String[] args) throws Exception {
+		for (String s : args) {
+			if (s.equals("--cleanup")) {
+				isCleanup = true;
+			} else if (s.equals("--release")) {
+				isRelease = true;
+			}
+		}
         new WalletService().run(new String[] { "server" , configFileName_});
     }
 
@@ -55,6 +66,10 @@ public class WalletService extends Application<WalletConfiguration> {
 	    final CategoryDAO categoryDAO = jdbi.onDemand(CategoryDAO.class);
 	    final TinyUrlDAO tinyUrlDAO = jdbi.onDemand(TinyUrlDAO.class);
 
+	    if (isCleanup) {
+			cleanupDB(sessionDAO, bookDAO, bookEntryDAO, categoryDAO, userDAO, tinyUrlDAO);
+		}
+
 		BookEntryCache.init(bookEntryDAO);
 
 	    UserDAOConnector.init(userDAO);
@@ -63,8 +78,6 @@ public class WalletService extends Application<WalletConfiguration> {
 	    BookEntryConnector.init(bookEntryDAO);
 	    CategoryDAOConnector.init(categoryDAO);
 		TinyUrlDAOConnector.init(tinyUrlDAO);
-
-		//cleanupDB(sessionDAO, bookDAO, bookEntryDAO, categoryDAO, userDAO, tinyUrlDAO);
 
 		BookEntryCache.test();
 
@@ -83,7 +96,10 @@ public class WalletService extends Application<WalletConfiguration> {
 		environment.jersey().register(new TinyUrlResource());
 
 	    environment.jersey().register(new RockerMessageBodyWriter());
-	    //RockerRuntime.getInstance().setReloading(true);
+
+	    if (!isRelease) {
+			RockerRuntime.getInstance().setReloading(true);
+		}
 
 		syncHelper.init();
 
@@ -91,11 +107,20 @@ public class WalletService extends Application<WalletConfiguration> {
 
 	private void cleanupDB(SessionDAO sessionDAO, BookDAO bookDAO, BookEntryDAO bookEntryDAO, CategoryDAO categoryDAO
 			, UserDAO userDAO, TinyUrlDAO tinyUrlDAO) {
+	    logger_.info("Clean up all database");
+
 		sessionDAO.dropTable();
 		bookDAO.dropTable();
 		bookEntryDAO.dropTable();
 		categoryDAO.dropTable();
 		userDAO.dropTable();
 		tinyUrlDAO.dropTable();
+
+		userDAO.createTable();
+		sessionDAO.createTable();
+		bookDAO.createTable();
+		bookEntryDAO.createTable();
+		categoryDAO.createTable();
+		tinyUrlDAO.createTable();
 	}
 }

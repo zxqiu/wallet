@@ -10,8 +10,9 @@ import java.util.List;
  * Created by zxqiu on 4/6/17.
  */
 public class BookData implements Serializable, Serializer<BookData> {
-    private Date create_time;
+    static final long serialVersionUID = -2540990340508039435L;
 
+    private Date create_time;
     private String picture_id;
 
     private List<String> user_list; // store user id

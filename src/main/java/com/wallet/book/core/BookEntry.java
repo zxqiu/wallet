@@ -52,7 +52,7 @@ public class BookEntry {
 		this.setAmount(bookEntry.getAmount());
 		this.setEdit_time(new Date());
 
-		this.data = new BookEntryData(bookEntry.getData());
+		this.data = bookEntry.getData().clone();
 	}
 
 	public BookEntry(String user_id, String create_user_id, String book_group_id, String category_group_id

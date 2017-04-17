@@ -128,7 +128,7 @@ public class BookEntryCache {
         }
         bookEntryList.add(new BookEntry(bookEntry));
         logger_.info("insert to cache for user " + bookEntry.getUser_id() + " : " + bookEntry.toString());
-        cache.put(bookEntry.getUser_id(), bookEntryList);
+        //cache.put(bookEntry.getUser_id(), bookEntryList);
     }
 
     public void deleteByUserID(String user_id) {
@@ -154,7 +154,7 @@ public class BookEntryCache {
                 break;
             }
         }
-        cache.put(user_id, bookEntryList);
+        //cache.put(user_id, bookEntryList);
     }
 
     public void deleteByUserIDAndBookGroupID(String user_id, String book_group_id) throws ExecutionException {
@@ -170,7 +170,7 @@ public class BookEntryCache {
                 logger_.info("delete from cache : " + entry.getId());
             }
         }
-        cache.put(user_id, bookEntryList);
+        //cache.put(user_id, bookEntryList);
     }
 
     public void updateByUserAndID(BookEntry bookEntry) throws ExecutionException {
@@ -188,7 +188,7 @@ public class BookEntryCache {
                 break;
             }
         }
-        cache.put(bookEntry.getUser_id(), bookEntryList);
+        //cache.put(bookEntry.getUser_id(), bookEntryList);
     }
 
     public void cleanUp() {

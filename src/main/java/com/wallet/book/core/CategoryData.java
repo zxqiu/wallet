@@ -8,6 +8,8 @@ import java.io.*;
  * Created by neo on 4/6/17.
  */
 public class CategoryData implements Serializable, Serializer<CategoryData> {
+    static final long serialVersionUID = -5378184041612946692L;
+
     private String picture_id;
 
     public CategoryData(String picture_id) {
