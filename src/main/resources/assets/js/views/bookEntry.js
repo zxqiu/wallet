@@ -102,18 +102,34 @@ $(document).ready(function () {
     api.getAllBook(user_id);
 
     var picture_id = document.getElementById("bookEntryPhoto").getAttribute("value");
-    console.log("kagggggggggggggggg  " + picture_id);
-
 
     api.setGetBookEntryPictureSuccessCallback(function (data) {
-         console.log("callback hello " + data["hello"]);
+        var img = new Image();
+        img.src = data["image"];
+        var canvas = document.getElementById("bookEntryShowPhoto");
+        var ctx = canvas.getContext("2d");
+        canvas.style.display = "inline";
 
-         var image = new Image();
-         image.src = data["image"];
-         var canvas = document.getElementById("bookEntryShowPhoto");
-         var ctx = canvas.getContext("2d");
-         ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+        img.onload = function () {
+            var scale = 300 / img.height;
+            var height = img.height * scale;
+            var width = img.width * scale;
+            var size = {width: width, height: height};
+            var rotation = 0;
+            var deg2Rad = Math.PI / 180;
 
+            // draw
+            canvas.width = size.width;
+            canvas.height = size.height;
+
+            // calculate the center point of the canvas
+            var cx = canvas.width / 2;
+            var cy = canvas.height / 2;
+
+            // draw in the center of the newly sized canvas
+            ctx.translate(cx, cy);
+            ctx.drawImage(img, -width / 2, -height / 2, width, height);
+        }
     });
     api.getBookEntryPicture(user_id, picture_id);
 

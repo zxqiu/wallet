@@ -325,70 +325,11 @@ public class BookEntryResource {
         return Response.seeOther(URI.create(PATH_BOOKS)).build();
     }
 
-    /*
     @GET
     @Timed
     @Path("/getpicture")
-    //@Produces(MediaType.TEXT_HTML)
-    @Produces(MediaType.MULTIPART_FORM_DATA)
-    public Response getPicture(@QueryParam("host_url") String hostURL,
-                               @QueryParam(Dict.PICTURE_ID) String pictureID,
-                               @CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
-        String user_id = ApiUtils.getUserIDFromCookie(cookie);
-
-        if (SessionDAOConnector.instance().verifySessionCookie(cookie) == false || user_id == null) {
-            return Response.seeOther(URI.create(SessionResource.PATH_RESTORE_SESSION)).build();
-        }
-        if (hostURL == null || pictureID == null || hostURL.length() == 0 || pictureID.length() == 0) {
-            return Response.status(200).build();
-        }
-
-        String fileName = createPictureName(hostURL, pictureID);
-        logger_.error("!!!! enter getPicture fileName = "+fileName);
-
-        // Instantiates a client
-        Storage storage = StorageOptions.getDefaultInstance().getService();
-
-        // Gets the new bucket
-        Bucket bucket = storage.get(IMAGE_BUCKET, Storage.BucketGetOption.fields());
-        if (bucket == null) {
-            logger_.error("IMAGE_BUCKET doesn't exist");
-            return Response.serverError().build();
-        }
-
-        Blob blob = bucket.get(fileName);
-        if (blob == null) {
-            return Response.status(200).build();
-        }
-
-        //byte[] content = blob.getContent();
-        String decode = Base64.encodeBase64String(blob.getContent());
-        //logger_.error("kangli base64 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  " + decode);
-        //FileUtils.writeByteArrayToFile(new File("test.jpg"), content);
-
-        //final FileDataBodyPart filePart = new FileDataBodyPart("my_pom", new File("pom.xml"));
-        final StreamDataBodyPart streamPart = new StreamDataBodyPart(pictureID, new ByteArrayInputStream(decode.getBytes()));
-
-        final FormDataMultiPart multipart = new FormDataMultiPart()
-                .field("hello", "hello!!")
-                .field("image", decode)
-                .bodyPart("image", streamPart, MediaType.APPLICATION_OCTET_STREAM_TYPE);
-
-        //return Response.ok().build();
-
-        return Response.ok()
-                .entity(multipart)
-                .build();
-
-    }
-    */
-
-    @GET
-    @Timed
-    @Path("/getpicture")
-    //@Produces(value = MediaType.APPLICATION_JSON)
     @Produces(value = MediaType.APPLICATION_FORM_URLENCODED)
-    public Response getBook(@QueryParam(Dict.USER_ID) String user_id,
+    public Response getBookEntryPicture(@QueryParam(Dict.USER_ID) String user_id,
                             @QueryParam("host_url") String hostURL,
                             @QueryParam(Dict.PICTURE_ID) String pictureID,
                             @CookieParam("walletSessionCookie") Cookie cookie
@@ -417,8 +358,7 @@ public class BookEntryResource {
         String decode = Base64.encodeBase64String(blob.getContent());
 
         JSONObject obj = new JSONObject();
-        obj.put("hello", "hello!!!");
-        obj.put("image", decode);
+        obj.put("image", "data:image/jpeg;base64,"+decode);
         return Response.status(200).entity(obj.toString()).build();
     }
 
@@ -426,7 +366,7 @@ public class BookEntryResource {
     @Timed
     @Path("/uploadpicture")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response uploadPicture(@FormDataParam("hosturl") String hostURL,
+    public Response uploadBookEntryPicture(@FormDataParam("hosturl") String hostURL,
                                   @FormDataParam("image") InputStream uploadedInputStream,
                                   @FormDataParam("image") FormDataContentDisposition fileDetail,
                                   @CookieParam("walletSessionCookie") Cookie cookie) throws Exception {

@@ -362,39 +362,6 @@ var APIs = {
             });
 
             return retData;
-            /*
-            console.log("enter api getBookEntryPicture");
-            var param = new Object();
-            param.user_id = user_id;
-            param.picture_id = picture_id;
-            param.host_url = hostURL;
-            var retData = null;
-
-            var request = hostURL + apiGetPicture;
-            $.ajax({
-                type: "GET",
-                url: request,
-                dataType: "json",
-                data: param,
-                contentType: 'multipart/form-data',
-                success: function (data) {
-                    console.log("enter get image success");
-                    if (api_.getBookEntryPictureSuccess && typeof(api_.getBookEntryPictureSuccess) == "function") {
-                        api_.getBookEntryPictureSuccess(data);
-                    }
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    if (api_.getBookEntryPictureError && typeof(api_.getBookEntryPictureError) == "function") {
-                        api_.getBookEntryPictureError(textStatus);
-                    }
-                }
-            }).then(function (data) {
-                console.log("then enter");
-                //console.log(data);
-                retData = data;
-            });
-            return retData;*/
-
         }
 
         api_.postBookEntryPictureSuccess = null;
