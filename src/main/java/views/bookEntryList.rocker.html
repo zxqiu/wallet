@@ -160,7 +160,8 @@
 			<div class="col-md-@(12 / bookEntriesEachLine)">
 				<div class="book-list">
 					<a>
-						<span class="book-list-text" title="@?bookEntryList.get(i).getId()" tabindex="@i">
+						<span class="book-list-text" tabindex="@i">
+							<input type="hidden" id="bookEntryID" value="@?bookEntryList.get(i).getId()">
 							<span class="book-list-text-title" id="bookTitle"
 								@if (categoryMap.containsKey(bookEntryList.get(i).getCategory_group_id())) {
 								    style="background: @?categoryMap.get(bookEntryList.get(i).getCategory_group_id()).getPicture_id()"
