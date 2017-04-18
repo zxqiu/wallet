@@ -399,6 +399,15 @@ public class BookEntryResource {
         return Response.status(200).build();
     }
 
+    @POST
+    @Timed
+    @Path("/ocramount")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response postOcrAmount(@FormParam("amount") String amount) throws Exception {
+        logger_.error("receive postOcrAmount!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! kangli amount" + amount);
+        return Response.status(200).build();
+    }
+
     private static Comparator<BookEntry> bookEntryTimeComparator = new Comparator<BookEntry>() {
         public int compare(BookEntry a, BookEntry b) {
             if (a.getEvent_date().before(b.getEvent_date())) {

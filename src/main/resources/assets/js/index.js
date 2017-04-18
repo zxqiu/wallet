@@ -28,6 +28,10 @@ const vision = require('@google-cloud/vision')();
 const translate = require('@google-cloud/translate')();
 // [END functions_ocr_setup]
 
+const querystring = require('querystring');
+const http = require('http');
+const fs = require('fs');
+
 // [START functions_ocr_publish]
 /**
  * Publishes the result to the given pubsub topic and returns a Promise.
@@ -36,21 +40,48 @@ const translate = require('@google-cloud/translate')();
  * @param {object} data The message data to publish.
  */
 function publishResult (topicName, data) {
-    return pubsub.topic(topicName).get({ autoCreate: true })
-            .then(([topic]) => topic.publish(data));
+  return pubsub.topic(topicName).get({ autoCreate: true })
+    .then(([topic]) => topic.publish(data));
 }
 // [END functions_ocr_publish]
 
-function postTranslateResult (filename, text) {
+function postTranslateResult(filename, text) {
     console.log(`postTranslateResult ${filename}`);
     const nameBuf = Buffer.from(filename, 'base64');
     console.log(`!!!!!!!!!!!!!!!!!!!!!! after decode postTranslateResult ${nameBuf}`);
     const delim = '#';
     const urlIdx = nameBuf.indexOf(delim);
     const url = nameBuf.slice(0, urlIdx);
-    const pictureId = nameBuf.slice(urlIdx+1);
+    const pictureId = nameBuf.slice(urlIdx + 1);
     console.log(`!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ${url}  ${pictureId}`);
+
+    const post_data = querystring.stringify({
+        'compilation_level': 'ADVANCED_OPTIMIZATIONS',
+        'output_format': 'json',
+        'amount': '123'
+    });
+
+    const post_options = {
+        host: url,
+        path: '/books/ocramount',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Length': Buffer.byteLength(post_data)
+        }
+    };
+    const post_req = http.request(post_options, function (res) {
+        res.setEncoding('utf8');
+        res.on('data', function (chunk) {
+            console.log('Response: ' + chunk);
+        });
+    });
+
+    post_req.write(post_data);
+    console.log(`!!!!!!!!!!!!!!!!!!!!!! post_req write finish`);
+    post_req.end();
 }
+
 
 // [START functions_ocr_detect]
 /**
@@ -60,43 +91,43 @@ function postTranslateResult (filename, text) {
  * @returns {Promise}
  */
 function detectText (file) {
-    let text;
+  let text;
 
-    console.log(`Looking for text in image ${file.name}`);
-    return vision.detectText(file)
-            .then(([_text]) => {
-            if (Array.isArray(_text)) {
+  console.log(`Looking for text in image ${file.name}`);
+  return vision.detectText(file)
+    .then(([_text]) => {
+      if (Array.isArray(_text)) {
         text = _text[0];
-    } else {
+      } else {
         text = _text;
-    }
-    console.log(`Extracted text from image (${text.length} chars)`);
-    return translate.detect(text);
-})
-.then(([detection]) => {
-        if (Array.isArray(detection)) {
+      }
+      console.log(`Extracted text from image (${text.length} chars)`);
+      return translate.detect(text);
+    })
+    .then(([detection]) => {
+      if (Array.isArray(detection)) {
         detection = detection[0];
-    }
-    console.log(`Detected language "${detection.language}" for ${file.name}`);
+      }
+      console.log(`Detected language "${detection.language}" for ${file.name}`);
 
-    // Submit a message to the bus for each language we're going to translate to
-    const tasks = config.TO_LANG.map((lang) => {
-            let topicName = config.TRANSLATE_TOPIC;
-    if (detection.language === lang) {
-        topicName = config.RESULT_TOPIC;
-    }
-    const messageData = {
-        text: text,
-        filename: file.name,
-        lang: lang,
-        from: detection.language
-    };
+      // Submit a message to the bus for each language we're going to translate to
+      const tasks = config.TO_LANG.map((lang) => {
+        let topicName = config.TRANSLATE_TOPIC;
+        if (detection.language === lang) {
+          topicName = config.RESULT_TOPIC;
+        }
+        const messageData = {
+          text: text,
+          filename: file.name,
+          lang: lang,
+          from: detection.language
+        };
 
-    return publishResult(topicName, messageData);
-});
+        return publishResult(topicName, messageData);
+      });
 
-    return Promise.all(tasks);
-});
+      return Promise.all(tasks);
+    });
 }
 // [END functions_ocr_detect]
 
@@ -109,7 +140,7 @@ function detectText (file) {
  * @returns {string} The new filename.
  */
 function renameImageForSave (filename, lang) {
-    return `${filename}_to_${lang}.txt`;
+  return `${filename}_to_${lang}.txt`;
 }
 // [END functions_ocr_rename]
 
@@ -121,29 +152,29 @@ function renameImageForSave (filename, lang) {
  * @param {object} event.data A Google Cloud Storage File object.
  */
 exports.processImage = function processImage (event) {
-    let file = event.data;
+  let file = event.data;
 
-    return Promise.resolve()
-            .then(() => {
-            if (file.resourceState === 'not_exists') {
+  return Promise.resolve()
+    .then(() => {
+      if (file.resourceState === 'not_exists') {
         // This was a deletion event, we don't want to process this
         return;
-    }
+      }
 
-    if (!file.bucket) {
+      if (!file.bucket) {
         throw new Error('Bucket not provided. Make sure you have a "bucket" property in your request');
-    }
-    if (!file.name) {
+      }
+      if (!file.name) {
         throw new Error('Filename not provided. Make sure you have a "name" property in your request');
-    }
+      }
 
-    file = storage.bucket(file.bucket).file(file.name);
+      file = storage.bucket(file.bucket).file(file.name);
 
-    return detectText(file);
-})
+      return detectText(file);
+    })
     .then(() => {
-        console.log(`File ${file.name} processed.`);
-});
+      console.log(`File ${file.name} processed.`);
+    });
 };
 // [END functions_ocr_process]
 
@@ -158,42 +189,42 @@ exports.processImage = function processImage (event) {
  * Message. This property will be a base64-encoded string that you must decode.
  */
 exports.translateText = function translateText (event) {
-    const pubsubMessage = event.data;
-    const jsonStr = Buffer.from(pubsubMessage.data, 'base64').toString();
-    const payload = JSON.parse(jsonStr);
+  const pubsubMessage = event.data;
+  const jsonStr = Buffer.from(pubsubMessage.data, 'base64').toString();
+  const payload = JSON.parse(jsonStr);
 
-    return Promise.resolve()
-            .then(() => {
-            if (!payload.text) {
+  return Promise.resolve()
+    .then(() => {
+      if (!payload.text) {
         throw new Error('Text not provided. Make sure you have a "text" property in your request');
-    }
-    if (!payload.filename) {
+      }
+      if (!payload.filename) {
         throw new Error('Filename not provided. Make sure you have a "filename" property in your request');
-    }
-    if (!payload.lang) {
+      }
+      if (!payload.lang) {
         throw new Error('Language not provided. Make sure you have a "lang" property in your request');
-    }
+      }
 
-    const options = {
+      const options = {
         from: payload.from,
         to: payload.lang
-    };
+      };
 
-    console.log(`Translating text into ${payload.lang}`);
-    return translate.translate(payload.text, options);
-})
+      console.log(`Translating text into ${payload.lang}`);
+      return translate.translate(payload.text, options);
+    })
     .then(([translation]) => {
-        const messageData = {
-            text: translation,
-            filename: payload.filename,
-            lang: payload.lang
-        };
+      const messageData = {
+        text: translation,
+        filename: payload.filename,
+        lang: payload.lang
+      };
 
-    return publishResult(config.RESULT_TOPIC, messageData);
-})
+      return publishResult(config.RESULT_TOPIC, messageData);
+    })
     .then(() => {
-        console.log(`Text translated to ${payload.lang}`);
-});
+      console.log(`Text translated to ${payload.lang}`);
+    });
 };
 // [END functions_ocr_translate]
 
@@ -208,36 +239,36 @@ exports.translateText = function translateText (event) {
  * Message. This property will be a base64-encoded string that you must decode.
  */
 exports.saveResult = function saveResult (event) {
-    const pubsubMessage = event.data;
-    const jsonStr = Buffer.from(pubsubMessage.data, 'base64').toString();
-    const payload = JSON.parse(jsonStr);
+  const pubsubMessage = event.data;
+  const jsonStr = Buffer.from(pubsubMessage.data, 'base64').toString();
+  const payload = JSON.parse(jsonStr);
 
-    return Promise.resolve()
-            .then(() => {
-            if (!payload.text) {
-        throw new Error('Text not provided. Make sure you have a "text" property in your request');
-    }
-    if (!payload.filename) {
-        throw new Error('Filename not provided. Make sure you have a "filename" property in your request');
-    }
-    if (!payload.lang) {
-        throw new Error('Language not provided. Make sure you have a "lang" property in your request');
-    }
-
-    console.log(`Received request to save file ${payload.filename}`);
-
-    const bucketName = config.RESULT_BUCKET;
-    const filename = renameImageForSave(payload.filename, payload.lang);
-    const file = storage.bucket(bucketName).file(filename);
-
-    postTranslateResult(payload.filename, payload.text);
-
-    console.log(`Saving result to ${filename} in bucket ${bucketName}`);
-
-    return file.save(payload.text);
-})
+  return Promise.resolve()
     .then(() => {
-        console.log(`File saved.`);
-});
+      if (!payload.text) {
+        throw new Error('Text not provided. Make sure you have a "text" property in your request');
+      }
+      if (!payload.filename) {
+        throw new Error('Filename not provided. Make sure you have a "filename" property in your request');
+      }
+      if (!payload.lang) {
+        throw new Error('Language not provided. Make sure you have a "lang" property in your request');
+      }
+
+      console.log(`Received request to save file ${payload.filename}`);
+
+      const bucketName = config.RESULT_BUCKET;
+      const filename = renameImageForSave(payload.filename, payload.lang);
+      const file = storage.bucket(bucketName).file(filename);
+
+      postTranslateResult(payload.filename, payload.text);
+
+      console.log(`Saving result to ${filename} in bucket ${bucketName}`);
+
+      return file.save(payload.text);
+    })
+    .then(() => {
+      console.log(`File saved.`);
+    });
 };
 // [END functions_ocr_save]

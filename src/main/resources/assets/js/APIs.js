@@ -335,7 +335,7 @@ var APIs = {
             var param = new Object();
             param.user_id = user_id;
             param.picture_id = picture_id;
-            param.host_url = hostURL;
+            param.host_url = window.location.host;
             var retData = null;
 
             var request = hostURL + apiGetPicture;

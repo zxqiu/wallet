@@ -12,7 +12,6 @@ public class BookEntryData implements Serializable, Serializer<BookEntryData> {
     private Date create_time;
     private String note;
     private String picture_id;
-    private byte[] picture_data;
 
     public BookEntryData(Date create_time, String note, String picture_id) {
         this.setCreate_time(create_time);
