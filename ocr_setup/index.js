@@ -45,18 +45,87 @@ function publishResult (topicName, data) {
 }
 // [END functions_ocr_publish]
 
-function postTranslateResult(filename, text) {
+function getOcrAmountFromFile(text) {
+    const buf = Buffer.from(text, 'utf8');
+    var s = buf.toString('utf8');
+    console.log(`s ${s}`);
+
+    /* Find the last index of 'tax' */
+    const taxReg = new RegExp(/[tT][aA][xX](?![\s\S]*[tT][aA][xX])/);
+    var r = s.match(taxReg);
+    if (r) {
+        /* trim the string to after 'tax' */
+        s = s.substring(r.index + 3);
+    }
+    console.log(`s 111111111111111111111111111 ${s}`);
+
+    /* Find first index of '*' */
+    const starReg = new RegExp(/\*/);
+    r = s.match(starReg);
+    if (r) {
+        s = s.substring(0, r.index);
+    }
+    console.log(`s 22222222222222222222222222 ${s}`);
+
+    const totalReg = new RegExp(/[tT][oO][tT][aA][lL]/);
+    r = s.match(totalReg);
+    if (r) {
+        s = s.substring(r.index + 5);
+    }
+
+    console.log(`s 33333333333333333333333333 ${s}`);
+    const dotReg = new RegExp(/\./);
+    var values = [];
+    while (r = s.match(dotReg)) {
+        var i, start = -1, end = -1;
+        for (i = r.index - 1; i >= 0; i--) {
+            var c = s.charAt(i);
+                console.log(`start s.charAt(i) i = ${i} s.charAt(i) = ${c}`);
+            if (c < '0' || c > '9') {
+                console.log(`enter !isNaN`);
+                start = i + 1;
+                break;
+            }
+        }
+
+        for (i = r.index + 2; i < s.length; i++) {
+            var c = s.charAt(i);
+            console.log(`end s.charAt(i) i = ${i} s.charAt(i) = ${c}`);
+            if (c < '0' || c > '9') {
+                end = i;
+                break;
+            }
+        }
+        if (start >= 0 && end >= 0) {
+            var value = parseFloat(s.substring(start, end+1));
+            if (!isNaN(value)) {
+                values.push(value);
+            }
+            console.log(`value = ${value} substring = ${s.substring(start, end+1)}`);
+        }
+
+        if (r.index == s.length - 1)
+            break;
+
+        s = s.substring(r.index + 1);
+    }
+
+    var max = 0;
+    if (values.length > 0) {
+        max = Math.max(...values);
+    }
+
+    console.log(`max ${values.length} ${max}`);
+    return max;
+}
+
+function postTranslateResult(filename, text, ocrAmount) {
     console.log(`postTranslateResult ${filename}`);
     //const nameBuf = Buffer.from(filename, 'base64');
     const nameBuf = Buffer.from(filename, 'utf8');
     console.log(`!!!!!!!!!!!!!!!!!!!!!! after decode postTranslateResult ${nameBuf}`);
+
     const delim = '#';
-/*
-    const urlIdx = nameBuf.indexOf(delim);
-    const url = nameBuf.slice(0, urlIdx);
-    const pictureId = nameBuf.slice(urlIdx + 1);
-    console.log(`!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ${url}  ${pictureId}`);
-*/
     const userIdx = nameBuf.indexOf(delim);
     var user = nameBuf.slice(0, userIdx);
     var buf = nameBuf.slice(userIdx + 1);
@@ -71,7 +140,7 @@ function postTranslateResult(filename, text) {
         'output_format': 'json',
         'user_id': user.toString('utf8'),
         'picture_timestamp': pictureTs.toString('utf8'),
-        'amount': '123'
+        'amount': ocrAmount,
     });
 
     const post_options = {
@@ -274,7 +343,10 @@ exports.saveResult = function saveResult (event) {
       const filename = renameImageForSave(payload.filename, payload.lang);
       const file = storage.bucket(bucketName).file(filename);
 
-      postTranslateResult(payload.filename, payload.text);
+      var ocrAmount = getOcrAmountFromFile(payload.text);
+      console.log(`payload.text ${payload.text}`);
+
+      postTranslateResult(payload.filename, payload.text, ocrAmount);
 
       console.log(`Saving result to ${filename} in bucket ${bucketName}`);
 

@@ -102,7 +102,7 @@ $(document).ready(function () {
     api.getAllBook(user_id);
 
     var pictureID = document.getElementById("bookEntryPhoto").getAttribute("value");
-    var pictureTs = document.getElementById("picture_timestamp").value;
+    var pictureTs = document.getElementById("picture_timestamp").getAttribute("value");
 
     api.setGetBookEntryPictureSuccessCallback(function (data) {
         var img = new Image();
@@ -130,7 +130,7 @@ $(document).ready(function () {
             ctx.drawImage(img, -width / 2, -height / 2, width, height);
         }
     });
-    api.getBookEntryPicture(user_id, pictureID, pictureTs);
+    api.getBookEntryPicture(pictureID, pictureTs);
 
     setCategoryListFontColor();
     setCategoryOptionFontColor();
@@ -229,7 +229,8 @@ $('#bookEntryDelete').on('click', function () {
 
 $("#bookEntryPhoto").on("change", function (e) {
     document.getElementById("bookEntryAmount").value = "";
-    document.getElementById("picture_timestamp").value = Math.floor(Date.now() / 1000);
+    //document.getElementById("picture_timestamp").value = Math.floor(Date.now() / 1000);
+    $("#picture_timestamp").val(Math.floor(Date.now() / 1000));
     var canvas = document.getElementById("bookEntryShowPhoto");
     var ctx = canvas.getContext("2d");
     ctx.clearRect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
@@ -308,8 +309,8 @@ $("#bookEntryPhoto").on("change", function (e) {
                         if (ocrAmount > 0 || reqCount == 1000) {
                             if (ocrAmount > 0) {
                                 $("#bookEntryAmount").val(ocrAmount);
+                                clearInterval(amountIntv);
                             }
-                            clearInterval(amountIntv);
                         } else {
                             reqCount += 1;
                         }

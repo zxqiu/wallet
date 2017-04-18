@@ -334,8 +334,8 @@ var APIs = {
 
         api_.getBookEntryPicture = function (pictureID, pictureTs) {
             var param = new Object();
-            param.picture_timestamp = pictureTs;
             param.picture_id = pictureID;
+            param.picture_timestamp = pictureTs;
             param.host_url = window.location.host;
             var retData = null;
 
