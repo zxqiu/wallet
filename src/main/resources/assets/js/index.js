@@ -74,7 +74,7 @@ function postTranslateResult(filename, text) {
 
     const post_options = {
         host: url.toString('utf8'),
-        path: '/books/ocramount',
+        path: '/books/postocramount',
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',

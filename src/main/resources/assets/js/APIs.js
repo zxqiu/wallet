@@ -13,6 +13,7 @@ var apiInsertBookList = "/books/insertbooklist";
 var apiInsertCategoryList = "/books/insertcategorylist";
 var apiFaceBookLogin = "/fblogin";
 var apiTinyUrlToShort = "/t/s";
+var apiGetOcrAmount = "/books/getocramount";
 
 var APIs = {
     createNew: function () {
@@ -325,11 +326,11 @@ var APIs = {
 
         api_.setGetBookEntryPictureSuccessCallback = function (callback) {
             api_.getBookEntryPictureSuccess = callback;
-        }
+        };
 
         api_.setGetBookEntryPictureErrorCallback = function (callback) {
             api_.getBookEntryPictureError = callback;
-        }
+        };
 
         api_.getBookEntryPicture = function (user_id, picture_id) {
             var param = new Object();
@@ -362,18 +363,18 @@ var APIs = {
             });
 
             return retData;
-        }
+        };
 
         api_.postBookEntryPictureSuccess = null;
         api_.postBookEntryPictureError = null;
 
         api_.setPostBookEntryPictureSuccessCallback = function (callback) {
             api_.postBookEntryPictureSuccess = callback;
-        }
+        };
 
         api_.setPostBookEntryPictureErrorCallback = function (callback) {
             api_.postBookEntryPictureError = callback;
-        }
+        };
         api_.postBookEntryPicture = function (name, dataURI) {
             var byteString;
             if (dataURI.split(',')[0].indexOf('base64') >= 0)
@@ -419,6 +420,47 @@ var APIs = {
                     }
                 }
             });
+        };
+
+        api_.getOcrAmountSuccess = null;
+        api_.getOcrAmountError = null;
+
+        api_.setGetOcrAmountSuccessCallback = function (callback) {
+            api_.getOcrAmountSuccess = callback;
+        };
+
+        api_.setGetOcrAmountErrorCallback = function (callback) {
+            api_.getOcrAmountError = callback;
+        };
+
+        api_.getOcrAmount = function(user_id, picture_ts) {
+            var param = new Object();
+            param.user_id = user_id;
+            param.picture_timestamp = picture_ts;
+            var retData = null;
+
+            var request = hostURL + apiGetOcrAmount;
+            $.ajax({
+                type: "GET",
+                url: request,
+                dataType: "json",
+                data: param,
+                contentType: 'application/json',
+                success: function (data) {
+                    if (api_.getAllBookSuccess && typeof(api_.getAllBookSuccess) == "function") {
+                        api_.getAllBookSuccess(data);
+                    }
+                },
+                error: function (data) {
+                    if (api_.getAllBookError && typeof(api_.getAllBookError) == "function") {
+                        api_.getAllBookError(data);
+                    }
+                }
+            }).then(function (data) {
+                retData = data;
+            });
+
+            return retData;
         };
 
         return api_;

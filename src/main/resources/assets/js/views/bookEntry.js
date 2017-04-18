@@ -229,6 +229,7 @@ $('#bookEntryDelete').on('click', function () {
 });
 
 $("#bookEntryPhoto").on("change", function (e) {
+    document.getElementById("bookEntryAmount").value = "";
     var canvas = document.getElementById("bookEntryShowPhoto");
     var ctx = canvas.getContext("2d");
     ctx.clearRect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
@@ -292,7 +293,29 @@ $("#bookEntryPhoto").on("change", function (e) {
         img.src = event.target.result;
 
         var newImgData = compress(img, e.target.files[0].size, 300, "jpg");
+        api.setPostBookEntryPictureSuccessCallback(function (data) {
+            var picture_ts = document.getElementById("picture_timestamp").value;
+            var reqCount = 0;
+            /* only set send GET request if amount is not set by user */
+            if (!document.getElementById("bookEntryAmount").value) {
+                console.log("enter no amount");
+                var amount_intv = setInterval(function () {
+                    api.setGetOcrAmountSuccessCallback(function (data) {
+                        if (data > 0 || reqCount == 10) {
+                            if (data > 0)
+                                document.getElementById("bookEntryAmount").value = data;
+                            clearInterval(amount_intv);
+                        } else {
+                            reqCount += 1;
+                        }
+                    });
+                    api.getOcrAmount(user_id, picture_ts);
+                }, 2000);
+            }
+        });
         api.postBookEntryPicture(e.target.files[0].name, newImgData);
     };
     reader.readAsDataURL(e.target.files[0]);
+
+    document.getElementById("picture_timestamp").value = Date.now();
 });

@@ -30,8 +30,6 @@ import com.wallet.book.dao.BookDAOConnector;
 import com.wallet.login.core.User;
 import com.wallet.login.dao.UserDAOConnector;
 import com.wallet.login.resource.SessionResource;
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +57,8 @@ public class BookEntryResource {
     private CategoryDAOConnector categoryDAOC = null;
     private UserDAOConnector userDAOC = null;
 
+    private Map<String, Double> picture_ocr;
+
     /* google cloud storage buckets */
     private final String IMAGE_BUCKET = "wallet-image";
     private final String TEXT_BUCKET = "wallet-text";
@@ -68,6 +68,7 @@ public class BookEntryResource {
         this.bookEntryDAOC = BookEntryDAOConnector.instance();
         this.categoryDAOC = CategoryDAOConnector.instance();
         this.userDAOC = UserDAOConnector.instance();
+        this.picture_ocr = new HashMap<>();
     }
 
     @GET
@@ -376,6 +377,7 @@ public class BookEntryResource {
         if (SessionDAOConnector.instance().verifySessionCookie(cookie) == false || user_id == null) {
             return Response.seeOther(URI.create(SessionResource.PATH_RESTORE_SESSION)).build();
         }
+
         String fileName = createPictureName(user_id, hostURL, fileDetail.getFileName());
 
         // Instantiates a client
@@ -401,14 +403,26 @@ public class BookEntryResource {
         return Response.status(200).build();
     }
 
+    @GET
+    @Timed
+    @Path("/getocramount")
+    @Produces(MediaType.TEXT_HTML)
+    public Response getOcrAmount(@QueryParam(Dict.USER_ID) String user_id,
+                                 @QueryParam("picture_timestamp") Double ts) {
+        logger_.error("enter get ocr amount user_id = "+user_id +" ts "+ts);
+        String key = user_id + ts;
+        return Response.status(200).build();
+    }
+
     @POST
     @Timed
-    @Path("/ocramount")
+    @Path("/postocramount")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response postOcrAmount(@FormParam(Dict.USER_ID) String user_id,
+                                  @FormParam("picture_timestamp") Double picture_ts,
                                   @FormParam("amount") String amount) throws Exception {
         logger_.error("receive postOcrAmount!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! kangli amount " + amount + " user "+user_id);
-        List<BookEntry> boolEntryList = bookEntryDAOC.getByUserID(user_id);
+
         return Response.status(200).build();
     }
 
