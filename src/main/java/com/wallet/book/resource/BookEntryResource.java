@@ -51,13 +51,12 @@ import com.google.cloud.storage.Blob;
 public class BookEntryResource {
     private static final Logger logger_ = LoggerFactory.getLogger(BookEntryResource.class);
     private static final int bookEntrysEachLine = 4;
+    private static Map<String, Double> pictureOcrAmountMap;
 
     private BookDAOConnector bookDAOC = null;
     private BookEntryDAOConnector bookEntryDAOC = null;
     private CategoryDAOConnector categoryDAOC = null;
     private UserDAOConnector userDAOC = null;
-
-    private Map<String, Double> picture_ocr;
 
     /* google cloud storage buckets */
     private final String IMAGE_BUCKET = "wallet-image";
@@ -68,7 +67,7 @@ public class BookEntryResource {
         this.bookEntryDAOC = BookEntryDAOConnector.instance();
         this.categoryDAOC = CategoryDAOConnector.instance();
         this.userDAOC = UserDAOConnector.instance();
-        this.picture_ocr = new HashMap<>();
+        this.pictureOcrAmountMap = new HashMap<>();
     }
 
     @GET
@@ -332,16 +331,19 @@ public class BookEntryResource {
     @Timed
     @Path("/getpicture")
     @Produces(value = MediaType.APPLICATION_FORM_URLENCODED)
-    public Response getBookEntryPicture(@QueryParam(Dict.USER_ID) String user_id,
-                                        @QueryParam("host_url") String hostURL,
+    public Response getBookEntryPicture(@QueryParam("host_url") String hostURL,
+                                        @QueryParam("picture_timestamp") String pictureTs,
                                         @QueryParam(Dict.PICTURE_ID) String pictureID,
                                         @CookieParam("walletSessionCookie") Cookie cookie
     ) throws Exception {
-
+        String userID = ApiUtils.getUserIDFromCookie(cookie);
+        if (SessionDAOConnector.instance().verifySessionCookie(cookie) == false || userID == null) {
+            return Response.seeOther(URI.create(SessionResource.PATH_RESTORE_SESSION)).build();
+        }
         if (hostURL == null || pictureID == null || hostURL.length() == 0 || pictureID.length() == 0) {
             return Response.status(200).build();
         }
-        String fileName = createPictureName(user_id, hostURL, pictureID);
+        String fileName = createPictureName(userID, hostURL, pictureTs);
 
         // Instantiates a client
         Storage storage = StorageOptions.getDefaultInstance().getService();
@@ -370,15 +372,16 @@ public class BookEntryResource {
     @Path("/uploadpicture")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response uploadBookEntryPicture(@FormDataParam("hosturl") String hostURL,
+                                           @FormDataParam("picture_timestamp") String pictureTs,
                                            @FormDataParam("image") InputStream uploadedInputStream,
                                            @FormDataParam("image") FormDataContentDisposition fileDetail,
                                            @CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
-        String user_id = ApiUtils.getUserIDFromCookie(cookie);
-        if (SessionDAOConnector.instance().verifySessionCookie(cookie) == false || user_id == null) {
+        String userID = ApiUtils.getUserIDFromCookie(cookie);
+        if (SessionDAOConnector.instance().verifySessionCookie(cookie) == false || userID == null) {
             return Response.seeOther(URI.create(SessionResource.PATH_RESTORE_SESSION)).build();
         }
 
-        String fileName = createPictureName(user_id, hostURL, fileDetail.getFileName());
+        String fileName = createPictureName(userID, hostURL, pictureTs);
 
         // Instantiates a client
         Storage storage = StorageOptions.getDefaultInstance().getService();
@@ -396,33 +399,45 @@ public class BookEntryResource {
             return Response.serverError().build();
         }
 
-        byte[] byteArray = blob.getContent();
-        String pathName = "/home/kangli/Desktop/" + fileName;
-        FileUtils.writeByteArrayToFile(new File(pathName), byteArray);
-
         return Response.status(200).build();
     }
 
     @GET
     @Timed
     @Path("/getocramount")
-    @Produces(MediaType.TEXT_HTML)
-    public Response getOcrAmount(@QueryParam(Dict.USER_ID) String user_id,
-                                 @QueryParam("picture_timestamp") Double ts) {
-        logger_.error("enter get ocr amount user_id = "+user_id +" ts "+ts);
-        String key = user_id + ts;
-        return Response.status(200).build();
+    @Produces(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response getOcrAmount(@QueryParam("picture_timestamp") String pictureTs,
+                                 @CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
+        String userID = ApiUtils.getUserIDFromCookie(cookie);
+        if (SessionDAOConnector.instance().verifySessionCookie(cookie) == false || userID == null) {
+            return Response.seeOther(URI.create(SessionResource.PATH_RESTORE_SESSION)).build();
+        }
+
+        String key = userID + pictureTs;
+        Double ocrAmount = 0.0;
+        if (pictureOcrAmountMap.containsKey(key)) {
+            logger_.error("pictureOcrAmountMap contains key " + key);
+            ocrAmount = pictureOcrAmountMap.get(key);
+            pictureOcrAmountMap.remove(key);
+        }
+
+        JSONObject obj = new JSONObject();
+        obj.put("ocr_amount", ocrAmount);
+
+        return Response.status(200).entity(obj.toString()).build();
     }
 
     @POST
     @Timed
     @Path("/postocramount")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response postOcrAmount(@FormParam(Dict.USER_ID) String user_id,
-                                  @FormParam("picture_timestamp") Double picture_ts,
+    public Response postOcrAmount(@FormParam(Dict.USER_ID) String userID,
+                                  @FormParam("picture_timestamp") String pictureTs,
                                   @FormParam("amount") String amount) throws Exception {
-        logger_.error("receive postOcrAmount!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! kangli amount " + amount + " user "+user_id);
-
+        logger_.error("receive postOcrAmount!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! kangli amount " + amount + " user " + userID);
+        String key = userID + pictureTs;
+        logger_.error("pictureOcrAmountMap put key " + key);
+        pictureOcrAmountMap.put(key, Double.parseDouble(amount));
         return Response.status(200).build();
     }
 
@@ -446,8 +461,7 @@ public class BookEntryResource {
         return list;
     }
 
-    private String createPictureName(String user_id, String hostURL, String pictureID) {
-        String s = user_id + '#' + hostURL + '#' + pictureID;
-        return Base64.encodeBase64String(s.getBytes());
+    private String createPictureName(String userID, String hostURL, String pictureTs) {
+        return userID + '#' + hostURL + '#' + pictureTs;
     }
 }

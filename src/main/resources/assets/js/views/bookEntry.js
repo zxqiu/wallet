@@ -101,7 +101,8 @@ $(document).ready(function () {
     });
     api.getAllBook(user_id);
 
-    var picture_id = document.getElementById("bookEntryPhoto").getAttribute("value");
+    var pictureID = document.getElementById("bookEntryPhoto").getAttribute("value");
+    var pictureTs = document.getElementById("picture_timestamp").value;
 
     api.setGetBookEntryPictureSuccessCallback(function (data) {
         var img = new Image();
@@ -115,8 +116,6 @@ $(document).ready(function () {
             var height = img.height * scale;
             var width = img.width * scale;
             var size = {width: width, height: height};
-            var rotation = 0;
-            var deg2Rad = Math.PI / 180;
 
             // draw
             canvas.width = size.width;
@@ -131,7 +130,7 @@ $(document).ready(function () {
             ctx.drawImage(img, -width / 2, -height / 2, width, height);
         }
     });
-    api.getBookEntryPicture(user_id, picture_id);
+    api.getBookEntryPicture(user_id, pictureID, pictureTs);
 
     setCategoryListFontColor();
     setCategoryOptionFontColor();
@@ -230,6 +229,7 @@ $('#bookEntryDelete').on('click', function () {
 
 $("#bookEntryPhoto").on("change", function (e) {
     document.getElementById("bookEntryAmount").value = "";
+    document.getElementById("picture_timestamp").value = Math.floor(Date.now() / 1000);
     var canvas = document.getElementById("bookEntryShowPhoto");
     var ctx = canvas.getContext("2d");
     ctx.clearRect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
@@ -293,29 +293,32 @@ $("#bookEntryPhoto").on("change", function (e) {
         img.src = event.target.result;
 
         var newImgData = compress(img, e.target.files[0].size, 300, "jpg");
+        var pictureTs = document.getElementById("picture_timestamp").value;
         api.setPostBookEntryPictureSuccessCallback(function (data) {
-            var picture_ts = document.getElementById("picture_timestamp").value;
             var reqCount = 0;
+
             /* only set send GET request if amount is not set by user */
             if (!document.getElementById("bookEntryAmount").value) {
                 console.log("enter no amount");
-                var amount_intv = setInterval(function () {
+                var amountIntv = setInterval(function () {
                     api.setGetOcrAmountSuccessCallback(function (data) {
-                        if (data > 0 || reqCount == 10) {
-                            if (data > 0)
-                                document.getElementById("bookEntryAmount").value = data;
-                            clearInterval(amount_intv);
+
+                        var ocrAmount = data["ocr_amount"];
+                        console.log("get ocr amount callback "+ocrAmount);
+                        if (ocrAmount > 0 || reqCount == 1000) {
+                            if (ocrAmount > 0) {
+                                $("#bookEntryAmount").val(ocrAmount);
+                            }
+                            clearInterval(amountIntv);
                         } else {
                             reqCount += 1;
                         }
                     });
-                    api.getOcrAmount(user_id, picture_ts);
+                    api.getOcrAmount(pictureTs);
                 }, 2000);
             }
         });
-        api.postBookEntryPicture(e.target.files[0].name, newImgData);
+        api.postBookEntryPicture(e.target.files[0].name, pictureTs, newImgData);
     };
     reader.readAsDataURL(e.target.files[0]);
-
-    document.getElementById("picture_timestamp").value = Date.now();
 });

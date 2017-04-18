@@ -332,10 +332,10 @@ var APIs = {
             api_.getBookEntryPictureError = callback;
         };
 
-        api_.getBookEntryPicture = function (user_id, picture_id) {
+        api_.getBookEntryPicture = function (pictureID, pictureTs) {
             var param = new Object();
-            param.user_id = user_id;
-            param.picture_id = picture_id;
+            param.picture_timestamp = pictureTs;
+            param.picture_id = pictureID;
             param.host_url = window.location.host;
             var retData = null;
 
@@ -375,7 +375,7 @@ var APIs = {
         api_.setPostBookEntryPictureErrorCallback = function (callback) {
             api_.postBookEntryPictureError = callback;
         };
-        api_.postBookEntryPicture = function (name, dataURI) {
+        api_.postBookEntryPicture = function (name, pictureTs, dataURI) {
             var byteString;
             if (dataURI.split(',')[0].indexOf('base64') >= 0)
                 byteString = atob(dataURI.split(',')[1]);
@@ -400,6 +400,7 @@ var APIs = {
             formData.append('action', apiUploadPicture);
             formData.append('method', "post");
             formData.append('hosturl', window.location.host);
+            formData.append('picture_timestamp', pictureTs);
             formData.append('image', file);
 
             $.ajax({
@@ -433,7 +434,7 @@ var APIs = {
             api_.getOcrAmountError = callback;
         };
 
-        api_.getOcrAmount = function(user_id, picture_ts) {
+        api_.getOcrAmount = function(picture_ts) {
             var param = new Object();
             param.user_id = user_id;
             param.picture_timestamp = picture_ts;
@@ -447,13 +448,13 @@ var APIs = {
                 data: param,
                 contentType: 'application/json',
                 success: function (data) {
-                    if (api_.getAllBookSuccess && typeof(api_.getAllBookSuccess) == "function") {
-                        api_.getAllBookSuccess(data);
+                    if (api_.getOcrAmountSuccess && typeof(api_.getOcrAmountSuccess) == "function") {
+                        api_.getOcrAmountSuccess(data);
                     }
                 },
                 error: function (data) {
-                    if (api_.getAllBookError && typeof(api_.getAllBookError) == "function") {
-                        api_.getAllBookError(data);
+                    if (api_.getOcrAmountError && typeof(api_.getOcrAmountError) == "function") {
+                        api_.getOcrAmountError(data);
                     }
                 }
             }).then(function (data) {

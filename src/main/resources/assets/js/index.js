@@ -47,7 +47,8 @@ function publishResult (topicName, data) {
 
 function postTranslateResult(filename, text) {
     console.log(`postTranslateResult ${filename}`);
-    const nameBuf = Buffer.from(filename, 'base64');
+    //const nameBuf = Buffer.from(filename, 'base64');
+    const nameBuf = Buffer.from(filename, 'utf8');
     console.log(`!!!!!!!!!!!!!!!!!!!!!! after decode postTranslateResult ${nameBuf}`);
     const delim = '#';
 /*
@@ -62,13 +63,14 @@ function postTranslateResult(filename, text) {
     const urlIdx = buf.indexOf(delim);
     var url = buf.slice(0, urlIdx);
     buf = buf.slice(urlIdx + 1);
-    const pictureId = buf;
-    console.log(`!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ${user} ${url}  ${pictureId}`);
+    const pictureTs = buf;
+    console.log(`!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ${user} ${url} ${pictureTs}`);
 
     const post_data = querystring.stringify({
         'compilation_level': 'ADVANCED_OPTIMIZATIONS',
         'output_format': 'json',
         'user_id': user.toString('utf8'),
+        'picture_timestamp': pictureTs.toString('utf8'),
         'amount': '123'
     });
 
