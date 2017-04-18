@@ -50,19 +50,30 @@ function postTranslateResult(filename, text) {
     const nameBuf = Buffer.from(filename, 'base64');
     console.log(`!!!!!!!!!!!!!!!!!!!!!! after decode postTranslateResult ${nameBuf}`);
     const delim = '#';
+/*
     const urlIdx = nameBuf.indexOf(delim);
     const url = nameBuf.slice(0, urlIdx);
     const pictureId = nameBuf.slice(urlIdx + 1);
     console.log(`!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ${url}  ${pictureId}`);
+*/
+    const userIdx = nameBuf.indexOf(delim);
+    var user = nameBuf.slice(0, userIdx);
+    var buf = nameBuf.slice(userIdx + 1);
+    const urlIdx = buf.indexOf(delim);
+    var url = buf.slice(0, urlIdx);
+    buf = buf.slice(urlIdx + 1);
+    const pictureId = buf;
+    console.log(`!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ${user} ${url}  ${pictureId}`);
 
     const post_data = querystring.stringify({
         'compilation_level': 'ADVANCED_OPTIMIZATIONS',
         'output_format': 'json',
+        'user_id': user.toString('utf8'),
         'amount': '123'
     });
 
     const post_options = {
-        host: url,
+        host: url.toString('utf8'),
         path: '/books/ocramount',
         method: 'POST',
         headers: {

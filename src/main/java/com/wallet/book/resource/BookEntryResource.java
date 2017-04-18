@@ -14,8 +14,10 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
+
 import javax.ws.rs.core.StreamingOutput;
 
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -330,15 +332,15 @@ public class BookEntryResource {
     @Path("/getpicture")
     @Produces(value = MediaType.APPLICATION_FORM_URLENCODED)
     public Response getBookEntryPicture(@QueryParam(Dict.USER_ID) String user_id,
-                            @QueryParam("host_url") String hostURL,
-                            @QueryParam(Dict.PICTURE_ID) String pictureID,
-                            @CookieParam("walletSessionCookie") Cookie cookie
+                                        @QueryParam("host_url") String hostURL,
+                                        @QueryParam(Dict.PICTURE_ID) String pictureID,
+                                        @CookieParam("walletSessionCookie") Cookie cookie
     ) throws Exception {
 
         if (hostURL == null || pictureID == null || hostURL.length() == 0 || pictureID.length() == 0) {
             return Response.status(200).build();
         }
-        String fileName = createPictureName(hostURL, pictureID);
+        String fileName = createPictureName(user_id, hostURL, pictureID);
 
         // Instantiates a client
         Storage storage = StorageOptions.getDefaultInstance().getService();
@@ -358,7 +360,7 @@ public class BookEntryResource {
         String decode = Base64.encodeBase64String(blob.getContent());
 
         JSONObject obj = new JSONObject();
-        obj.put("image", "data:image/jpeg;base64,"+decode);
+        obj.put("image", "data:image/jpeg;base64," + decode);
         return Response.status(200).entity(obj.toString()).build();
     }
 
@@ -367,14 +369,14 @@ public class BookEntryResource {
     @Path("/uploadpicture")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response uploadBookEntryPicture(@FormDataParam("hosturl") String hostURL,
-                                  @FormDataParam("image") InputStream uploadedInputStream,
-                                  @FormDataParam("image") FormDataContentDisposition fileDetail,
-                                  @CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
+                                           @FormDataParam("image") InputStream uploadedInputStream,
+                                           @FormDataParam("image") FormDataContentDisposition fileDetail,
+                                           @CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
         String user_id = ApiUtils.getUserIDFromCookie(cookie);
         if (SessionDAOConnector.instance().verifySessionCookie(cookie) == false || user_id == null) {
             return Response.seeOther(URI.create(SessionResource.PATH_RESTORE_SESSION)).build();
         }
-        String fileName = createPictureName(hostURL, fileDetail.getFileName());
+        String fileName = createPictureName(user_id, hostURL, fileDetail.getFileName());
 
         // Instantiates a client
         Storage storage = StorageOptions.getDefaultInstance().getService();
@@ -403,8 +405,10 @@ public class BookEntryResource {
     @Timed
     @Path("/ocramount")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response postOcrAmount(@FormParam("amount") String amount) throws Exception {
-        logger_.error("receive postOcrAmount!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! kangli amount" + amount);
+    public Response postOcrAmount(@FormParam(Dict.USER_ID) String user_id,
+                                  @FormParam("amount") String amount) throws Exception {
+        logger_.error("receive postOcrAmount!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! kangli amount " + amount + " user "+user_id);
+        List<BookEntry> boolEntryList = bookEntryDAOC.getByUserID(user_id);
         return Response.status(200).build();
     }
 
@@ -428,8 +432,8 @@ public class BookEntryResource {
         return list;
     }
 
-    private String createPictureName(String hostURL, String pictureID) {
-        String s = hostURL + '#' + pictureID;
+    private String createPictureName(String user_id, String hostURL, String pictureID) {
+        String s = user_id + '#' + hostURL + '#' + pictureID;
         return Base64.encodeBase64String(s.getBytes());
     }
 }

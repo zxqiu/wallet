@@ -398,7 +398,7 @@ var APIs = {
             formData.append('role', "form");
             formData.append('action', apiUploadPicture);
             formData.append('method', "post");
-            formData.append('hosturl', hostURL);
+            formData.append('hosturl', window.location.host);
             formData.append('image', file);
 
             $.ajax({
