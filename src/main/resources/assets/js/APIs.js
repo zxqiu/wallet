@@ -358,7 +358,6 @@ var APIs = {
                     }
                 }
             }).then(function (data) {
-                console.log("enter get picture then");
                 retData = data;
             });
 
@@ -410,7 +409,6 @@ var APIs = {
                 processData: false,
                 contentType: false,
                 success: function (data, textStatus, jqXHR) {
-                    console.log("enter post image success");
                     if (api_.postBookEntryPictureSuccess && typeof(api_.postBookEntryPictureSuccess) == "function") {
                         api_.postBookEntryPictureSuccess(data);
                     }

@@ -306,11 +306,11 @@ $("#bookEntryPhoto").on("change", function (e) {
 
                         var ocrAmount = data["ocr_amount"];
                         console.log("get ocr amount callback "+ocrAmount);
-                        if (ocrAmount > 0 || reqCount == 1000) {
+                        if (ocrAmount > 0 || reqCount == 10) {
                             if (ocrAmount > 0) {
                                 $("#bookEntryAmount").val(ocrAmount);
-                                clearInterval(amountIntv);
                             }
+                            clearInterval(amountIntv);
                         } else {
                             reqCount += 1;
                         }
