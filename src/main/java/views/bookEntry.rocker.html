@@ -2,9 +2,12 @@
 @import com.wallet.book.core.Category;
 @import java.util.List;
 
-@args (com.wallet.book.core.BookEntry bookEntry, List
-<Book> bookList, List
-    <Category> categoryList, String date, String user_id)
+@args (com.wallet.book.core.BookEntry bookEntry,
+        List <Book> bookList,
+        List <Category> categoryList,
+        String date,
+        String user_id,
+        String pictureTimeStamp)
 
         <html lang="en">
 
@@ -150,13 +153,18 @@
                         <label for="bookEntryPhoto">
                             Photo
                         </label>
+                        <input type="hidden" id="pictureTimeStamp" name="picture_timestamp"
+                               @if (bookEntry != null) {
+                               value="@?bookEntry.getPictureTimeStamp()"
+                               } else {
+                               value="@?pictureTimeStamp"
+                               }
+                        >
                         <input type="file" id="bookEntryPhoto" name="picture_id" accept=".jpg"
                                @if (bookEntry !=null) {
                                value="@?bookEntry.getPicture_id()"
                                }
                         >
-
-                        <input type="hidden" id="picture_timestamp" value="">
                         <canvas id="bookEntryShowPhoto" style="display: none;"></canvas>
                     </div>
                 </form>
@@ -165,7 +173,7 @@
                         <button type="button" class="btn btn-info" id="bookEntrySubmit">submit</button>
                     </div>
                     <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-info" onclick="location.href='/books'">cancle</button>
+                        <button type="button" class="btn btn-info" onclick="location.href='/books'">cancel</button>
                     </div>
                 </div>
             </div>

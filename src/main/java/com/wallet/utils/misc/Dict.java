@@ -16,6 +16,7 @@ public class Dict {
 	public static final String AMOUNT = "amount";
 	public static final String NOTE = "note";
 	public static final String DATA = "data";
+	public static final String PICTURE_TIMESTAMP = "picture_timestamp";
 	public static final String PICTURE_ID = "picture_id";
 	public static final String NAME = "name";
 	public static final String EDIT_TIME = "edit_time";

@@ -41,7 +41,7 @@ public class BookEntry {
 	}
 	
 	public BookEntry(String user_id, String create_user_id, String book_group_id, String category_group_id
-			, Date event_date, long amount, String note, String picture_id) throws JSONException {
+			, Date event_date, long amount, String note, String pictureTimeStamp, String picture_id) throws JSONException {
 		this.setId(user_id + TimeUtils.getUniqueTimeStampInMS());
 		this.setUser_id(user_id);
 		this.setCreate_user_id(create_user_id);
@@ -52,17 +52,18 @@ public class BookEntry {
 		this.setAmount(amount);
 		this.setEdit_time(new Date());
 
-		this.data = new BookEntryData(new Date(), note, picture_id);
+		this.data = new BookEntryData(new Date(), note, pictureTimeStamp, picture_id);
 	}
 
 	public void update(String book_group_id, String category_group_id, Date event_date, long amount, String note
-			, String picture_id) {
+			, String pictureTimeStamp, String picture_id) {
 		this.setBook_group_id(book_group_id);
 		this.setCategory_group_id(category_group_id);
 		this.setAmount(amount);
 		this.setEvent_date(event_date);
 
 		this.setNote(note);
+		this.setPictureTimeStamp(pictureTimeStamp);
 		this.setPicture_id(picture_id);
 	}
 
@@ -164,6 +165,14 @@ public class BookEntry {
 
 	public void setNote(String note) {
 		this.data.setNote(note);
+	}
+
+	public String getPictureTimeStamp() {
+		return data.getPictureTimeStamp();
+	}
+
+	public void setPictureTimeStamp(String pictureTimeStamp) {
+		this.data.setPictureTimeStamp(pictureTimeStamp);
 	}
 
 	public String getPicture_id() {

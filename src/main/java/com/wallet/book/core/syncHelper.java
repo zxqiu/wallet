@@ -73,7 +73,7 @@ public class syncHelper {
             if (fingerPrintMap.containsKey(group_id)) {
                 BookEntry tmp = fingerPrintMap.get(group_id);
                 tmp.update(entry.getBook_group_id(), entry.getCategory_group_id(), entry.getEvent_date()
-                        , entry.getAmount(), entry.getNote(), entry.getPicture_id());
+                        , entry.getAmount(), entry.getNote(), entry.getPictureTimeStamp(), entry.getPicture_id());
                 bookEntryDAOC.updateByID(tmp);
             } else {
                 entry.setUser_id(target_user_id);

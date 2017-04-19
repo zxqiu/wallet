@@ -30,6 +30,7 @@ import com.wallet.book.dao.BookDAOConnector;
 import com.wallet.login.core.User;
 import com.wallet.login.dao.UserDAOConnector;
 import com.wallet.login.resource.SessionResource;
+import com.wallet.utils.misc.TimeUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -138,12 +139,15 @@ public class BookEntryResource {
             }
         }
 
+        String pictureTimeStamp = Long.toString(TimeUtils.getUniqueTimeStampInMS());
+
         return Response.ok()
                 .entity(views.bookEntry.template(bookEntry
                         , bookDAOC.getByUserID(user_id)
                         , categoryDAOC.getByUserID(user_id)
                         , date
                         , user_id
+                        , pictureTimeStamp
                 ))
                 .build();
     }
@@ -167,6 +171,7 @@ public class BookEntryResource {
                                 @FormParam(Dict.CATEGORY_NAME) String category_name,
                                 @FormParam(Dict.CATEGORY_ID) String category_id,
                                 @FormParam(Dict.NOTE) String note,
+                                @FormParam(Dict.PICTURE_TIMESTAMP) String picture_ts,
                                 @FormParam(Dict.PICTURE_ID) String picture_id,
                                 @CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
         String user_id = ApiUtils.getUserIDFromCookie(cookie);
@@ -176,7 +181,8 @@ public class BookEntryResource {
 
         logger_.info("insertentry request : id:" + id + ", book_id:" + book_id + ", event_date:" + event_date
                 + ", amount_double:" + amount_double + ", category_name:" + category_name + ", category_id:"
-                + category_id + ", note:" + note + ", picture_id:" + picture_id + ".");
+                + category_id + ", note:" + note + ", picture_timestamp:" + picture_ts + ", picture_id:"
+                + picture_id + ".");
 
         long amount = (long) (amount_double * 100);
         Book book = null;
@@ -253,7 +259,7 @@ public class BookEntryResource {
                 logger_.info("Update book item : " + bookEntry.getId());
                 if (bookEntry.getBook_group_id().equals(book.getGroup_id())) {
                     bookEntry.update(book.getGroup_id(), category.getGroup_id(), sdf.parse(event_date), amount, note
-                            , picture_id);
+                            , picture_ts, picture_id);
                     bookEntryDAOC.updateByID(bookEntry);
                     // Update if book id is not changed.
                     syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_ACTION.UPDATE);
@@ -261,13 +267,13 @@ public class BookEntryResource {
                     // Re-insert if book id is changed.
                     syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_ACTION.DELETE);
                     bookEntry.update(book.getGroup_id(), category.getGroup_id(), sdf.parse(event_date), amount, note
-                            , picture_id);
+                            , picture_ts, picture_id);
                     //bookEntryDAOC.insert(bookEntry);
                     syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_ACTION.ADD);
                 }
             } else {
                 bookEntry = new BookEntry(user_id, user_id, book.getGroup_id(), category.getGroup_id()
-                        , sdf.parse(event_date), amount, note, picture_id);
+                        , sdf.parse(event_date), amount, note, picture_ts, picture_id);
                 logger_.info("Insert new book item : " + bookEntry.getId());
                 //bookEntryDAOC.insert(bookEntry); // remove this to avoid duplication
                 syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_ACTION.ADD);

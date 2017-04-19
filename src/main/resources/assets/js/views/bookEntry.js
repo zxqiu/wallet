@@ -102,7 +102,7 @@ $(document).ready(function () {
     api.getAllBook(user_id);
 
     var pictureID = document.getElementById("bookEntryPhoto").getAttribute("value");
-    var pictureTs = document.getElementById("picture_timestamp").getAttribute("value");
+    var pictureTs = document.getElementById("pictureTimeStamp").getAttribute("value");
 
     api.setGetBookEntryPictureSuccessCallback(function (data) {
         var img = new Image();
@@ -228,9 +228,6 @@ $('#bookEntryDelete').on('click', function () {
 });
 
 $("#bookEntryPhoto").on("change", function (e) {
-    document.getElementById("bookEntryAmount").value = "";
-    //document.getElementById("picture_timestamp").value = Math.floor(Date.now() / 1000);
-    $("#picture_timestamp").val(Math.floor(Date.now() / 1000));
     var canvas = document.getElementById("bookEntryShowPhoto");
     var ctx = canvas.getContext("2d");
     ctx.clearRect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
@@ -294,7 +291,7 @@ $("#bookEntryPhoto").on("change", function (e) {
         img.src = event.target.result;
 
         var newImgData = compress(img, e.target.files[0].size, 300, "jpg");
-        var pictureTs = document.getElementById("picture_timestamp").value;
+        var pictureTs = document.getElementById("pictureTimeStamp").value;
         api.setPostBookEntryPictureSuccessCallback(function (data) {
             var reqCount = 0;
 
