@@ -10,7 +10,7 @@ import java.util.List;
  * Created by zxqiu on 4/6/17.
  */
 public class BookLogData implements Serializable, Serializer<BookLogData> {
-    static final long serialVersionUID = -2540990340508039435L;
+    static final long serialVersionUID = -4450997690508038751L;
 
     private String note;
 

@@ -1,8 +1,8 @@
 package com.wallet.book.core;
 
-import com.wallet.book.dao.BookDAOConnector;
+import com.wallet.book.dao.BookConnector;
 import com.wallet.book.dao.BookEntryConnector;
-import com.wallet.book.dao.CategoryDAOConnector;
+import com.wallet.book.dao.CategoryConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,16 +15,16 @@ import java.util.List;
 public class syncHelper {
     private static final Logger logger_ = LoggerFactory.getLogger(syncHelper.class);
 
-    private static BookDAOConnector bookDAOC = null;
+    private static BookConnector bookDAOC = null;
     private static BookEntryConnector bookEntryConnector = null;
-    private static CategoryDAOConnector categoryDAOC = null;
+    private static CategoryConnector categoryDAOC = null;
 
     public enum SYNC_ACTION {ADD, DELETE, UPDATE}
 
     public static void init() throws Exception {
-        bookDAOC = BookDAOConnector.instance();
+        bookDAOC = BookConnector.instance();
         bookEntryConnector = BookEntryConnector.instance();
-        categoryDAOC = CategoryDAOConnector.instance();
+        categoryDAOC = CategoryConnector.instance();
     }
 
     public static void syncBook(Book book) throws Exception {

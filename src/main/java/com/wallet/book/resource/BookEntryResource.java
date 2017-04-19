@@ -12,8 +12,9 @@ import javax.ws.rs.core.Response;
 import com.wallet.book.core.Book;
 import com.wallet.book.core.BookEntry;
 import com.wallet.book.core.syncHelper;
-import com.wallet.book.dao.BookDAOConnector;
+import com.wallet.book.dao.BookConnector;
 import com.wallet.book.dao.BookEntryConnector;
+import com.wallet.book.dao.CategoryConnector;
 import com.wallet.login.core.User;
 import com.wallet.login.dao.UserDAOConnector;
 import com.wallet.login.resource.SessionResource;
@@ -22,7 +23,6 @@ import org.slf4j.LoggerFactory;
 
 import com.codahale.metrics.annotation.Timed;
 import com.wallet.book.core.Category;
-import com.wallet.book.dao.CategoryDAOConnector;
 import com.wallet.login.dao.SessionDAOConnector;
 import com.wallet.utils.misc.ApiUtils;
 import com.wallet.utils.misc.Dict;
@@ -32,15 +32,15 @@ public class BookEntryResource {
 	private static final Logger logger_ = LoggerFactory.getLogger(BookEntryResource.class);
 	private static final int bookEntrysEachLine = 4;
 
-	private BookDAOConnector bookDAOC = null;
+	private BookConnector bookDAOC = null;
 	private BookEntryConnector bookEntryConnector = null;
-	private CategoryDAOConnector categoryDAOC = null;
+	private CategoryConnector categoryDAOC = null;
 	private UserDAOConnector userDAOC = null;
 
 	public BookEntryResource() throws Exception {
-	    this.bookDAOC = BookDAOConnector.instance();
+	    this.bookDAOC = BookConnector.instance();
 		this.bookEntryConnector = BookEntryConnector.instance();
-		this.categoryDAOC = CategoryDAOConnector.instance();
+		this.categoryDAOC = CategoryConnector.instance();
 		this.userDAOC = UserDAOConnector.instance();
 	}
 

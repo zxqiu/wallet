@@ -4,9 +4,9 @@ import com.codahale.metrics.annotation.Timed;
 import com.google.gson.Gson;
 import com.wallet.book.core.Book;
 import com.wallet.book.core.syncHelper;
-import com.wallet.book.dao.BookDAOConnector;
+import com.wallet.book.dao.BookConnector;
 import com.wallet.book.dao.BookEntryConnector;
-import com.wallet.book.dao.CategoryDAOConnector;
+import com.wallet.book.dao.CategoryConnector;
 import com.wallet.login.core.User;
 import com.wallet.login.dao.SessionDAOConnector;
 import com.wallet.login.dao.UserDAOConnector;
@@ -33,16 +33,16 @@ import java.util.Map;
 public class BookResource {
 	private static final Logger logger_ = LoggerFactory.getLogger(BookResource.class);
 
-	private BookDAOConnector bookDAOC = null;
+	private BookConnector bookDAOC = null;
 	private BookEntryConnector bookEntryConnector = null;
-	private CategoryDAOConnector categoryDAOC = null;
+	private CategoryConnector categoryDAOC = null;
 	private SessionDAOConnector sessionDAOC = null;
 	private UserDAOConnector userDAOC = null;
 
 	public BookResource() throws Exception {
-		this.bookDAOC = BookDAOConnector.instance();
+		this.bookDAOC = BookConnector.instance();
 		this.bookEntryConnector = BookEntryConnector.instance();
-		this.categoryDAOC = CategoryDAOConnector.instance();
+		this.categoryDAOC = CategoryConnector.instance();
 		this.sessionDAOC = SessionDAOConnector.instance();
 		this.userDAOC = UserDAOConnector.instance();
 	}

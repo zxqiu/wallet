@@ -1,6 +1,7 @@
 package com.wallet.book.core;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.wallet.utils.misc.TimeUtils;
 
 import java.util.Date;
 
@@ -8,12 +9,11 @@ import java.util.Date;
  * Created by zxqiu on 4/17/17.
  */
 public class BookLog {
-
     public enum BOOK_LOG_OPERATION {ADD, DELETE, UPDATE};
     public enum BOOK_LOG_TYPE {BOOK, BOOK_ENTRY, CATEGORY};
 
     @JsonProperty
-    private String log_id;
+    private String id;
 
     @JsonProperty
     private Date create_time;
@@ -25,41 +25,35 @@ public class BookLog {
     private String book_group_id;
 
     @JsonProperty
-    private String category_group_id;
-
-    @JsonProperty
     private String book_entry_group_id;
 
     @JsonProperty
-    private BOOK_LOG_OPERATION operation;
+    private String category_group_id;
 
     @JsonProperty
-    private BOOK_LOG_TYPE type;
+    private String operation;
+
+    @JsonProperty
+    private String type;
 
     @JsonProperty
     private BookLogData data;
 
-    public BookLog(String log_id, Date create_time, String user_id, String book_group_id, String category_group_id
-            , String book_entry_group_id, BOOK_LOG_OPERATION operation, BOOK_LOG_TYPE type, String note) {
+    public BookLog() {}
 
-        this.log_id = log_id;
-        this.create_time = create_time;
+    public BookLog(String user_id, String book_group_id, String book_entry_group_id
+            , String category_group_id, BOOK_LOG_OPERATION operation, BOOK_LOG_TYPE type, String note) {
+
+        this.id = user_id + TimeUtils.getUniqueTimeStampInMS();
+        this.create_time = new Date();
         this.user_id = user_id;
         this.book_group_id = book_group_id;
         this.category_group_id = category_group_id;
         this.book_entry_group_id = book_entry_group_id;
-        this.operation = operation;
-        this.type = type;
+        this.operation = operation.name();
+        this.type = type.name();
 
         this.data = new BookLogData(note);
-    }
-
-    public String getLog_id() {
-        return log_id;
-    }
-
-    public void setLog_id(String log_id) {
-        this.log_id = log_id;
     }
 
     public Date getCreate_time() {
@@ -103,11 +97,11 @@ public class BookLog {
     }
 
     public BOOK_LOG_OPERATION getOperation() {
-        return operation;
+        return BOOK_LOG_OPERATION.valueOf(operation);
     }
 
     public void setOperation(BOOK_LOG_OPERATION operation) {
-        this.operation = operation;
+        this.operation = operation.name();
     }
 
     public BookLogData getData() {
@@ -119,11 +113,11 @@ public class BookLog {
     }
 
     public BOOK_LOG_TYPE getType() {
-        return type;
+        return BOOK_LOG_TYPE.valueOf(type);
     }
 
     public void setType(BOOK_LOG_TYPE type) {
-        this.type = type;
+        this.type = type.name();
     }
 
     public String getNote() {
@@ -138,5 +132,13 @@ public class BookLog {
             data = new BookLogData();
         }
         data.setNote(note);
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

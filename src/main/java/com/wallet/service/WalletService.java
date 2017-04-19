@@ -1,6 +1,7 @@
 package com.wallet.service;
 
 import com.fizzed.rocker.runtime.RockerRuntime;
+import com.wallet.book.core.BookLog;
 import com.wallet.book.core.syncHelper;
 import com.wallet.book.dao.*;
 import com.wallet.book.resource.BookEntryResource;
@@ -61,6 +62,7 @@ public class WalletService extends Application<WalletConfiguration> {
 	    
 	    final UserDAO userDAO = jdbi.onDemand(UserDAO.class);
 	    final SessionDAO sessionDAO = jdbi.onDemand(SessionDAO.class);
+		final BookLogDAO bookLogDAO = jdbi.onDemand(BookLogDAO.class);
 	    final BookDAO bookDAO = jdbi.onDemand(BookDAO.class);
 	    final BookEntryDAO bookEntryDAO = jdbi.onDemand(BookEntryDAO.class);
 	    final CategoryDAO categoryDAO = jdbi.onDemand(CategoryDAO.class);
@@ -74,18 +76,20 @@ public class WalletService extends Application<WalletConfiguration> {
 
 	    UserDAOConnector.init(userDAO);
 	    SessionDAOConnector.init(sessionDAO);
-	    BookDAOConnector.init(bookDAO);
+		BookLogConnector.init(bookLogDAO);
+	    BookConnector.init(bookDAO);
 	    BookEntryConnector.init(bookEntryDAO);
-	    CategoryDAOConnector.init(categoryDAO);
+	    CategoryConnector.init(categoryDAO);
 		TinyUrlDAOConnector.init(tinyUrlDAO);
 
 		BookEntryCache.test();
 
 	    UserDAOConnector.test();
 	    SessionDAOConnector.test();
-		BookDAOConnector.test();
+	    BookLogConnector.test();
+		BookConnector.test();
 	    BookEntryConnector.test();
-	    CategoryDAOConnector.test();
+	    CategoryConnector.test();
 	    TinyUrlDAOConnector.test();
 
 	    environment.jersey().register(new UserResource());

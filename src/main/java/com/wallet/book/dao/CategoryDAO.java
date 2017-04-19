@@ -17,9 +17,9 @@ public interface CategoryDAO {
 	
 	@SqlUpdate("create table if not exists " + TABLE_NAME + " ("
 			+ "`" + Dict.ID + "` varchar(192) not null unique,"
-			+ "`" + Dict.GROUP_ID + "` varchar(64) not null,"
+			+ "`" + Dict.GROUP_ID + "` varchar(192) not null,"
 			+ "`" + Dict.USER_ID + "` varchar(64) not null,"
-			+ "`" + Dict.BOOK_GROUP_ID + "` varchar(64) not null,"
+			+ "`" + Dict.BOOK_GROUP_ID + "` varchar(192) not null,"
 			+ "`" + Dict.NAME + "` varchar(64) not null,"
 			+ "`" + Dict.DATA + "` varbinary(60000),"
 			+ "primary key (`" + Dict.ID + "`),"

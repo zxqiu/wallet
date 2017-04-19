@@ -21,7 +21,7 @@ public interface BookDAO {
 			+ "`" + Dict.CREATE_USER_ID + "` varchar(64) not null,"
 			+ "`" + Dict.NAME + "` varchar(64) not null,"
 			+ "`" + Dict.EDIT_TIME + "` datetime not null,"
-			+ "`" + Dict.GROUP_ID + "` varchar(64) not null,"
+			+ "`" + Dict.GROUP_ID + "` varchar(192) not null,"
 			+ "`" + Dict.DATA + "` varbinary(60000),"
 			+ "primary key (`" + Dict.ID + "`),"
 			+ "unique key `book_unique_combined` (`" + Dict.USER_ID + "`,`" + Dict.NAME + "`),"
@@ -131,11 +131,6 @@ public interface BookDAO {
 	List<Book> findByNameAndCreateUserID(
 			@Bind(Dict.NAME) String name,
 			@Bind(Dict.CREATE_USER_ID) String create_user_id
-	);
-
-	@SqlQuery("select " + Dict.BOOK_GROUP_ID + " from " + TABLE_NAME + " where " + Dict.ID + " = :" + Dict.ID)
-	List<String> findGroupIDByID(
-			@Bind(Dict.ID) String id
 	);
 
 	@SqlUpdate("delete from " + TABLE_NAME + " where " + Dict.USER_ID + " = :" + Dict.USER_ID)

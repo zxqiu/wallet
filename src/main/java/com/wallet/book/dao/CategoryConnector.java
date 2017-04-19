@@ -11,39 +11,39 @@ import org.slf4j.LoggerFactory;
 
 import com.wallet.book.core.Category;
 
-public class CategoryDAOConnector {
+public class CategoryConnector {
 	private static Lock createLock_ = new ReentrantLock();
-	private static final Logger logger_ = LoggerFactory.getLogger(CategoryDAOConnector.class);
+	private static final Logger logger_ = LoggerFactory.getLogger(CategoryConnector.class);
 	
 	private static CategoryDAO categoryDAO = null;
-	private static CategoryDAOConnector instance_ = null;
+	private static CategoryConnector instance_ = null;
 	
 	public static final String TABLE_NAME = "category_table";
 
-	public static CategoryDAOConnector instance() throws Exception {
+	public static CategoryConnector instance() throws Exception {
 		if ( instance_ == null )
 		{
-			CategoryDAOConnector.createLock_.lock();
+			CategoryConnector.createLock_.lock();
 			try
 			{
 				
-				instance_ = new CategoryDAOConnector();
+				instance_ = new CategoryConnector();
 			}
 			finally
 			{
-				CategoryDAOConnector.createLock_.unlock();
+				CategoryConnector.createLock_.unlock();
 			}
 		}
 		
 		return instance_;
 	}
 	
-	private CategoryDAOConnector() throws Exception {
+	private CategoryConnector() throws Exception {
 		this.createTable();
 	}
 	
 	public static void init(CategoryDAO categoryDAO) {
-		CategoryDAOConnector.categoryDAO = categoryDAO;
+		CategoryConnector.categoryDAO = categoryDAO;
 	}
 	
 	private void createTable() throws Exception {
@@ -130,35 +130,35 @@ public class CategoryDAOConnector {
 	public static void test() throws Exception {
 		Category category = new Category("admin", "test_group", "test_name", "#FFFFFF");
 		
-		logger_.info("CategoryDAOConnector test ...");
+		logger_.info("CategoryConnector test ...");
 		
 		logger_.info("1. insert");
 		
-		CategoryDAOConnector.instance().insert(category);
-		if (CategoryDAOConnector.instance().getByUserID("admin").isEmpty()) {
-			logger_.error("CategoryDAOConnector test failed!");
-			throw new Exception("CategoryDAOConnector test failed!");
+		CategoryConnector.instance().insert(category);
+		if (CategoryConnector.instance().getByUserID("admin").isEmpty()) {
+			logger_.error("CategoryConnector test failed!");
+			throw new Exception("CategoryConnector test failed!");
 		}
 		
 		logger_.info("2. update");
 		
 		category.setPicture_id("#FFFFFF");
-		CategoryDAOConnector.instance().updateByID(category);
-		List<Category> category2 = CategoryDAOConnector.instance().getByID(category.getId());
+		CategoryConnector.instance().updateByID(category);
+		List<Category> category2 = CategoryConnector.instance().getByID(category.getId());
 		if (category2.isEmpty()) {
-			logger_.error("CategoryDAOConnector test failed!");
-			throw new Exception("CategoryDAOConnector test failed!");
+			logger_.error("CategoryConnector test failed!");
+			throw new Exception("CategoryConnector test failed!");
 		}
 		logger_.info("updated picture id : " + category2.get(category2.size() - 1).getPicture_id());
 		
 		logger_.info("3. delete");
 
-		CategoryDAOConnector.instance().deleteByID(category.getId());
-		if (!CategoryDAOConnector.instance().getByID(category.getId()).isEmpty()) {
-			logger_.error("CategoryDAOConnector test failed!");
-			throw new Exception("CategoryDAOConnector test failed!");
+		CategoryConnector.instance().deleteByID(category.getId());
+		if (!CategoryConnector.instance().getByID(category.getId()).isEmpty()) {
+			logger_.error("CategoryConnector test failed!");
+			throw new Exception("CategoryConnector test failed!");
 		}
 
-		logger_.info("CategoryDAOConnector test passed");
+		logger_.info("CategoryConnector test passed");
 	}
 }

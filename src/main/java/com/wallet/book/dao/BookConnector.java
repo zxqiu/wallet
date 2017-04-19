@@ -9,42 +9,42 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class BookDAOConnector {
+public class BookConnector {
 	private static Lock createLock_ = new ReentrantLock();
-	private static final Logger logger_ = LoggerFactory.getLogger(BookDAOConnector.class);
+	private static final Logger logger_ = LoggerFactory.getLogger(BookConnector.class);
 
 	private static BookDAO bookDAO = null;
-	private static BookDAOConnector instance_ = null;
+	private static BookConnector instance_ = null;
 
 	public static final String TABLE_NAME = "book_table";
 
-	public static BookDAOConnector instance() throws Exception {
+	public static BookConnector instance() throws Exception {
 		if ( instance_ == null )
 		{
-			BookDAOConnector.createLock_.lock();
+			BookConnector.createLock_.lock();
 			try
 			{
 
-				instance_ = new BookDAOConnector();
+				instance_ = new BookConnector();
 			}
 			finally
 			{
-				BookDAOConnector.createLock_.unlock();
+				BookConnector.createLock_.unlock();
 			}
 		}
 
 		return instance_;
 	}
 
-	private BookDAOConnector() throws Exception {
+	private BookConnector() throws Exception {
 		if (bookDAO == null) {
-			throw new Exception("BookDAOConnector not initialized");
+			throw new Exception("BookConnector not initialized");
 		}
 		this.createTable();
 	}
 	
 	public static void init(BookDAO bookDAO) {
-		BookDAOConnector.bookDAO = bookDAO;
+		BookConnector.bookDAO = bookDAO;
 	}
 	
 	private void createTable() {
@@ -78,10 +78,6 @@ public class BookDAOConnector {
 
 	public List<Book> getByNameAndCreateUserID(String name, String create_user_id) throws Exception {
 		return bookDAO.findByNameAndCreateUserID(name, create_user_id);
-	}
-
-	public List<String> getGroupIDByID(String id) {
-		return bookDAO.findGroupIDByID(id);
 	}
 
 	public void insert(Book book) throws Exception {
@@ -119,34 +115,34 @@ public class BookDAOConnector {
 		Book book = new Book("admin", "admin", "name", new Date()
 				, "photo");
 		
-		logger_.info("BookDAOConnector test ...");
+		logger_.info("BookConnector test ...");
 		
 		logger_.info("1. insert");
 		
-		BookDAOConnector.instance().insert(book);
-		if (BookDAOConnector.instance().getByID(book.getId()).isEmpty()) {
-			logger_.error("Error BookDAOConnector test failed");
-			throw new Exception("BookDAOConnector test failed");
+		BookConnector.instance().insert(book);
+		if (BookConnector.instance().getByID(book.getId()).isEmpty()) {
+			logger_.error("Error BookConnector test failed");
+			throw new Exception("BookConnector test failed");
 		}
 		
 		logger_.info("2. update");
 		
 		book.setPicture_id("nooooooote");
-		BookDAOConnector.instance().update(book);
-		if (BookDAOConnector.instance().getByNameAndCreateUserID(book.getName(), book.getCreate_user_id()).isEmpty()) {
-			logger_.error("Error BookDAOConnector test failed");
-			throw new Exception("BookDAOConnector test failed");
+		BookConnector.instance().update(book);
+		if (BookConnector.instance().getByNameAndCreateUserID(book.getName(), book.getCreate_user_id()).isEmpty()) {
+			logger_.error("Error BookConnector test failed");
+			throw new Exception("BookConnector test failed");
 		}
-		logger_.info("updated picture_id : " + BookDAOConnector.instance().getByID(book.getId()).get(0).getPicture_id());
+		logger_.info("updated picture_id : " + BookConnector.instance().getByID(book.getId()).get(0).getPicture_id());
 
 		logger_.info("3. delete");
 		
-		BookDAOConnector.instance().deleteByID(book.getId());
-		if (!BookDAOConnector.instance().getByID(book.getId()).isEmpty()) {
-			logger_.error("Error BookDAOConnector test failed");
-			throw new Exception("BookDAOConnector test failed");
+		BookConnector.instance().deleteByID(book.getId());
+		if (!BookConnector.instance().getByID(book.getId()).isEmpty()) {
+			logger_.error("Error BookConnector test failed");
+			throw new Exception("BookConnector test failed");
 		}
 		
-		logger_.info("BookDAOConnector test passed");
+		logger_.info("BookConnector test passed");
 	}
 }
