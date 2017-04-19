@@ -57,7 +57,6 @@ function getOcrAmountFromFile(text) {
         /* trim the string to after 'tax' */
         s = s.substring(r.index + 3);
     }
-    console.log(`s 111111111111111111111111111 ${s}`);
 
     /* Find first index of '*' */
     const starReg = new RegExp(/\*/);
@@ -65,7 +64,6 @@ function getOcrAmountFromFile(text) {
     if (r) {
         s = s.substring(0, r.index);
     }
-    console.log(`s 22222222222222222222222222 ${s}`);
 
     const totalReg = new RegExp(/[tT][oO][tT][aA][lL]/);
     r = s.match(totalReg);
@@ -73,7 +71,7 @@ function getOcrAmountFromFile(text) {
         s = s.substring(r.index + 5);
     }
 
-    console.log(`s 33333333333333333333333333 ${s}`);
+    //console.log(`s 33333333333333333333333333 ${s}`);
     const dotReg = new RegExp(/\./);
     var values = [];
     while (r = s.match(dotReg)) {
@@ -82,7 +80,6 @@ function getOcrAmountFromFile(text) {
             var c = s.charAt(i);
                 console.log(`start s.charAt(i) i = ${i} s.charAt(i) = ${c}`);
             if (c < '0' || c > '9') {
-                console.log(`enter !isNaN`);
                 start = i + 1;
                 break;
             }
@@ -115,15 +112,11 @@ function getOcrAmountFromFile(text) {
         max = Math.max(...values);
     }
 
-    console.log(`max ${values.length} ${max}`);
     return max;
 }
 
 function postTranslateResult(filename, text, ocrAmount) {
-    console.log(`postTranslateResult ${filename}`);
-    //const nameBuf = Buffer.from(filename, 'base64');
     const nameBuf = Buffer.from(filename, 'utf8');
-    console.log(`!!!!!!!!!!!!!!!!!!!!!! after decode postTranslateResult ${nameBuf}`);
 
     const delim = '#';
     const userIdx = nameBuf.indexOf(delim);
@@ -133,7 +126,6 @@ function postTranslateResult(filename, text, ocrAmount) {
     var url = buf.slice(0, urlIdx);
     buf = buf.slice(urlIdx + 1);
     const pictureTs = buf;
-    console.log(`!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ${user} ${url} ${pictureTs}`);
 
     const post_data = querystring.stringify({
         'compilation_level': 'ADVANCED_OPTIMIZATIONS',
@@ -160,7 +152,6 @@ function postTranslateResult(filename, text, ocrAmount) {
     });
 
     post_req.write(post_data);
-    console.log(`!!!!!!!!!!!!!!!!!!!!!! post_req write finish`);
     post_req.end();
 }
 
@@ -344,7 +335,6 @@ exports.saveResult = function saveResult (event) {
       const file = storage.bucket(bucketName).file(filename);
 
       var ocrAmount = getOcrAmountFromFile(payload.text);
-      console.log(`payload.text ${payload.text}`);
 
       postTranslateResult(payload.filename, payload.text, ocrAmount);
 

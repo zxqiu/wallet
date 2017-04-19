@@ -347,7 +347,6 @@ var APIs = {
                 data: param,
                 contentType: 'application/json',
                 success: function (data) {
-                    console.log("enter get picture success");
                     if (api_.getBookEntryPictureSuccess && typeof(api_.getBookEntryPictureSuccess) == "function") {
                         api_.getBookEntryPictureSuccess(data);
                     }

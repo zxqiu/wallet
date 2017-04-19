@@ -413,7 +413,6 @@ public class BookEntryResource {
         String key = userID + pictureTs;
         Double ocrAmount = 0.0;
         if (pictureOcrAmountMap.containsKey(key)) {
-            logger_.error("pictureOcrAmountMap contains key " + key);
             ocrAmount = pictureOcrAmountMap.get(key);
             pictureOcrAmountMap.remove(key);
         }
@@ -431,9 +430,7 @@ public class BookEntryResource {
     public Response postOcrAmount(@FormParam(Dict.USER_ID) String userID,
                                   @FormParam("picture_timestamp") String pictureTs,
                                   @FormParam("amount") String amount) throws Exception {
-        logger_.error("receive postOcrAmount!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! kangli amount " + amount + " user " + userID);
         String key = userID + pictureTs;
-        logger_.error("pictureOcrAmountMap put key " + key);
         pictureOcrAmountMap.put(key, Double.parseDouble(amount));
         return Response.status(200).build();
     }
