@@ -47,7 +47,7 @@ database:
   password: root
 
   # the JDBC URL
-  url: jdbc:mysql://127.0.0.1:3306/wallet?useSSL=false&serverTimezone=UTC
+  url: jdbc:mysql://127.0.0.1:3306/wallet?useSSL=false
 
   # any properties specific to your JDBC driver:
   properties:
