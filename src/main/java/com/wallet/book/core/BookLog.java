@@ -3,14 +3,32 @@ package com.wallet.book.core;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wallet.utils.misc.TimeUtils;
 
+import java.lang.reflect.Field;
 import java.util.Date;
 
 /**
  * Created by zxqiu on 4/17/17.
  */
 public class BookLog {
-    public enum BOOK_LOG_OPERATION {ADD, DELETE, UPDATE};
-    public enum BOOK_LOG_TYPE {BOOK, BOOK_ENTRY, CATEGORY};
+
+    public enum BOOK_LOG_OPERATION {ADD, DELETE, UPDATE}
+    public enum BOOK_LOG_TYPE {BOOK, BOOK_ENTRY, CATEGORY}
+    public enum BOOK_LOG_NOTE {
+        NONE("none"),
+        BY_ID("by ID"),
+        BY_GROUP_ID("by group ID");
+
+        BOOK_LOG_NOTE(String name) {
+            try {
+                Field fieldName = getClass().getSuperclass().getDeclaredField("name");
+                fieldName.setAccessible(true);
+                fieldName.set(this, name);
+                fieldName.setAccessible(false);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     @JsonProperty
     private String id;
@@ -22,36 +40,49 @@ public class BookLog {
     private String user_id;
 
     @JsonProperty
+    private String book_id;
+
+    @JsonProperty
     private String book_group_id;
+
+    @JsonProperty
+    private String book_entry_id;
 
     @JsonProperty
     private String book_entry_group_id;
 
     @JsonProperty
+    private String category_id;
+
+    @JsonProperty
     private String category_group_id;
 
     @JsonProperty
-    private String operation;
+    private BOOK_LOG_OPERATION operation;
 
     @JsonProperty
-    private String type;
+    private BOOK_LOG_TYPE type;
 
     @JsonProperty
     private BookLogData data;
 
     public BookLog() {}
 
-    public BookLog(String user_id, String book_group_id, String book_entry_group_id
-            , String category_group_id, BOOK_LOG_OPERATION operation, BOOK_LOG_TYPE type, String note) {
+    public BookLog(String user_id, String book_id, String book_group_id, String book_entry_id
+            , String book_entry_group_id, String category_id, String category_group_id
+            , BOOK_LOG_OPERATION operation, BOOK_LOG_TYPE type, BOOK_LOG_NOTE note) {
 
         this.id = user_id + TimeUtils.getUniqueTimeStampInMS();
         this.create_time = new Date();
         this.user_id = user_id;
+        this.book_id = book_id;
         this.book_group_id = book_group_id;
+        this.category_id = category_id;
         this.category_group_id = category_group_id;
+        this.book_entry_id = book_entry_id;
         this.book_entry_group_id = book_entry_group_id;
-        this.operation = operation.name();
-        this.type = type.name();
+        this.operation = operation;
+        this.type = type;
 
         this.data = new BookLogData(note);
     }
@@ -97,11 +128,11 @@ public class BookLog {
     }
 
     public BOOK_LOG_OPERATION getOperation() {
-        return BOOK_LOG_OPERATION.valueOf(operation);
+        return operation;
     }
 
     public void setOperation(BOOK_LOG_OPERATION operation) {
-        this.operation = operation.name();
+        this.operation = operation;
     }
 
     public BookLogData getData() {
@@ -113,21 +144,21 @@ public class BookLog {
     }
 
     public BOOK_LOG_TYPE getType() {
-        return BOOK_LOG_TYPE.valueOf(type);
+        return type;
     }
 
     public void setType(BOOK_LOG_TYPE type) {
-        this.type = type.name();
+        this.type = type;
     }
 
-    public String getNote() {
+    public BOOK_LOG_NOTE getNote() {
         if (data == null) {
             return null;
         }
         return data.getNote();
     }
 
-    public void setNote(String note) {
+    public void setNote(BOOK_LOG_NOTE note) {
         if (data == null) {
             data = new BookLogData();
         }
@@ -140,5 +171,29 @@ public class BookLog {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getBook_id() {
+        return book_id;
+    }
+
+    public void setBook_id(String book_id) {
+        this.book_id = book_id;
+    }
+
+    public String getBook_entry_id() {
+        return book_entry_id;
+    }
+
+    public void setBook_entry_id(String book_entry_id) {
+        this.book_entry_id = book_entry_id;
+    }
+
+    public String getCategory_id() {
+        return category_id;
+    }
+
+    public void setCategory_id(String category_id) {
+        this.category_id = category_id;
     }
 }

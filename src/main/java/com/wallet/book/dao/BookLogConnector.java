@@ -77,7 +77,7 @@ public class BookLogConnector {
 	}
 
 	public List<BookLog> getByCategoryGroupID(String category_group_id) throws Exception {
-		return bookLogDAO.findByCategoryGroupGroupID(category_group_id);
+		return bookLogDAO.findByCategoryGroupID(category_group_id);
 	}
 
 	public List<BookLog> getByBookGroupIDAndUserID(String book_group_id, String user_id) throws Exception {
@@ -86,8 +86,9 @@ public class BookLogConnector {
 
 	public void insert(BookLog bookLog) throws Exception {
 		try {
-			bookLogDAO.insert(bookLog.getId(), bookLog.getCreate_time(), bookLog.getUser_id(), bookLog.getBook_group_id()
-					, bookLog.getBook_entry_group_id(), bookLog.getCategory_group_id(), bookLog.getOperation().name()
+			bookLogDAO.insert(bookLog.getId(), bookLog.getCreate_time(), bookLog.getUser_id(), bookLog.getBook_id()
+					, bookLog.getBook_group_id(), bookLog.getBook_entry_id(), bookLog.getBook_entry_group_id()
+					, bookLog.getCategory_id(), bookLog.getCategory_group_id(), bookLog.getOperation().name()
 					, bookLog.getType().name(), bookLog.getData().toByteArray());
 		} catch (Exception e) {
 			if (e.getMessage().contains("Duplicate entry")) {
@@ -105,9 +106,9 @@ public class BookLogConnector {
 	}
 	
 	public static void test() throws Exception {
-		BookLog bookLog = new BookLog("admin", "test_book", "test_entry"
-				, "test_category", BookLog.BOOK_LOG_OPERATION.ADD, BookLog.BOOK_LOG_TYPE.BOOK
-				, "photo");
+		BookLog bookLog = new BookLog("admin", "test_book", "test_book", "test_entry"
+				, "test_entry", "test_category", "test_category"
+				, BookLog.BOOK_LOG_OPERATION.ADD, BookLog.BOOK_LOG_TYPE.BOOK, BookLog.BOOK_LOG_NOTE.BY_ID);
 		
 		logger_.info("BookLogConnector test ...");
 		

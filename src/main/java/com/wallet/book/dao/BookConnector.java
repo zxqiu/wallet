@@ -1,6 +1,8 @@
 package com.wallet.book.dao;
 
 import com.wallet.book.core.Book;
+import com.wallet.book.core.BookLog;
+import com.wallet.book.core.BookLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,6 +86,7 @@ public class BookConnector {
 		try {
 			bookDAO.insert(book.getId(), book.getUser_id(), book.getCreate_user_id(), book.getName()
 					, book.getEdit_time(), book.getGroup_id(), book.getData().toByteArray());
+			BookLogger.addBook(book.getUser_id(), book.getGroup_id(), BookLog.BOOK_LOG_NOTE.NONE.name());
 		} catch (Exception e) {
 			if (e.getMessage().contains("Duplicate entry")) {
 				logger_.info("Book already exists : " + book.getId());
@@ -97,28 +100,31 @@ public class BookConnector {
 	
 	public void update(Book book) throws Exception {
 		bookDAO.update(book.getId(), book.getName(), new Date(), book.getData().toByteArray());
+		BookLogger.updateBook(book.getUser_id(), book.getGroup_id(), BookLog.BOOK_LOG_NOTE.BY_ID.toString());
 	}
 
 	public void updateByGroupID(Book book) throws Exception {
 		bookDAO.updateByGroupID(book.getGroup_id(), book.getName(), new Date(), book.getData().toByteArray());
+		BookLogger.updateBook(book.getUser_id(), book.getGroup_id(), BookLog.BOOK_LOG_NOTE.BY_GROUP_ID.toString());
 	}
 
-	public void deleteByID(String id) throws Exception {
+	public void deleteByID(String user_id, String id) throws Exception {
 		bookDAO.deleteByID(id);
+		BookLogger.deleteBook(user_id, );
 	}
-	
+
 	public void deleteByUserID(String user_id) throws Exception {
 		bookDAO.deleteByUserID(user_id);;
 	}
-	
+
 	public static void test() throws Exception {
 		Book book = new Book("admin", "admin", "name", new Date()
 				, "photo");
-		
+
 		logger_.info("BookConnector test ...");
-		
+
 		logger_.info("1. insert");
-		
+
 		BookConnector.instance().insert(book);
 		if (BookConnector.instance().getByID(book.getId()).isEmpty()) {
 			logger_.error("Error BookConnector test failed");
@@ -137,7 +143,7 @@ public class BookConnector {
 
 		logger_.info("3. delete");
 		
-		BookConnector.instance().deleteByID(book.getId());
+		BookConnector.instance().deleteByID(book.getUser_id(), book.getId());
 		if (!BookConnector.instance().getByID(book.getId()).isEmpty()) {
 			logger_.error("Error BookConnector test failed");
 			throw new Exception("BookConnector test failed");

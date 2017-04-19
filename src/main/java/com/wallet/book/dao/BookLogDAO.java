@@ -16,13 +16,16 @@ public interface BookLogDAO {
 	
 	@SqlUpdate("create table if not exists " + TABLE_NAME + " ("
 			+ "`" + Dict.ID + "` varchar(192) not null unique,"
-			+ "`" + Dict.USER_ID + "` varchar(64) not null,"
-			+ "`" + Dict.BOOK_GROUP_ID + "` varchar(192) not null,"
-			+ "`" + Dict.BOOK_ENTRY_GROUP_ID + "` varchar(192) not null,"
-			+ "`" + Dict.CATEGORY_GROUP_ID + "` varchar(192) not null,"
 			+ "`" + Dict.CREATE_TIME + "` datetime not null,"
-			+ "`" + Dict.OPERATION + "` varchar(32) not null,"
-			+ "`" + Dict.TYPE + "` varchar(32) not null,"
+			+ "`" + Dict.USER_ID + "` varchar(64),"
+			+ "`" + Dict.BOOK_ID + "` varchar(192),"
+			+ "`" + Dict.BOOK_GROUP_ID + "` varchar(192),"
+			+ "`" + Dict.BOOK_ENTRY_ID + "` varchar(192),"
+			+ "`" + Dict.BOOK_ENTRY_GROUP_ID + "` varchar(192),"
+			+ "`" + Dict.CATEGORY_ID + "` varchar(192),"
+			+ "`" + Dict.CATEGORY_GROUP_ID + "` varchar(192),"
+			+ "`" + Dict.OPERATION + "` varchar(32),"
+			+ "`" + Dict.TYPE + "` varchar(32),"
 			+ "`" + Dict.DATA + "` varbinary(60000),"
 			+ "primary key (`" + Dict.ID + "`)"
 			+ ")ENGINE=InnoDB DEFAULT CHARSET=utf8 collate=utf8_unicode_ci;"
@@ -36,8 +39,11 @@ public interface BookLogDAO {
     		+ Dict.ID
 			+ ", " + Dict.CREATE_TIME
     		+ ", " + Dict.USER_ID
+			+ ", " + Dict.BOOK_ID
 			+ ", " + Dict.BOOK_GROUP_ID
+			+ ", " + Dict.BOOK_ENTRY_ID
 			+ ", " + Dict.BOOK_ENTRY_GROUP_ID
+			+ ", " + Dict.CATEGORY_ID
 			+ ", " + Dict.CATEGORY_GROUP_ID
 			+ ", " + Dict.OPERATION
 			+ ", " + Dict.TYPE
@@ -46,8 +52,11 @@ public interface BookLogDAO {
     		+ ":" + Dict.ID
 			+ ",:" + Dict.CREATE_TIME
 			+ ",:" + Dict.USER_ID
+			+ ",:" + Dict.BOOK_ID
 			+ ",:" + Dict.BOOK_GROUP_ID
+			+ ",:" + Dict.BOOK_ENTRY_ID
 			+ ",:" + Dict.BOOK_ENTRY_GROUP_ID
+			+ ",:" + Dict.CATEGORY_ID
 			+ ",:" + Dict.CATEGORY_GROUP_ID
 			+ ",:" + Dict.OPERATION
 			+ ",:" + Dict.TYPE
@@ -58,8 +67,11 @@ public interface BookLogDAO {
             @Bind(Dict.ID) String id
 			, @Bind(Dict.CREATE_TIME) Date create_time
             , @Bind(Dict.USER_ID) String user_id
+			, @Bind(Dict.BOOK_ID) String book_id
 			, @Bind(Dict.BOOK_GROUP_ID) String book_group_id
+			, @Bind(Dict.BOOK_ENTRY_ID) String book_entry_id
 			, @Bind(Dict.BOOK_ENTRY_GROUP_ID) String book_entry_group_id
+			, @Bind(Dict.CATEGORY_ID) String category_id
 			, @Bind(Dict.CATEGORY_GROUP_ID) String category_group_id
 			, @Bind(Dict.OPERATION) String operation
 			, @Bind(Dict.TYPE) String type
@@ -82,11 +94,23 @@ public interface BookLogDAO {
             @Bind(Dict.USER_ID) String user_id
     );
 
+	@SqlQuery("select * from " + TABLE_NAME + " where " + Dict.BOOK_ID + " = :" + Dict.BOOK_ID)
+	@Mapper(BookLogMapper.class)
+	List<BookLog> findByBookID(
+			@Bind(Dict.BOOK_ID) String book_id
+	);
+
 	@SqlQuery("select * from " + TABLE_NAME + " where " + Dict.BOOK_GROUP_ID + " = :" + Dict.BOOK_GROUP_ID)
 	@Mapper(BookLogMapper.class)
 	List<BookLog> findByBookGroupID(
             @Bind(Dict.BOOK_GROUP_ID) String book_group_id
     );
+
+	@SqlQuery("select * from " + TABLE_NAME + " where " + Dict.BOOK_ENTRY_ID + " = :" + Dict.BOOK_ENTRY_ID)
+	@Mapper(BookLogMapper.class)
+	List<BookLog> findByBookEntryID(
+			@Bind(Dict.BOOK_ENTRY_ID) String book_entry_id
+	);
 
 	@SqlQuery("select * from " + TABLE_NAME + " where " + Dict.BOOK_ENTRY_GROUP_ID + " = :" + Dict.BOOK_ENTRY_GROUP_ID)
     @Mapper(BookLogMapper.class)
@@ -94,9 +118,15 @@ public interface BookLogDAO {
             @Bind(Dict.BOOK_ENTRY_GROUP_ID) String book_entry_group_id
     );
 
+	@SqlQuery("select * from " + TABLE_NAME + " where " + Dict.CATEGORY_ID + " = :" + Dict.CATEGORY_ID)
+	@Mapper(BookLogMapper.class)
+	List<BookLog> findByCategoryID(
+			@Bind(Dict.CATEGORY_ID) String category_id
+	);
+
 	@SqlQuery("select * from " + TABLE_NAME + " where " + Dict.CATEGORY_GROUP_ID + " = :" + Dict.CATEGORY_GROUP_ID)
 	@Mapper(BookLogMapper.class)
-	List<BookLog> findByCategoryGroupGroupID(
+	List<BookLog> findByCategoryGroupID(
             @Bind(Dict.CATEGORY_GROUP_ID) String category_group_id
     );
 

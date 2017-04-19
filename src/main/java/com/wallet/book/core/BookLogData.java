@@ -12,12 +12,12 @@ import java.util.List;
 public class BookLogData implements Serializable, Serializer<BookLogData> {
     static final long serialVersionUID = -4450997690508038751L;
 
-    private String note;
+    private BookLog.BOOK_LOG_NOTE note;
 
     public BookLogData() {
     }
 
-    public BookLogData(String note) {
+    public BookLogData(BookLog.BOOK_LOG_NOTE note) {
         this.note = note;
     }
 
@@ -27,6 +27,8 @@ public class BookLogData implements Serializable, Serializer<BookLogData> {
         }
         ObjectInputStream ois = new ObjectInputStream(in);
         BookLogData bookLogData = deserialize(ois);
+
+        this.setNote(bookLogData.getNote());
 
         in.close();
     }
@@ -51,11 +53,11 @@ public class BookLogData implements Serializable, Serializer<BookLogData> {
         return bookLogData;
     }
 
-    public String getNote() {
+    public BookLog.BOOK_LOG_NOTE getNote() {
         return note;
     }
 
-    public void setNote(String note) {
+    public void setNote(BookLog.BOOK_LOG_NOTE note) {
         this.note = note;
     }
 }
