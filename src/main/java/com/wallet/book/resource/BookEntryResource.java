@@ -5,20 +5,12 @@ import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import com.google.gson.Gson;
 import org.apache.commons.codec.binary.Base64;
-
-import org.apache.commons.io.FileUtils;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
-import org.glassfish.jersey.media.multipart.FormDataMultiPart;
-import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
-
-import javax.ws.rs.core.StreamingOutput;
 
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -59,9 +51,8 @@ public class BookEntryResource {
     private CategoryDAOConnector categoryDAOC = null;
     private UserDAOConnector userDAOC = null;
 
-    /* google cloud storage buckets */
+    /* google cloud storage bucket */
     private final String IMAGE_BUCKET = "wallet-image";
-    private final String TEXT_BUCKET = "wallet-text";
 
     public BookEntryResource() throws Exception {
         this.bookDAOC = BookDAOConnector.instance();
