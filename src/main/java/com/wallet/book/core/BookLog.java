@@ -16,7 +16,8 @@ public class BookLog {
     public enum BOOK_LOG_NOTE {
         NONE("none"),
         BY_ID("by ID"),
-        BY_GROUP_ID("by group ID");
+        BY_GROUP_ID("by group ID"),
+        BY_USER_ID("by user ID");
 
         BOOK_LOG_NOTE(String name) {
             try {

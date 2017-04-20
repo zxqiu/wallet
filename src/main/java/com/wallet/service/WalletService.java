@@ -69,7 +69,7 @@ public class WalletService extends Application<WalletConfiguration> {
 	    final TinyUrlDAO tinyUrlDAO = jdbi.onDemand(TinyUrlDAO.class);
 
 	    if (isCleanup) {
-			cleanupDB(sessionDAO, bookDAO, bookEntryDAO, categoryDAO, userDAO, tinyUrlDAO);
+			cleanupDB(sessionDAO, bookLogDAO, bookDAO, bookEntryDAO, categoryDAO, userDAO, tinyUrlDAO);
 		}
 
 		BookEntryCache.init(bookEntryDAO);
@@ -109,7 +109,7 @@ public class WalletService extends Application<WalletConfiguration> {
 
 	}
 
-	private void cleanupDB(SessionDAO sessionDAO, BookDAO bookDAO, BookEntryDAO bookEntryDAO, CategoryDAO categoryDAO
+	private void cleanupDB(SessionDAO sessionDAO, BookLogDAO bookLogDAO, BookDAO bookDAO, BookEntryDAO bookEntryDAO, CategoryDAO categoryDAO
 			, UserDAO userDAO, TinyUrlDAO tinyUrlDAO) {
 	    logger_.info("Clean up all database");
 
@@ -117,11 +117,13 @@ public class WalletService extends Application<WalletConfiguration> {
 		bookDAO.dropTable();
 		bookEntryDAO.dropTable();
 		categoryDAO.dropTable();
+		bookLogDAO.dropTable();
 		userDAO.dropTable();
 		tinyUrlDAO.dropTable();
 
 		userDAO.createTable();
 		sessionDAO.createTable();
+		bookLogDAO.createTable();
 		bookDAO.createTable();
 		bookEntryDAO.createTable();
 		categoryDAO.createTable();

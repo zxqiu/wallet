@@ -194,7 +194,7 @@ public class BookResource {
 				List<Book> bookList = bookDAOC.getByID(id);
 				if (!bookList.isEmpty()) {
 					Book book = bookList.get(bookList.size() - 1);
-					bookDAOC.deleteByID(id);
+					bookDAOC.deleteByID(user_id, id);
 					bookEntryConnector.deleteByUserIDAndBookGroupID(book.getUser_id(), book.getGroup_id());
 					categoryDAOC.deleteByUserIDAndBookGroupID(book.getUser_id(), book.getGroup_id());
 

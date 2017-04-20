@@ -86,7 +86,7 @@ public class BookConnector {
 		try {
 			bookDAO.insert(book.getId(), book.getUser_id(), book.getCreate_user_id(), book.getName()
 					, book.getEdit_time(), book.getGroup_id(), book.getData().toByteArray());
-			BookLogger.addBook(book.getUser_id(), book.getGroup_id(), BookLog.BOOK_LOG_NOTE.NONE.name());
+			BookLogger.addBook(book.getUser_id(), book.getId(), book.getGroup_id(), BookLog.BOOK_LOG_NOTE.NONE);
 		} catch (Exception e) {
 			if (e.getMessage().contains("Duplicate entry")) {
 				logger_.info("Book already exists : " + book.getId());
@@ -100,21 +100,22 @@ public class BookConnector {
 	
 	public void update(Book book) throws Exception {
 		bookDAO.update(book.getId(), book.getName(), new Date(), book.getData().toByteArray());
-		BookLogger.updateBook(book.getUser_id(), book.getGroup_id(), BookLog.BOOK_LOG_NOTE.BY_ID.toString());
+		BookLogger.updateBook(book.getUser_id(), book.getId(), book.getGroup_id(), BookLog.BOOK_LOG_NOTE.BY_ID);
 	}
 
 	public void updateByGroupID(Book book) throws Exception {
 		bookDAO.updateByGroupID(book.getGroup_id(), book.getName(), new Date(), book.getData().toByteArray());
-		BookLogger.updateBook(book.getUser_id(), book.getGroup_id(), BookLog.BOOK_LOG_NOTE.BY_GROUP_ID.toString());
+		BookLogger.updateBook(book.getUser_id(), book.getId(), book.getGroup_id(), BookLog.BOOK_LOG_NOTE.BY_GROUP_ID);
 	}
 
 	public void deleteByID(String user_id, String id) throws Exception {
 		bookDAO.deleteByID(id);
-		BookLogger.deleteBook(user_id, );
+		BookLogger.deleteBook(user_id, id, "", BookLog.BOOK_LOG_NOTE.BY_ID);
 	}
 
 	public void deleteByUserID(String user_id) throws Exception {
-		bookDAO.deleteByUserID(user_id);;
+		bookDAO.deleteByUserID(user_id);
+		BookLogger.deleteBook(user_id, "", "", BookLog.BOOK_LOG_NOTE.BY_USER_ID);
 	}
 
 	public static void test() throws Exception {
