@@ -13,11 +13,13 @@ public class BookEntryData implements Serializable, Serializer<BookEntryData> {
 
     private Date create_time;
     private String note;
+    private String pictureTimeStamp;
     private String picture_id;
 
-    public BookEntryData(Date create_time, String note, String picture_id) {
+    public BookEntryData(Date create_time, String note, String pictureTimeStamp, String picture_id) {
         this.setCreate_time(create_time);
         this.setNote(note);
+        this.setPictureTimeStamp(pictureTimeStamp);
         this.setPicture_id(picture_id);
     }
 
@@ -30,6 +32,7 @@ public class BookEntryData implements Serializable, Serializer<BookEntryData> {
 
         this.setCreate_time(bookEntryData.getCreate_time());
         this.setNote(bookEntryData.getNote());
+        this.setPictureTimeStamp(bookEntryData.getPictureTimeStamp());
         this.setPicture_id(bookEntryData.getPicture_id());
     }
 
@@ -71,6 +74,14 @@ public class BookEntryData implements Serializable, Serializer<BookEntryData> {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public String getPictureTimeStamp() {
+        return pictureTimeStamp;
+    }
+
+    public void setPictureTimeStamp(String pictureTimeStamp) {
+        this.pictureTimeStamp = pictureTimeStamp;
     }
 
     public String getPicture_id() {
