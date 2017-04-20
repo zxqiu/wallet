@@ -126,8 +126,8 @@ public class BookResource {
 				bookDAOC.insert(book);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
 			logger_.error("Error : failed to insert or update book : " + e.getMessage());
+			e.printStackTrace();
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.INTERNAL_ERROR)).build();
 		}
 
@@ -233,8 +233,8 @@ public class BookResource {
 		try {
 			categories = bookDAOC.getByUserID(user_id);
 		} catch (Exception e) {
-			e.printStackTrace();
 			logger_.error("Error : failed to get categories when get book for " + user_id + " : " + e.getMessage());
+			e.printStackTrace();
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.INTERNAL_ERROR)).build();
 		}
 		
@@ -245,8 +245,8 @@ public class BookResource {
 			try {
 				jsonArray.put(new JSONObject(gson.toJson(book)));
 			} catch (JSONException e) {
-				e.printStackTrace();
 				logger_.error("Error : failed to build book response JSON array : " + book.toString() + " error message : " + e.getMessage());
+				e.printStackTrace();
 				return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.INTERNAL_ERROR)).build();
 			}
 		}
@@ -327,6 +327,7 @@ public class BookResource {
 			bookDAOC.insert(book);
 		} catch (Exception e) {
 			logger_.error("receive book failed due to failed to insert new book : " + book.toString());
+			e.printStackTrace();
 			return Response
 					.serverError()
 					.entity(ApiUtils
