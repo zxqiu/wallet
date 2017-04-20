@@ -116,18 +116,18 @@ public class BookResource {
 				if (!bookList.isEmpty()) {
 					Book book = bookList.get(bookList.size() - 1);
 					book.update(name, new Date(), picture_id);
-					logger_.info("Update book " + book.getName() + " for user " + user_id);
+					logger_.info("Update book : " + book.toString());
 					bookDAOC.update(book);
 					syncHelper.syncBook(book);
 				}
 			} else {
 				Book book = new Book(user_id, user_id, name, new Date(), picture_id);
-				logger_.info("Insert book " + book.getName() + " for user " + user_id);
+				logger_.info("Insert book : " + book.toString());
 				bookDAOC.insert(book);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
 			logger_.error("Error : failed to insert or update book : " + e.getMessage());
+			e.printStackTrace();
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.INTERNAL_ERROR)).build();
 		}
 
@@ -175,7 +175,7 @@ public class BookResource {
 								, new Date()
 								, jsonObject.getString(Dict.PICTURE_ID)
 						);
-						logger_.info("Book list Update book : " + jsonObject.toString());
+						logger_.info("Book list Update book : " + book.toString());
 						bookDAOC.update(book);
 						syncHelper.syncBook(book);
 					}
@@ -186,7 +186,7 @@ public class BookResource {
 							, new Date()
 							, jsonObject.getString(Dict.PICTURE_ID)
 					);
-					logger_.info("Book list insert new book : " + jsonObject.toString());
+					logger_.info("Book list insert new book : " + book.toString());
 					bookDAOC.insert(book);
 				}
 			} else if (jsonObject.getString(Dict.ACTION).equals(Dict.DELETE)) {
@@ -194,7 +194,7 @@ public class BookResource {
 				List<Book> bookList = bookDAOC.getByID(id);
 				if (!bookList.isEmpty()) {
 					Book book = bookList.get(bookList.size() - 1);
-					bookDAOC.deleteByID(id);
+					bookDAOC.deleteByID(user_id, id);
 					bookEntryConnector.deleteByUserIDAndBookGroupID(book.getUser_id(), book.getGroup_id());
 					categoryDAOC.deleteByUserIDAndBookGroupID(book.getUser_id(), book.getGroup_id());
 
@@ -233,8 +233,8 @@ public class BookResource {
 		try {
 			categories = bookDAOC.getByUserID(user_id);
 		} catch (Exception e) {
+			logger_.error("Error : failed to get categories when get book for " + user_id + " : " + e.getMessage());
 			e.printStackTrace();
-			logger_.error("Error : failed to insert new book for " + user_id + " : " + e.getMessage());
 			return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.INTERNAL_ERROR)).build();
 		}
 		
@@ -245,13 +245,13 @@ public class BookResource {
 			try {
 				jsonArray.put(new JSONObject(gson.toJson(book)));
 			} catch (JSONException e) {
+				logger_.error("Error : failed to build book response JSON array : " + book.toString() + " error message : " + e.getMessage());
 				e.printStackTrace();
-				logger_.error("Error : failed to build book response JSON array : " + e.getMessage());
 				return Response.status(500).entity(ApiUtils.buildJSONResponse(false, ApiUtils.INTERNAL_ERROR)).build();
 			}
 		}
 		
-		logger_.info("Response user " + user_id + "'s book : " + jsonArray.toString());
+		logger_.info("Respond user " + user_id + "'s books : " + jsonArray.toString());
 		return Response.status(200).entity(jsonArray.toString()).build();
 	}
 
@@ -280,6 +280,7 @@ public class BookResource {
 		}
 
 		if (user_id.length() < 1 || book_id.length() < 1) {
+			logger_.error("receive book failed due to wrong user id(" + user_id + ") or book id(" + book_id + ")");
 			return Response
 					.serverError()
 					.entity(ApiUtils
@@ -290,6 +291,7 @@ public class BookResource {
 		List<Book> bookList = bookDAOC.getByID(book_id);
 		Book book;
 		if (bookList.isEmpty()) {
+			logger_.error("receive book failed due to book not found : user id:" + user_id + ", book id:" + book_id);
 			return Response
 					.serverError()
 					.entity(ApiUtils
@@ -299,6 +301,7 @@ public class BookResource {
 
 		book = bookList.get(bookList.size() - 1);
 		if (!book.getUser_id().equals(user_id)) {
+			logger_.error("receive book failed due to user not found : user id:" + user_id + ", book id:" + book_id);
 			return Response
 					.serverError()
 					.entity(ApiUtils
@@ -308,6 +311,8 @@ public class BookResource {
 
 		// check duplicate book name
 		if (!bookDAOC.getByNameAndUserID(book.getName(), request_user).isEmpty()) {
+			logger_.error("receive book failed due to duplicated book name for user : user id:" + user_id + ", book id:"
+					+ book_id + ", book name:" + book.getName());
 			return Response
 					.serverError()
 					.entity(ApiUtils
@@ -321,6 +326,8 @@ public class BookResource {
 		try {
 			bookDAOC.insert(book);
 		} catch (Exception e) {
+			logger_.error("receive book failed due to failed to insert new book : " + book.toString());
+			e.printStackTrace();
 			return Response
 					.serverError()
 					.entity(ApiUtils

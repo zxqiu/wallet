@@ -56,8 +56,8 @@ public class BookLogConnector {
 		instance_ = null;
 	}
 
-	public List<BookLog> ID(String id) throws Exception {
-		return bookLogDAO.findByID(id);
+	public List<BookLog> getAll() throws Exception {
+		return bookLogDAO.findAll();
 	}
 
 	public List<BookLog> getByID(String id) throws Exception {
@@ -68,12 +68,24 @@ public class BookLogConnector {
 		return bookLogDAO.findByUserID(user_id);
 	}
 
+	public List<BookLog> getByBookID(String book_id) throws Exception {
+		return bookLogDAO.findByBookID(book_id);
+	}
+
 	public List<BookLog> getByBookGroupID(String book_group_id) throws Exception {
 		return bookLogDAO.findByBookGroupID(book_group_id);
 	}
 
+	public List<BookLog> getByBookEntryID(String book_entry_id) throws Exception {
+		return bookLogDAO.findByBookEntryID(book_entry_id);
+	}
+
 	public List<BookLog> getByBookEntryGroupID(String book_entry_group_id) throws Exception {
 		return bookLogDAO.findByBookEntryGroupID(book_entry_group_id);
+	}
+
+	public List<BookLog> getByCategoryID(String category_id) throws Exception {
+		return bookLogDAO.findByCategoryID(category_id);
 	}
 
 	public List<BookLog> getByCategoryGroupID(String category_group_id) throws Exception {

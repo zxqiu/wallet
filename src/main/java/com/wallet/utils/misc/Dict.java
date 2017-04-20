@@ -3,6 +3,7 @@ package com.wallet.utils.misc;
 public class Dict {
 	public static final String ID = "id";
 	public static final String USER_ID = "user_id";
+	public static final String USER_LIST = "user_list";
 	public static final String CREATE_USER_ID = "create_user_id";
 	public static final String BOOK_ID = "book_id";
 	public static final String BOOK_GROUP_ID = "book_group_id";

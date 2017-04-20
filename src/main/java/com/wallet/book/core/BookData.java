@@ -1,5 +1,6 @@
 package com.wallet.book.core;
 
+import com.wallet.utils.misc.Dict;
 import com.wallet.utils.misc.Serializer;
 
 import java.io.*;
@@ -14,8 +15,10 @@ public class BookData implements Serializable, Serializer<BookData> {
 
     private Date create_time;
     private String picture_id;
-
     private List<String> user_list; // store user id
+
+    public BookData() {
+    }
 
     public BookData(Date create_time, String picture_id, List<String> user_list) {
         this.setCreate_time(create_time);
@@ -34,6 +37,15 @@ public class BookData implements Serializable, Serializer<BookData> {
         this.setPicture_id(bookData.getPicture_id());
         this.setUser_list(bookData.getUser_list());
         in.close();
+    }
+
+    @Override
+    public String toString() {
+        return "["
+                + Dict.CREATE_TIME + ":" + create_time
+                + "," + Dict.PICTURE_ID + ":" + picture_id
+                + "," + Dict.USER_LIST + ":" + user_list
+                + "]";
     }
 
     public byte[] toByteArray() throws IOException {

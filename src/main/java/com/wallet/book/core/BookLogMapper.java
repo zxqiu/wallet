@@ -14,8 +14,11 @@ public class BookLogMapper implements ResultSetMapper<BookLog> {
 		
 		bookLog.setId(resultSet.getString(Dict.ID));
 		bookLog.setCreate_time(resultSet.getTime(Dict.CREATE_TIME));
+		bookLog.setBook_id(resultSet.getString(Dict.BOOK_ID));
 		bookLog.setBook_group_id(resultSet.getString(Dict.BOOK_GROUP_ID));
+		bookLog.setCategory_id(resultSet.getString(Dict.CATEGORY_ID));
 		bookLog.setCategory_group_id(resultSet.getString(Dict.CATEGORY_GROUP_ID));
+		bookLog.setBook_entry_id(resultSet.getString(Dict.BOOK_ENTRY_ID));
 		bookLog.setBook_entry_group_id(resultSet.getString(Dict.BOOK_ENTRY_GROUP_ID));
 		bookLog.setUser_id(resultSet.getString(Dict.USER_ID));
 		bookLog.setOperation(BookLog.BOOK_LOG_OPERATION.valueOf(resultSet.getString(Dict.OPERATION)));
