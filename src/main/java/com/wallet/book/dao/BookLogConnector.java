@@ -56,8 +56,8 @@ public class BookLogConnector {
 		instance_ = null;
 	}
 
-	public List<BookLog> ID(String id) throws Exception {
-		return bookLogDAO.findByID(id);
+	public List<BookLog> getAll() throws Exception {
+		return bookLogDAO.findAll();
 	}
 
 	public List<BookLog> getByID(String id) throws Exception {

@@ -5,6 +5,7 @@ import com.wallet.book.core.BookLog;
 import com.wallet.book.core.syncHelper;
 import com.wallet.book.dao.*;
 import com.wallet.book.resource.BookEntryResource;
+import com.wallet.book.resource.BookLogResource;
 import com.wallet.book.resource.BookResource;
 import com.wallet.tinyUrl.dao.TinyUrlDAO;
 import com.wallet.tinyUrl.dao.TinyUrlDAOConnector;
@@ -94,6 +95,7 @@ public class WalletService extends Application<WalletConfiguration> {
 
 	    environment.jersey().register(new UserResource());
 	    environment.jersey().register(new SessionResource());
+		environment.jersey().register(new BookLogResource());
 		environment.jersey().register(new BookResource());
 	    environment.jersey().register(new BookEntryResource());
 	    environment.jersey().register(new CategoryResource());
