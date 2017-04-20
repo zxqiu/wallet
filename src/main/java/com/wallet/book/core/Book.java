@@ -79,6 +79,19 @@ public class Book {
         this.setUser_list(user_list);
     }
 
+    @Override
+    public String toString() {
+        return "["
+                + Dict.ID + ":" + id
+                + "," + Dict.USER_ID + ":" + user_id
+                + "," + Dict.CREATE_USER_ID + ":" + create_user_id
+                + "," + Dict.NAME + ":" + name
+                + "," + Dict.EDIT_TIME + ":" + edit_time
+                + "," + Dict.GROUP_ID + ":" + group_id
+                + "," + Dict.DATA + ":" + data.toString()
+                + "]";
+    }
+
     public String getId() {
         return id;
     }
@@ -104,10 +117,16 @@ public class Book {
     }
 
     public Date getCreate_time() {
+        if (data == null) {
+            return null;
+        }
         return data.getCreate_time();
     }
 
     public void setCreate_time(Date create_time) {
+        if (data == null) {
+            data = new BookData();
+        }
         this.data.setCreate_time(create_time);
     }
 
@@ -120,10 +139,16 @@ public class Book {
     }
 
     public String getPicture_id() {
+        if (data == null) {
+            return null;
+        }
         return data.getPicture_id();
     }
 
     public void setPicture_id(String picture_id) {
+        if (data == null) {
+            data = new BookData();
+        }
         this.data.setPicture_id(picture_id);
     }
 
@@ -152,10 +177,16 @@ public class Book {
     }
 
     public List<String> getUser_list() {
+        if (data == null) {
+            return null;
+        }
         return data.getUser_list();
     }
 
     public void setUser_list(List<String> user_list) {
+        if (data == null) {
+            data = new BookData();
+        }
         this.data.setUser_list(user_list);
     }
 }

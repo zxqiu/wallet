@@ -89,9 +89,9 @@ public class BookConnector {
 			BookLogger.addBook(book.getUser_id(), book.getId(), book.getGroup_id(), BookLog.BOOK_LOG_NOTE.NONE);
 		} catch (Exception e) {
 			if (e.getMessage().contains("Duplicate entry")) {
-				logger_.info("Book already exists : " + book.getId());
+				logger_.info("Book already exists : " + book.toString());
 			} else {
-				logger_.error("Error insert book " + book.getId() + " failed : " + e.getMessage());
+				logger_.error("Error insert book failed: " + book.toString() + " error message : " + e.getMessage());
 				e.printStackTrace();
 				throw new Exception(e);
 			}
@@ -125,6 +125,7 @@ public class BookConnector {
 		logger_.info("BookConnector test ...");
 
 		logger_.info("1. insert");
+		logger_.info("initial test book" + book.toString());
 
 		BookConnector.instance().insert(book);
 		if (BookConnector.instance().getByID(book.getId()).isEmpty()) {
