@@ -37,7 +37,7 @@ public class BookEntryData implements Serializable, Serializer<BookEntryData> {
     }
 
     public BookEntryData clone() {
-        return new BookEntryData(this.getCreate_time(), this.getNote(), this.getPicture_id());
+        return new BookEntryData(this.getCreate_time(), this.getNote(), this.getPictureTimeStamp(), this.getPicture_id());
     }
 
     public byte[] toByteArray() throws IOException {

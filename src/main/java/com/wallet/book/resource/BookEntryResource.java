@@ -55,9 +55,9 @@ public class BookEntryResource {
 	private final String IMAGE_BUCKET = "wallet-image";
 
 	public BookEntryResource() throws Exception {
-		this.bookDAOC = BookDAOConnector.instance();
-		this.bookEntryDAOC = BookEntryDAOConnector.instance();
-		this.categoryDAOC = CategoryDAOConnector.instance();
+		this.bookDAOC = BookConnector.instance();
+		this.bookEntryConnector = BookEntryConnector.instance();
+		this.categoryDAOC = CategoryConnector.instance();
 		this.userDAOC = UserDAOConnector.instance();
 		this.pictureOcrAmountMap = new HashMap<>();
 	}
