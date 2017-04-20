@@ -80,7 +80,7 @@ public class UserResource {
 
         } else if ((user_id == null || user_id.length() == 0)
                 && userDAOC.getByEmail(email) == null) {
-            User user = new User(email, password, name, UserPriority.NORMAL.name());
+            User user = new User(email, password, name, UserPriority.NORMAL.name(), "");
             logger_.info("Insert user : " + user_id);
             userDAOC.insert(user);
         }

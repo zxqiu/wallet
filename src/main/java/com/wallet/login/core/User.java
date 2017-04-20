@@ -1,7 +1,11 @@
 package com.wallet.login.core;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.wallet.utils.misc.Hashing;
 import com.wallet.utils.misc.TimeUtils;
+
+import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 
 public class User {
 
@@ -21,25 +25,33 @@ public class User {
     private String priority;
 
     @JsonProperty
-    private String data;
+    private UserData data;
 
     public User() {
 	}
 
-    public User(String email, String password, String name, String priority) {
-        this.setUser_id(email + TimeUtils.getUniqueTimeStampInMS());
+    public User(String email, String password, String name, String priority, String picture_id)
+            throws NoSuchAlgorithmException {
+        long timeStamp = TimeUtils.getUniqueTimeStampInMS();
+        this.setUser_id(Hashing.MD5Hash(email + password + name + priority + timeStamp) + timeStamp);
         this.setEmail(email);
         this.setPassword(password);
         this.setName(name);
         this.setPriority(priority);
+
+        this.setData(new UserData(new Date(), picture_id));
     }
 
-	public User(String user_id, String email, String password, String name, String priority) {
+    // for test only
+	public User(String user_id, String email, String password, String name, String priority, Date create_time
+            , String picture_id) {
 		this.setUser_id(user_id);
 		this.setEmail(email);
 		this.setPassword(password);
 		this.setName(name);
 		this.setPriority(priority);
+
+		this.setData(new UserData(create_time, picture_id));
 	}
 
     public String getEmail() {
@@ -82,11 +94,39 @@ public class User {
 		this.user_id = user_id;
 	}
 
-    public String getData() {
+    public UserData getData() {
         return data;
     }
 
-    public void setData(String data) {
+    public void setData(UserData data) {
         this.data = data;
+    }
+
+    public Date getCreate_time() {
+        if (this.getData() == null) {
+            return null;
+        }
+        return this.getData().getCreate_time();
+    }
+
+    public void setCreate_time(Date create_time) {
+        if (this.getData() == null) {
+            this.setData(new UserData());
+        }
+        this.getData().setCreate_time(create_time);
+    }
+
+    public String getPicture_id() {
+        if (this.getData() == null) {
+            return null;
+        }
+        return this.getData().getPicture_id();
+    }
+
+    public void setPicture_id(String picture_id) {
+        if (this.getData() == null) {
+            this.setData(new UserData());
+        }
+        this.getData().setPicture_id(picture_id);
     }
 }

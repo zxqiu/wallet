@@ -16,9 +16,10 @@ public class GuavaCache<K,V> {
 	private static final Logger logger_ = LoggerFactory.getLogger(GuavaCache.class);
 	private LoadingCache<K,V> cache_ = null;
 
-	public  GuavaCache(int threadNum, long expireTime, TimeUnit tu, int initCapicity, int maximumSize, CacheLoader<K,V> loadable, RemovalListener<K, V> removelistener) 
+	public GuavaCache(int threadNum, long expireTime, TimeUnit tu, int initCapicity, int maximumSize
+			, CacheLoader<K,V> loadable, RemovalListener<K, V> removelistener)
 	{
-		cache_ =    CacheBuilder.newBuilder()
+		cache_ = CacheBuilder.newBuilder()
 				.concurrencyLevel(threadNum)
 				.expireAfterAccess(expireTime, tu)
 				.initialCapacity(initCapicity)
@@ -46,6 +47,10 @@ public class GuavaCache<K,V> {
 	public void invalidate(K key)
 	{
 		cache_.invalidate(key);
+	}
+
+	public void refresh(K key) {
+		cache_.refresh(key);
 	}
 	
 	public void put(K key, V value)
@@ -76,7 +81,8 @@ public class GuavaCache<K,V> {
 	public static void main(String[] args) throws ExecutionException {
 		CacheLoader<String,String> tl = new testloadable();
 		RemovalListener<String, String> trl = new testRemovalListener();
-		GuavaCache <String,String> gc = new GuavaCache<String,String>(1, 1, TimeUnit.SECONDS, 10, 100, tl, trl); 
+		GuavaCache <String,String> gc = new GuavaCache<String,String>(1, 1, TimeUnit.SECONDS
+				, 10, 100, tl, trl);
 		for(int i =0 ; i<101;i++)
 		{
 			gc.get("KEY" + i);

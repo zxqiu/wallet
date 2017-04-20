@@ -1,4 +1,4 @@
-package com.wallet.book.core;
+package com.wallet.login.core;
 
 import com.wallet.utils.misc.Serializer;
 
@@ -9,30 +9,29 @@ import java.util.List;
 /**
  * Created by zxqiu on 4/6/17.
  */
-public class BookData implements Serializable, Serializer<BookData> {
+public class UserData implements Serializable, Serializer<UserData> {
     static final long serialVersionUID = -2540990340508039435L;
 
     private Date create_time;
     private String picture_id;
 
-    private List<String> user_list; // store user id
-
-    public BookData(Date create_time, String picture_id, List<String> user_list) {
-        this.setCreate_time(create_time);
-        this.setPicture_id(picture_id);
-        this.setUser_list(user_list);
+    public UserData() {
     }
 
-    public BookData(InputStream in) throws NullPointerException, IOException, ClassNotFoundException {
+    public UserData(Date create_time, String picture_id) {
+        this.setCreate_time(create_time);
+        this.setPicture_id(picture_id);
+    }
+
+    public UserData(InputStream in) throws NullPointerException, IOException, ClassNotFoundException {
         if (in == null) {
-            throw new NullPointerException("InputStream is null when build BookData");
+            throw new NullPointerException("InputStream is null when build UserData");
         }
         ObjectInputStream ois = new ObjectInputStream(in);
-        BookData bookData = deserialize(ois);
+        UserData userData = deserialize(ois);
 
-        this.setCreate_time(bookData.getCreate_time());
-        this.setPicture_id(bookData.getPicture_id());
-        this.setUser_list(bookData.getUser_list());
+        this.setCreate_time(userData.getCreate_time());
+        this.setPicture_id(userData.getPicture_id());
         in.close();
     }
 
@@ -44,16 +43,16 @@ public class BookData implements Serializable, Serializer<BookData> {
     }
 
     @Override
-    public void serialize(BookData bookData, ObjectOutputStream oos) throws IOException {
-        oos.writeObject(bookData);
+    public void serialize(UserData userData, ObjectOutputStream oos) throws IOException {
+        oos.writeObject(userData);
         oos.close();
     }
 
     @Override
-    public BookData deserialize(ObjectInputStream ois) throws IOException, ClassNotFoundException {
-        BookData bookData =  (BookData) ois.readObject();
+    public UserData deserialize(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+        UserData userData = (UserData) ois.readObject();
         ois.close();
-        return bookData;
+        return userData;
     }
 
     public Date getCreate_time() {
@@ -70,13 +69,5 @@ public class BookData implements Serializable, Serializer<BookData> {
 
     public void setPicture_id(String picture_id) {
         this.picture_id = picture_id;
-    }
-
-    public List<String> getUser_list() {
-        return user_list;
-    }
-
-    public void setUser_list(List<String> user_list) {
-        this.user_list = user_list;
     }
 }

@@ -138,7 +138,7 @@ $(document).ready(function () {
 
 $('.book-list-text').on("click", function(e) {
     if ($(e.target).hasClass("dblclicked")) {
-        window.location.replace("/books/entry/" + $(this).attr("title"));
+        window.location.replace("/books/entry/" + $(this).find("#bookEntryID")[0].value);
         $(e.target).removeClass("dblclicked");
     } else {
         $(e.target).addClass("dblclicked");

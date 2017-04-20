@@ -18,7 +18,9 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import com.wallet.book.core.Book;
 import com.wallet.book.core.BookEntry;
 import com.wallet.book.core.syncHelper;
-import com.wallet.book.dao.BookDAOConnector;
+import com.wallet.book.dao.BookConnector;
+import com.wallet.book.dao.BookEntryConnector;
+import com.wallet.book.dao.CategoryConnector;
 import com.wallet.login.core.User;
 import com.wallet.login.dao.UserDAOConnector;
 import com.wallet.login.resource.SessionResource;
@@ -29,8 +31,6 @@ import org.slf4j.LoggerFactory;
 
 import com.codahale.metrics.annotation.Timed;
 import com.wallet.book.core.Category;
-import com.wallet.book.dao.BookEntryDAOConnector;
-import com.wallet.book.dao.CategoryDAOConnector;
 import com.wallet.login.dao.SessionDAOConnector;
 import com.wallet.utils.misc.ApiUtils;
 import com.wallet.utils.misc.Dict;
@@ -46,9 +46,9 @@ public class BookEntryResource {
 	private static final int bookEntrysEachLine = 4;
 	private static Map<String, Double> pictureOcrAmountMap;
 
-	private BookDAOConnector bookDAOC = null;
-	private BookEntryDAOConnector bookEntryDAOC = null;
-	private CategoryDAOConnector categoryDAOC = null;
+	private BookConnector bookDAOC = null;
+	private BookEntryConnector bookEntryConnector = null;
+	private CategoryConnector categoryDAOC = null;
 	private UserDAOConnector userDAOC = null;
 
 	/* google cloud storage bucket */
@@ -67,7 +67,7 @@ public class BookEntryResource {
 	@Path("/allbookentry")
 	@Produces(value = MediaType.APPLICATION_JSON)
 	public List<BookEntry> getAll() throws Exception {
-		return bookEntryDAOC.getByUserID("admin");
+		return bookEntryConnector.getByUserID("admin");
 	}
 
 	public static final String PATH_BOOKS = "/books";
@@ -88,7 +88,7 @@ public class BookEntryResource {
 		User user = userDAOC.getByID(user_id);
 		List<Book> bookList = bookDAOC.getByUserID(user_id);
 		HashMap<String, Book> bookMap = new HashMap<>();
-		List<BookEntry> bookEntryList = sortBookByEventTime(bookEntryDAOC.getByUserID(user_id));
+		List<BookEntry> bookEntryList = sortBookByEventTime(bookEntryConnector.getByUserID(user_id));
 		List<Category> categoryList = categoryDAOC.getByUserID(user_id);
 		HashMap<String, Category> categoryMap = new HashMap<>();
 
@@ -123,7 +123,7 @@ public class BookEntryResource {
 		String date = sdf.format(new Date());
 		BookEntry bookEntry = null;
 		if (!id.equals("0")) {
-			List<BookEntry> bookEntryList = bookEntryDAOC.getByID(id);
+			List<BookEntry> bookEntryList = bookEntryConnector.getByUserIDAndID(user_id, id);
 			if (!bookEntryList.isEmpty()) {
 				bookEntry = bookEntryList.get(bookEntryList.size() - 1);
 				date = sdf.format(bookEntry.getEvent_date());
@@ -227,12 +227,12 @@ public class BookEntryResource {
 			return Response.serverError().build();
 		}
 
-		// 4.2 insert book
+		// 4.2 insert book entry
 		// 4.2.1 update if id is received and exists. Otherwise insert new.
 		BookEntry bookEntry = null;
 		if (id.length() != 0) {
 			try {
-				List<BookEntry> list = bookEntryDAOC.getByID(id);
+				List<BookEntry> list = bookEntryConnector.getByUserIDAndID(user_id, id);
 				if (!list.isEmpty()) {
 					bookEntry = list.get(list.size() - 1);
 				}
@@ -251,7 +251,7 @@ public class BookEntryResource {
 				if (bookEntry.getBook_group_id().equals(book.getGroup_id())) {
 					bookEntry.update(book.getGroup_id(), category.getGroup_id(), sdf.parse(event_date), amount, note
 							, picture_ts, picture_id);
-					bookEntryDAOC.updateByID(bookEntry);
+					bookEntryConnector.updateByUserIDAndID(bookEntry);
 					// Update if book id is not changed.
 					syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_ACTION.UPDATE);
 				} else {
@@ -259,14 +259,14 @@ public class BookEntryResource {
 					syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_ACTION.DELETE);
 					bookEntry.update(book.getGroup_id(), category.getGroup_id(), sdf.parse(event_date), amount, note
 							, picture_ts, picture_id);
-					//bookEntryDAOC.insert(bookEntry);
+					//bookEntryConnector.insert(bookEntry);
 					syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_ACTION.ADD);
 				}
 			} else {
 				bookEntry = new BookEntry(user_id, user_id, book.getGroup_id(), category.getGroup_id()
 						, sdf.parse(event_date), amount, note, picture_ts, picture_id);
 				logger_.info("Insert new book item : " + bookEntry.getId());
-				//bookEntryDAOC.insert(bookEntry); // remove this to avoid duplication
+				//bookEntryConnector.insert(bookEntry); // remove this to avoid duplication
 				syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_ACTION.ADD);
 			}
 		} catch (Exception e) {
@@ -306,11 +306,11 @@ public class BookEntryResource {
 
 		// 4. transaction
 		try {
-			List<BookEntry> bookEntryList = bookEntryDAOC.getByID(id);
+			List<BookEntry> bookEntryList = bookEntryConnector.getByUserIDAndID(user_id, id);
 			if (!bookEntryList.isEmpty()) {
 				BookEntry bookEntry = bookEntryList.get(bookEntryList.size() - 1);
 				logger_.info("Delete book entry : " + bookEntry.getId());
-				bookEntryDAOC.deleteByID(id);
+				bookEntryConnector.deleteByUserIDAndID(user_id, id);
 				syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_ACTION.DELETE);
 			}
 		} catch (Exception e) {

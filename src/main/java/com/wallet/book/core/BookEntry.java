@@ -3,6 +3,7 @@ package com.wallet.book.core;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.wallet.utils.misc.Dict;
 import com.wallet.utils.misc.TimeUtils;
 import org.json.JSONException;
 
@@ -39,7 +40,21 @@ public class BookEntry {
 
 	public BookEntry() {
 	}
-	
+
+	public BookEntry(BookEntry bookEntry) {
+		this.setId(bookEntry.getId());
+		this.setUser_id(bookEntry.getUser_id());
+		this.setCreate_user_id(bookEntry.getCreate_user_id());
+		this.setBook_group_id(bookEntry.getBook_group_id());
+		this.setGroup_id(bookEntry.getGroup_id());
+		this.setCategory_group_id(bookEntry.getCategory_group_id());
+		this.setEvent_date(bookEntry.getEvent_date());
+		this.setAmount(bookEntry.getAmount());
+		this.setEdit_time(new Date());
+
+		this.data = bookEntry.getData().clone();
+	}
+
 	public BookEntry(String user_id, String create_user_id, String book_group_id, String category_group_id
 			, Date event_date, long amount, String note, String pictureTimeStamp, String picture_id) throws JSONException {
 		this.setId(user_id + TimeUtils.getUniqueTimeStampInMS());
@@ -69,6 +84,22 @@ public class BookEntry {
 
 	public void updateIDWithUserID() {
 		this.setId(this.getUser_id() + TimeUtils.getUniqueTimeStampInMS());
+	}
+
+	@Override
+	public String toString() {
+		return "["
+				+ Dict.ID + ":" + id
+				+ "," + Dict.GROUP_ID + ":" + group_id
+				+ "," + Dict.USER_ID + ":" +user_id
+				+ "," + Dict.CREATE_USER_ID + ":" + create_user_id
+				+ "," + Dict.BOOK_GROUP_ID + ":" + book_group_id
+				+ "," + Dict.CATEGORY_GROUP_ID + ":" + category_group_id
+				+ "," + Dict.EVENT_DATE + ":" + event_date
+				+ "," + Dict.AMOUNT + ":" + amount
+				+ "," + Dict.EDIT_TIME + ":" + edit_time
+				+ "," + Dict.DATA + ":" + data.toString()
+				+ "]";
 	}
 
 	public String getId() {

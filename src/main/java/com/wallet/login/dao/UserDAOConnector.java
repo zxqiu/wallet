@@ -1,5 +1,6 @@
 package com.wallet.login.dao;
 
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -116,7 +117,7 @@ public class UserDAOConnector {
 
 	public void insert(User user) throws Exception {
 		try {
-			userDAO.insert(user.getUser_id(), user.getEmail(), user.getPassword(), user.getName(), user.getPriority(), user.getData());
+			userDAO.insert(user.getUser_id(), user.getEmail(), user.getPassword(), user.getName(), user.getPriority(), user.getData().toByteArray());
 		} catch (Exception e) {
 			if (e.getMessage().contains("Duplicate entry")) {
 				logger_.info("User already exists : " + user.getUser_id());
@@ -129,7 +130,7 @@ public class UserDAOConnector {
 	}
 	
 	public void update(User user) throws Exception {
-		userDAO.update(user.getUser_id(), user.getEmail(), user.getPassword(), user.getName(), user.getPriority(), user.getData());
+		userDAO.update(user.getUser_id(), user.getEmail(), user.getPassword(), user.getName(), user.getPriority(), user.getData().toByteArray());
 	}
 	
 	// TODO : delete user's data from other tables asynchronously
@@ -138,7 +139,7 @@ public class UserDAOConnector {
 	}
 	
 	public static void test() throws Exception {
-		User user = new User("admin", "admin@gmail.com", "admin", "admin", UserPriority.ADMIN.name());
+		User user = new User("admin", "admin@gmail.com", "admin", "admin", UserPriority.ADMIN.name(), new Date(), "");
 
 		logger_.info("UserDAOConnector test ...");
 		
@@ -157,7 +158,7 @@ public class UserDAOConnector {
 		user.setName("gooduser");
 		user.setEmail("a@b.com");
 		UserDAOConnector.instance().update(user);
-		user2 = UserDAOConnector.instance().getByID("admin");
+		user2 = UserDAOConnector.instance().getByID(user.getUser_id());
 		logger_.info("updated name" + user2.getName());
 		if (!user2.getName().equals("gooduser")) {
 			logger_.error("UserDAOConnector test failure");

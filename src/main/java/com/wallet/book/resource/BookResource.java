@@ -4,10 +4,12 @@ import com.codahale.metrics.annotation.Timed;
 import com.google.gson.Gson;
 import com.wallet.book.core.Book;
 import com.wallet.book.core.syncHelper;
-import com.wallet.book.dao.BookDAOConnector;
-import com.wallet.book.dao.BookEntryDAOConnector;
-import com.wallet.book.dao.CategoryDAOConnector;
+import com.wallet.book.dao.BookConnector;
+import com.wallet.book.dao.BookEntryConnector;
+import com.wallet.book.dao.CategoryConnector;
+import com.wallet.login.core.User;
 import com.wallet.login.dao.SessionDAOConnector;
+import com.wallet.login.dao.UserDAOConnector;
 import com.wallet.login.resource.SessionResource;
 import com.wallet.utils.misc.ApiUtils;
 import com.wallet.utils.misc.Dict;
@@ -24,23 +26,25 @@ import javax.ws.rs.core.Response;
 import java.net.URI;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 @Path("/books")
 public class BookResource {
 	private static final Logger logger_ = LoggerFactory.getLogger(BookResource.class);
 
-	private BookDAOConnector bookDAOC = null;
-	private BookEntryDAOConnector bookEntryDAOC = null;
-	private CategoryDAOConnector categoryDAOC = null;
+	private BookConnector bookDAOC = null;
+	private BookEntryConnector bookEntryConnector = null;
+	private CategoryConnector categoryDAOC = null;
 	private SessionDAOConnector sessionDAOC = null;
+	private UserDAOConnector userDAOC = null;
 
 	public BookResource() throws Exception {
-		this.bookDAOC = BookDAOConnector.instance();
-		this.bookEntryDAOC = BookEntryDAOConnector.instance();
-		this.categoryDAOC = CategoryDAOConnector.instance();
+		this.bookDAOC = BookConnector.instance();
+		this.bookEntryConnector = BookEntryConnector.instance();
+		this.categoryDAOC = CategoryConnector.instance();
 		this.sessionDAOC = SessionDAOConnector.instance();
+		this.userDAOC = UserDAOConnector.instance();
 	}
 
 	@GET
@@ -62,7 +66,18 @@ public class BookResource {
 			return Response.seeOther(URI.create(SessionResource.PATH_RESTORE_SESSION)).build();
 		}
 
-		return Response.ok().entity(views.bookList.template(bookDAOC.getByUserID(user_id))).build();
+		List<Book> bookList = bookDAOC.getByUserID(user_id);
+		Map<String, User> userMap = new HashMap<>();
+		for (Book book : bookList) {
+			for (String tmpId : book.getUser_list()) {
+				if (!userMap.containsKey(tmpId)) {
+					User user = userDAOC.getByID(tmpId);
+					userMap.put(tmpId, user);
+				}
+			}
+		}
+
+		return Response.ok().entity(views.bookList.template(bookList, userMap)).build();
 	}
 
 	/**
@@ -180,7 +195,7 @@ public class BookResource {
 				if (!bookList.isEmpty()) {
 					Book book = bookList.get(bookList.size() - 1);
 					bookDAOC.deleteByID(id);
-					bookEntryDAOC.deleteByUserIDAndBookGroupID(book.getUser_id(), book.getGroup_id());
+					bookEntryConnector.deleteByUserIDAndBookGroupID(book.getUser_id(), book.getGroup_id());
 					categoryDAOC.deleteByUserIDAndBookGroupID(book.getUser_id(), book.getGroup_id());
 
 					book.removeUser(book.getUser_id());
