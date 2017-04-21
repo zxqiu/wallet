@@ -47,21 +47,21 @@ public class BookLogger {
                 , BookLog.BOOK_LOG_OPERATION.UPDATE, BookLog.BOOK_LOG_TYPE.BOOK_ENTRY, note);
     }
 
-    public static void addCateory(String user_id, String book_id, String book_group_id, String category_id
+    public static void addCateory(String user_id, String book_group_id, String category_id
             , String category_group_id, BookLog.BOOK_LOG_NOTE note) throws Exception {
-        log(user_id, book_id, book_group_id, "", "", category_id, category_group_id
+        log(user_id, "", book_group_id, "", "", category_id, category_group_id
                 , BookLog.BOOK_LOG_OPERATION.ADD, BookLog.BOOK_LOG_TYPE.CATEGORY, note);
     }
 
-    public static void deleteCateory(String user_id, String book_id, String book_group_id, String category_id
+    public static void deleteCateory(String user_id, String book_group_id, String category_id
             , String category_group_id, BookLog.BOOK_LOG_NOTE note) throws Exception {
-        log(user_id, book_id, book_group_id, "", "", category_id, category_group_id
+        log(user_id, "", book_group_id, "", "", category_id, category_group_id
                 , BookLog.BOOK_LOG_OPERATION.DELETE, BookLog.BOOK_LOG_TYPE.CATEGORY, note);
     }
 
-    public static void updateCateory(String user_id, String book_id, String book_group_id, String category_id
+    public static void updateCateory(String user_id, String book_group_id, String category_id
             , String category_group_id, BookLog.BOOK_LOG_NOTE note) throws Exception {
-        log(user_id, book_id, book_group_id, "", "", category_id, category_group_id
+        log(user_id, "", book_group_id, "", "", category_id, category_group_id
                 , BookLog.BOOK_LOG_OPERATION.DELETE, BookLog.BOOK_LOG_TYPE.CATEGORY, note);
     }
 }
