@@ -20,6 +20,7 @@ public class BookLog {
         BY_BOOK_ENTRY_GROUP_ID("by book entry group ID"),
         BY_CATEGORY_GROUP_ID("by category group ID"),
         BY_USER_ID("by user ID"),
+        BY_USER_ID_AND_ID("by user ID and ID"),
         BY_USER_ID_AND_BOOK_GROUP_ID("by user ID and book group ID"),
         BY_USER_ID_AND_BOOK_ENTRY_GROUP_ID("by user ID and book entry group ID"),
         BY_USER_ID_AND_CATEGORY_GROUP_ID("by user ID and category group ID");

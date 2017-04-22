@@ -6,6 +6,8 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import com.wallet.book.core.BookEntry;
+import com.wallet.book.core.BookLog;
+import com.wallet.book.core.BookLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,6 +76,8 @@ public class BookEntryConnector {
 
 			// update cache
             bookEntryCache.insert(bookEntry);
+			BookLogger.addBookEntry(bookEntry.getUser_id(), bookEntry.getBook_group_id(), bookEntry.getId()
+					, bookEntry.getGroup_id(), bookEntry.getCategory_group_id(), BookLog.BOOK_LOG_NOTE.NONE);
 		} catch (Exception e) {
 			if (e.getMessage().contains("Duplicate entry")) {
 				logger_.info("Book entry already exists : " + bookEntry.getId());
@@ -92,6 +96,8 @@ public class BookEntryConnector {
 
 		// update cache
         bookEntryCache.updateByUserAndID(bookEntry);
+        BookLogger.updateBookEntry(bookEntry.getUser_id(), bookEntry.getBook_group_id(), bookEntry.getId()
+				, bookEntry.getGroup_id(), bookEntry.getCategory_group_id(), BookLog.BOOK_LOG_NOTE.BY_USER_ID_AND_ID);
 	}
 
 	public void deleteByUserIDAndID(String user_id, String id) throws Exception {
@@ -99,6 +105,8 @@ public class BookEntryConnector {
 
 		// update cache
         bookEntryCache.deleteByUserIDAndID(user_id, id);
+        BookLogger.deleteBookEntry(user_id, "", id, "", ""
+				, BookLog.BOOK_LOG_NOTE.BY_USER_ID_AND_ID);
 	}
 
 	public void deleteByUserID(String user_id) throws Exception {
@@ -106,6 +114,8 @@ public class BookEntryConnector {
 
 		// update cache
 		bookEntryCache.deleteByUserID(user_id);
+		BookLogger.deleteBookEntry(user_id, "", "", "", ""
+				, BookLog.BOOK_LOG_NOTE.BY_USER_ID);
 	}
 
 	/********************* Group Operations ************************/
@@ -123,6 +133,8 @@ public class BookEntryConnector {
 
 	public void deleteByGroupID(String group_id) throws Exception {
 		bookEntryDAO.deleteByGroupID(group_id);
+		BookLogger.deleteBookEntry("", "", "", group_id, ""
+				, BookLog.BOOK_LOG_NOTE.BY_BOOK_ENTRY_GROUP_ID);
 	}
 
 	public void deleteByUserIDAndBookGroupID(String user_id, String book_group_id) throws Exception {
@@ -130,12 +142,16 @@ public class BookEntryConnector {
 
 		// updated cache
 		bookEntryCache.deleteByUserIDAndBookGroupID(user_id, book_group_id);
+		BookLogger.deleteBookEntry(user_id, book_group_id, "", "", ""
+				, BookLog.BOOK_LOG_NOTE.BY_USER_ID_AND_BOOK_GROUP_ID);
 	}
 
 	public void updateByGroupID(BookEntry bookEntry) throws Exception {
 		bookEntryDAO.updateByGroupID(bookEntry.getGroup_id(), bookEntry.getCategory_group_id()
 				, bookEntry.getEvent_date(), bookEntry.getAmount(), bookEntry.getData().toByteArray()
 				, bookEntry.getEdit_time());
+		BookLogger.updateBookEntry(bookEntry.getUser_id(), bookEntry.getBook_group_id(), bookEntry.getId()
+				, bookEntry.getGroup_id(), bookEntry.getCategory_group_id(), BookLog.BOOK_LOG_NOTE.BY_BOOK_ENTRY_GROUP_ID);
 	}
 
 
