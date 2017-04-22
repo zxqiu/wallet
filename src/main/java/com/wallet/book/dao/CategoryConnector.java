@@ -122,12 +122,14 @@ public class CategoryConnector {
 
 	public void deleteByID(String user_id, String id) throws Exception {
 		categoryDAO.deleteByID(id);
-		BookLogger.deleteCateory(user_id, "", id, "", BookLog.BOOK_LOG_NOTE.BY_ID);
+		BookLogger.deleteCateory(user_id, "", id, ""
+				, BookLog.BOOK_LOG_NOTE.BY_ID);
 	}
 
 	public void deleteByGroupID(String user_id, String group_id) throws Exception {
 		categoryDAO.deleteByGroupID(group_id);
-		BookLogger.deleteCateory(user_id, "", "", group_id, BookLog.BOOK_LOG_NOTE.BY_CATEGORY_GROUP_ID);
+		BookLogger.deleteCateory(user_id, "", "", group_id
+				, BookLog.BOOK_LOG_NOTE.BY_CATEGORY_GROUP_ID);
     }
 
 	public void deleteByUserID(String user_id) throws Exception {
@@ -138,7 +140,8 @@ public class CategoryConnector {
 
 	public void deleteByUserIDAndBookGroupID(String user_id, String book_group_id) throws Exception {
 		categoryDAO.deleteByUserIDAndBookGroupID(user_id, book_group_id);
-		BookLogger.deleteCateory(user_id, book_group_id, "", "", BookLog.BOOK_LOG_NOTE.BY_ID);
+		BookLogger.deleteCateory(user_id, book_group_id, "", ""
+				, BookLog.BOOK_LOG_NOTE.BY_USER_ID_AND_BOOK_GROUP_ID);
 	}
 
 	public static void test() throws Exception {
