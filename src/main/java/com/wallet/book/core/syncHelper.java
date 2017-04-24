@@ -8,17 +8,12 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by zxqiu on 3/31/17.
  */
 public class syncHelper {
     private static final Logger logger_ = LoggerFactory.getLogger(syncHelper.class);
-
-    private static Lock bookEntryLock = new ReentrantLock();
-    private static Lock categoryLock = new ReentrantLock();
 
     private static BookConnector bookDAOC = null;
     private static BookEntryConnector bookEntryConnector = null;
@@ -42,18 +37,12 @@ public class syncHelper {
         switch (action) {
             case ADD:
                 logger_.info("Add book entry by group id : " + bookEntry.getGroup_id());
-                bookEntryLock.lock();
-                try {
-                    for (Book book : bookDAOC.getByGroupID(bookEntry.getBook_group_id())) {
-                        logger_.info("Add book entry by group id : " + bookEntry.getGroup_id() + " for user "
-                                + book.getUser_id());
-                        bookEntry.setUser_id(book.getUser_id());
-                        bookEntry.updateIDWithUserID();
-                        bookEntry.setBook_group_id(book.getGroup_id());
-                        bookEntryConnector.insert(bookEntry);
-                    }
-                } finally {
-                    bookEntryLock.unlock();
+                for (Book book : bookDAOC.getByGroupID(bookEntry.getBook_group_id())) {
+                    logger_.info("Add book entry by group id : " + bookEntry.getGroup_id() + " for user " + book.getUser_id());
+                    bookEntry.setUser_id(book.getUser_id());
+                    bookEntry.updateIDWithUserID();
+                    bookEntry.setBook_group_id(book.getGroup_id());
+                    bookEntryConnector.insert(bookEntry);
                 }
                 break;
             case UPDATE:
@@ -70,32 +59,27 @@ public class syncHelper {
     }
 
     public static List<BookEntry> syncBookEntries(String book_group_id, String target_user_id) throws Exception {
+        List<BookEntry> entryList = bookEntryConnector.getByBookGroupID(book_group_id);
         List<BookEntry> existingEntryList = bookEntryConnector.getByUserIDAndBookGroupID(target_user_id, book_group_id);
         HashMap<String, BookEntry> fingerPrintMap = new HashMap<>();
 
-        bookEntryLock.lock();
-        List<BookEntry> entryList = bookEntryConnector.getByBookGroupID(book_group_id);
-        try {
-            for (BookEntry entry : existingEntryList) {
-                fingerPrintMap.put(entry.getGroup_id(), entry);
-            }
+        for (BookEntry entry : existingEntryList) {
+            fingerPrintMap.put(entry.getGroup_id(), entry);
+        }
 
-            logger_.info("sync book_group_id " + book_group_id + " entryList " + entryList.toString());
-            for (BookEntry entry : entryList) {
-                String group_id = entry.getGroup_id();
-                if (fingerPrintMap.containsKey(group_id)) {
-                    BookEntry tmp = fingerPrintMap.get(group_id);
-                    tmp.update(entry.getBook_group_id(), entry.getCategory_group_id(), entry.getEvent_date()
-                            , entry.getAmount(), entry.getNote(), entry.getPicture_id());
-                    bookEntryConnector.updateByUserIDAndID(tmp);
-                } else {
-                    entry.setUser_id(target_user_id);
-                    entry.updateIDWithUserID();
-                    bookEntryConnector.insert(entry);
-                }
+        logger_.info("sync book_group_id " + book_group_id + " entryList " + entryList.toString());
+        for (BookEntry entry : entryList) {
+            String group_id = entry.getGroup_id();
+            if (fingerPrintMap.containsKey(group_id)) {
+                BookEntry tmp = fingerPrintMap.get(group_id);
+                tmp.update(entry.getBook_group_id(), entry.getCategory_group_id(), entry.getEvent_date()
+                        , entry.getAmount(), entry.getNote(), entry.getPicture_id());
+                bookEntryConnector.updateByUserIDAndID(tmp);
+            } else {
+                entry.setUser_id(target_user_id);
+                entry.updateIDWithUserID();
+                bookEntryConnector.insert(entry);
             }
-        } finally {
-            bookEntryLock.unlock();
         }
 
         return entryList;
@@ -105,16 +89,11 @@ public class syncHelper {
         switch (action) {
             case ADD:
                 logger_.info("Add category by group id : " + category.getGroup_id());
-                categoryLock.lock();
-                try {
-                    for (Book book : bookDAOC.getByGroupID(category.getBook_group_id())) {
-                        logger_.info("Add category by group id : " + category.getGroup_id() + "for user " + book.getUser_id());
-                        category.setUser_id(book.getUser_id());
-                        category.updateIDByUserID();
-                        categoryDAOC.insert(category);
-                    }
-                } finally {
-                    categoryLock.unlock();
+                for (Book book : bookDAOC.getByGroupID(category.getBook_group_id())) {
+                    logger_.info("Add category by group id : " + category.getGroup_id() + "for user " + book.getUser_id());
+                    category.setUser_id(book.getUser_id());
+                    category.updateIDByUserID();
+                    categoryDAOC.insert(category);
                 }
                 break;
             case UPDATE:
@@ -131,29 +110,24 @@ public class syncHelper {
 
     }
     public static List<Category> syncCategories(String book_group_id, String target_user_id) throws Exception {
+        List<Category> categoryList = categoryDAOC.getByBookGroupID(book_group_id);
         List<Category> existingCategoryList = categoryDAOC.getByUserIDAndBookGroupID(target_user_id, book_group_id);
         HashMap<String, Category> fingerPrintMap = new HashMap<>();
 
-        categoryLock.lock();
-        List<Category> categoryList = categoryDAOC.getByBookGroupID(book_group_id);
-        try {
-            for (Category category : existingCategoryList) {
-                fingerPrintMap.put(category.getBook_group_id(), category);
-            }
+        for (Category category : existingCategoryList) {
+            fingerPrintMap.put(category.getBook_group_id(), category);
+        }
 
-            for (Category category : categoryList) {
-                if (fingerPrintMap.containsKey(category.getBook_group_id())) {
-                    Category tmp = fingerPrintMap.get(category.getBook_group_id());
-                    tmp.update(category);
-                    categoryDAOC.updateByID(tmp);
-                } else {
-                    category.setUser_id(target_user_id);
-                    category.updateIDByUserID();
-                    categoryDAOC.insert(category);
-                }
+        for (Category category : categoryList) {
+            if (fingerPrintMap.containsKey(category.getBook_group_id())) {
+                Category tmp = fingerPrintMap.get(category.getBook_group_id());
+                tmp.update(category);
+                categoryDAOC.updateByID(tmp);
+            } else {
+                category.setUser_id(target_user_id);
+                category.updateIDByUserID();
+                categoryDAOC.insert(category);
             }
-        } finally {
-            categoryLock.unlock();
         }
 
         return categoryList;
