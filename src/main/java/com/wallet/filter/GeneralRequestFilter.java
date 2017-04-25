@@ -26,36 +26,10 @@ public class GeneralRequestFilter implements Filter {
 
 		HttpServletRequest  httpRequest  = (HttpServletRequest)  servletRequest;
 		HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
-		boolean isGzipped = httpRequest.getHeader(HttpHeaders.CONTENT_ENCODING) != null
-				&& httpRequest.getHeader(HttpHeaders.CONTENT_ENCODING).contains("gzip");
-
-		if (httpRequest.getHeader(HttpHeaders.CONTENT_ENCODING) != null) {
-			logger_.info("request gzipped : " + httpRequest.getHeader(HttpHeaders.CONTENT_ENCODING));
-		}
-		if (isGzipped) {
-			httpRequest = new GZIPServletRequestWrapper(httpRequest);
-		}
-
-		if (acceptsGZipEncoding(httpRequest)) {
-			httpResponse.addHeader("Content-Encoding", "gzip");
-			GZipServletResponseWrapper gzipResponse =
-					new GZipServletResponseWrapper(httpResponse);
-			filterChain.doFilter(new XSSRequestWrapper(httpRequest), gzipResponse);
-			gzipResponse.close();
-		} else {
-			filterChain.doFilter(new XSSRequestWrapper(httpRequest), servletResponse);
-		}
+		filterChain.doFilter(new XSSRequestWrapper(httpRequest), servletResponse);
 	}
 
 	@Override
 	public void destroy() {
-	}
-
-	private boolean acceptsGZipEncoding(HttpServletRequest httpRequest) {
-		String acceptEncoding =
-				httpRequest.getHeader("Accept-Encoding");
-
-		return acceptEncoding != null &&
-				acceptEncoding.indexOf("gzip") != -1;
 	}
 }

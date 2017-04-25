@@ -115,9 +115,6 @@ public class WalletService extends Application<WalletConfiguration> {
 
 		syncHelper.init();
 
-		environment.servlets().addFilter("Custom-Filter-Name", new GeneralRequestFilter())
-				.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "/*");
-
 	}
 
 	private void cleanupDB(SessionDAO sessionDAO, BookLogDAO bookLogDAO, BookDAO bookDAO, BookEntryDAO bookEntryDAO, CategoryDAO categoryDAO
