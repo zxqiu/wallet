@@ -1,55 +1,40 @@
 package com.wallet.filter;
 
+import com.sun.corba.se.impl.encoding.OSFCodeSetRegistry;
 import com.wallet.utils.misc.XSSFilter;
+import org.glassfish.jersey.message.internal.MediaTypes;
+import org.glassfish.jersey.server.ContainerRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.core.Form;
 import javax.ws.rs.core.HttpHeaders;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * Created by zxqiu on 4/24/17.
  */
-public class GeneralRequestFilter implements Filter {
+public class GeneralRequestFilter implements ContainerRequestFilter {
 	private static final Logger logger_ = LoggerFactory.getLogger(GeneralRequestFilter.class);
-	private XSSFilter xssFilter = null;
+	private static XSSFilter xssFilter = new XSSFilter();
 
 	@Override
-	public void init(FilterConfig filterConfig) throws ServletException {
-		xssFilter = new XSSFilter();
-	}
+	public void filter(ContainerRequestContext containerRequestContext) throws IOException {
+		ContainerRequest request = (ContainerRequest) containerRequestContext;
+		if (containerRequestContext.hasEntity()) {
+			request.bufferEntity();
+			String in = request.readEntity(String.class);
+			logger_.info("Incoming data in request :" + in);
+			String out = xssFilter.stripXSS(in);
+			logger_.info("Stripped data in request :" + out);
 
-	@Override
-	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
-			throws IOException, ServletException {
-		logger_.info("request filter enforced");
-
-		HttpServletRequest httpRequest  = (HttpServletRequest)  servletRequest;
-		Map<String, String[]> parameterMap = httpRequest.getParameterMap();
-		logger_.info(httpRequest.getRequestURI());
-		logger_.info(httpRequest.getRequestURL().toString());
-		logger_.info(httpRequest.getPathTranslated());
-		logger_.info(httpRequest.getPathInfo());
-
-		for (Map.Entry entry : parameterMap.entrySet()) {
-			String vals[] = (String[]) entry.getValue();
-			String stripped_vals[] = new String[vals.length];
-			for (int i = 0; i < vals.length; i++) {
-				stripped_vals[i] = xssFilter.stripXSS(vals[i]);
-				logger_.info("before : " + vals[i]);
-				logger_.info("after : " + stripped_vals[i]);
-			}
-			entry.setValue(stripped_vals);
+			request.setEntityStream(new ByteArrayInputStream(out.getBytes()));
 		}
-
-		filterChain.doFilter(new XSSRequestWrapper(httpRequest), servletResponse);
-	}
-
-	@Override
-	public void destroy() {
 	}
 }

@@ -115,8 +115,7 @@ public class WalletService extends Application<WalletConfiguration> {
 
 		syncHelper.init();
 
-		environment.servlets().addFilter("GeneralRequestFilter", new GeneralRequestFilter())
-				.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "/*");
+		environment.jersey().register(new GeneralRequestFilter());
 
 	}
 
