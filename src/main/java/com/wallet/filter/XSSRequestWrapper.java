@@ -36,13 +36,16 @@ public class XSSRequestWrapper extends HttpServletRequestWrapper {
     @Override
     public String getParameter(String parameter) {
         String value = super.getParameter(parameter);
-
+        logger_.info("parameter : " + parameter);
+        logger_.info("value : " + value);
         return xssFilter.stripXSS(value);
     }
 
     @Override
     public String getHeader(String name) {
         String value = super.getHeader(name);
+        logger_.info("name : " + name);
+        logger_.info("value : " + value);
         return xssFilter.stripXSS(value);
     }
 }
