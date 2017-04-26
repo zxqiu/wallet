@@ -28,8 +28,6 @@ public class XSSFilter {
 
 	public String stripXSS(String value) {
 		if (value != null) {
-			logger_.info("strip value : " + value);
-
 			// NOTE: It's highly recommended to use the ESAPI library and uncomment the following line to
 			// avoid encoded attacks.
 			// value = ESAPI.encoder().canonicalize(value);
