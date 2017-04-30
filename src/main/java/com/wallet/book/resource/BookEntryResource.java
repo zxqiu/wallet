@@ -5,7 +5,8 @@ import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import org.apache.commons.codec.binary.Base64;
+//import org.apache.commons.codec.binary.BaseNCodec;
+//import org.apache.commons.codec.binary.Base64;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Cookie;
@@ -357,8 +358,9 @@ public class BookEntryResource {
 			return Response.status(200).build();
 		}
 
-		String decode = Base64.encodeBase64String(blob.getContent());
+		//String decode = Base64.encodeBase64String(blob.getContent());
 
+		String decode = Base64.getEncoder().encodeToString(blob.getContent());
 		JSONObject obj = new JSONObject();
 		obj.put("image", "data:image/jpeg;base64," + decode);
 		return Response.status(200).entity(obj.toString()).build();
