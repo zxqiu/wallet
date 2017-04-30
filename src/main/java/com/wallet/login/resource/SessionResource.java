@@ -8,7 +8,6 @@ import javax.ws.rs.core.*;
 
 import com.wallet.book.resource.BookEntryResource;
 import com.wallet.login.core.User;
-import com.wallet.login.core.UserPriority;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,7 +103,9 @@ public class SessionResource {
         }
 
         if (userDAOC.getByID(user_id) == null) {
-            User user = new User(user_id, email, Dict.FACEBOOK_PREFIX + System.currentTimeMillis(), name, UserPriority.NORMAL.name());
+            User user = new User(email, Dict.FACEBOOK_PREFIX + System.currentTimeMillis(), name
+                    , User.USER_PRIORITY.NORMAL, User.USER_TYPE.FACEBOOK_USER, "");
+            user.setUser_id(user_id);
             try {
                 userDAOC.insert(user);
                 logger_.info("Insert new user " + user_id + ", " + name);

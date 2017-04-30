@@ -4,7 +4,6 @@ import com.wallet.utils.misc.Serializer;
 
 import java.io.*;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by zxqiu on 4/6/17.

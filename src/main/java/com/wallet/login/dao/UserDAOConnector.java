@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.wallet.login.core.User;
-import com.wallet.login.core.UserPriority;
 
 
 public class UserDAOConnector {
@@ -117,7 +116,8 @@ public class UserDAOConnector {
 
 	public void insert(User user) throws Exception {
 		try {
-			userDAO.insert(user.getUser_id(), user.getEmail(), user.getPassword(), user.getName(), user.getPriority(), user.getData().toByteArray());
+			userDAO.insert(user.getUser_id(), user.getEmail(), user.getPassword(), user.getName()
+					, user.getPriority().name(), user.getType().name(), user.getData().toByteArray());
 		} catch (Exception e) {
 			if (e.getMessage().contains("Duplicate entry")) {
 				logger_.info("User already exists : " + user.getUser_id());
@@ -130,7 +130,8 @@ public class UserDAOConnector {
 	}
 	
 	public void update(User user) throws Exception {
-		userDAO.update(user.getUser_id(), user.getEmail(), user.getPassword(), user.getName(), user.getPriority(), user.getData().toByteArray());
+		userDAO.update(user.getUser_id(), user.getEmail(), user.getPassword(), user.getName()
+				, user.getPriority().name(), user.getData().toByteArray());
 	}
 	
 	// TODO : delete user's data from other tables asynchronously
@@ -139,7 +140,8 @@ public class UserDAOConnector {
 	}
 	
 	public static void test() throws Exception {
-		User user = new User("admin", "admin@gmail.com", "admin", "admin", UserPriority.ADMIN.name(), new Date(), "");
+		User user = new User("admin", "admin@gmail.com", "admin", "admin"
+				, User.USER_PRIORITY.ADMIN, new Date(), User.USER_TYPE.LOCAL_USER, "");
 
 		logger_.info("UserDAOConnector test ...");
 		

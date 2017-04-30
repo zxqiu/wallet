@@ -17,7 +17,8 @@ public class UserMapper implements ResultSetMapper<User> {
         user.setEmail(resultSet.getString(Dict.EMAIL));
         user.setPassword(resultSet.getString(Dict.PASSWORD));
         user.setName(resultSet.getString(Dict.NAME));
-        user.setPriority(resultSet.getString(Dict.PRIORITY));
+        user.setPriority(User.USER_PRIORITY.valueOf(resultSet.getString(Dict.PRIORITY)));
+        user.setType(User.USER_TYPE.valueOf(resultSet.getString(Dict.TYPE)));
         try {
             user.setData(new UserData(resultSet.getBinaryStream(Dict.DATA)));
         } catch (Exception e) {

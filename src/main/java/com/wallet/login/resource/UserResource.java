@@ -9,7 +9,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.wallet.login.core.User;
-import com.wallet.login.core.UserPriority;
 import com.wallet.login.dao.SessionDAOConnector;
 import com.wallet.login.dao.UserDAOConnector;
 import com.wallet.utils.misc.ApiUtils;
@@ -80,7 +79,8 @@ public class UserResource {
 
         } else if ((user_id == null || user_id.length() == 0)
                 && userDAOC.getByEmail(email) == null) {
-            User user = new User(email, password, name, UserPriority.NORMAL.name(), "");
+            User user = new User(email, password, name, User.USER_PRIORITY.NORMAL, User.USER_TYPE.LOCAL_USER
+                    ,  "");
             logger_.info("Insert user : " + user_id);
             userDAOC.insert(user);
         }

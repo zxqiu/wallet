@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import com.wallet.book.core.BookLog;
+import com.wallet.book.core.BookLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,7 +93,10 @@ public class CategoryConnector {
 
 	public void insert(Category category) throws Exception {
 		try {
-			categoryDAO.insert(category.getId(), category.getGroup_id(), category.getUser_id(), category.getBook_group_id(), category.getName(), category.getData().toByteArray());
+			categoryDAO.insert(category.getId(), category.getGroup_id(), category.getUser_id()
+					, category.getBook_group_id(), category.getName(), category.getData().toByteArray());
+			BookLogger.addCateory(category.getUser_id(), category.getBook_group_id(), category.getId()
+					, category.getGroup_id(), BookLog.BOOK_LOG_NOTE.NONE);
 		} catch (Exception e) {
 			if (e.getMessage().contains("Duplicate entry")) {
 				logger_.info("Category " + category.getName() + " already exists for user : " + category.getUser_id());
@@ -103,28 +108,40 @@ public class CategoryConnector {
 		}
 	}
 	
-	public void updateByID(Category category) throws IOException {
+	public void updateByID(Category category) throws Exception {
 		categoryDAO.updateByID(category.getId(), category.getData().toByteArray());
+		BookLogger.updateCateory(category.getUser_id(), category.getBook_group_id(), category.getId()
+				, category.getGroup_id(), BookLog.BOOK_LOG_NOTE.BY_ID);
 	}
 
-	public void updateByGroupID(Category category) throws IOException {
+	public void updateByGroupID(Category category) throws Exception {
 		categoryDAO.updateByGroupID(category.getGroup_id(), category.getData().toByteArray());
+		BookLogger.updateCateory(category.getUser_id(), category.getBook_group_id(), ""
+				, category.getGroup_id(), BookLog.BOOK_LOG_NOTE.BY_CATEGORY_GROUP_ID);
 	}
 
-	public void deleteByID(String id) {
+	public void deleteByID(String user_id, String id) throws Exception {
 		categoryDAO.deleteByID(id);
+		BookLogger.deleteCateory(user_id, "", id, ""
+				, BookLog.BOOK_LOG_NOTE.BY_ID);
 	}
 
-	public void deleteByGroupID(String group_id) {
+	public void deleteByGroupID(String user_id, String group_id) throws Exception {
 		categoryDAO.deleteByGroupID(group_id);
+		BookLogger.deleteCateory(user_id, "", "", group_id
+				, BookLog.BOOK_LOG_NOTE.BY_CATEGORY_GROUP_ID);
     }
 
-	public void deleteByUserID(String user_id) {
+	public void deleteByUserID(String user_id) throws Exception {
 		categoryDAO.deleteByUserID(user_id);
+		BookLogger.deleteCateory(user_id, "", "", ""
+				, BookLog.BOOK_LOG_NOTE.BY_USER_ID);
 	}
 
-	public void deleteByUserIDAndBookGroupID(String user_id, String book_group_id) {
+	public void deleteByUserIDAndBookGroupID(String user_id, String book_group_id) throws Exception {
 		categoryDAO.deleteByUserIDAndBookGroupID(user_id, book_group_id);
+		BookLogger.deleteCateory(user_id, book_group_id, "", ""
+				, BookLog.BOOK_LOG_NOTE.BY_USER_ID_AND_BOOK_GROUP_ID);
 	}
 
 	public static void test() throws Exception {
@@ -153,7 +170,7 @@ public class CategoryConnector {
 		
 		logger_.info("3. delete");
 
-		CategoryConnector.instance().deleteByID(category.getId());
+		CategoryConnector.instance().deleteByID(category.getUser_id(), category.getId());
 		if (!CategoryConnector.instance().getByID(category.getId()).isEmpty()) {
 			logger_.error("CategoryConnector test failed!");
 			throw new Exception("CategoryConnector test failed!");

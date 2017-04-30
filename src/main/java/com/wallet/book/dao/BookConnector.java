@@ -105,7 +105,7 @@ public class BookConnector {
 
 	public void updateByGroupID(Book book) throws Exception {
 		bookDAO.updateByGroupID(book.getGroup_id(), book.getName(), new Date(), book.getData().toByteArray());
-		BookLogger.updateBook(book.getUser_id(), book.getId(), book.getGroup_id(), BookLog.BOOK_LOG_NOTE.BY_GROUP_ID);
+		BookLogger.updateBook(book.getUser_id(), book.getId(), book.getGroup_id(), BookLog.BOOK_LOG_NOTE.BY_BOOK_GROUP_ID);
 	}
 
 	public void deleteByID(String user_id, String id) throws Exception {

@@ -7,6 +7,8 @@ import com.wallet.book.dao.*;
 import com.wallet.book.resource.BookEntryResource;
 import com.wallet.book.resource.BookLogResource;
 import com.wallet.book.resource.BookResource;
+import com.wallet.filter.GeneralRequestFilter;
+import com.wallet.healthCheck.resource.serverCheckResource;
 import com.wallet.tinyUrl.dao.TinyUrlDAO;
 import com.wallet.tinyUrl.dao.TinyUrlDAOConnector;
 import com.wallet.tinyUrl.resource.TinyUrlResource;
@@ -28,6 +30,9 @@ import io.dropwizard.setup.Environment;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.jdbi.DBIFactory;
 import io.dropwizard.forms.MultiPartBundle;
+
+import javax.servlet.DispatcherType;
+import java.util.EnumSet;
 
 
 public class WalletService extends Application<WalletConfiguration> {
@@ -102,6 +107,7 @@ public class WalletService extends Application<WalletConfiguration> {
 	    environment.jersey().register(new BookEntryResource());
 	    environment.jersey().register(new CategoryResource());
 		environment.jersey().register(new TinyUrlResource());
+		environment.jersey().register(new serverCheckResource());
 
 	    environment.jersey().register(new RockerMessageBodyWriter());
 
@@ -110,6 +116,8 @@ public class WalletService extends Application<WalletConfiguration> {
 		}
 
 		syncHelper.init();
+
+		environment.jersey().register(new GeneralRequestFilter());
 
 	}
 

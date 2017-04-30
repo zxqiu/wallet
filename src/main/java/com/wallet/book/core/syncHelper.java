@@ -102,7 +102,7 @@ public class syncHelper {
                 break;
             case DELETE:
                 logger_.info("Delete category by group id : " + category.getGroup_id());
-                categoryDAOC.deleteByGroupID(category.getGroup_id());
+                categoryDAOC.deleteByGroupID(category.getUser_id(), category.getGroup_id());
                 break;
             default:
                 logger_.info("Unknown action when syncCategory");

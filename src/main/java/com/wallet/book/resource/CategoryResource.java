@@ -10,6 +10,8 @@ import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.wallet.book.core.BookLog;
+import com.wallet.book.core.BookLogger;
 import com.wallet.book.core.syncHelper;
 import com.wallet.book.dao.BookConnector;
 import com.wallet.book.dao.CategoryConnector;
@@ -102,7 +104,7 @@ public class CategoryResource {
 		try {
 		    if (id != null && id.length() > 1) {
 				logger_.info("Update category " + category.getName() + " for user " + user_id);
-		    	categoryDAOC.updateByID(category);
+		    	//categoryDAOC.updateByID(category);
 				syncHelper.syncCategory(category, syncHelper.SYNC_ACTION.UPDATE);
 			} else {
 				logger_.info("Insert category " + category.getName() + " for user " + user_id);
@@ -176,7 +178,7 @@ public class CategoryResource {
 				}
 			} else if (jsonObject.getString(Dict.ACTION).equals(Dict.DELETE)) {
 				logger_.info("Delete category : " + jsonObject.toString());
-				categoryDAOC.deleteByID(id);
+				categoryDAOC.deleteByID(user_id, id);
 				syncHelper.syncCategory(category, syncHelper.SYNC_ACTION.DELETE);
 			}
 		}
