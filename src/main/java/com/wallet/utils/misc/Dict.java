@@ -19,6 +19,7 @@ public class Dict {
 	public static final String NOTE = "note";
 	public static final String DATA = "data";
 	public static final String PICTURE_ID = "picture_id";
+	public static final String PICTURE_ID_LIST = "picture_id_list";
 	public static final String NAME = "name";
 	public static final String EDIT_TIME = "edit_time";
 	public static final String PRIORITY = "priority";
@@ -34,6 +35,10 @@ public class Dict {
 	public static final String GROUP_ID = "group_id";
 	public static final String OPERATION = "operation";
 	public static final String TYPE = "type";
+	public static final String SUBJECT = "subject";
+	public static final String TEXT = "text";
+	public static final String HTML = "html";
+	public static final String ATTACHMET_ID_LIST = "attachment_id_list";
 
 	public static final String FACEBOOK_PREFIX = "fb-";
 }
