@@ -7,6 +7,7 @@ import com.wallet.book.dao.*;
 import com.wallet.book.resource.BookEntryResource;
 import com.wallet.book.resource.BookLogResource;
 import com.wallet.book.resource.BookResource;
+import com.wallet.email.resource.EmailResource;
 import com.wallet.filter.GeneralRequestFilter;
 import com.wallet.healthCheck.resource.serverCheckResource;
 import com.wallet.tinyUrl.dao.TinyUrlDAO;
@@ -106,6 +107,7 @@ public class WalletService extends Application<WalletConfiguration> {
 	    environment.jersey().register(new CategoryResource());
 		environment.jersey().register(new TinyUrlResource());
 		environment.jersey().register(new serverCheckResource());
+		environment.jersey().register(new EmailResource());
 
 	    environment.jersey().register(new RockerMessageBodyWriter());
 

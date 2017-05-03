@@ -12,12 +12,23 @@ import java.util.List;
 public class EmailData implements Serializable, Serializer<EmailData> {
     static final long serialVersionUID = 2540954123698749435L;
 
-    String subject;
-    String text;
-    String html;
-    List picture_id_list;
-    List attachment_id_list;
+    private String subject;
+    private String text;
+    private String html;
+    private List<String> picture_id_list;
+    private List<String> attachment_id_list;
 
+    public EmailData(String subject, String text, String html, List<String> picture_id_list
+            , List<String> attachment_id_list) {
+        this.setSubject(subject);
+        this.setText(text);
+        this.setHtml(html);
+        this.setPicture_id_list(picture_id_list);
+        this.setAttachment_id_list(attachment_id_list);
+    }
+
+    public EmailData() {
+    }
 
     @Override
     public String toString() {
@@ -27,7 +38,6 @@ public class EmailData implements Serializable, Serializer<EmailData> {
                 + "," + Dict.HTML + ":" + html
                 + "," + Dict.PICTURE_ID_LIST + ":" + picture_id_list
                 + "," + Dict.ATTACHMET_ID_LIST + ":" + attachment_id_list
-                + "," + Dict.USER_LIST + ":" + user_list
                 + "]";
     }
 
@@ -49,5 +59,45 @@ public class EmailData implements Serializable, Serializer<EmailData> {
         EmailData emailData =  (EmailData) ois.readObject();
         ois.close();
         return emailData;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public String getHtml() {
+        return html;
+    }
+
+    public void setHtml(String html) {
+        this.html = html;
+    }
+
+    public List<String> getPicture_id_list() {
+        return picture_id_list;
+    }
+
+    public void setPicture_id_list(List<String> picture_id_list) {
+        this.picture_id_list = picture_id_list;
+    }
+
+    public List<String> getAttachment_id_list() {
+        return attachment_id_list;
+    }
+
+    public void setAttachment_id_list(List<String> attachment_id_list) {
+        this.attachment_id_list = attachment_id_list;
     }
 }
