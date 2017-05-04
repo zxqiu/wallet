@@ -15,7 +15,7 @@ public class EmailConnector {
 	private static EmailDAO emailDAO = null;
 	private static EmailConnector instance_ = null;
 
-	public static final long EMAIL_CHECK_INTERVAL = 1000 * 5;
+	public static final long EMAIL_CHECK_INTERVAL = 1000 * 60 * 5;
 	public static final String TABLE_NAME = "category_table";
 
 	public static EmailConnector instance() throws Exception {
@@ -63,35 +63,35 @@ public class EmailConnector {
 		instance_ = null;
 	}
 
-	public List<Email> getAll() {
+	public List<Email> getAll() throws Exception {
 		return emailDAO.findAll();
 	}
 
-	public List<Email> getByID(String id) {
+	public List<Email> getByID(String id) throws Exception {
 		return emailDAO.findByID(id);
 	}
 
-	public List<Email> getByFromAddress(String from_address) {
+	public List<Email> getByFromAddress(String from_address) throws Exception {
 		return emailDAO.findByFromAddress(from_address);
 	}
 
-	public List<Email> getByToAddress(String to_address) {
+	public List<Email> getByToAddress(String to_address) throws Exception {
 		return emailDAO.findByToAddress(to_address);
 	}
 
-	public List<Email> getByStatus(Email.EMAIL_STATUS status) {
+	public List<Email> getByStatus(Email.EMAIL_STATUS status) throws Exception {
 		return emailDAO.findByStatus(status.name());
 	}
 
-	public List<Email> getByType(Email.EMAIL_TYPE type) {
+	public List<Email> getByType(Email.EMAIL_TYPE type) throws Exception {
 		return emailDAO.findByType(type.name());
 	}
 
-	public List<Email> getByFromAddressAndToAddress(String from_address, String to_address) {
+	public List<Email> getByFromAddressAndToAddress(String from_address, String to_address) throws Exception {
 		return emailDAO.findByFromAddressAndToAddress(from_address, to_address);
 	}
 
-	public List<Email> getByToAddressAndStatus(String to_address, Email.EMAIL_STATUS status) {
+	public List<Email> getByToAddressAndStatus(String to_address, Email.EMAIL_STATUS status) throws Exception {
 		return emailDAO.findByToAddressAndStatus(to_address, status.name());
 	}
 

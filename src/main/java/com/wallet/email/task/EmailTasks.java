@@ -36,20 +36,30 @@ public class EmailTasks {
         @Override
         public void run() {
             logger_.info("Scan emails for new and send failed emails ...");
-            List<Email> newEmails = emailConnector.getByStatus(Email.EMAIL_STATUS.NEW);
-            List<Email> sendFailedEmails = emailConnector.getByStatus(Email.EMAIL_STATUS.SEND_FAILED);
+            List<Email> newEmails = null;
+            List<Email> sendFailedEmails = null;
+            try {
+                newEmails = emailConnector.getByStatus(Email.EMAIL_STATUS.NEW);
+                sendFailedEmails = emailConnector.getByStatus(Email.EMAIL_STATUS.SEND_FAILED);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             pendingEmailMapLock.lock();
             try {
-                for (Email email : newEmails) {
-                    if (!pendingEmailMap.containsKey(email.getId())) {
-                        pendingEmailMap.put(email.getId(), email);
+                if (newEmails != null) {
+                    for (Email email : newEmails) {
+                        if (!pendingEmailMap.containsKey(email.getId())) {
+                            pendingEmailMap.put(email.getId(), email);
+                        }
                     }
                 }
 
-                for (Email email : sendFailedEmails) {
-                    if (!pendingEmailMap.containsKey(email.getId())) {
-                        pendingEmailMap.put(email.getId(), email);
+                if (sendFailedEmails != null) {
+                    for (Email email : sendFailedEmails) {
+                        if (!pendingEmailMap.containsKey(email.getId())) {
+                            pendingEmailMap.put(email.getId(), email);
+                        }
                     }
                 }
             } finally {
