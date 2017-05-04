@@ -1,10 +1,11 @@
 package com.wallet.email.dao;
 
 import com.wallet.email.core.Email;
+import com.wallet.email.task.EmailTasks;
+import com.wallet.utils.tools.concurrentHelper.Scheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -16,6 +17,7 @@ public class EmailConnector {
 	private static EmailDAO emailDAO = null;
 	private static EmailConnector instance_ = null;
 
+	public static final long EMAIL_CHECK_INTERVAL = 1000 * 60 * 1;
 	public static final String TABLE_NAME = "category_table";
 
 	public static EmailConnector instance() throws Exception {
@@ -40,8 +42,11 @@ public class EmailConnector {
 		this.createTable();
 	}
 	
-	public static void init(EmailDAO emailDAO) {
+	public static void init(EmailDAO emailDAO) throws Exception {
 		EmailConnector.emailDAO = emailDAO;
+
+		EmailTasks.init();
+		Scheduler.instance().schedule(new EmailTasks.CheckTask(), EMAIL_CHECK_INTERVAL, EMAIL_CHECK_INTERVAL);
 	}
 	
 	private void createTable() throws Exception {
@@ -77,6 +82,14 @@ public class EmailConnector {
 
 	public List<Email> getByToAddress(String to_address) {
 		return emailDAO.findByToAddress(to_address);
+	}
+
+	public List<Email> getByStatus(Email.EMAIL_STATUS status) {
+		return emailDAO.findByStatus(status.name());
+	}
+
+	public List<Email> getByType(Email.EMAIL_TYPE type) {
+		return emailDAO.findByType(type.name());
 	}
 
 	public List<Email> getByFromAddressAndToAddress(String from_address, String to_address) {

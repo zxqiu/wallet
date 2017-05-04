@@ -64,6 +64,7 @@ public class BookEntryCache {
         removalListener = new RemovalListener<String, List<BookEntry>>() {
             @Override
             public void onRemoval(RemovalNotification<String, List<BookEntry>> removalNotification) {
+                return;
             }
         };
 
