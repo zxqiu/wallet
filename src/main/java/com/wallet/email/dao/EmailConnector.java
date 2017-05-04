@@ -1,5 +1,6 @@
 package com.wallet.email.dao;
 
+import com.wallet.email.core.Email;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,10 +49,10 @@ public class EmailConnector {
 			emailDAO.createTable();
 		} catch (Exception e) {
 			if (e.getMessage().contains("already exists")) {
-				logger_.info("category table already exists : " + e.getMessage());
+				logger_.info("email table already exists : " + e.getMessage());
 			} else {
 				e.printStackTrace();
-				logger_.error("Error (CRITICAL) : failed to create category table : " + e.getMessage());
+				logger_.error("Error (CRITICAL) : failed to create email table : " + e.getMessage());
 				throw new Exception(e);
 			}
 		}
@@ -61,116 +62,94 @@ public class EmailConnector {
 		emailDAO.dropTable();
 		instance_ = null;
 	}
-	
-	public List<Email> getByUserID(String user_id) {
-		return emailDAO.findByUserID(user_id);
+
+	public List<Email> getAll() {
+		return emailDAO.findAll();
 	}
-	
+
 	public List<Email> getByID(String id) {
 		return emailDAO.findByID(id);
 	}
 
-	public List<Email> getByGroupID(String group_id) {
-		return emailDAO.findByGroupID(group_id);
+	public List<Email> getByFromAddress(String from_address) {
+		return emailDAO.findByFromAddress(from_address);
 	}
 
-	public List<Email> getByBookGroupID(String book_group_id) throws SQLException {
-		return emailDAO.findByBookGroupID(book_group_id);
+	public List<Email> getByToAddress(String to_address) {
+		return emailDAO.findByToAddress(to_address);
 	}
 
-	public List<Email> getByUserIDAndGroupID(String user_id, String group_id) {
-		return emailDAO.findByUserIDAndGroupID(user_id, group_id);
+	public List<Email> getByFromAddressAndToAddress(String from_address, String to_address) {
+		return emailDAO.findByFromAddressAndToAddress(from_address, to_address);
 	}
 
-	public List<Email> getByUserIDAndBookGroupID(String user_id, String book_group_id) {
-		return emailDAO.findByUserIDAndBookGroupID(user_id, book_group_id);
+	public List<Email> getByToAddressAndStatus(String to_address, Email.EMAIL_STATUS status) {
+		return emailDAO.findByToAddressAndStatus(to_address, status.name());
 	}
 
-	public void insert(Email category) throws Exception {
+	public void insert(Email email) throws Exception {
 		try {
-			emailDAO.insert(category.getId(), category.getGroup_id(), category.getUser_id()
-					, category.getBook_group_id(), category.getName(), category.getData().toByteArray());
-			BookLogger.addCateory(category.getUser_id(), category.getBook_group_id(), category.getId()
-					, category.getGroup_id(), BookLog.BOOK_LOG_NOTE.NONE);
+			emailDAO.insert(email.getId(), email.getCreate_time(), email.getFrom_address()
+					, email.getTo_address(), email.getType().name(), email.getStatus().name()
+					, email.getData().toByteArray());
 		} catch (Exception e) {
 			if (e.getMessage().contains("Duplicate entry")) {
-				logger_.info("Email " + category.getName() + " already exists for user : " + category.getUser_id());
+				logger_.info("Email " + email.getId() + " already exists. From " + email.getFrom_address()
+						+ " to " + email.getTo_address());
 			} else {
-				logger_.error("Error insert category " + category.getName() + " for " + category.getUser_id() + " failed : " + e.getMessage());
+				logger_.error("Error insert email " + email.getId() + ". From " + email.getFrom_address()
+						+ " to " + email.getTo_address());
 				e.printStackTrace();
 				throw new Exception(e);
 			}
 		}
 	}
 	
-	public void updateByID(Email category) throws Exception {
-		emailDAO.updateByID(category.getId(), category.getData().toByteArray());
-		BookLogger.updateCateory(category.getUser_id(), category.getBook_group_id(), category.getId()
-				, category.getGroup_id(), BookLog.BOOK_LOG_NOTE.BY_ID);
+	public void updateByID(Email email) throws Exception {
+		emailDAO.updateByID(email.getId(), email.getStatus().name());
 	}
 
-	public void updateByGroupID(Email category) throws Exception {
-		emailDAO.updateByGroupID(category.getGroup_id(), category.getData().toByteArray());
-		BookLogger.updateCateory(category.getUser_id(), category.getBook_group_id(), ""
-				, category.getGroup_id(), BookLog.BOOK_LOG_NOTE.BY_CATEGORY_GROUP_ID);
-	}
-
-	public void deleteByID(String user_id, String id) throws Exception {
+	public void deleteByID(String id) throws Exception {
 		emailDAO.deleteByID(id);
-		BookLogger.deleteCateory(user_id, "", id, ""
-				, BookLog.BOOK_LOG_NOTE.BY_ID);
 	}
 
-	public void deleteByGroupID(String user_id, String group_id) throws Exception {
-		emailDAO.deleteByGroupID(group_id);
-		BookLogger.deleteCateory(user_id, "", "", group_id
-				, BookLog.BOOK_LOG_NOTE.BY_CATEGORY_GROUP_ID);
+	public void deleteByToAddress(String to_address) throws Exception {
+		emailDAO.deleteByToAddress(to_address);
     }
 
-	public void deleteByUserID(String user_id) throws Exception {
-		emailDAO.deleteByUserID(user_id);
-		BookLogger.deleteCateory(user_id, "", "", ""
-				, BookLog.BOOK_LOG_NOTE.BY_USER_ID);
-	}
-
-	public void deleteByUserIDAndBookGroupID(String user_id, String book_group_id) throws Exception {
-		emailDAO.deleteByUserIDAndBookGroupID(user_id, book_group_id);
-		BookLogger.deleteCateory(user_id, book_group_id, "", ""
-				, BookLog.BOOK_LOG_NOTE.BY_USER_ID_AND_BOOK_GROUP_ID);
-	}
-
 	public static void test() throws Exception {
-		Email category = new Email("admin", "test_group", "test_name", "#FFFFFF");
+		Email email = new Email("a@b.com", "b@c.com", Email.EMAIL_TYPE.ALERT
+				, "test", "test text", "", null, null);
 		
-		logger_.info("CategoryConnector test ...");
+		logger_.info("EmailConnector test ...");
 		
 		logger_.info("1. insert");
 		
-		EmailConnector.instance().insert(category);
-		if (EmailConnector.instance().getByUserID("admin").isEmpty()) {
-			logger_.error("CategoryConnector test failed!");
-			throw new Exception("CategoryConnector test failed!");
+		EmailConnector.instance().insert(email);
+		if (EmailConnector.instance().getByID(email.getId()).isEmpty()) {
+			logger_.error("EmailConnector test failed!");
+			throw new Exception("EmailConnector test failed!");
 		}
 		
 		logger_.info("2. update");
 		
-		category.setPicture_id("#FFFFFF");
-		EmailConnector.instance().updateByID(category);
-		List<Email> category2 = EmailConnector.instance().getByID(category.getId());
-		if (category2.isEmpty()) {
-			logger_.error("CategoryConnector test failed!");
-			throw new Exception("CategoryConnector test failed!");
+		email.setStatus(Email.EMAIL_STATUS.SENT);
+		EmailConnector.instance().updateByID(email);
+		List<Email> emails = EmailConnector.instance().getByID(email.getId());
+		if (emails.isEmpty() || !emails.get(emails.size() - 1).getStatus().equals(Email.EMAIL_STATUS.SENT)) {
+			logger_.error("EmailConnector test failed!");
+			logger_.error("updated email status : " + emails.get(emails.size() - 1).getStatus().name());
+			throw new Exception("EmailConnector test failed!");
 		}
-		logger_.info("updated picture id : " + category2.get(category2.size() - 1).getPicture_id());
-		
+
 		logger_.info("3. delete");
 
-		EmailConnector.instance().deleteByID(category.getUser_id(), category.getId());
-		if (!EmailConnector.instance().getByID(category.getId()).isEmpty()) {
-			logger_.error("CategoryConnector test failed!");
-			throw new Exception("CategoryConnector test failed!");
+		EmailConnector.instance().deleteByID(email.getId());
+		if (!EmailConnector.instance().getByID(email.getId()).isEmpty()) {
+			logger_.error("EmailConnector test failed!");
+			throw new Exception("EmailConnector test failed!");
 		}
 
-		logger_.info("CategoryConnector test passed");
+		logger_.info("EmailConnector test passed");
 	}
 }

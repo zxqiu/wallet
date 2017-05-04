@@ -7,6 +7,8 @@ import com.wallet.book.dao.*;
 import com.wallet.book.resource.BookEntryResource;
 import com.wallet.book.resource.BookLogResource;
 import com.wallet.book.resource.BookResource;
+import com.wallet.email.dao.EmailConnector;
+import com.wallet.email.dao.EmailDAO;
 import com.wallet.email.resource.EmailResource;
 import com.wallet.filter.GeneralRequestFilter;
 import com.wallet.healthCheck.resource.serverCheckResource;
@@ -74,9 +76,10 @@ public class WalletService extends Application<WalletConfiguration> {
 	    final BookEntryDAO bookEntryDAO = jdbi.onDemand(BookEntryDAO.class);
 	    final CategoryDAO categoryDAO = jdbi.onDemand(CategoryDAO.class);
 	    final TinyUrlDAO tinyUrlDAO = jdbi.onDemand(TinyUrlDAO.class);
+	    final EmailDAO emailDAO = jdbi.onDemand(EmailDAO.class);
 
 	    if (isCleanup) {
-			cleanupDB(sessionDAO, bookLogDAO, bookDAO, bookEntryDAO, categoryDAO, userDAO, tinyUrlDAO);
+			cleanupDB(sessionDAO, bookLogDAO, bookDAO, bookEntryDAO, categoryDAO, userDAO, tinyUrlDAO, emailDAO);
 		}
 
 		BookEntryCache.init(bookEntryDAO);
@@ -88,6 +91,7 @@ public class WalletService extends Application<WalletConfiguration> {
 	    BookEntryConnector.init(bookEntryDAO);
 	    CategoryConnector.init(categoryDAO);
 		TinyUrlDAOConnector.init(tinyUrlDAO);
+		EmailConnector.init(emailDAO);
 
 		BookEntryCache.test();
 
@@ -98,6 +102,7 @@ public class WalletService extends Application<WalletConfiguration> {
 	    BookEntryConnector.test();
 	    CategoryConnector.test();
 	    TinyUrlDAOConnector.test();
+	    EmailConnector.test();
 
 	    environment.jersey().register(new UserResource());
 	    environment.jersey().register(new SessionResource());
@@ -122,7 +127,7 @@ public class WalletService extends Application<WalletConfiguration> {
 	}
 
 	private void cleanupDB(SessionDAO sessionDAO, BookLogDAO bookLogDAO, BookDAO bookDAO, BookEntryDAO bookEntryDAO, CategoryDAO categoryDAO
-			, UserDAO userDAO, TinyUrlDAO tinyUrlDAO) {
+			, UserDAO userDAO, TinyUrlDAO tinyUrlDAO, EmailDAO emailDAO) {
 	    logger_.info("Clean up all database");
 
 		sessionDAO.dropTable();
@@ -132,6 +137,7 @@ public class WalletService extends Application<WalletConfiguration> {
 		bookLogDAO.dropTable();
 		userDAO.dropTable();
 		tinyUrlDAO.dropTable();
+		emailDAO.dropTable();
 
 		userDAO.createTable();
 		sessionDAO.createTable();
@@ -140,5 +146,6 @@ public class WalletService extends Application<WalletConfiguration> {
 		bookEntryDAO.createTable();
 		categoryDAO.createTable();
 		tinyUrlDAO.createTable();
+		emailDAO.createTable();
 	}
 }

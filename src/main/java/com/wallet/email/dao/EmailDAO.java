@@ -22,7 +22,7 @@ public interface EmailDAO {
 			+ "`" + Dict.TYPE + "` varchar(64) not null,"
 			+ "`" + Dict.STATUS + "` varchar(64) not null,"
 			+ "`" + Dict.DATA + "` varbinary(60000),"
-			+ "primary key (`" + Dict.ID + "`),"
+			+ "primary key (`" + Dict.ID + "`)"
 			+ ")ENGINE=InnoDB DEFAULT CHARSET=utf8 collate=utf8_unicode_ci;"
 			)
 	void createTable();
