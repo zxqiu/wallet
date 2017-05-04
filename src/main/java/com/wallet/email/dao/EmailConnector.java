@@ -1,8 +1,6 @@
 package com.wallet.email.dao;
 
 import com.wallet.email.core.Email;
-import com.wallet.email.task.EmailTasks;
-import com.wallet.utils.tools.concurrentHelper.Scheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +15,7 @@ public class EmailConnector {
 	private static EmailDAO emailDAO = null;
 	private static EmailConnector instance_ = null;
 
-	public static final long EMAIL_CHECK_INTERVAL = 1000 * 60 * 1;
+	public static final long EMAIL_CHECK_INTERVAL = 1000 * 5;
 	public static final String TABLE_NAME = "category_table";
 
 	public static EmailConnector instance() throws Exception {
@@ -44,11 +42,8 @@ public class EmailConnector {
 	
 	public static void init(EmailDAO emailDAO) throws Exception {
 		EmailConnector.emailDAO = emailDAO;
-
-		EmailTasks.init();
-		Scheduler.instance().schedule(new EmailTasks.CheckTask(), EMAIL_CHECK_INTERVAL, EMAIL_CHECK_INTERVAL);
 	}
-	
+
 	private void createTable() throws Exception {
 		try {
 			emailDAO.createTable();
@@ -139,7 +134,8 @@ public class EmailConnector {
 		logger_.info("1. insert");
 		
 		EmailConnector.instance().insert(email);
-		if (EmailConnector.instance().getByID(email.getId()).isEmpty()) {
+		if (EmailConnector.instance().getByID(email.getId()).isEmpty()
+				|| EmailConnector.instance().getByStatus(Email.EMAIL_STATUS.NEW).isEmpty()) {
 			logger_.error("EmailConnector test failed!");
 			throw new Exception("EmailConnector test failed!");
 		}

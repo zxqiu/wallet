@@ -110,7 +110,8 @@ public interface EmailDAO {
             @Bind(Dict.TYPE) String type
     );
 
-	@SqlQuery("select from " + TABLE_NAME + " where " + Dict.STATUS + " = :" + Dict.STATUS)
+	@SqlQuery("select * from " + TABLE_NAME + " where " + Dict.STATUS + " = :" + Dict.STATUS)
+	@Mapper(EmailMapper.class)
     List<Email> findByStatus(
             @Bind(Dict.STATUS) String status
     );

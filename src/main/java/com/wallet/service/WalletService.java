@@ -10,6 +10,7 @@ import com.wallet.book.resource.BookResource;
 import com.wallet.email.dao.EmailConnector;
 import com.wallet.email.dao.EmailDAO;
 import com.wallet.email.resource.EmailResource;
+import com.wallet.email.task.EmailTasks;
 import com.wallet.filter.GeneralRequestFilter;
 import com.wallet.healthCheck.resource.serverCheckResource;
 import com.wallet.tinyUrl.dao.TinyUrlDAO;
@@ -84,6 +85,9 @@ public class WalletService extends Application<WalletConfiguration> {
 
 		BookEntryCache.init(bookEntryDAO);
 
+	    /*
+	    initialize all data connectors
+	     */
 	    UserDAOConnector.init(userDAO);
 	    SessionDAOConnector.init(sessionDAO);
 		BookLogConnector.init(bookLogDAO);
@@ -93,6 +97,9 @@ public class WalletService extends Application<WalletConfiguration> {
 		TinyUrlDAOConnector.init(tinyUrlDAO);
 		EmailConnector.init(emailDAO);
 
+		/*
+		test all data connectors
+		 */
 		BookEntryCache.test();
 
 	    UserDAOConnector.test();
@@ -104,6 +111,9 @@ public class WalletService extends Application<WalletConfiguration> {
 	    TinyUrlDAOConnector.test();
 	    EmailConnector.test();
 
+	    /*
+	    register all resources
+	     */
 	    environment.jersey().register(new UserResource());
 	    environment.jersey().register(new SessionResource());
 		environment.jersey().register(new BookLogResource());
@@ -116,12 +126,22 @@ public class WalletService extends Application<WalletConfiguration> {
 
 	    environment.jersey().register(new RockerMessageBodyWriter());
 
+	    /*
+	    dev option: real time rocker reloading
+	     */
 	    if (!isRelease) {
 			RockerRuntime.getInstance().setReloading(true);
 		}
 
+		/*
+		initialize all helpers and tasks
+		 */
 		syncHelper.init();
+		EmailTasks.init();
 
+		/*
+		register all filters
+		 */
 		environment.jersey().register(new GeneralRequestFilter());
 
 	}
