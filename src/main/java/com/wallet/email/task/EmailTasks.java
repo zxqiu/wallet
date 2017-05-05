@@ -181,9 +181,10 @@ public class EmailTasks {
 
             logger_.info(this.toString() + " : sending email " + in.getId() + " from " + in.getFrom_address() + " to " + in.getTo_address());
             try {
-                new Mailer("smtp.gmail.com", 465, "", ""
-                        , TransportStrategy.SMTP_SSL).sendMail(email);
-            } catch (MailException e) {
+                //new Mailer("smtp.gmail.com", 465, "", ""
+                 //       , TransportStrategy.SMTP_SSL).sendMail(email);
+                new Mailer().sendMail(email);
+            } catch (Exception e) {
                 in.setStatus(Email.EMAIL_STATUS.SEND_FAILED);
                 logger_.error(this.toString() + " : Error : failed to send email + " + in.getId() + " : " + e.getMessage());
                 e.printStackTrace();
