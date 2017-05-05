@@ -3,6 +3,7 @@ package com.wallet.email.task;
 import com.wallet.email.core.Email;
 import com.wallet.email.dao.EmailConnector;
 import com.wallet.utils.tools.concurrentHelper.Scheduler;
+import org.simplejavamail.MailException;
 import org.simplejavamail.mailer.Mailer;
 import org.simplejavamail.mailer.config.TransportStrategy;
 import org.slf4j.Logger;
@@ -58,7 +59,7 @@ public class EmailTasks {
                 newEmails = emailConnector.getByStatus(Email.EMAIL_STATUS.NEW);
                 sendFailedEmails = emailConnector.getByStatus(Email.EMAIL_STATUS.SEND_FAILED);
             } catch (Exception e) {
-                logger_.error("Error : failed to get pending emails!");
+                logger_.error("Error : failed to get pending emails: " + e.getMessage());
                 e.printStackTrace();
             }
 
@@ -91,7 +92,7 @@ public class EmailTasks {
                                 pendingEmailMap.remove(pendingEmail.getId());
                             }
                         } catch (Exception e) {
-                            logger_.error("Error : failed to update email status.");
+                            logger_.error("Error : failed to update email status: " + e.getMessage());
                             e.printStackTrace();
                         }
                     }
@@ -178,8 +179,13 @@ public class EmailTasks {
             }
 
             logger_.info(this.toString() + " : sending email " + in.getId() + " from " + in.getFrom_address() + " to " + in.getTo_address());
-            new Mailer("smtp.gmail.com", 465, "", ""
-                    , TransportStrategy.SMTP_SSL).sendMail(email);
+            try {
+                new Mailer("smtp.gmail.com", 465, "", ""
+                        , TransportStrategy.SMTP_SSL).sendMail(email);
+            } catch (MailException e) {
+                logger_.error(this.toString() + "Error : failed to send email + " + in.getId() + " : " + e.getMessage());
+                e.printStackTrace();
+            }
             logger_.info(this.toString() + " : test email sent ");
 
             pendingEmailMapLock.lock();
