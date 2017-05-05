@@ -31,7 +31,26 @@ public class Email {
     @JsonProperty
     private EmailData data;
 
-    public enum EMAIL_STATUS {NEW, SENDING, SEND_FAILED, SENT, RECEIVED}
+    public enum EMAIL_STATUS {
+        /* NEW emails are those never send or never get a status update when sending.
+         * These emails are pending to be sent.
+         * */
+        NEW
+        /* SENDING emails are those sending by email senders, but not yet finished.
+         * This status is only used in pendingEmailMap in current design.
+         * These emails should not be removed from pendingEmailMap or DB.
+         * Also they should not be resend.
+         * */
+        , SENDING
+        /* SEND_FAILED emails are those have been sent but failed.
+         * These emails are pending to be sent again.
+         * */
+        , SEND_FAILED
+        /* SENT emails are those already sent. */
+        , SENT
+        /* RECEIVED emails are those incoming emails. */
+        , RECEIVED
+    }
 
     public enum EMAIL_TYPE {NOTIFICATION, ALERT, URGENT, INCOMING}
 
