@@ -15,7 +15,6 @@ public class EmailConnector {
 	private static EmailDAO emailDAO = null;
 	private static EmailConnector instance_ = null;
 
-	public static final long EMAIL_CHECK_INTERVAL = 1000 * 60 * 5;
 	public static final String TABLE_NAME = "category_table";
 
 	public static EmailConnector instance() throws Exception {
@@ -126,7 +125,7 @@ public class EmailConnector {
     }
 
 	public static void test() throws Exception {
-		Email email = new Email("a@b.com", "b@c.com", Email.EMAIL_TYPE.ALERT
+		Email email = new Email("zxqiu90@gmail.com", "zxqiu90@gmail.com", Email.EMAIL_TYPE.ALERT
 				, "test", "test text", "", null, null);
 		
 		logger_.info("EmailConnector test ...");
@@ -142,10 +141,10 @@ public class EmailConnector {
 		
 		logger_.info("2. update");
 		
-		email.setStatus(Email.EMAIL_STATUS.SENT);
+		email.setStatus(Email.EMAIL_STATUS.SEND_FAILED);
 		EmailConnector.instance().updateByID(email);
 		List<Email> emails = EmailConnector.instance().getByID(email.getId());
-		if (emails.isEmpty() || !emails.get(emails.size() - 1).getStatus().equals(Email.EMAIL_STATUS.SENT)) {
+		if (emails.isEmpty() || !emails.get(emails.size() - 1).getStatus().equals(email.getStatus())) {
 			logger_.error("EmailConnector test failed!");
 			logger_.error("updated email status : " + emails.get(emails.size() - 1).getStatus().name());
 			throw new Exception("EmailConnector test failed!");

@@ -31,7 +31,7 @@ public class Email {
     @JsonProperty
     private EmailData data;
 
-    public enum EMAIL_STATUS {NEW, SEND_FAILED, SENT, RECEIVED}
+    public enum EMAIL_STATUS {NEW, SENDING, SEND_FAILED, SENT, RECEIVED}
 
     public enum EMAIL_TYPE {NOTIFICATION, ALERT, URGENT, INCOMING}
 

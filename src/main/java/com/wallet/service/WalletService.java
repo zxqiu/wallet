@@ -137,7 +137,8 @@ public class WalletService extends Application<WalletConfiguration> {
 		initialize all helpers and tasks
 		 */
 		syncHelper.init();
-		EmailTasks.init();
+		EmailTasks emailTasks = new EmailTasks();
+		emailTasks.init();
 
 		/*
 		register all filters
