@@ -31,7 +31,7 @@ public class EmailTasks {
     private static Lock pendingEmailMapLock = new ReentrantLock();
 
     public static final long EMAIL_CHECK_INTERVAL = 1000 * 10;
-    public static final int EMAIL_SENDER_THREAD_NUM = 10;
+    public static final int EMAIL_SENDER_MAX = 10;
 
     public void init() throws Exception {
         emailConnector = EmailConnector.instance();
@@ -61,6 +61,7 @@ public class EmailTasks {
             } catch (Exception e) {
                 logger_.error("Error : failed to get pending emails: " + e.getMessage());
                 e.printStackTrace();
+                return;
             }
 
             pendingEmailMapLock.lock();
@@ -131,7 +132,7 @@ public class EmailTasks {
                             e.setStatus(Email.EMAIL_STATUS.SENDING);
                             Runnable sender = new emailSender(e);
                             if (executor == null || executor.isTerminated()) {
-                                executor = Executors.newFixedThreadPool(EMAIL_SENDER_THREAD_NUM);
+                                executor = Executors.newFixedThreadPool(EMAIL_SENDER_MAX);
                             }
                             enqueuedCnt++;
                             executor.execute(sender);
@@ -183,10 +184,12 @@ public class EmailTasks {
                 new Mailer("smtp.gmail.com", 465, "", ""
                         , TransportStrategy.SMTP_SSL).sendMail(email);
             } catch (MailException e) {
-                logger_.error(this.toString() + "Error : failed to send email + " + in.getId() + " : " + e.getMessage());
+                in.setStatus(Email.EMAIL_STATUS.SEND_FAILED);
+                logger_.error(this.toString() + " : Error : failed to send email + " + in.getId() + " : " + e.getMessage());
                 e.printStackTrace();
+                return;
             }
-            logger_.info(this.toString() + " : test email sent ");
+            logger_.info(this.toString() + " : email sent ");
 
             pendingEmailMapLock.lock();
             try {
