@@ -11,4 +11,4 @@ else
 fi
 
 sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to 8080
-java -jar target/wallet-0.0.1-SNAPSHOT.jar server wallet.yml --release &
+java -jar target/wallet-0.0.1-SNAPSHOT.jar server wallet.yml --cleanup --release &

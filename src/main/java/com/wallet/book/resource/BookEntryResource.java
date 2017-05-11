@@ -5,6 +5,9 @@ import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import com.google.cloud.storage.Bucket;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
 import org.apache.commons.codec.binary.Base64;
 
 import javax.ws.rs.*;
@@ -350,15 +353,17 @@ public class BookEntryResource {
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public Response uploadBookEntryPicture(@FormDataParam("hosturl") String hostURL,
 										   @FormDataParam("picture_timestamp") String pictureTs,
-										   @FormDataParam("image") InputStream uploadedInputStream,
-										   @FormDataParam("image") FormDataContentDisposition fileDetail,
+										   @FormDataParam("image") String source,
 										   @CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
 		String userID = ApiUtils.getUserIDFromCookie(cookie);
 		if (SessionDAOConnector.instance().verifySessionCookie(cookie) == false || userID == null) {
 			return Response.seeOther(URI.create(SessionResource.PATH_RESTORE_SESSION)).build();
 		}
 
-		bookEntryPictureConnector.insert(userID, pictureTs, hostURL, uploadedInputStream);
+		String base64Image = source.split(",")[1];
+		byte[] imageBytes = javax.xml.bind.DatatypeConverter.parseBase64Binary(base64Image);
+
+		bookEntryPictureConnector.insert(userID, pictureTs, hostURL, imageBytes);
 
 		return Response.status(200).build();
 	}

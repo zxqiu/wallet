@@ -40,7 +40,7 @@ public class BookEntryPictureConnector {
         }
     }
 
-    public void insert(String userID, String pictureTs, String hostURL, InputStream uploadedInputStream) {
+    public void insert(String userID, String pictureTs, String hostURL, byte[] uploadedInputStream) {
         String fileName = userID + '#' + hostURL + '#' + pictureTs;
         bucket.create(fileName, uploadedInputStream);
     }
