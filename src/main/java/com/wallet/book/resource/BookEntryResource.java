@@ -1,13 +1,8 @@
 package com.wallet.book.resource;
 
-import java.io.*;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
-import com.google.cloud.storage.Bucket;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
 import org.apache.commons.codec.binary.Base64;
 
 import javax.ws.rs.*;
@@ -15,7 +10,6 @@ import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import com.wallet.book.core.Book;
