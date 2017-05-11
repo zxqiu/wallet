@@ -36,10 +36,13 @@ public class Dict {
 	public static final String GROUP_ID = "group_id";
 	public static final String OPERATION = "operation";
 	public static final String TYPE = "type";
+	public static final String STATUS = "status";
 	public static final String SUBJECT = "subject";
 	public static final String TEXT = "text";
 	public static final String HTML = "html";
-	public static final String ATTACHMET_ID_LIST = "attachment_id_list";
+	public static final String ATTACHMENT_ID_LIST = "attachment_id_list";
+	public static final String FROM_ADDRESS = "from_address";
+	public static final String TO_ADDRESS = "to_address";
 
 	public static final String FACEBOOK_PREFIX = "fb-";
 }

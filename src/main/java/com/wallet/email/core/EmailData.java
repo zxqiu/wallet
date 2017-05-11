@@ -30,6 +30,20 @@ public class EmailData implements Serializable, Serializer<EmailData> {
     public EmailData() {
     }
 
+    public EmailData(InputStream in) throws IOException, ClassNotFoundException {
+        if (in == null) {
+            throw new NullPointerException("InputStream is null when build EmailData");
+        }
+        ObjectInputStream ois = new ObjectInputStream(in);
+        EmailData emailData = deserialize(ois);
+
+        this.setSubject(emailData.getSubject());
+        this.setText(emailData.getText());
+        this.setHtml(emailData.getHtml());
+        this.setPicture_id_list(emailData.getPicture_id_list());
+        this.setAttachment_id_list(emailData.getAttachment_id_list());
+    }
+
     @Override
     public String toString() {
         return "["
@@ -37,7 +51,7 @@ public class EmailData implements Serializable, Serializer<EmailData> {
                 + "," + Dict.TEXT + ":" + text
                 + "," + Dict.HTML + ":" + html
                 + "," + Dict.PICTURE_ID_LIST + ":" + picture_id_list
-                + "," + Dict.ATTACHMET_ID_LIST + ":" + attachment_id_list
+                + "," + Dict.ATTACHMENT_ID_LIST + ":" + attachment_id_list
                 + "]";
     }
 

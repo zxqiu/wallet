@@ -17,36 +17,72 @@ public class Email {
     private Date create_time;
 
     @JsonProperty
-    private String fromAddress;
+    private String from_address;
 
     @JsonProperty
     private String toAddress;
 
     @JsonProperty
-    private EMAIL_TYPE email_type;
+    private EMAIL_TYPE type;
+
+    @JsonProperty
+    private EMAIL_STATUS status;
 
     @JsonProperty
     private EmailData data;
 
-    public enum EMAIL_TYPE {NOTIFICATION, ALERT, CUSTOMER_REQUEST}
+    public enum EMAIL_STATUS {
+        /* NEW emails are those never send or never get a status update when sending.
+         * These emails are pending to be sent.
+         * */
+        NEW
+        /* SENDING emails are those sending by email senders, but not yet finished.
+         * This status is only used in pendingEmailMap in current design.
+         * These emails should not be removed from pendingEmailMap or DB.
+         * Also they should not be resend.
+         * */
+        , SENDING
+        /* SEND_FAILED emails are those have been sent but failed.
+         * These emails are pending to be sent again.
+         * */
+        , SEND_FAILED
+        /* SENT emails are those already sent. */
+        , SENT
+        /* RECEIVED emails are those incoming emails. */
+        , RECEIVED
+    }
 
-    public Email(String fromAddress, String toAddress, EMAIL_TYPE email_type, String subject, String text, String html
+    public enum EMAIL_TYPE {NOTIFICATION, ALERT, URGENT, INCOMING}
+
+    public Email(String from_address, String toAddress, EMAIL_TYPE type, String subject, String text, String html
             , List<String> picture_id_list, List<String> attachment_id_list) {
         this.setId(String.valueOf(TimeUtils.getUniqueTimeStampInMS()));
         this.setCreate_time(new Date());
-        this.setFromAddress(fromAddress);
-        this.setToAddress(toAddress);
-        this.setEmail_type(email_type);
+        this.setFrom_address(from_address);
+        this.setTo_address(toAddress);
+        this.setType(type);
+        this.setStatus(EMAIL_STATUS.NEW);
 
         this.setData(new EmailData(subject, text, html, picture_id_list, attachment_id_list));
     }
 
-    public EMAIL_TYPE getEmail_type() {
-        return email_type;
+    public Email() {
     }
 
-    public void setEmail_type(EMAIL_TYPE email_type) {
-        this.email_type = email_type;
+    public EMAIL_STATUS getStatus() {
+        return status;
+    }
+
+    public void setStatus(EMAIL_STATUS status) {
+        this.status = status;
+    }
+
+    public EMAIL_TYPE getType() {
+        return type;
+    }
+
+    public void setType(EMAIL_TYPE type) {
+        this.type = type;
     }
 
     public String getId() {
@@ -65,19 +101,19 @@ public class Email {
         this.create_time = create_time;
     }
 
-    public String getFromAddress() {
-        return fromAddress;
+    public String getFrom_address() {
+        return from_address;
     }
 
-    public void setFromAddress(String fromAddress) {
-        this.fromAddress = fromAddress;
+    public void setFrom_address(String from_address) {
+        this.from_address = from_address;
     }
 
-    public String getToAddress() {
+    public String getTo_address() {
         return toAddress;
     }
 
-    public void setToAddress(String toAddress) {
+    public void setTo_address(String toAddress) {
         this.toAddress = toAddress;
     }
 

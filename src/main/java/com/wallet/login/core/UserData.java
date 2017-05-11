@@ -41,6 +41,7 @@ public class UserData implements Serializable, Serializer<UserData> {
         return baos.toByteArray();
     }
 
+
     @Override
     public void serialize(UserData userData, ObjectOutputStream oos) throws IOException {
         oos.writeObject(userData);
