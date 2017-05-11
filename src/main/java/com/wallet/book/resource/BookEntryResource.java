@@ -20,6 +20,7 @@ import com.wallet.book.core.BookEntry;
 import com.wallet.book.core.syncHelper;
 import com.wallet.book.dao.BookConnector;
 import com.wallet.book.dao.BookEntryConnector;
+import com.wallet.book.dao.BookEntryPictureConnector;
 import com.wallet.book.dao.CategoryConnector;
 import com.wallet.login.core.User;
 import com.wallet.login.dao.UserDAOConnector;
@@ -34,11 +35,6 @@ import com.wallet.book.core.Category;
 import com.wallet.login.dao.SessionDAOConnector;
 import com.wallet.utils.misc.ApiUtils;
 import com.wallet.utils.misc.Dict;
-import com.google.cloud.storage.Bucket;
-import com.google.cloud.storage.BucketInfo;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
-import com.google.cloud.storage.Blob;
 
 @Path("/books")
 public class BookEntryResource {
@@ -50,15 +46,14 @@ public class BookEntryResource {
 	private BookEntryConnector bookEntryConnector = null;
 	private CategoryConnector categoryDAOC = null;
 	private UserDAOConnector userDAOC = null;
-
-	/* google cloud storage bucket */
-	private final String IMAGE_BUCKET = "wallet-image";
+	private BookEntryPictureConnector bookEntryPictureConnector = null;
 
 	public BookEntryResource() throws Exception {
 		this.bookDAOC = BookConnector.instance();
 		this.bookEntryConnector = BookEntryConnector.instance();
 		this.categoryDAOC = CategoryConnector.instance();
 		this.userDAOC = UserDAOConnector.instance();
+		this.bookEntryPictureConnector = BookEntryPictureConnector.instance();
 		this.pictureOcrAmountMap = new HashMap<>();
 	}
 
@@ -340,24 +335,9 @@ public class BookEntryResource {
 		if (hostURL == null || pictureID == null || hostURL.length() == 0 || pictureID.length() == 0) {
 			return Response.status(200).build();
 		}
-		String fileName = createPictureName(userID, hostURL, pictureTs);
 
-		// Instantiates a client
-		Storage storage = StorageOptions.getDefaultInstance().getService();
-
-		// Gets the new bucket
-		Bucket bucket = storage.get(IMAGE_BUCKET, Storage.BucketGetOption.fields());
-		if (bucket == null) {
-			logger_.error("IMAGE_BUCKET doesn't exist");
-			return Response.serverError().build();
-		}
-
-		Blob blob = bucket.get(fileName);
-		if (blob == null) {
-			return Response.status(200).build();
-		}
-
-		@SuppressWarnings("Since15") String decode = Base64.encodeBase64String(blob.getContent());
+		byte[] content = bookEntryPictureConnector.getByUserIDAndTs(userID, pictureTs, hostURL);
+		@SuppressWarnings("Since15") String decode = Base64.encodeBase64String(content);
 
 		JSONObject obj = new JSONObject();
 		obj.put("image", "data:image/jpeg;base64," + decode);
@@ -378,23 +358,7 @@ public class BookEntryResource {
 			return Response.seeOther(URI.create(SessionResource.PATH_RESTORE_SESSION)).build();
 		}
 
-		String fileName = createPictureName(userID, hostURL, pictureTs);
-
-		// Instantiates a client
-		Storage storage = StorageOptions.getDefaultInstance().getService();
-
-		// Creates the new bucket
-		Bucket bucket = storage.get(IMAGE_BUCKET, Storage.BucketGetOption.fields());
-		if (bucket == null) {
-			bucket = storage.create(BucketInfo.of(IMAGE_BUCKET));
-		}
-		bucket.create(fileName, uploadedInputStream);
-
-		Blob blob = bucket.get(fileName);
-		if (blob == null) {
-			logger_.error("IMAGE_BUCKET doesn't exist");
-			return Response.serverError().build();
-		}
+		bookEntryPictureConnector.insert(userID, pictureTs, hostURL, uploadedInputStream);
 
 		return Response.status(200).build();
 	}
