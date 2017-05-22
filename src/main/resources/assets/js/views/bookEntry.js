@@ -138,7 +138,7 @@ $(document).ready(function () {
     setCategoryOptionFontColor();
 });
 
-$('#categorySelector').on('change', function () {
+$('#categorySelector').on('change', function(){
     var selected = $(this).find(":selected")[0];
     var tmp = selected.title.split(":");
 
@@ -169,23 +169,23 @@ $('#bookSelector').on('change', function () {
     showCategoryByBook();
 });
 
-$(function () {
-    $('.datepicker').datepicker({
-        format: 'mm/dd/yyyy',
-        autoclose: true,
-        immediateUpdates: true,
-        assumeNearbyYear: true,
-        todayHighlight: true
-    });
+$(function() {
+	$('.datepicker').datepicker({
+		format: 'mm/dd/yyyy',
+		autoclose: true,
+		immediateUpdates: true,
+		assumeNearbyYear: true,
+		todayHighlight: true
+	});
 });
 
 $('.date').on('changeDate', function (ev) {
-    $(this).datepicker('hide');
+	$(this).datepicker('hide');
 });
 
 var form = document.getElementById("bookEntryForm");
 form.noValidate = true;
-$("#bookEntrySubmit").on("click", function () {
+$("#bookEntrySubmit").on("click", function() {
     $("#bookEntrySubmit").html("submitted");
     $("#bookEntrySubmit").attr("disabled", true);
     $("#categorySelector").attr("disabled", true);
@@ -214,40 +214,38 @@ $("#bookEntrySubmit").on("click", function () {
 });
 
 
-$("input").on('input', function () {
-    $('#bookEntryForm div').removeClass("has-error");
-    ;
+$("input").on('input', function() {
+    $('#bookEntryForm div').removeClass("has-error");;
 });
 
-$(":input").on('change', function () {
-    $('#bookEntryForm div').removeClass("has-error");
-    ;
+$(":input").on('change', function(){
+    $('#bookEntryForm div').removeClass("has-error");;
 });
 
-$('#bookEntryDelete').on('click', function () {
-    $('#bookEntryDelete').html("deleted");
-    $(this).attr("disabled", true);
+$('#bookEntryDelete').on('click', function(){
+	$('#bookEntryDelete').html("deleted");
+	$(this).attr("disabled", true);
 });
 
-$("#bookEntryPhoto").on("change", function (e) {
+$("#bookEntryPhoto").on("change", function(e) {
     var canvas = document.getElementById("bookEntryShowPhoto");
     var ctx = canvas.getContext("2d");
     ctx.clearRect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
     canvas.width = 0;
     canvas.height = 0;
     var reader = new FileReader();
-    reader.onload = function (event) {
+    reader.onload = function(event) {
         var img = new Image();
-        img.onload = function () {
+        img.onload = function(){
             var scale = 300 / img.height;
             var height = img.height * scale;
             var width = img.width * scale;
             var size = {width: width, height: height};
             var rotation = 0;
-            var deg2Rad = Math.PI / 180;
+            var deg2Rad=Math.PI/180;
 
             getOrientation(e.target.files[0], function (orientation) {
-                switch (orientation) {
+                switch(orientation) {
                     case 3:
                         // 180° rotate left
                         rotation = 180;
@@ -266,12 +264,8 @@ $("#bookEntryPhoto").on("change", function (e) {
                 var rads = rotation * Math.PI / 180;
                 var c = Math.cos(rads);
                 var s = Math.sin(rads);
-                if (s < 0) {
-                    s = -s;
-                }
-                if (c < 0) {
-                    c = -c;
-                }
+                if (s < 0) { s = -s; }
+                if (c < 0) { c = -c; }
                 size.width = height * s + width * c;
                 size.height = height * c + width * s;
 
