@@ -185,7 +185,7 @@ public class BookEntryCache {
             if (entry.getId().equals(bookEntry.getId())) {
                 logger_.info("update for user + " + bookEntry.getUser_id() + " in cache : " + bookEntry.toString());
                 entry.update(bookEntry.getBook_group_id(), bookEntry.getCategory_group_id(), bookEntry.getEvent_date()
-                        , bookEntry.getAmount(), bookEntry.getNote(), bookEntry.getPicture_id());
+                        , bookEntry.getAmount(), bookEntry.getNote(), bookEntry.getPictureTimeStamp(), bookEntry.getPicture_id());
                 break;
             }
         }
@@ -202,7 +202,7 @@ public class BookEntryCache {
 
         List<BookEntry> tmpList = new ArrayList<>();
         BookEntry tmpBook = new BookEntry("test_user", "test_user", "test_book", "test_category"
-                , new Date(), 1, "first test book", "test_picture");
+                , new Date(), 1, "first test book", "test_picture_ts", "test_picture");
         tmpList.add(tmpBook);
 
         logger_.info("0. initial status");
@@ -220,7 +220,7 @@ public class BookEntryCache {
 
         logger_.info("2. update test");
         BookEntry tmpBook2 = new BookEntry(tmpBook.getUser_id(), tmpBook.getUser_id(), "test_book", "test_category"
-                , new Date(), 1, "another test book", "test_picture");
+                , new Date(), 1, "another test book", "test_picture_ts", "test_picture");
         list.add(tmpBook2);
         cache.put(tmpBook2.getUser_id(), list);
         list = cache.get(tmpBook.getUser_id());

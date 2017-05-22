@@ -4,6 +4,8 @@
 
 var hostURL = window.location.protocol + "//" + window.location.host;
 var apiInsertEntry = "/books/insertentry";
+var apiGetPicture = "/books/getpicture";
+var apiUploadPicture = "/books/uploadpicture";
 var apiDeleteItem = "/books/deleteentry";
 var apiGetBookEntries = "/books/getentries";
 var apiGetBook = "/books/getbook";
@@ -11,6 +13,7 @@ var apiInsertBookList = "/books/insertbooklist";
 var apiInsertCategoryList = "/books/insertcategorylist";
 var apiFaceBookLogin = "/fblogin";
 var apiTinyUrlToShort = "/t/s";
+var apiGetOcrAmount = "/books/getocramount";
 
 var APIs = {
     createNew: function() {
@@ -168,7 +171,6 @@ var APIs = {
                     }
                 }
             }).then(function(data) {
-                console.log(data);
                 retData = data;
             });
 
@@ -317,6 +319,129 @@ var APIs = {
                     }
                 }
             });
+        };
+
+        api_.getBookEntryPictureSuccess = null;
+        api_.getBookEntryPictureError = null;
+
+        api_.setGetBookEntryPictureSuccessCallback = function(callback) {
+            api_.getBookEntryPictureSuccess = callback;
+        };
+
+        api_.setGetBookEntryPictureErrorCallback = function(callback) {
+            api_.getBookEntryPictureError = callback;
+        };
+
+        api_.getBookEntryPicture = function(pictureID, pictureTs) {
+            var param = new Object();
+            param.picture_id = pictureID;
+            param.picture_timestamp = pictureTs;
+            param.host_url = window.location.host;
+            var retData = null;
+
+            var request = hostURL + apiGetPicture;
+            $.ajax({
+                type: "GET",
+                url: request,
+                dataType: "json",
+                data: param,
+                contentType: 'application/json',
+                success: function(data) {
+                    if (api_.getBookEntryPictureSuccess && typeof(api_.getBookEntryPictureSuccess) == "function") {
+                        api_.getBookEntryPictureSuccess(data);
+                    }
+                },
+                error: function(data) {
+                    if (api_.getBookEntryPictureError && typeof(api_.getBookEntryPictureError) == "function") {
+                        api_.getBookEntryPictureError(data);
+                    }
+                }
+            }).then(function(data) {
+                retData = data;
+            });
+
+            return retData;
+        };
+
+        api_.postBookEntryPictureSuccess = null;
+        api_.postBookEntryPictureError = null;
+
+        api_.setPostBookEntryPictureSuccessCallback = function(callback) {
+            api_.postBookEntryPictureSuccess = callback;
+        };
+
+        api_.setPostBookEntryPictureErrorCallback = function(callback) {
+            api_.postBookEntryPictureError = callback;
+        };
+        api_.postBookEntryPicture = function(name, pictureTs, dataURI) {
+            var postURL = hostURL + apiUploadPicture;
+
+            var formData = new FormData();
+            formData.append('role', "form");
+            formData.append('action', apiUploadPicture);
+            formData.append('method', "post");
+            formData.append('hosturl', window.location.host);
+            formData.append('picture_timestamp', pictureTs);
+            formData.append('image', dataURI);
+
+            $.ajax({
+                type: "POST",
+                url: postURL,
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(data, textStatus, jqXHR) {
+                    if (api_.postBookEntryPictureSuccess && typeof(api_.postBookEntryPictureSuccess) == "function") {
+                        api_.postBookEntryPictureSuccess(data);
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    if (api_.postBookEntryPictureError && typeof(api_.postBookEntryPictureError) == "function") {
+                        api_.postBookEntryPictureError(textStatus);
+                    }
+                }
+            });
+        };
+
+        api_.getOcrAmountSuccess = null;
+        api_.getOcrAmountError = null;
+
+        api_.setGetOcrAmountSuccessCallback = function(callback) {
+            api_.getOcrAmountSuccess = callback;
+        };
+
+        api_.setGetOcrAmountErrorCallback = function(callback) {
+            api_.getOcrAmountError = callback;
+        };
+
+        api_.getOcrAmount = function(picture_ts) {
+            var param = new Object();
+            param.user_id = user_id;
+            param.picture_timestamp = picture_ts;
+            var retData = null;
+
+            var request = hostURL + apiGetOcrAmount;
+            $.ajax({
+                type: "GET",
+                url: request,
+                dataType: "json",
+                data: param,
+                contentType: 'application/json',
+                success: function(data) {
+                    if (api_.getOcrAmountSuccess && typeof(api_.getOcrAmountSuccess) == "function") {
+                        api_.getOcrAmountSuccess(data);
+                    }
+                },
+                error: function(data) {
+                    if (api_.getOcrAmountError && typeof(api_.getOcrAmountError) == "function") {
+                        api_.getOcrAmountError(data);
+                    }
+                }
+            }).then(function(data) {
+                retData = data;
+            });
+
+            return retData;
         };
 
         return api_;

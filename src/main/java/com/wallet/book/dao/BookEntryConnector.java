@@ -157,7 +157,7 @@ public class BookEntryConnector {
 
 	public static void test() throws Exception {
 		BookEntry bookEntry = new BookEntry("admin", "admin", "adminbook", "admincategory", new Date()
-				, (long)10, "note", "photo");
+				, (long)10, "note", "pictureTimeStamp", "photo");
 		
 		logger_.info("BookEntryConnector test ...");
 		

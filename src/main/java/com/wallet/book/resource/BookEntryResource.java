@@ -3,21 +3,27 @@ package com.wallet.book.resource;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import org.apache.commons.codec.binary.Base64;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.glassfish.jersey.media.multipart.FormDataParam;
+
 import com.wallet.book.core.Book;
 import com.wallet.book.core.BookEntry;
 import com.wallet.book.core.syncHelper;
 import com.wallet.book.dao.BookConnector;
 import com.wallet.book.dao.BookEntryConnector;
+import com.wallet.book.dao.BookEntryPictureConnector;
 import com.wallet.book.dao.CategoryConnector;
 import com.wallet.login.core.User;
 import com.wallet.login.dao.UserDAOConnector;
 import com.wallet.login.resource.SessionResource;
+import com.wallet.utils.misc.TimeUtils;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,17 +37,21 @@ import com.wallet.utils.misc.Dict;
 public class BookEntryResource {
 	private static final Logger logger_ = LoggerFactory.getLogger(BookEntryResource.class);
 	private static final int bookEntrysEachLine = 4;
+	private static Map<String, Double> pictureOcrAmountMap;
 
 	private BookConnector bookDAOC = null;
 	private BookEntryConnector bookEntryConnector = null;
 	private CategoryConnector categoryDAOC = null;
 	private UserDAOConnector userDAOC = null;
+	private BookEntryPictureConnector bookEntryPictureConnector = null;
 
 	public BookEntryResource() throws Exception {
-	    this.bookDAOC = BookConnector.instance();
+		this.bookDAOC = BookConnector.instance();
 		this.bookEntryConnector = BookEntryConnector.instance();
 		this.categoryDAOC = CategoryConnector.instance();
 		this.userDAOC = UserDAOConnector.instance();
+		this.bookEntryPictureConnector = BookEntryPictureConnector.instance();
+		this.pictureOcrAmountMap = new HashMap<>();
 	}
 
 	@GET
@@ -53,6 +63,7 @@ public class BookEntryResource {
 	}
 
 	public static final String PATH_BOOKS = "/books";
+
 	/**
 	 * @return bookEntryList view. This is the main view of path /books
 	 */
@@ -62,7 +73,7 @@ public class BookEntryResource {
 	@Produces(value = MediaType.TEXT_HTML)
 	public Response bookEntryListView(@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
 		String user_id = ApiUtils.getUserIDFromCookie(cookie);
-		if (SessionDAOConnector.instance().verifySessionCookie(cookie)== false || user_id == null) {
+		if (SessionDAOConnector.instance().verifySessionCookie(cookie) == false || user_id == null) {
 			return Response.seeOther(URI.create(SessionResource.PATH_RESTORE_SESSION)).build();
 		}
 
@@ -85,6 +96,7 @@ public class BookEntryResource {
 	}
 
 	public static final String PATH_INSERT_ENTRY_VIEW = "/books/entry";
+
 	/**
 	 * @return bookEntry view. This is for showing and edit entry details.
 	 */
@@ -93,9 +105,9 @@ public class BookEntryResource {
 	@Path("/entry/{id}")
 	@Produces(value = MediaType.TEXT_HTML)
 	public Response bookEntryView(@PathParam(Dict.ID) String id,
-								   @CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
-	    String user_id = ApiUtils.getUserIDFromCookie(cookie);
-		if (SessionDAOConnector.instance().verifySessionCookie(cookie)== false || user_id == null) {
+								  @CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
+		String user_id = ApiUtils.getUserIDFromCookie(cookie);
+		if (SessionDAOConnector.instance().verifySessionCookie(cookie) == false || user_id == null) {
 			return Response.seeOther(URI.create(SessionResource.PATH_RESTORE_SESSION)).build();
 		}
 
@@ -110,25 +122,29 @@ public class BookEntryResource {
 			}
 		}
 
+		String pictureTimeStamp = Long.toString(TimeUtils.getUniqueTimeStampInMS());
+
 		return Response.ok()
 				.entity(views.bookEntry.template(bookEntry
-                        , bookDAOC.getByUserID(user_id)
+						, bookDAOC.getByUserID(user_id)
 						, categoryDAOC.getByUserID(user_id)
 						, date
 						, user_id
+						, pictureTimeStamp
 				))
 				.build();
 	}
 
 	/**
 	 * Create a insert new or update existing book entry.
+	 *
 	 * @param id, event_date, amount, category, note, picture_id, cookie
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	@POST
-    @Timed
-    @Path("/insertentry")
+	@Timed
+	@Path("/insertentry")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.TEXT_HTML)
 	public Response insertEntry(@FormParam(Dict.ID) String id,
@@ -138,28 +154,30 @@ public class BookEntryResource {
 								@FormParam(Dict.CATEGORY_NAME) String category_name,
 								@FormParam(Dict.CATEGORY_ID) String category_id,
 								@FormParam(Dict.NOTE) String note,
+								@FormParam(Dict.PICTURE_TIMESTAMP) String picture_ts,
 								@FormParam(Dict.PICTURE_ID) String picture_id,
 								@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
 		String user_id = ApiUtils.getUserIDFromCookie(cookie);
-		if (SessionDAOConnector.instance().verifySessionCookie(cookie)== false || user_id == null) {
+		if (SessionDAOConnector.instance().verifySessionCookie(cookie) == false || user_id == null) {
 			return Response.seeOther(URI.create(SessionResource.PATH_RESTORE_SESSION)).build();
 		}
 
 		logger_.info("insertentry request : id:" + id + ", book_id:" + book_id + ", event_date:" + event_date
 				+ ", amount_double:" + amount_double + ", category_name:" + category_name + ", category_id:"
-				+ category_id + ", note:" + note + ", picture_id:" + picture_id + ".");
+				+ category_id + ", note:" + note + ", picture_timestamp:" + picture_ts + ", picture_id:"
+				+ picture_id + ".");
 
-		long amount = (long)(amount_double * 100);
+		long amount = (long) (amount_double * 100);
 		Book book = null;
 
 		// 1. extract request
 		// 2. verify and parse request
-		// 3. verify parameters 
+		// 3. verify parameters
 		if (category_name.length() == 0 || event_date.length() == 0 || book_id.length() == 0) {
 			logger_.error("ERROR: invalid new item request: " + id);
 			return Response.serverError().build();
 		}
-		
+
 		// 4. transaction
 		// 4.1 insert default book if not exists
 		try {
@@ -190,7 +208,7 @@ public class BookEntryResource {
 				}
 			}
 			if (category == null || !category.getName().equals(category_name)) {
-			    // Prioritize category_name over category_id
+				// Prioritize category_name over category_id
 				category = new Category(user_id, book.getGroup_id(), category_name, "#FFFFFF");
 				//categoryDAOC.insert(category);
 				syncHelper.syncCategory(category, syncHelper.SYNC_ACTION.ADD);
@@ -216,7 +234,7 @@ public class BookEntryResource {
 				return Response.serverError().build();
 			}
 		}
-		
+
 		// 4.2.2 insert
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 		try {
@@ -224,21 +242,21 @@ public class BookEntryResource {
 				logger_.info("Update book item : " + bookEntry.getId());
 				if (bookEntry.getBook_group_id().equals(book.getGroup_id())) {
 					bookEntry.update(book.getGroup_id(), category.getGroup_id(), sdf.parse(event_date), amount, note
-							, picture_id);
+							, picture_ts, picture_id);
 					bookEntryConnector.updateByUserIDAndID(bookEntry);
 					// Update if book id is not changed.
 					syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_ACTION.UPDATE);
 				} else {
 					// Re-insert if book id is changed.
-                    syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_ACTION.DELETE);
+					syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_ACTION.DELETE);
 					bookEntry.update(book.getGroup_id(), category.getGroup_id(), sdf.parse(event_date), amount, note
-							, picture_id);
+							, picture_ts, picture_id);
 					//bookEntryConnector.insert(bookEntry);
 					syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_ACTION.ADD);
 				}
 			} else {
 				bookEntry = new BookEntry(user_id, user_id, book.getGroup_id(), category.getGroup_id()
-						, sdf.parse(event_date), amount, note, picture_id);
+						, sdf.parse(event_date), amount, note, picture_ts, picture_id);
 				logger_.info("Insert new book item : " + bookEntry.getId());
 				//bookEntryConnector.insert(bookEntry); // remove this to avoid duplication
 				syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_ACTION.ADD);
@@ -251,37 +269,38 @@ public class BookEntryResource {
 
 		return Response.seeOther(URI.create(PATH_BOOKS)).build();
 	}
-	
+
 	/**
 	 * Delete book entry
+	 *
 	 * @param id
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	@POST
-    @Timed
-    @Path("/deleteentry")
+	@Timed
+	@Path("/deleteentry")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.TEXT_HTML)
 	public Response deleteEntry(@FormParam(Dict.ID) String id,
-			@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
+								@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
 		String user_id = ApiUtils.getUserIDFromCookie(cookie);
-		if (SessionDAOConnector.instance().verifySessionCookie(cookie)== false || user_id == null) {
+		if (SessionDAOConnector.instance().verifySessionCookie(cookie) == false || user_id == null) {
 			return Response.seeOther(URI.create(SessionResource.PATH_RESTORE_SESSION)).build();
 		}
 		// 1. extract request
 		// 2. verify and parse request
-		// 3. verify parameters 
+		// 3. verify parameters
 		if (id == null || id.length() == 0) {
 			logger_.error("ERROR: invalid delete book entry request for \'" + id + "\'");
 			return Response.serverError().build();
 		}
-		
+
 		// 4. transaction
 		try {
-		    List<BookEntry> bookEntryList = bookEntryConnector.getByUserIDAndID(user_id, id);
-		    if (!bookEntryList.isEmpty()) {
-		    	BookEntry bookEntry = bookEntryList.get(bookEntryList.size() - 1);
+			List<BookEntry> bookEntryList = bookEntryConnector.getByUserIDAndID(user_id, id);
+			if (!bookEntryList.isEmpty()) {
+				BookEntry bookEntry = bookEntryList.get(bookEntryList.size() - 1);
 				logger_.info("Delete book entry : " + bookEntry.getId());
 				bookEntryConnector.deleteByUserIDAndID(user_id, id);
 				syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_ACTION.DELETE);
@@ -291,12 +310,94 @@ public class BookEntryResource {
 			logger_.error("Error : failed to delete new book entry \'" + id + "\' : " + e.getMessage());
 			return Response.serverError().build();
 		}
-		
+
 		// 5. generate response
 		logger_.info("Book entry \'" + id + "\' removed");
 		return Response.seeOther(URI.create(PATH_BOOKS)).build();
 	}
-	
+
+	@GET
+	@Timed
+	@Path("/getpicture")
+	@Produces(value = MediaType.APPLICATION_FORM_URLENCODED)
+	public Response getBookEntryPicture(@QueryParam("host_url") String hostURL,
+										@QueryParam("picture_timestamp") String pictureTs,
+										@QueryParam(Dict.PICTURE_ID) String pictureID,
+										@CookieParam("walletSessionCookie") Cookie cookie
+	) throws Exception {
+		String userID = ApiUtils.getUserIDFromCookie(cookie);
+		if (SessionDAOConnector.instance().verifySessionCookie(cookie) == false || userID == null) {
+			return Response.seeOther(URI.create(SessionResource.PATH_RESTORE_SESSION)).build();
+		}
+		if (hostURL == null || pictureID == null || hostURL.length() == 0 || pictureID.length() == 0) {
+			return Response.status(200).build();
+		}
+
+		byte[] content = bookEntryPictureConnector.getByUserIDAndTs(userID, pictureTs, hostURL);
+		@SuppressWarnings("Since15") String decode = Base64.encodeBase64String(content);
+
+		JSONObject obj = new JSONObject();
+		obj.put("image", "data:image/jpeg;base64," + decode);
+		return Response.status(200).entity(obj.toString()).build();
+	}
+
+	@POST
+	@Timed
+	@Path("/uploadpicture")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	public Response uploadBookEntryPicture(@FormDataParam("hosturl") String hostURL,
+										   @FormDataParam("picture_timestamp") String pictureTs,
+										   @FormDataParam("image") String source,
+										   @CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
+		String userID = ApiUtils.getUserIDFromCookie(cookie);
+		if (SessionDAOConnector.instance().verifySessionCookie(cookie) == false || userID == null) {
+			return Response.seeOther(URI.create(SessionResource.PATH_RESTORE_SESSION)).build();
+		}
+
+		String base64Image = source.split(",")[1];
+		byte[] imageBytes = javax.xml.bind.DatatypeConverter.parseBase64Binary(base64Image);
+
+		bookEntryPictureConnector.insert(userID, pictureTs, hostURL, imageBytes);
+
+		return Response.status(200).build();
+	}
+
+	@GET
+	@Timed
+	@Path("/getocramount")
+	@Produces(MediaType.APPLICATION_FORM_URLENCODED)
+	public Response getOcrAmount(@QueryParam("picture_timestamp") String pictureTs,
+								 @CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
+		String userID = ApiUtils.getUserIDFromCookie(cookie);
+		if (SessionDAOConnector.instance().verifySessionCookie(cookie) == false || userID == null) {
+			return Response.seeOther(URI.create(SessionResource.PATH_RESTORE_SESSION)).build();
+		}
+
+		String key = userID + pictureTs;
+		Double ocrAmount = 0.0;
+		if (pictureOcrAmountMap.containsKey(key)) {
+			ocrAmount = pictureOcrAmountMap.get(key);
+			pictureOcrAmountMap.remove(key);
+		}
+
+		JSONObject obj = new JSONObject();
+		obj.put("ocr_amount", ocrAmount);
+
+		return Response.status(200).entity(obj.toString()).build();
+	}
+
+	@POST
+	@Timed
+	@Path("/postocramount")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public Response postOcrAmount(@FormParam(Dict.USER_ID) String userID,
+								  @FormParam("picture_timestamp") String pictureTs,
+								  @FormParam("amount") String amount) throws Exception {
+		String key = userID + pictureTs;
+		pictureOcrAmountMap.put(key, Double.parseDouble(amount));
+		return Response.status(200).build();
+	}
+
 	private static Comparator<BookEntry> bookEntryTimeComparator = new Comparator<BookEntry>() {
 		public int compare(BookEntry a, BookEntry b) {
 			if (a.getEvent_date().before(b.getEvent_date())) {
@@ -306,14 +407,18 @@ public class BookEntryResource {
 			}
 		}
 	};
-	
+
 	private List<BookEntry> sortBookByEventTime(List<BookEntry> list) {
 		if (list == null) {
 			return null;
 		}
 
 		Collections.sort(list, bookEntryTimeComparator);
-		
+
 		return list;
+	}
+
+	private String createPictureName(String userID, String hostURL, String pictureTs) {
+		return userID + '#' + hostURL + '#' + pictureTs;
 	}
 }

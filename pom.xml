@@ -1,14 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-  <groupId>Wallet</groupId>
-  <artifactId>wallet</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <packaging>jar</packaging>
+	<groupId>Wallet</groupId>
+	<artifactId>wallet</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
 
-  <name>wallet</name>
-  <url>http://maven.apache.org</url>
+	<name>wallet</name>
+	<url>http://maven.apache.org</url>
 
 
 	<parent>
@@ -20,6 +20,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<rocker.version>0.16.0</rocker.version>
+		<appengine.target.version>1.9.51</appengine.target.version>
 		<metrics.version>3.1.2</metrics.version>
         <esapi.version>2.1.0.1</esapi.version>
 	</properties>
@@ -51,8 +52,10 @@
 						</goals>
 						<configuration>
 							<transformers>
-								<transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
-								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+								<transformer
+										implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+								<transformer
+										implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
 									<mainClass>com.wallet.service.WalletService</mainClass>
 								</transformer>
 							</transformers>
@@ -75,6 +78,11 @@
 						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>com.google.appengine</groupId>
+				<artifactId>gcloud-maven-plugin</artifactId>
+				<version>2.0.9.120.v20160803</version>
 			</plugin>
 		</plugins>
 		<resources>
@@ -128,7 +136,7 @@
 	<dependency>
 		<groupId>org.json</groupId>
 		<artifactId>json</artifactId>
-		<version>20090211</version>
+		<version>20160810</version>
 	</dependency>	
 	<dependency>
 		<groupId>com.amazonaws</groupId>
@@ -230,6 +238,22 @@
 		<artifactId>metrics-core</artifactId>
 		<version>${metrics.version}</version>
 	</dependency>
+	<dependency>
+		<groupId>com.google.cloud</groupId>
+		<artifactId>google-cloud-storage</artifactId>
+		<version>0.11.0-beta</version>
+	</dependency>
+	<dependency>
+		<groupId>io.dropwizard</groupId>
+		<artifactId>dropwizard-forms</artifactId>
+		<version>0.9.0</version>
+	</dependency>
+	  <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
+	  <dependency>
+		  <groupId>commons-codec</groupId>
+		  <artifactId>commons-codec</artifactId>
+		  <version>1.10</version>
+	  </dependency>
 	  <dependency>
 		  <groupId>org.simplejavamail</groupId>
 		  <artifactId>simple-java-mail</artifactId>

@@ -33,6 +33,7 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.jdbi.DBIFactory;
+import io.dropwizard.forms.MultiPartBundle;
 
 import javax.servlet.DispatcherType;
 import java.util.EnumSet;
@@ -63,6 +64,7 @@ public class WalletService extends Application<WalletConfiguration> {
     	bootstrap.addBundle(new AssetsBundle("/assets/css", "/css", null, "css"));
         bootstrap.addBundle(new AssetsBundle("/assets/js", "/js", null, "js"));
 		bootstrap.addBundle(new AssetsBundle("/assets/fonts", "/fonts", null, "fonts"));
+		bootstrap.addBundle(new MultiPartBundle());
     }
 
 	@Override
