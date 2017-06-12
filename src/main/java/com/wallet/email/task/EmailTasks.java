@@ -3,9 +3,7 @@ package com.wallet.email.task;
 import com.wallet.email.core.Email;
 import com.wallet.email.dao.EmailConnector;
 import com.wallet.utils.tools.concurrentHelper.Scheduler;
-import org.simplejavamail.MailException;
 import org.simplejavamail.mailer.Mailer;
-import org.simplejavamail.mailer.config.TransportStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +28,8 @@ public class EmailTasks {
     private static ConcurrentHashMap<String, Email> pendingEmailMap = null;
     private static Lock pendingEmailMapLock = new ReentrantLock();
 
-    public static final long EMAIL_CHECK_INTERVAL = 1000 * 10;
+    public static final long EMAIL_CHECK_INTERVAL = 1000 * 10; // ms
+    public static final long EMAIL_SENDER_HEART_BEAT = 10; // s
     public static final int EMAIL_SENDER_MAX = 10;
 
     public void init() throws Exception {
@@ -107,21 +106,27 @@ public class EmailTasks {
     this task should only remove from pendingEmailMap
      */
     public class SendEmailTask implements Runnable {
+        private long start_time;
         private ExecutorService executor = null;
 
         public SendEmailTask() {
+            start_time = System.currentTimeMillis() / 1000;
         }
 
         @Override
         public void run() {
             while (true) {
+                if ((System.currentTimeMillis() / 1000 - start_time) % EMAIL_SENDER_HEART_BEAT == 0) {
+                    logger_.info("SendEmailTask still running ...");
+                }
                 int enqueuedCnt = 0;
 
                 if (pendingEmailMap != null && !pendingEmailMap.isEmpty()) {
+                    logger_.info("Email send task found email(s) need to be sent. Try to lock pendingEmailMap..");
                     pendingEmailMapLock.lock();
                     try {
                         if (pendingEmailMap.isEmpty()) {
-                            return;
+                            continue;
                         }
 
                         logger_.info("Email send task found " + pendingEmailMap.size() + " email(s)");
