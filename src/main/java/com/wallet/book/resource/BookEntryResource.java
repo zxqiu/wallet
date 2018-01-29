@@ -299,11 +299,7 @@ public class BookEntryResource {
 	
 	private static Comparator<BookEntry> bookEntryTimeComparator = new Comparator<BookEntry>() {
 		public int compare(BookEntry a, BookEntry b) {
-			if (a.getEvent_date().before(b.getEvent_date())) {
-				return -1;
-			} else {
-				return 1;
-			}
+			return -1 * a.getEvent_date().compareTo(b.getEvent_date());
 		}
 	};
 	
