@@ -201,18 +201,36 @@ $("#yearPlus").on("click", function () {
 
 $("#monthMinus").on("click", function () {
     var showMonth = parseInt($("#monthShow").val());
+    var showYear = parseInt($("#yearShow").val());
+
     if (showMonth > 1) {
         $("#monthShow").val(showMonth - 1);
         $("#monthShow").text(monthNames[showMonth - 2]);
+        entryFilter();
+    } else {
+        $("#monthShow").val(12);
+        $("#monthShow").text(monthNames[11]);
+        $("#yearShow").val(showYear - 1);
+        $("#yearShow").text(showYear - 1);
+        $("#yearShow").addClass("yearChanged");
         entryFilter();
     }
 });
 
 $("#monthPlus").on("click", function () {
     var showMonth = parseInt($("#monthShow").val());
+    var showYear = parseInt($("#yearShow").val());
+
     if (showMonth < 12) {
         $("#monthShow").val(showMonth + 1);
         $("#monthShow").text(monthNames[showMonth]);
+        entryFilter();
+    } else {
+        $("#monthShow").val(1);
+        $("#monthShow").text(monthNames[0]);
+        $("#yearShow").val(showYear + 1);
+        $("#yearShow").text(showYear + 1);
+        $("#yearShow").addClass("yearChanged");
         entryFilter();
     }
 });
