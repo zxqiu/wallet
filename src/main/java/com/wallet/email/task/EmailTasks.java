@@ -29,7 +29,7 @@ public class EmailTasks {
     private static Lock pendingEmailMapLock = new ReentrantLock();
 
     public static final long EMAIL_CHECK_INTERVAL = 1000 * 10; // ms
-    public static final long EMAIL_SENDER_HEART_BEAT = 10; // s
+    public static final long EMAIL_SENDER_HEART_BEAT = 3600; // s
     public static final int EMAIL_SENDER_MAX = 10;
 
     public void init() throws Exception {
