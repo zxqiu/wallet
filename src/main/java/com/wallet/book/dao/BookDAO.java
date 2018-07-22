@@ -27,7 +27,8 @@ public interface BookDAO {
 			+ "unique key `book_unique_combined` (`" + Dict.USER_ID + "`,`" + Dict.NAME + "`),"
 			+ "key `fk_book_user` (`" + Dict.USER_ID + "`),"
 			+ "constraint `fk_book_user` foreign key (`" + Dict.USER_ID + "`) "
-			+ "references `" + UserDAO.TABLE_NAME + "` (`" + Dict.USER_ID + "`)"
+			+ "references `" + UserDAO.TABLE_NAME + "` (`" + Dict.USER_ID + "`),"
+			+ "index " + TABLE_NAME + "_index (" + Dict.USER_ID + ")"
 			+ ")ENGINE=InnoDB DEFAULT CHARSET=utf8 collate=utf8_unicode_ci;"
 			)
 	void createTable();
