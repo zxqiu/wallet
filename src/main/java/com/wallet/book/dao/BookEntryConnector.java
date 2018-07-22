@@ -1,6 +1,8 @@
 package com.wallet.book.dao;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -65,6 +67,21 @@ public class BookEntryConnector {
 
 	public List<BookEntry> getByUserID(String user_id) throws Exception {
 		return bookEntryCache.getByUserID(user_id);
+	}
+
+	public List<BookEntry> getByUserIDAndMonth(String user_id, int year, int month) throws Exception {
+		List<BookEntry> bookEntries = bookEntryCache.getByUserID(user_id);
+		List<BookEntry> bookEntriesFiltered = new LinkedList<>();
+		Calendar cal = Calendar.getInstance();
+
+		for (BookEntry entry : bookEntries) {
+		    cal.setTime(entry.getEvent_date());
+			if (cal.get(Calendar.YEAR) == year && cal.get(Calendar.MONTH) == month - 1) {
+				bookEntriesFiltered.add(entry);
+			}
+		}
+
+		return bookEntriesFiltered;
 	}
 
 	public void insert(BookEntry bookEntry) throws Exception {

@@ -42,6 +42,8 @@ public class Dict {
 	public static final String ATTACHMENT_ID_LIST = "attachment_id_list";
 	public static final String FROM_ADDRESS = "from_address";
 	public static final String TO_ADDRESS = "to_address";
+	public static final String YEAR = "year";
+	public static final String MONTH = "month";
 
 	public static final String FACEBOOK_PREFIX = "fb-";
 }

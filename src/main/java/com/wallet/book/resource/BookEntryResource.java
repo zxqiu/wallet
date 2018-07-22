@@ -38,7 +38,7 @@ public class BookEntryResource {
 	private UserDAOConnector userDAOC = null;
 
 	public BookEntryResource() throws Exception {
-	    this.bookDAOC = BookConnector.instance();
+		this.bookDAOC = BookConnector.instance();
 		this.bookEntryConnector = BookEntryConnector.instance();
 		this.categoryDAOC = CategoryConnector.instance();
 		this.userDAOC = UserDAOConnector.instance();
@@ -53,23 +53,47 @@ public class BookEntryResource {
 	}
 
 	public static final String PATH_BOOKS = "/books";
+
 	/**
 	 * @return bookEntryList view. This is the main view of path /books
 	 */
+
 	@GET
 	@Timed
 	@Path("/")
 	@Produces(value = MediaType.TEXT_HTML)
 	public Response bookEntryListView(@CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
+		return doBookEntryListByMonthView(Calendar.getInstance().get(Calendar.YEAR),
+				Calendar.getInstance().get(Calendar.MONTH) + 1, cookie);
+	}
+
+	public static final String PATH_BOOKS_BY_MONTH = "/books";
+
+	@GET
+	@Timed
+	@Path("/{year}/{month}")
+	@Produces(value = MediaType.TEXT_HTML)
+	public Response bookEntryListByMonthView(@PathParam(Dict.YEAR) int year, @PathParam(Dict.MONTH) int month,
+											 @CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
+		return doBookEntryListByMonthView(year, month, cookie);
+	}
+
+	private Response doBookEntryListByMonthView(int year, int month, Cookie cookie) throws Exception {
 		String user_id = ApiUtils.getUserIDFromCookie(cookie);
 		if (SessionDAOConnector.instance().verifySessionCookie(cookie)== false || user_id == null) {
 			return Response.seeOther(URI.create(SessionResource.PATH_RESTORE_SESSION)).build();
 		}
 
+		if (month < 1) {
+			month = 12;
+		} else if (month > 12) {
+			month = 1;
+		}
+
 		User user = userDAOC.getByID(user_id);
 		List<Book> bookList = bookDAOC.getByUserID(user_id);
 		HashMap<String, Book> bookMap = new HashMap<>();
-		List<BookEntry> bookEntryList = sortBookByEventTime(bookEntryConnector.getByUserID(user_id));
+		List<BookEntry> bookEntryList = bookEntryConnector.getByUserIDAndMonth(user_id, year, month);
 		List<Category> categoryList = categoryDAOC.getByUserID(user_id);
 		HashMap<String, Category> categoryMap = new HashMap<>();
 
@@ -81,7 +105,8 @@ public class BookEntryResource {
 			bookMap.put(book.getGroup_id(), book);
 		}
 
-		return Response.ok().entity(views.bookEntryList.template(bookEntryList, bookMap, categoryList, categoryMap, bookEntrysEachLine, user)).build();
+		return Response.ok().entity(views.bookEntryList.template(bookEntryList, bookMap, categoryList, categoryMap,
+				bookEntrysEachLine, user, year, month)).build();
 	}
 
 	public static final String PATH_INSERT_ENTRY_VIEW = "/books/entry";
@@ -295,21 +320,5 @@ public class BookEntryResource {
 		// 5. generate response
 		logger_.info("Book entry \'" + id + "\' removed");
 		return Response.seeOther(URI.create(PATH_BOOKS)).build();
-	}
-	
-	private static Comparator<BookEntry> bookEntryTimeComparator = new Comparator<BookEntry>() {
-		public int compare(BookEntry a, BookEntry b) {
-			return -1 * a.getEvent_date().compareTo(b.getEvent_date());
-		}
-	};
-	
-	private List<BookEntry> sortBookByEventTime(List<BookEntry> list) {
-		if (list == null) {
-			return null;
-		}
-
-		Collections.sort(list, bookEntryTimeComparator);
-		
-		return list;
 	}
 }

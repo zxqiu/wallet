@@ -44,7 +44,7 @@ function entryFilter() {
 
         entryAmount = parseFloat(title[1].substr(1, title[1].length - 1));
 
-        if (entryYear == curYear && entryMonth == curMonth) {
+        //if (entryYear == curYear && entryMonth == curMonth) {
             var allIndex = curCategoryGroupID.indexOf("All");
             var allIndex = curBookGroupID.indexOf("All");
             if ((curCategoryGroupID.indexOf("All") != -1 || curCategoryGroupID.indexOf(entryCategoryGroupID) != -1)
@@ -65,9 +65,9 @@ function entryFilter() {
             }
             bookSum["All"] += entryAmount;
             bookSum[entryBookGroupID] += entryAmount;
-        } else {
-            $(entry).hide();
-        }
+        //} else {
+            //$(entry).hide();
+        //}
     }
 
     showSum(categorySum, bookSum);
@@ -122,7 +122,7 @@ $(document).ready(function () {
         adjustFontColor(bright, titles[i]);
     }
 
-
+/*
     var today = new Date();
     // set year
     $('#yearShow').val(today.getFullYear());
@@ -131,6 +131,7 @@ $(document).ready(function () {
     // set month
     $('#monthShow').val(today.getMonth() + 1);
     $('#monthShow').text(monthNames[today.getMonth()]);
+*/
 
     entryFilter();
 });
@@ -146,6 +147,7 @@ $('.book-list-text').on("click", function(e) {
     }
 });
 
+/*
 $('#monthSelector li a').on('click', function(){
     for (var i = 0; i < monthNames.length; i++) {
         if ($(this).text() == monthNames[i] && $('#monthShow').val() != i + 1) {
@@ -234,6 +236,7 @@ $("#monthPlus").on("click", function () {
         entryFilter();
     }
 });
+*/
 
 $("#entryFilterSelector").on("changed.bs.select", function (e, clickedIndex, newValue, oldValue) {
     var curSelect = $(this).find('option').eq(clickedIndex);

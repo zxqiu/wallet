@@ -11,9 +11,7 @@ import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
@@ -57,7 +55,7 @@ public class BookEntryCache {
         cacheLoader = new CacheLoader<String, List<BookEntry>>() {
             @Override
             public List<BookEntry> load(String user_id) throws Exception {
-                return bookEntryDAO.findByUserID(user_id);
+                return sortBookByEventTime(bookEntryDAO.findByUserID(user_id));
             }
         };
 
@@ -68,7 +66,7 @@ public class BookEntryCache {
             }
         };
 
-        cache = new GuavaCache<>(10, 1, TimeUnit.MINUTES, 500, 1000, cacheLoader
+        cache = new GuavaCache<>(10, 5, TimeUnit.MINUTES, 500, 1000, cacheLoader
                 , removalListener);
     }
 
@@ -243,4 +241,20 @@ public class BookEntryCache {
         logger_.info(bookEntryCache.getStats().toString());
         logger_.info("size : " + bookEntryCache.getSize());
     }
+
+    private List<BookEntry> sortBookByEventTime(List<BookEntry> list) {
+		if (list == null) {
+			return null;
+		}
+
+		Collections.sort(list, bookEntryTimeComparator);
+
+		return list;
+	}
+
+    private static Comparator<BookEntry> bookEntryTimeComparator = new Comparator<BookEntry>() {
+        public int compare(BookEntry a, BookEntry b) {
+            return -1 * a.getEvent_date().compareTo(b.getEvent_date());
+        }
+    };
 }
