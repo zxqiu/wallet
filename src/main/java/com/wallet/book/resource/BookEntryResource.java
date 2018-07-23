@@ -94,7 +94,7 @@ public class BookEntryResource {
 		User user = userDAOC.getByID(user_id);
 		List<Book> bookList = bookDAOC.getByUserID(user_id);
 		HashMap<String, Book> bookMap = new HashMap<>();
-		List<BookEntry> bookEntryList = bookEntryConnector.getByUserIDAndMonth(user_id, year, month);
+		List<BookEntry> bookEntryList = sortBookByEventTime(bookEntryConnector.getByUserIDAndMonth(user_id, year, month));
 		List<Category> categoryList = categoryDAOC.getByUserID(user_id);
 		HashMap<String, Category> categoryMap = new HashMap<>();
 
@@ -346,4 +346,20 @@ public class BookEntryResource {
 		logger_.info("Book entry \'" + id + "\' removed");
 		return Response.seeOther(URI.create(PATH_BOOKS)).build();
 	}
+
+	private List<BookEntry> sortBookByEventTime(List<BookEntry> list) {
+		if (list == null) {
+			return null;
+		}
+
+		Collections.sort(list, bookEntryTimeComparator);
+
+		return list;
+	}
+
+    private static Comparator<BookEntry> bookEntryTimeComparator = new Comparator<BookEntry>() {
+        public int compare(BookEntry a, BookEntry b) {
+            return -1 * a.getEvent_date().compareTo(b.getEvent_date());
+        }
+    };
 }
