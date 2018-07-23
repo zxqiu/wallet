@@ -245,3 +245,9 @@ $("#entryFilterSelector").on("changed.bs.select", function (e, clickedIndex, new
     }
     entryFilter();
 })
+
+$(document).keypress(function(e){
+    if (e.which == 13){
+        $("#newBookEntry").click();
+    }
+});

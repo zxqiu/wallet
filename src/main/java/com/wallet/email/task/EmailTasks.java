@@ -51,7 +51,7 @@ public class EmailTasks {
     public static class CheckTask extends TimerTask {
         @Override
         public void run() {
-            logger_.info("Scan emails for new and send failed emails ...");
+            //logger_.info("Scan emails for new and send failed emails ...");
             List<Email> newEmails = null;
             List<Email> sendFailedEmails = null;
             try {
@@ -67,8 +67,8 @@ public class EmailTasks {
             try {
                 addToPendingEmailMap(newEmails);
                 addToPendingEmailMap(sendFailedEmails);
-                logger_.info("Scan emails for new and send failed emails ... done. pendingEmailMap size="
-                        + pendingEmailMap.size());
+                //logger_.info("Scan emails for new and send failed emails ... done. pendingEmailMap size="
+                        //+ pendingEmailMap.size());
             } finally {
                 pendingEmailMapLock.unlock();
             }
