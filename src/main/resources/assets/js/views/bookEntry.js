@@ -262,3 +262,9 @@ $("#bookEntryPhoto").on("change", function(e) {
     };
     reader.readAsDataURL(e.target.files[0]);
 });
+
+$(document).keypress(function(e){
+    if (e.which == 13){
+        $("#bookEntrySubmit").click();
+    }
+});
