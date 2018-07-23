@@ -117,15 +117,27 @@ public class BookEntryResource {
 	@Timed
 	@Path("/entry/{id}")
 	@Produces(value = MediaType.TEXT_HTML)
-	public Response bookEntryView(@PathParam(Dict.ID) String id,
-								   @CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
+	public Response bookEntryView(@PathParam(Dict.ID) String id, @QueryParam(Dict.YEAR) Integer year,
+								  @QueryParam(Dict.MONTH) Integer month,
+								  @CookieParam("walletSessionCookie") Cookie cookie) throws Exception {
 	    String user_id = ApiUtils.getUserIDFromCookie(cookie);
 		if (SessionDAOConnector.instance().verifySessionCookie(cookie)== false || user_id == null) {
 			return Response.seeOther(URI.create(SessionResource.PATH_RESTORE_SESSION)).build();
 		}
 
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-		String date = sdf.format(new Date());
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
+
+		if (year != null) {
+			cal.set(Calendar.YEAR, year);
+		}
+
+		if (month != null) {
+			cal.set(Calendar.MONTH, month - 1);
+		}
+
+		String date = sdf.format(cal.getTime());
 		BookEntry bookEntry = null;
 		if (!id.equals("0")) {
 			List<BookEntry> bookEntryList = bookEntryConnector.getByUserIDAndID(user_id, id);
