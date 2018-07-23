@@ -1,6 +1,7 @@
 package com.wallet.book.resource;
 
 import java.net.URI;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -256,11 +257,21 @@ public class BookEntryResource {
 		
 		// 4.2.2 insert
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+		Date date = null;
+
+		try {
+			date = sdf.parse(event_date);
+		} catch (ParseException pe) {
+			logger_.error("Error : failed to parse event date : " + pe.getMessage());
+			pe.printStackTrace();
+			return Response.serverError().build();
+		}
+
 		try {
 			if (bookEntry != null) {
 				logger_.info("Update book item : " + bookEntry.getId());
 				if (bookEntry.getBook_group_id().equals(book.getGroup_id())) {
-					bookEntry.update(book.getGroup_id(), category.getGroup_id(), sdf.parse(event_date), amount, note
+					bookEntry.update(book.getGroup_id(), category.getGroup_id(), date, amount, note
 							, picture_id);
 					bookEntryConnector.updateByUserIDAndID(bookEntry);
 					// Update if book id is not changed.
@@ -268,7 +279,7 @@ public class BookEntryResource {
 				} else {
 					// Re-insert if book id is changed.
                     syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_ACTION.DELETE);
-					bookEntry.update(book.getGroup_id(), category.getGroup_id(), sdf.parse(event_date), amount, note
+					bookEntry.update(book.getGroup_id(), category.getGroup_id(), date, amount, note
 							, picture_id);
 					//bookEntryConnector.insert(bookEntry);
 					syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_ACTION.ADD);
@@ -286,7 +297,9 @@ public class BookEntryResource {
 			return Response.serverError().build();
 		}
 
-		return Response.seeOther(URI.create(PATH_BOOKS)).build();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		return Response.seeOther(URI.create(PATH_BOOKS + "/" + cal.get(Calendar.YEAR) + "/" + (cal.get(Calendar.MONTH) + 1))).build();
 	}
 	
 	/**
