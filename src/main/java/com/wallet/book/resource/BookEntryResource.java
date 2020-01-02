@@ -285,8 +285,9 @@ public class BookEntryResource {
 					syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_ACTION.ADD);
 				}
 			} else {
+				Date eventDate = sdf.parse(event_date);
 				bookEntry = new BookEntry(user_id, user_id, book.getGroup_id(), category.getGroup_id()
-						, sdf.parse(event_date), amount, note, picture_id);
+						, eventDate, amount, note, picture_id, BookEntry.Type.NORMAL, eventDate, eventDate);
 				logger_.info("Insert new book item : " + bookEntry.getId());
 				//bookEntryConnector.insert(bookEntry); // remove this to avoid duplication
 				syncHelper.syncBookEntry(bookEntry, syncHelper.SYNC_ACTION.ADD);

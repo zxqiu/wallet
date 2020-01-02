@@ -89,7 +89,8 @@ public class BookEntryConnector {
 			bookEntryDAO.insert(bookEntry.getId(), bookEntry.getUser_id(), bookEntry.getCreate_user_id()
 					, bookEntry.getBook_group_id(), bookEntry.getGroup_id(), bookEntry.getCategory_group_id()
 					, bookEntry.getEvent_date(), bookEntry.getAmount(), bookEntry.getData().toByteArray()
-					, bookEntry.getEdit_time());
+					, bookEntry.getEdit_time(), bookEntry.getType().getVal(), bookEntry.getStart_date()
+					, bookEntry.getEnd_date());
 
 			// update cache
             bookEntryCache.insert(bookEntry);
@@ -173,8 +174,9 @@ public class BookEntryConnector {
 
 
 	public static void test() throws Exception {
-		BookEntry bookEntry = new BookEntry("admin", "admin", "adminbook", "admincategory", new Date()
-				, (long)10, "note", "photo");
+		Date now = new Date();
+		BookEntry bookEntry = new BookEntry("admin", "admin", "adminbook", "admincategory", now
+				, (long)10, "note", "photo", BookEntry.Type.NORMAL, now, now);
 		
 		logger_.info("BookEntryConnector test ...");
 		

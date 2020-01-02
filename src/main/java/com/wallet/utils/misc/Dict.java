@@ -15,6 +15,8 @@ public class Dict {
 	public static final String CATEGORY_ID = "category_id";
 	public static final String CREATE_TIME = "create_time";
 	public static final String EVENT_DATE = "event_date";
+	public static final String START_DATE = "start_date";
+	public static final String END_DATE = "end_date";
 	public static final String AMOUNT = "amount";
 	public static final String NOTE = "note";
 	public static final String DATA = "data";

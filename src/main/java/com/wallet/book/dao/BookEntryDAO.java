@@ -27,6 +27,9 @@ public static final String TABLE_NAME = "book_entry";
 			+ "`" + Dict.AMOUNT + "` bigint not null,"
 			+ "`" + Dict.DATA + "` varbinary(60000),"
 			+ "`" + Dict.EDIT_TIME + "` datetime not null,"
+			+ "`" + Dict.TYPE + "` int not null,"
+			+ "`" + Dict.START_DATE + "` datetime not null,"
+			+ "`" + Dict.END_DATE + "` datetime not null,"
 			+ "primary key (`" + Dict.ID + "`),"
 			+ "key `fk_book_entry_user` (`" + Dict.USER_ID + "`),"
 			+ "constraint `fk_book_entry_user` foreign key (`" + Dict.USER_ID + "`) "
@@ -49,6 +52,9 @@ public static final String TABLE_NAME = "book_entry";
 			+ ", " + Dict.AMOUNT
 			+ ", " + Dict.DATA
 			+ ", " + Dict.EDIT_TIME
+			+ ", " + Dict.TYPE
+			+ ", " + Dict.START_DATE
+			+ ", " + Dict.END_DATE
 			+ ") values ("
 			+ ":" + Dict.ID
 			+ ", :" + Dict.USER_ID
@@ -60,6 +66,9 @@ public static final String TABLE_NAME = "book_entry";
 			+ ", :" + Dict.AMOUNT
 			+ ", :" + Dict.DATA
 			+ ", :" + Dict.EDIT_TIME
+			+ ", :" + Dict.TYPE
+			+ ", :" + Dict.START_DATE
+			+ ", :" + Dict.END_DATE
 			+ ")"
 		)
 	void insert(@Bind(Dict.ID) String id
@@ -72,6 +81,9 @@ public static final String TABLE_NAME = "book_entry";
 			, @Bind(Dict.AMOUNT) long amount
 			, @Bind(Dict.DATA) byte[] data
 			, @Bind(Dict.EDIT_TIME) Date edit_time
+			, @Bind(Dict.TYPE) int type
+			, @Bind(Dict.START_DATE) Date start_date
+			, @Bind(Dict.END_DATE) Date end_date
 	);
 	
 	@SqlUpdate("update " + TABLE_NAME + " set "

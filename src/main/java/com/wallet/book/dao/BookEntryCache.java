@@ -199,8 +199,9 @@ public class BookEntryCache {
         BookEntryCache bookEntryCache = BookEntryCache.instance();
 
         List<BookEntry> tmpList = new ArrayList<>();
+        Date now = new Date();
         BookEntry tmpBook = new BookEntry("test_user", "test_user", "test_book", "test_category"
-                , new Date(), 1, "first test book", "test_picture");
+                , now, 1, "first test book", "test_picture", BookEntry.Type.NORMAL, now, now);
         tmpList.add(tmpBook);
 
         logger_.info("0. initial status");
@@ -218,7 +219,7 @@ public class BookEntryCache {
 
         logger_.info("2. update test");
         BookEntry tmpBook2 = new BookEntry(tmpBook.getUser_id(), tmpBook.getUser_id(), "test_book", "test_category"
-                , new Date(), 1, "another test book", "test_picture");
+                , new Date(), 1, "another test book", "test_picture", BookEntry.Type.NORMAL, now, now);
         list.add(tmpBook2);
         cache.put(tmpBook2.getUser_id(), list);
         list = cache.get(tmpBook.getUser_id());
